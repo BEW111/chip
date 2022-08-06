@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import Onboarding from './src/pages/Onboarding';
+import OnboardingDone from './src/pages/OnboardingDone';
+import Home from './src/pages/Home';
+
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [text, setText] = useState('');
   return (
-    <View style={styles.container}>
-      <Text>I want to...</Text>
-      <TextInput
-        style={{height: 40}}
-        placeholder="Enter a goal here"
-        onChangeText={newText => setText(newText)}
-        defaultValue={text}
-      />
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+          <Stack.Screen name="OnboardingDone" component={OnboardingDone} />
+        </Stack.Navigator>
+      </NavigationContainer>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

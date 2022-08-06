@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ChipApp",
-    "slug": "ChipApp",
-    "version": "1.0.0",
+    "name": "Chip",
+    "slug": "Chip",
+    "version": "0.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,16 +18,32 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Chip needs access to your camera"
+      },
+      "bundleIdentifier": "com.hachiboba.chip"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "com.hachiboba.chip"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "Chip needs access to your camera"
+        }
+      ]
+    ]
   }
 }
