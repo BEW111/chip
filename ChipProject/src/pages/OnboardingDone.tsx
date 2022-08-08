@@ -5,7 +5,7 @@ import { Card } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-export default function OnboardingDone() {
+export default function OnboardingDone({ navigation }) {
   const [text, setText] = useState('');
   return (
     <ScrollView 
@@ -21,6 +21,7 @@ export default function OnboardingDone() {
         <Text style={{ color: 'white', fontSize: 24, marginLeft: 10, marginBottom: 5 }}>
           You're all set!
         </Text>
+        <Button title="Get started" onPress={() => navigation.navigate('Home')}></Button>
       </View>
     </ScrollView>
   )
