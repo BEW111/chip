@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Icon, Input } from '@rneui/base';
-import { Card } from '@rneui/themed';
+import { Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -21,7 +20,7 @@ export default function OnboardingDone({ navigation }) {
         <Text style={{ color: 'white', fontSize: 24, marginLeft: 10, marginBottom: 5 }}>
           You're all set!
         </Text>
-        <Button title="Get started" onPress={() => navigation.navigate('Home')}></Button>
+        <Button onPress={() => navigation.navigate('Home')}>Get started</Button>
       </View>
     </ScrollView>
   )

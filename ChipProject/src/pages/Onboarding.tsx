@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Button, Icon, Input } from '@rneui/base';
-import { Card } from '@rneui/themed';
+import { IconButton, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -17,30 +16,32 @@ export default function Onboarding({ navigation }) {
       }}
       alwaysBounceVertical={false}
     >
-      <View>
-        <Text style={{ color: 'white', fontSize: 24, marginLeft: 10, marginBottom: 5 }}>
+      <View style={{ width: '100%', paddingHorizontal: 15 }}>
+        <Text style={{ color: 'white', fontSize: 24, marginBottom: 10 }}>
           I want to...
         </Text>
-        <View style={{
-          width: '97%'
-        }}>
+        <View>
           <View style={{ 
             display: "flex",
             flexDirection: "row",
             alignItems: 'center'
           }}>
-            <Input
+            <TextInput
               placeholder="Enter a goal here"
               onChangeText={newText => setText(newText)}
               defaultValue={text}
-              containerStyle={{ width: "87%", marginBottom: "-5%" }}
-              inputStyle={{ color: "white", fontSize: 24 }}
+              style={{ flex: 1, color: "white", fontSize: 24, paddingHorizontal: 0 }}
+              underlineColor='gray'
+              activeUnderlineColor='white'
+              backgroundColor='black'
             />
-            <Icon 
-              name="arrow-forward" 
-              type="evil-icons" 
-              color="white" 
-              size={48} 
+            <IconButton
+              icon="chevron-right"
+              mode="contained"
+              size={36}
+              containerColor="white"
+              iconColor="black"
+              style={{margin: 0, marginLeft: 10}}
               onPress={() => navigation.navigate('OnboardingDone')}
             />
           </View>
