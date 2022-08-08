@@ -1,36 +1,47 @@
 import React from 'react';
 import {View, ScrollView, Text} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+function Sidebar() {
+  return (
+    <ScrollView style={{
+      backgroundColor: 'rgb(50, 50, 50)',
+      flex: 1,
+    }}>
+      <View style={{
+        display: 'flex',
+        alignItems: 'center'
+      }}>
+        <IconButton
+          icon="plus"
+          color="purple"
+          size={36}
+          reverse
+        />
+        <View style={{width: 70, height: 70, backgroundColor: 'purple'}}/>
+      </View>
+    </ScrollView>
+  )
+}
 
 export default function Analytics() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView>
-      <View style={{height: '100%'}}>
+    <View style={{flex: 1, backgroundColor: 'black'}}>
+      <View style={{
+      height: '100%', 
+      paddingTop: insets.top
+      }}>
         <View style={{
           flex: 1,
-
+          
           display: 'flex', 
           flexDirection: 'row', 
         }}>
           {/* Sidebar */}
-          <ScrollView style={{
-            backgroundColor: 'red', 
-            flex: 1,
-          }}>
-            <View style={{
-              display: 'flex',
-              alignItems: 'center'
-            }}>
-              <IconButton
-                icon="plus"
-                color="purple"
-                size={36}
-                reverse
-              />
-              <View style={{width: 70, height: 70, backgroundColor: 'purple'}}/>
-            </View>
-          </ScrollView>
+          <Sidebar />
           {/* Main view */}
           <View style={{backgroundColor: 'blue', flex: 3, display: 'flex'}}>
             <View style={{backgroundColor: 'green'}}>
@@ -44,10 +55,7 @@ export default function Analytics() {
             </ScrollView>
           </View>
         </View>
-        {/* Nav */}
-        <View style={{backgroundColor: 'yellow', height: 50}}>
-        </View>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }

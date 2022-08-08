@@ -12,14 +12,16 @@ General
     ```
     npm install @reduxjs/toolkit react-redux
     ```
-- React Navigation
-    ```
-    npm install @react-navigation/native @react-navigation/native-stack
-    npm install react-native-screens react-native-safe-area-context
-    ```
 - React Native Paper
     ```
-    npm install react-native-paper@5.0.0-rc.3
+    npm install react-native-paper@4.12.4
+    ```
+- React Navigation
+    ```
+    npm install @react-navigation/native
+    npm install react-native-screens react-native-safe-area-context
+    npm install @react-navigation/material-bottom-tabs
+    npm install @react-navigation/native-stack
     ```
 - VisionCamera
     ```

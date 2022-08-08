@@ -20,7 +20,7 @@ export default function OnboardingDone({ navigation }) {
         <Text style={{ color: 'white', fontSize: 24, marginLeft: 10, marginBottom: 5 }}>
           You're all set!
         </Text>
-        <Button onPress={() => navigation.navigate('Home')}>Get started</Button>
+        <Button onPress={() => navigation.navigate('MainTabs')}>Get started</Button>
       </View>
     </ScrollView>
   )
