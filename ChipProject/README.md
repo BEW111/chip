@@ -7,7 +7,6 @@ Share and upgrade your lifestyle
 General
 - TypeScript
 - eslint
-- `npm install react-native-safe-area-context`
 - Redux
     ```
     npm install @reduxjs/toolkit react-redux
@@ -19,9 +18,10 @@ General
 - React Navigation
     ```
     npm install @react-navigation/native
-    npm install react-native-screens react-native-safe-area-context
-    npm install @react-navigation/material-bottom-tabs
     npm install @react-navigation/native-stack
+    npm install @react-navigation/material-top-tabs react-native-tab-view
+    npm install react-native-pager-view
+    npm install react-native-screens react-native-safe-area-context
     ```
 - VisionCamera
     ```

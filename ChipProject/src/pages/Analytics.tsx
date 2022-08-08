@@ -32,7 +32,7 @@ export default function Analytics() {
     <View style={{flex: 1, backgroundColor: 'black'}}>
       <View style={{
       height: '100%', 
-      paddingTop: insets.top
+      paddingTop: insets.top,
       }}>
         <View style={{
           flex: 1,
