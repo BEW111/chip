@@ -16,10 +16,14 @@ export const actionSubmitterSlice = createSlice({
   initialState: {
     photoSource: {},
     goal: 'none',
+    viewingPhoto: false,
   },
   reducers: {
     updateGoal: (state, action) => {
       state.goal = action.payload;
+    },
+    toggleViewingPhoto: state => {
+      state.viewingPhoto = !state.viewingPhoto;
     },
   },
   extraReducers: builder => {
@@ -32,7 +36,7 @@ export const actionSubmitterSlice = createSlice({
   },
 });
 
-export const {updateGoal} = actionSubmitterSlice.actions;
+export const {updateGoal, toggleViewingPhoto} = actionSubmitterSlice.actions;
 export const selectPhotoSource = state => state.actionSubmitter.photoSource;
 
 export default actionSubmitterSlice.reducer;

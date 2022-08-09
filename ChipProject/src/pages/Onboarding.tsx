@@ -36,7 +36,7 @@ export default function Onboarding({ navigation }) {
             <IconButton
               icon="chevron-right"
               size={36}
-              style={{margin: 0, marginLeft: 10}}
+              style={{margin: 0}}
               onPress={() => navigation.navigate('OnboardingDone')}
             />
           </View>
