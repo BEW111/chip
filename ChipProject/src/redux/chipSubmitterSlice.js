@@ -2,7 +2,7 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {Camera} from 'react-native-vision-camera';
 
 export const takePhoto = createAsyncThunk(
-  'actionSubmitter/takePhoto',
+  'chipSubmitter/takePhoto',
   async camera => {
     const photo = await camera.current.takePhoto({
       flash: 'off',
@@ -11,11 +11,11 @@ export const takePhoto = createAsyncThunk(
   },
 );
 
-export const actionSubmitterSlice = createSlice({
-  name: 'actionSubmitter',
+export const chipSubmitterSlice = createSlice({
+  name: 'chipSubmitter',
   initialState: {
     photoSource: {},
-    goal: 'none',
+    goal: '',
     viewingPhoto: false,
   },
   reducers: {
@@ -36,7 +36,7 @@ export const actionSubmitterSlice = createSlice({
   },
 });
 
-export const {updateGoal, toggleViewingPhoto} = actionSubmitterSlice.actions;
-export const selectPhotoSource = state => state.actionSubmitter.photoSource;
+export const {updateGoal, toggleViewingPhoto} = chipSubmitterSlice.actions;
+export const selectPhotoSource = state => state.chipSubmitter.photoSource;
 
-export default actionSubmitterSlice.reducer;
+export default chipSubmitterSlice.reducer;

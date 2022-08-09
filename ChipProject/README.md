@@ -11,11 +11,11 @@ General
     ```
     npm install @reduxjs/toolkit react-redux
     ```
-- React Native Paper
+- UI and design
     ```
     npm install react-native-paper@4.12.4
     ```
-- React Navigation
+- Navigation
     ```
     npm install @react-navigation/native
     npm install @react-navigation/native-stack
@@ -23,12 +23,13 @@ General
     npm install react-native-pager-view
     npm install react-native-screens react-native-safe-area-context
     ```
-- VisionCamera
+- Camera and images
     ```
-    npm i react-native-vision-camera
+    npm install react-native-vision-camera
+    npm install react-native-jsi-image
+    npm install react-native-fast-image
+    npm install react-native-fs
     ```
-- https://github.com/DylanVann/react-native-fast-image
-- https://github.com/itinance/react-native-fs
 
 
-Finally run `npx pod-install`
+Finally, run `npx pod-install`

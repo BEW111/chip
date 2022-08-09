@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {StyleSheet, Text, View, Linking, Image} from 'react-native';
 import {TextInput, IconButton} from 'react-native-paper';
 import {Button} from 'react-native-paper';
@@ -11,14 +11,28 @@ import {useIsFocused} from '@react-navigation/native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   takePhoto,
-  updateGoal,
   toggleViewingPhoto,
   selectPhotoSource,
-} from '../redux/actionSubmitterSlice';
+  updateGoal,
+} from '../redux/chipSubmitterSlice';
+import {getBase64} from '../utils/imageUtils';
 
+async function createChip(photoUri: string, goal: string) {
+  const currentdt = new Date();
+  getBase64(photoUri, (encoding: string) => {
+    const chip = {
+      photo: encoding,
+      goal: goal,
+      date: currentdt.toLocaleDateString(),
+      time: currentdt.toLocaleTimeString(),
+    };
+    return chip;
+  });
+}
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
+  const userGoalText = useSelector(state => state.chipSubmitter.goal);
 
   return (
     <View
@@ -52,9 +66,9 @@ function PhotoViewer(props) {
             alignItems: 'center',
           }}>
           <TextInput
-            placeholder="Action"
-            // onChangeText={newText => setUserGoalText(newText)}
-            // defaultValue={userGoalText}
+            placeholder="Enter goal here"
+            onChangeText={text => dispatch(updateGoal(text))}
+            defaultValue={userGoalText}
             style={{
               backgroundColor: 'black',
               textAlign: 'center',
@@ -88,7 +102,7 @@ function PhotoViewer(props) {
             bottom: 5,
           }}
           onPress={() => {
-            console.log(props.photoSource.uri);
+            createChip(props.photoSource.uri, userGoalText);
           }}
         />
       </View>
@@ -126,7 +140,7 @@ export default function Home() {
   }
 
   // Viewing/editing a photo
-  const viewingPhoto = useSelector(state => state.actionSubmitter.viewingPhoto);
+  const viewingPhoto = useSelector(state => state.chipSubmitter.viewingPhoto);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>

@@ -1,8 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit';
-import actionSubmitterReducer from './actionSubmitterSlice';
+import chipSubmitterReducer from './chipSubmitterSlice';
 
 export default configureStore({
   reducer: {
-    actionSubmitter: actionSubmitterReducer,
+    chipSubmitter: chipSubmitterReducer,
   },
 });
