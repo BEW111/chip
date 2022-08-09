@@ -5,6 +5,7 @@ import { IconButton, TextInput } from 'react-native-paper';
 
 export default function Onboarding({ navigation }) {
   const [text, setText] = useState('');
+  
   return (
     <ScrollView 
       style={{ backgroundColor: 'black', height: '100%' }} 

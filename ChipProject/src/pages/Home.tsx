@@ -1,26 +1,35 @@
 import React from 'react';
-import {useCallback, useEffect, useState, useRef} from 'react';
+
+import {useCallback, useEffect, useRef} from 'react';
 import {StyleSheet, Text, View, Linking, Image} from 'react-native';
 import {Button} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  updatePhotoSource,
+  updateGoal,
+  selectPhotoSource,
+  takePhoto,
+} from '../redux/actionSubmitterSlice';
+
 export default function Home() {
   const isFocused = useIsFocused();
-
   const camera = useRef<Camera>(null);
-  const takePicture = async function () {
-    if (camera.current != null) {
-      const photo = await camera.current.takePhoto({
-        flash: 'on',
-      });
-      setPhotoSource({
-        isStatic: true,
-        uri: photo.path,
-      });
-    }
-  };
-  const [photoSource, setPhotoSource] = useState({});
+
+  const photoSource = useSelector(selectPhotoSource);
+  const dispatch = useDispatch();
+
+  // const takePicture = async function () {
+  //   if (camera.current != null) {
+  //     const photo = await camera.current.takePhoto({
+  //       flash: 'on',
+  //     });
+  //     console.log(photo.path);
+  //     dispatch(updatePhotoSource(photo.path));
+  //   }
+  // };
 
   // Camera
   const devices = useCameraDevices();
@@ -58,7 +67,7 @@ export default function Home() {
         style={{
           position: 'absolute',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}>
         <View style={{backgroundColor: 'red', opacity: 0.5}}>
           <Image source={photoSource} style={{width: 400, height: 400}} />
@@ -72,7 +81,10 @@ export default function Home() {
           left: 0,
           right: 0,
         }}>
-        <Button mode="contained" onPress={takePicture} icon="camera">
+        <Button
+          mode="contained"
+          onPress={() => dispatch(takePhoto(camera))}
+          icon="camera">
           Take picture
         </Button>
       </View>

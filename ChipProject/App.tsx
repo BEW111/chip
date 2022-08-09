@@ -15,6 +15,8 @@ import Home from './src/pages/Home';
 import Analytics from './src/pages/Analytics';
 import Social from './src/pages/Social';
 
+import store from './src/redux/store';
+
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -41,18 +43,20 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <PaperProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{
-              headerShown: false,
-            }}>
-            <Stack.Screen name="Onboarding" component={Onboarding} />
-            <Stack.Screen name="OnboardingDone" component={OnboardingDone} />
-            <Stack.Screen name="MainTabs" component={MainTabs} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
-    </SafeAreaProvider>
+    <StoreProvider store={store}>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+                headerShown: false,
+              }}>
+              <Stack.Screen name="Onboarding" component={Onboarding} />
+              <Stack.Screen name="OnboardingDone" component={OnboardingDone} />
+              <Stack.Screen name="MainTabs" component={MainTabs} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </SafeAreaProvider>
+    </StoreProvider>
   );
 }
