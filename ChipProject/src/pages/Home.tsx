@@ -15,20 +15,20 @@ import {
   selectPhotoSource,
   updateGoal,
 } from '../redux/chipSubmitterSlice';
-import {getBase64} from '../utils/imageUtils';
+import {submitChip} from '../utils/postUtils';
 
-async function createChip(photoUri: string, goal: string) {
-  const currentdt = new Date();
-  getBase64(photoUri, (encoding: string) => {
-    const chip = {
-      photo: encoding,
-      goal: goal,
-      date: currentdt.toLocaleDateString(),
-      time: currentdt.toLocaleTimeString(),
-    };
-    return chip;
-  });
-}
+// async function submitChip(photoUri: string, goal: string) {
+//   const currentdt = new Date();
+//   // getBase64(photoUri, (encoding: string) => {
+//   //   const chip = {
+//   //     photo: encoding,
+//   //     goal: goal,
+//   //     date: currentdt.toLocaleDateString(),
+//   //     time: currentdt.toLocaleTimeString(),
+//   //   };
+//   //   return chip;
+//   // });
+// }
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
@@ -102,7 +102,7 @@ function PhotoViewer(props) {
             bottom: 5,
           }}
           onPress={() => {
-            createChip(props.photoSource.uri, userGoalText);
+            submitChip(props.photoSource, userGoalText);
           }}
         />
       </View>

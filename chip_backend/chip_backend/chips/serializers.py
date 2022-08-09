@@ -18,4 +18,4 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ChipSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Chip
-        fields = ["verb", "photo", "submitted"]
+        fields = ["verb", "photo", "timeSubmitted"]

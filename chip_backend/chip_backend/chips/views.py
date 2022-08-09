@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from chip_backend.chips.serializers import UserSerializer, GroupSerializer
+
+from chip_backend.chips.models import Chip
+from chip_backend.chips.serializers import UserSerializer, GroupSerializer, ChipSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,4 +23,10 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ChipViewSet(viewsets.ModelViewSet):
+    queryset = Chip.objects.all()
+    serializer_class = ChipSerializer
     permission_classes = [permissions.IsAuthenticated]
