@@ -26,7 +26,7 @@ export default function Onboarding({ navigation }) {
             alignItems: 'center'
           }}>
             <TextInput
-              placeholder="Enter a goal here"
+              placeholder="Enter a goal you have"
               onChangeText={newText => setText(newText)}
               defaultValue={text}
               style={{ backgroundColor: 'black', flex: 1, color: "white", fontSize: 24, paddingHorizontal: 0 }}

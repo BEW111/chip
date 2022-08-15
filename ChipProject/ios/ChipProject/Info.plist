@@ -77,7 +77,7 @@
 			<true/>
 			<key>NSExceptionDomains</key>
 			<dict>
-				<key>127.0.0.1:8000/</key>
+				<key>bew.local:8000</key>
 				<dict>
 					<key>NSIncludesSubdomains</key>
           <true/>

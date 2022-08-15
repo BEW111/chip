@@ -30,6 +30,12 @@ General
     npm install react-native-fast-image
     npm install react-native-fs
     ```
+- Firebase
+    ```
+    npm install --save @react-native-firebase/app
+    npm install --save @react-native-firebase/firestore
+    npm install --save @react-native-firebase/firestore
+    ```
 
 
 Finally, run `npx pod-install`

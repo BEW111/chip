@@ -10,3 +10,10 @@ class Chip(models.Model):
 
     class Meta:
         ordering = ["timeSubmitted"]
+
+
+class Goal(models.Model):
+    goal = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ["goal"]

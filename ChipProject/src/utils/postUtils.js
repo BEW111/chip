@@ -18,19 +18,22 @@ export function submitChip(photoFile, verb) {
 
   let form_data = new FormData();
   form_data.append('verb', verb);
-  form_data.append('photo', photoFile.uri, photoFile.uri.slice(photoNameIndex));
-  form_data.append('timeSubmitted', currentdt);
+  // form_data.append('photo', photoFile.uri, photoFile.uri.slice(photoNameIndex));
+  // form_data.append('timeSubmitted', currentdt);
 
-  let url = 'http://127.0.0.1:8000/';
-  fetch(url, {
-    method: 'get',
-  })
-    .then(r => {
-      console.log(r);
-    })
-    .catch(e => {
-      console.log(e);
-    });
+  console.log(form_data);
+
+  let url = 'http://bew.local:8000/chips/';
+  // fetch(url, {
+  //   method: 'get',
+  // })
+  //   .then(r => r.text())
+  //   .then(r => {
+  //     console.log(r);
+  //   })
+  //   .catch(e => {
+  //     console.log(e);
+  //   });
 
   // fetch(url, {
   //   method: 'post',
@@ -42,4 +45,23 @@ export function submitChip(photoFile, verb) {
   //   .catch(e => {
   //     console.log(e);
   //   });
+
+  fetch(url, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      verb: 'push-up',
+      photo: 'http://bew.local:8000/media/chips/download.jpeg',
+      timeSubmitted: '2022-08-10T11:30:00Z',
+    }),
+  })
+    .then(r => {
+      console.log(r);
+    })
+    .catch(e => {
+      console.log(e);
+    });
 }
