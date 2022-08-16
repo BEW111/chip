@@ -14,15 +14,15 @@
   
 
 Current pipeline
-1. Preprocess all goals in training data
-  - Replace quantities, frequencies, and named entities with special tokens
-2. Get embeddings for all goals via `all-MiniLM-L6-v2`
-3. Use Stanza to find the root of each sentence via dependency parsing
-4. Get embeddings for all roots (use some pretrained word2vec model)=
-5. Prediction (from a predetermined set of goals to map to):
-  1. Filter all goals by thresholds for cosine similarities from sentence and root embeddings
-  2. Select the highest ranking goal by sentence similarity (ignore root similarity)
-  3. If no goals pass through the filter, then keep the input to start a new "cluster"
+1. [x] Preprocess all goals in training data
+  - Some manual work: replace words like "push-up" with "pushup"
+2. [x] Get embeddings for all goals via `all-MiniLM-L6-v2`
+3. [x] Use Stanza to find the root, xcomps, and quantities of each sentence via dependency parsing
+4. [x] Get embeddings for all roots (use some pretrained word2vec model)
+5. [ ] **Prediction** (from a predetermined set of goals to map to):
+  - [ ] Filter all goals by thresholds for cosine similarities from sentence and root embeddings
+  - [ ] Select the highest ranking goal by sentence similarity (ignore root similarity)
+  - [ ] If no goals pass through the filter, then keep the input to start a new "cluster"
 
 
 ## Notes
@@ -50,8 +50,8 @@ Preprocessing outline
 1. Named entity recognition and 
 2. Case and punctuation
 
+Scaling
+https://towardsdatascience.com/billion-scale-semantic-similarity-search-with-faiss-sbert-c845614962e2
 
-Model ideas
-- If the MAIN PREDICATE is semantically different, then they AREN'T the same goal even if they are similar via
 
 
