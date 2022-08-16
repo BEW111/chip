@@ -34,7 +34,6 @@ General
     ```
     npm install --save @react-native-firebase/app
     npm install --save @react-native-firebase/firestore
-    npm install --save @react-native-firebase/firestore
     ```
 
 

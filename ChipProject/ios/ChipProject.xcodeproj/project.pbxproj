@@ -7,13 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0014E39CE9DBC8A8F2C3A1EE /* Pods_ChipProject_ChipProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C99DEE3F5E0411C04C863AF /* Pods_ChipProject_ChipProjectTests.framework */; };
 		00E356F31AD99517003FC87E /* ChipProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* ChipProjectTests.m */; };
-		0C80B921A6F3F58F76C31292 /* libPods-ChipProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-ChipProject.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-ChipProject-ChipProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-ChipProject-ChipProjectTests.a */; };
+		2C330254729E6E133DD73203 /* Pods_ChipProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 252AC5DA2AAE0FB141A76DAF /* Pods_ChipProject.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		882E1A8728AC2A0500D86043 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 882E1A8628AC2A0500D86043 /* GoogleService-Info.plist */; };
+		882E1A8B28AC2DDD00D86043 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 882E1A8A28AC2DDD00D86043 /* FirebaseAnalytics */; };
+		882E1A8D28AC2DDD00D86043 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 882E1A8C28AC2DDD00D86043 /* FirebaseAuth */; };
+		882E1A8F28AC2DDD00D86043 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 882E1A8E28AC2DDD00D86043 /* FirebaseFirestore */; };
+		882E1A9128AC2DDD00D86043 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 882E1A9028AC2DDD00D86043 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,12 +41,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ChipProject/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ChipProject/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ChipProject/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-ChipProject-ChipProjectTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChipProject-ChipProjectTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		252AC5DA2AAE0FB141A76DAF /* Pods_ChipProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChipProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-ChipProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChipProject.debug.xcconfig"; path = "Target Support Files/Pods-ChipProject/Pods-ChipProject.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-ChipProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChipProject.release.xcconfig"; path = "Target Support Files/Pods-ChipProject/Pods-ChipProject.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-ChipProject-ChipProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChipProject-ChipProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-ChipProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChipProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C99DEE3F5E0411C04C863AF /* Pods_ChipProject_ChipProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChipProject_ChipProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ChipProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		882E1A8628AC2A0500D86043 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-ChipProject-ChipProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChipProject-ChipProjectTests.release.xcconfig"; path = "Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -51,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-ChipProject-ChipProjectTests.a in Frameworks */,
+				0014E39CE9DBC8A8F2C3A1EE /* Pods_ChipProject_ChipProjectTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +65,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-ChipProject.a in Frameworks */,
+				882E1A8B28AC2DDD00D86043 /* FirebaseAnalytics in Frameworks */,
+				882E1A8F28AC2DDD00D86043 /* FirebaseFirestore in Frameworks */,
+				882E1A8D28AC2DDD00D86043 /* FirebaseAuth in Frameworks */,
+				882E1A9128AC2DDD00D86043 /* FirebaseStorage in Frameworks */,
+				2C330254729E6E133DD73203 /* Pods_ChipProject.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +98,7 @@
 			children = (
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
+				882E1A8628AC2A0500D86043 /* GoogleService-Info.plist */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -100,8 +111,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-ChipProject.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-ChipProject-ChipProjectTests.a */,
+				252AC5DA2AAE0FB141A76DAF /* Pods_ChipProject.framework */,
+				7C99DEE3F5E0411C04C863AF /* Pods_ChipProject_ChipProjectTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -160,7 +171,6 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -183,13 +193,18 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ChipProject;
+			packageProductDependencies = (
+				882E1A8A28AC2DDD00D86043 /* FirebaseAnalytics */,
+				882E1A8C28AC2DDD00D86043 /* FirebaseAuth */,
+				882E1A8E28AC2DDD00D86043 /* FirebaseFirestore */,
+				882E1A9028AC2DDD00D86043 /* FirebaseStorage */,
+			);
 			productName = ChipProject;
 			productReference = 13B07F961A680F5B00A75B9A /* ChipProject.app */;
 			productType = "com.apple.product-type.application";
@@ -220,6 +235,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -244,6 +262,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				882E1A8728AC2A0500D86043 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,40 +361,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChipProject/Pods-ChipProject-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChipProject/Pods-ChipProject-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChipProject/Pods-ChipProject-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ChipProject-ChipProjectTests/Pods-ChipProject-ChipProjectTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -500,7 +485,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hachiboba.chip;
 				PRODUCT_NAME = ChipProject;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -526,7 +511,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hachiboba.chip;
 				PRODUCT_NAME = ChipProject;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -701,6 +686,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		882E1A8A28AC2DDD00D86043 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		882E1A8C28AC2DDD00D86043 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		882E1A8E28AC2DDD00D86043 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		882E1A9028AC2DDD00D86043 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 882E1A8928AC2DDD00D86043 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
