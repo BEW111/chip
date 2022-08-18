@@ -7,9 +7,11 @@ Share and upgrade your lifestyle
 General
 - TypeScript
 - eslint
+- Flipper for iOS dev
 - Firebase
     ```
     npm install --save @react-native-firebase/app
+    npm install --save @react-native-firebase/auto
     npm install --save @react-native-firebase/firestore
     npm install --save @react-native-firebase/storage
     ```
