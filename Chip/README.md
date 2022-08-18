@@ -7,33 +7,32 @@ Share and upgrade your lifestyle
 General
 - TypeScript
 - eslint
-- Flipper for iOS dev
 - Firebase
     ```
     npm install --save @react-native-firebase/app
-    npm install --save @react-native-firebase/auto
+    npm install --save @react-native-firebase/auth
     npm install --save @react-native-firebase/firestore
     npm install --save @react-native-firebase/storage
     ```
 - Redux
     ```
-    npm install @reduxjs/toolkit react-redux
-    ```
-- UI and design
-    ```
-    npm install react-native-paper@4.12.4
+    npm install --save @reduxjs/toolkit react-redux
     ```
 - Navigation
     ```
-    npm install @react-navigation/native
-    npm install @react-navigation/native-stack
-    npm install @react-navigation/material-top-tabs react-native-tab-view
-    npm install react-native-pager-view
-    npm install react-native-screens react-native-safe-area-context
+    npm install --save @react-navigation/native
+    npm install --save @react-navigation/native-stack
+    npm install --save @react-navigation/material-top-tabs react-native-tab-view
+    npm install --save react-native-pager-view
+    npm install --save react-native-screens react-native-safe-area-context
     ```
 - Camera
     ```
-    npm install react-native-vision-camera
+    npm install --save react-native-vision-camera
+    ```
+- UI and design
+    ```
+    npm install --save react-native-paper@4.12.4
     ```
 - Images
     ```

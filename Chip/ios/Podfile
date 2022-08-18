@@ -9,8 +9,12 @@ install! 'cocoapods', :deterministic_uuids => false
 production = ENV["PRODUCTION"] == "1"
 
 target 'Chip' do
-  use_frameworks!
+  # use_frameworks!
+  use_frameworks! :linkage => :static
+  # use_modular_headers!
   config = use_native_modules!
+
+  # pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec', :modular_headers => false
 
   # Flags change depending on the env values.
   flags = get_default_flags()

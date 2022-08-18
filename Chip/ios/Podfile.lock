@@ -961,6 +961,14 @@ PODS:
   - React-jsinspector (0.69.4)
   - React-logger (0.69.4):
     - glog
+  - react-native-pager-view (5.4.25):
+    - React-Core
+  - react-native-safe-area-context (4.3.1):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - ReactCommon/turbomodule/core
   - React-perflogger (0.69.4)
   - React-RCTActionSheet (0.69.4):
     - React-Core/RCTActionSheetHeaders (= 0.69.4)
@@ -1042,6 +1050,13 @@ PODS:
     - Firebase/Storage (= 9.4.0)
     - React-Core
     - RNFBApp
+  - RNScreens (3.15.0):
+    - React-Core
+    - React-RCTImage
+  - VisionCamera (2.14.1):
+    - React
+    - React-callinvoker
+    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -1065,6 +1080,8 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-pager-view (from `../node_modules/react-native-pager-view`)
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -1081,6 +1098,8 @@ DEPENDENCIES:
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
+  - RNScreens (from `../node_modules/react-native-screens`)
+  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1148,6 +1167,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-pager-view:
+    :path: "../node_modules/react-native-pager-view"
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -1180,6 +1203,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/firestore"
   RNFBStorage:
     :path: "../node_modules/@react-native-firebase/storage"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
+  VisionCamera:
+    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1226,6 +1253,8 @@ SPEC CHECKSUMS:
   React-jsiexecutor: a27badbbdbc0ff781813370736a2d1c7261181d4
   React-jsinspector: 8a3d3f5dcd23a91e8c80b1bf0e96902cd1dca999
   React-logger: 1088859f145b8f6dd0d3ed051a647ef0e3e80fad
+  react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
+  react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   React-perflogger: cb386fd44c97ec7f8199c04c12b22066b0f2e1e0
   React-RCTActionSheet: f803a85e46cf5b4066c2ac5e122447f918e9c6e5
   React-RCTAnimation: 19c80fa950ccce7f4db76a2a7f2cf79baae07fc7
@@ -1242,8 +1271,10 @@ SPEC CHECKSUMS:
   RNFBAuth: 5258f9a4402f8dd1b85eebb00f62511e073c79b3
   RNFBFirestore: 991890f43c4ee33aed752418f06d80d0d9b8eb25
   RNFBStorage: 77eb84ba48b06b34fb5eee2d83da6cce2ca609e5
+  RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  VisionCamera: cc788935bcfd2f7031d3295adedbc9786835f402
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74
 
-PODFILE CHECKSUM: 44e35c8cc781504aa110823922512cac4d737ebd
+PODFILE CHECKSUM: ccdb484f6d0c64a5b9ea85dc059875ee844a7d5f
 
 COCOAPODS: 1.11.3
