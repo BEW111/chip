@@ -1,117 +1,62 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
+import React from 'react';
 
-import React, {type PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {Dimensions} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider as StoreProvider} from 'react-redux';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import Onboarding from './src/pages/Onboarding';
+import OnboardingDone from './src/pages/OnboardingDone';
+import Home from './src/pages/Home';
+import Analytics from './src/pages/Analytics';
+import Social from './src/pages/Social';
 
-const Section: React.FC<
-  PropsWithChildren<{
-    title: string;
-  }>
-> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+import store from './src/redux/store';
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+const Tab = createMaterialTopTabNavigator();
+const Stack = createNativeStackNavigator();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+function MainTabs() {
+  const insets = useSafeAreaInsets();
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <Tab.Navigator
+      tabBarPosition="bottom"
+      initialLayout={{
+        width: Dimensions.get('window').width,
+      }}
+      initialRouteName="Home"
+      style={{
+        backgroundColor: 'white',
+        paddingBottom: insets.bottom,
+      }}>
+      <Tab.Screen name="Social" component={Social} />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Analytics" component={Analytics} />
+    </Tab.Navigator>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
+export default function App() {
+  return (
+    <StoreProvider store={store}>
+      <SafeAreaProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+                headerShown: false,
+              }}>
+              <Stack.Screen name="Onboarding" component={Onboarding} />
+              <Stack.Screen name="OnboardingDone" component={OnboardingDone} />
+              <Stack.Screen name="MainTabs" component={MainTabs} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </SafeAreaProvider>
+    </StoreProvider>
+  );
+}
