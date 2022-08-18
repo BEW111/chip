@@ -1053,6 +1053,8 @@ PODS:
   - RNScreens (3.15.0):
     - React-Core
     - React-RCTImage
+  - RNVectorIcons (9.2.0):
+    - React-Core
   - VisionCamera (2.14.1):
     - React
     - React-callinvoker
@@ -1099,6 +1101,7 @@ DEPENDENCIES:
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -1205,6 +1208,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/storage"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   VisionCamera:
     :path: "../node_modules/react-native-vision-camera"
   Yoga:
@@ -1272,6 +1277,7 @@ SPEC CHECKSUMS:
   RNFBFirestore: 991890f43c4ee33aed752418f06d80d0d9b8eb25
   RNFBStorage: 77eb84ba48b06b34fb5eee2d83da6cce2ca609e5
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
+  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
   VisionCamera: cc788935bcfd2f7031d3295adedbc9786835f402
   Yoga: ff994563b2fd98c982ca58e8cd9db2cdaf4dda74
 
