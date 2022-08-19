@@ -40,6 +40,3 @@ General
     npm install react-native-fast-image
     npm install react-native-fs
     ```
-
-
-Finally, run `npx pod-install`

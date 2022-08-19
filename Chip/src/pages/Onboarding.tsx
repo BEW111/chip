@@ -37,7 +37,7 @@ export default function Onboarding({ navigation }) {
               icon="chevron-right"
               size={36}
               style={{margin: 0}}
-              onPress={() => navigation.navigate('OnboardingDone')}
+              onPress={() => navigation.navigate('OnboardingRegister')}
             />
           </View>
         </View>

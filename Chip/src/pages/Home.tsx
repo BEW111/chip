@@ -16,23 +16,12 @@ import {
   updateGoal,
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
-
-// async function submitChip(photoUri: string, goal: string) {
-//   const currentdt = new Date();
-//   // getBase64(photoUri, (encoding: string) => {
-//   //   const chip = {
-//   //     photo: encoding,
-//   //     goal: goal,
-//   //     date: currentdt.toLocaleDateString(),
-//   //     time: currentdt.toLocaleTimeString(),
-//   //   };
-//   //   return chip;
-//   // });
-// }
+import {selectUid} from '../redux/authSlice';
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
   const userGoalText = useSelector(state => state.chipSubmitter.goal);
+  const uid = useSelector(selectUid);
 
   return (
     <View
@@ -102,7 +91,7 @@ function PhotoViewer(props) {
             bottom: 5,
           }}
           onPress={() => {
-            submitChip(props.photoSource, userGoalText);
+            submitChip(props.photoSource, userGoalText, uid);
           }}
         />
       </View>
