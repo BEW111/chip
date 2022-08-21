@@ -4,7 +4,7 @@ import {Dimensions} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -29,6 +29,18 @@ import {
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  version: 3,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#3498db',
+    secondary: '#f1c40f',
+    tertiary: '#a1b2c3',
+  },
+};
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
@@ -59,8 +71,10 @@ function Main() {
   // Handle user state changes
   function onAuthStateChanged(newUser) {
     console.log('auth state change');
-    dispatch(updateUser(newUser.toJSON()));
-    dispatch(updateUid(newUser.uid));
+    if (newUser) {
+      dispatch(updateUser(newUser.toJSON()));
+      dispatch(updateUid(newUser.uid));
+    }
 
     if (initializing) {
       dispatch(updateInitializing(false));
@@ -72,18 +86,18 @@ function Main() {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  if (!user) {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{
-            headerShown: false,
-          }}>
-          <Stack.Screen name="Onboarding" component={Onboarding} />
-          <Stack.Screen name="OnboardingRegister" component={OnboardingRegister} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <NavigationContainer>
+  //       <Stack.Navigator screenOptions={{
+  //           headerShown: false,
+  //         }}>
+  //         <Stack.Screen name="Onboarding" component={Onboarding} />
+  //         <Stack.Screen name="OnboardingRegister" component={OnboardingRegister} />
+  //       </Stack.Navigator>
+  //     </NavigationContainer>
+  //   );
+  // }
 
   return (
     <NavigationContainer>
@@ -96,7 +110,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <SafeAreaProvider>
-        <PaperProvider>
+        <PaperProvider theme={theme}>
           <Main />
         </PaperProvider>
       </SafeAreaProvider>

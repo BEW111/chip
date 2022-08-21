@@ -36,7 +36,6 @@ General
     ```
 - Images
     ```
-    npm install react-native-jsi-image
     npm install react-native-fast-image
     npm install react-native-fs
     ```

@@ -2,8 +2,8 @@
 import React from 'react';
 
 import {useCallback, useEffect, useRef} from 'react';
-import {StyleSheet, Text, View, Linking, Image} from 'react-native';
-import {TextInput, IconButton} from 'react-native-paper';
+import {StyleSheet, View, Linking, Image} from 'react-native';
+import {TextInput, IconButton, Text} from 'react-native-paper';
 import {Button} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';

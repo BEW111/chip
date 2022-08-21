@@ -1,6 +1,7 @@
+import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
-export async function submitChip(photoFile, verb, UID) {
+export async function submitChip(photoFile, verb) {
   const currentdt = new Date();
   const localPath = photoFile.uri;
   const photoNameIndex = localPath.lastIndexOf('/') + 1;
