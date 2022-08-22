@@ -11,8 +11,12 @@ import {
   Paragraph,
   Button,
   FAB,
+  AnimatedFAB,
 } from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+const Tab = createMaterialTopTabNavigator();
 
 function Sidebar() {
   return (
@@ -85,6 +89,33 @@ function TempChip() {
   );
 }
 
+function Stats1() {
+  return (
+    <View style={{flex: 1, backgroundColor: 'pink'}}>
+      <Text> stats1 </Text>
+    </View>
+  )
+}
+
+function Stats2() {
+  return (
+    <View style={{flex: 1, backgroundColor: 'rgb(200, 200, 255)'}}>
+      <Text> stats2 </Text>
+    </View>
+  )
+}
+
+function StatsView() {
+  return (
+    <View style={{width: '100%', height: '100%'}}>
+      <Tab.Navigator tabBar={() => null}>
+        <Tab.Screen name="Stats1" component={Stats1} />
+        <Tab.Screen name="Stats2" component={Stats2} />
+      </Tab.Navigator>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
@@ -132,7 +163,7 @@ export default function Analytics() {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text>Stats goes here</Text>
+                <StatsView />
               </Surface>
             </View>
             <ScrollView
@@ -163,11 +194,12 @@ export default function Analytics() {
           </View>
         </View>
       </View>
-      <FAB
+      <AnimatedFAB
         style={styles.fab}
-        small
         icon="share"
         onPress={() => console.log('Pressed')}
+        label={'Share'}
+        extended={false}
       />
     </View>
   );

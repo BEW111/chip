@@ -6,8 +6,10 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
 
