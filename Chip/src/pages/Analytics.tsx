@@ -111,11 +111,10 @@ function ChipDisplay(props) {
 
   return (
     <TouchableWithoutFeedback onPress={toggleSelect}>
-      <Surface
+      <View
         style={{
-          backgroundColor: selected ? 'yellow' : 'white',
           height: 100,
-          width: '32%',
+          width: '32.64%',
           margin: 1,
           display: 'flex',
           justifyContent: 'center',
@@ -125,17 +124,22 @@ function ChipDisplay(props) {
           <FastImage
             source={{uri: downloadURL}}
             style={{
-              height: '90%',
-              width: '90%',
+              height: '100%',
+              width: '100%',
+              borderWidth: selected ? 3 : 0,
+              borderColor: 'pink',
+              overflow: 'hidden',
             }}
           />
         ) : (
           <></>
         )}
-        <Text style={{color: 'white', position: 'absolute'}}>
-          {props.timeSubmitted}, {props.verb}
-        </Text>
-      </Surface>
+        <View style={{position: 'absolute', alignItems: 'center'}}>
+          <Text style={{color: 'white'}}>{props.date}</Text>
+          <Text style={{color: 'white'}}>{props.time}</Text>
+          <Text style={{color: 'white'}}>{props.verb}</Text>
+        </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
@@ -256,21 +260,28 @@ export default function Analytics() {
             <ScrollView
               style={{
                 flex: 1,
+              }}
+              contentContainerStyle={{
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
               <View
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   flexWrap: 'wrap',
+                  justifyContent: 'flex-start',
                 }}>
                 {chips.map((chip: ChipObject) => {
-                  const date = chip.timeSubmitted.toDate().toLocaleString();
+                  const date = chip.timeSubmitted.toDate().toLocaleDateString();
+                  const time = chip.timeSubmitted.toDate().toLocaleTimeString();
                   return (
                     <ChipDisplay
                       key={chip.key}
                       verb={chip.verb}
                       photo={chip.photo}
-                      timeSubmitted={date}
+                      date={date}
+                      time={time}
                     />
                   );
                 })}
