@@ -1,22 +1,38 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
-import {StyleSheet, View, ScrollView, StatusBar} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  StatusBar,
+  Image,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {
   IconButton,
   Surface,
   Text,
   Headline,
-  Card,
-  Title,
-  Paragraph,
-  Button,
-  FAB,
   AnimatedFAB,
+  ActivityIndicator,
 } from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
+import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+
+import {useSelector} from 'react-redux';
+import {selectUid} from '../redux/authSlice';
+
 const Tab = createMaterialTopTabNavigator();
+
+interface ChipObject {
+  key: string;
+  verb: string;
+  timeSubmitted: FirebaseFirestoreTypes.Timestamp;
+  photo: string;
+}
 
 function Sidebar() {
   return (
@@ -72,20 +88,52 @@ function TempGoal() {
   );
 }
 
-function TempChip() {
+function ChipDisplay(props) {
+  const uid = useSelector(selectUid);
+  const path = `user/${uid}/chip-photo/${props.photo}`;
+  const [downloadURL, setDownloadURL] = useState('');
+  const [selected, setSelected] = useState(false);
+
+  useEffect(() => {
+    async function grabURL() {
+      const newURL = await storage().ref(path).getDownloadURL();
+      setDownloadURL(newURL);
+    }
+    grabURL();
+  }, [path]);
+
+  const toggleSelect = () => {
+    setSelected(!selected);
+  };
+
   return (
-    <Surface
-      style={{
-        backgroundColor: 'white',
-        height: 100,
-        width: '32%',
-        margin: 1,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <Text>Chip</Text>
-    </Surface>
+    <TouchableWithoutFeedback onPress={toggleSelect}>
+      <Surface
+        style={{
+          backgroundColor: selected ? 'yellow' : 'white',
+          height: 100,
+          width: '32%',
+          margin: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        {downloadURL ? (
+          <Image
+            source={{uri: downloadURL}}
+            style={{
+              height: '90%',
+              width: '90%',
+            }}
+          />
+        ) : (
+          <></>
+        )}
+        <Text style={{color: 'white', position: 'absolute'}}>
+          {props.timeSubmitted}, {props.verb}
+        </Text>
+      </Surface>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -94,7 +142,7 @@ function Stats1() {
     <View style={{flex: 1, backgroundColor: 'pink'}}>
       <Text> stats1 </Text>
     </View>
-  )
+  );
 }
 
 function Stats2() {
@@ -102,7 +150,7 @@ function Stats2() {
     <View style={{flex: 1, backgroundColor: 'rgb(200, 200, 255)'}}>
       <Text> stats2 </Text>
     </View>
-  )
+  );
 }
 
 function StatsView() {
@@ -118,7 +166,7 @@ function StatsView() {
         <Tab.Screen name="Stats2" component={Stats2} />
       </Tab.Navigator>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -128,11 +176,39 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-})
-
+});
 
 export default function Analytics() {
   const insets = useSafeAreaInsets();
+  const uid = useSelector(selectUid);
+
+  const [loading, setLoading] = useState(false); // Set loading to true on component mount
+  const [chips, setChips] = useState([]);
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(uid)
+      .collection('chips')
+      .onSnapshot(querySnapshot => {
+        const newChips = [];
+        querySnapshot.forEach(documentSnapshot => {
+          newChips.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+        setChips(newChips);
+        setLoading(false);
+      });
+
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator />;
+  }
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -181,19 +257,17 @@ export default function Analytics() {
                   flexDirection: 'row',
                   flexWrap: 'wrap',
                 }}>
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
-                <TempChip />
+                {chips.map((chip: ChipObject) => {
+                  const date = chip.timeSubmitted.toDate().toLocaleString();
+                  return (
+                    <ChipDisplay
+                      key={chip.key}
+                      verb={chip.verb}
+                      photo={chip.photo}
+                      timeSubmitted={date}
+                    />
+                  );
+                })}
               </View>
             </ScrollView>
           </View>
@@ -202,7 +276,7 @@ export default function Analytics() {
       <AnimatedFAB
         style={styles.fab}
         icon="share"
-        onPress={() => console.log('Pressed')}
+        onPress={() => console.log('Share button pressed')}
         label={'Share'}
         extended={false}
       />

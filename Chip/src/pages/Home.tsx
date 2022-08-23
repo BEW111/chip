@@ -70,7 +70,7 @@ function PhotoViewer(props) {
             onChangeText={text => dispatch(updateGoal(text))}
             defaultValue={userGoalText}
             style={{
-              backgroundColor: 'black',
+              backgroundColor: 'gray',
               textAlign: 'center',
               flex: 1,
               color: 'white',
