@@ -1,24 +1,31 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {useState, useCallback, useEffect, useRef} from 'react';
-import {StyleSheet, View, Linking, Image, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
+import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
+import {StyleSheet, View, Linking, Image, TouchableOpacity} from 'react-native';
 import {TextInput, IconButton, Text} from 'react-native-paper';
-import {Button} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
+import Reanimated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedGestureHandler,
+  useAnimatedProps,
+  useSharedValue,
+} from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
 import {
   takePhoto,
   toggleViewingPhoto,
+  toggleFlash,
   selectPhotoSource,
   updateGoal,
+  selectFlash,
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
 import {selectUid} from '../redux/authSlice';
 
-import pictureButton from '../../assets/picture-button.png';
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
 
@@ -105,29 +112,38 @@ function PhotoViewer(props) {
 
 export default function Home() {
   // Camera
-  const isFocused = useIsFocused();
   const camera = useRef<Camera>(null);
-  const devices = useCameraDevices();
+  const [isCameraInitialized, setIsCameraInitialized] = useState(false);
+  // const zoom = useSharedValue(0);
+  // const isPressingButton = useSharedValue(false);
 
   // Camera settings
-  const [facing, setFacing] = useState('front');
-  const [flash, setFlash] = useState(false);
+  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>(
+    'front',
+  );
+  const [flash, setFlash] = useState<'off' | 'on'>('off');
 
-  function flipDevice() {
-    if (facing === 'front') {
-      setFacing('back');
-    } else if (facing === 'back') {
-      setFacing('front');
-    }
-  }
+  const isFocused = useIsFocused();
+  const devices = useCameraDevices();
+  const device = devices[cameraPosition];
 
-  function getCurrentDevice() {
-    if (facing === 'front') {
-      return devices.front;
-    } else if (facing === 'back') {
-      return devices.back;
-    }
-  }
+  const supportsCameraFlipping = useMemo(
+    () => devices.back != null && devices.front != null,
+    [devices.back, devices.front],
+  );
+  const supportsFlash = device?.hasFlash ?? false;
+
+  // Animated zoom
+  // const minZoom = device?.minZoom ?? 1;
+  // const MAX_ZOOM_FACTOR = 20;
+  // const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
+
+  const onFlipDevicePressed = useCallback(() => {
+    setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
+  }, []);
+  const onFlashPressed = useCallback(() => {
+    setFlash(f => (f === 'on' ? 'off' : 'on'));
+  }, []);
 
   // Camera permissions
   const requestCameraPermission = useCallback(async () => {
@@ -147,7 +163,12 @@ export default function Home() {
   const dispatch = useDispatch();
 
   function onPhotoButtonPress() {
-    dispatch(takePhoto(camera));
+    dispatch(
+      takePhoto({
+        camera: camera,
+        flash: flash,
+      }),
+    );
     dispatch(toggleViewingPhoto());
   }
 
@@ -156,11 +177,11 @@ export default function Home() {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
-      {getCurrentDevice() != null ? (
+      {device != null ? (
         <Camera
           ref={camera}
           style={StyleSheet.absoluteFill}
-          device={getCurrentDevice()}
+          device={device}
           isActive={isFocused}
           photo={true}
           enableZoomGesture
@@ -171,6 +192,30 @@ export default function Home() {
         </View>
       )}
       {viewingPhoto ? <PhotoViewer photoSource={photoSource} /> : <></>}
+      <View
+        style={{
+          position: 'absolute',
+          alignItems: 'center',
+          top: 70,
+          right: 10,
+        }}>
+        <IconButton
+          icon="camera-flip-outline"
+          size={32}
+          style={{
+            backgroundColor: 'white',
+          }}
+          onPress={onFlipDevicePressed}
+        />
+        <IconButton
+          icon={flash === 'on' ? 'flash' : 'flash-off'}
+          size={32}
+          style={{
+            backgroundColor: 'white',
+          }}
+          onPress={onFlashPressed}
+        />
+      </View>
       <View
         style={{
           position: 'absolute',

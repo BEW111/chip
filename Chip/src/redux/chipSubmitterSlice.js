@@ -3,9 +3,11 @@ import {Camera} from 'react-native-vision-camera';
 
 export const takePhoto = createAsyncThunk(
   'chipSubmitter/takePhoto',
-  async camera => {
+  async payload => {
+    const camera = payload.camera;
+    const flash = payload.flash;
     const photo = await camera.current.takePhoto({
-      flash: 'off',
+      flash: flash,
     });
     return photo.path;
   },
@@ -17,6 +19,7 @@ export const chipSubmitterSlice = createSlice({
     photoSource: {},
     goal: '',
     viewingPhoto: false,
+    flash: 'off',
   },
   reducers: {
     updateGoal: (state, action) => {

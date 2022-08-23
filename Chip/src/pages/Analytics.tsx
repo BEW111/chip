@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {StyleSheet, View, ScrollView, StatusBar} from 'react-native';
 import {
   IconButton,
   Surface,
@@ -108,6 +108,11 @@ function Stats2() {
 function StatsView() {
   return (
     <View style={{width: '100%', height: '100%'}}>
+      <StatusBar
+        animated={true}
+        backgroundColor="#61dafb"
+        barStyle="dark-content"
+      />
       <Tab.Navigator tabBar={() => null}>
         <Tab.Screen name="Stats1" component={Stats1} />
         <Tab.Screen name="Stats2" component={Stats2} />
@@ -130,7 +135,7 @@ export default function Analytics() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{flex: 1, backgroundColor: 'black'}}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <View
         style={{
           height: '100%',
