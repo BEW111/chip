@@ -5,9 +5,10 @@ import {
   View,
   ScrollView,
   StatusBar,
-  Image,
   TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {
   IconButton,
   Surface,
@@ -121,7 +122,7 @@ function ChipDisplay(props) {
           alignItems: 'center',
         }}>
         {downloadURL ? (
-          <Image
+          <FastImage
             source={{uri: downloadURL}}
             style={{
               height: '90%',
