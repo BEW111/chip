@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import {Dimensions} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -88,18 +88,22 @@ function Main() {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  // if (!user) {
-  //   return (
-  //     <NavigationContainer>
-  //       <Stack.Navigator screenOptions={{
-  //           headerShown: false,
-  //         }}>
-  //         <Stack.Screen name="Onboarding" component={Onboarding} />
-  //         <Stack.Screen name="OnboardingRegister" component={OnboardingRegister} />
-  //       </Stack.Navigator>
-  //     </NavigationContainer>
-  //   );
-  // }
+  if (!user) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+          <Stack.Screen
+            name="OnboardingRegister"
+            component={OnboardingRegister}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 
   return (
     <NavigationContainer>

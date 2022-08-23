@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import {useCallback, useEffect, useRef} from 'react';
-import {StyleSheet, View, Linking, Image} from 'react-native';
+import {useState, useCallback, useEffect, useRef} from 'react';
+import {StyleSheet, View, Linking, Image, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {TextInput, IconButton, Text} from 'react-native-paper';
 import {Button} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
@@ -17,6 +17,10 @@ import {
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
 import {selectUid} from '../redux/authSlice';
+
+import pictureButton from '../../assets/picture-button.png';
+import pictureButtonOutside from '../../assets/picture-button-outside.png';
+import pictureButtonInside from '../../assets/picture-button-inside.png';
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
@@ -104,7 +108,26 @@ export default function Home() {
   const isFocused = useIsFocused();
   const camera = useRef<Camera>(null);
   const devices = useCameraDevices();
-  const device = devices.back;
+
+  // Camera settings
+  const [facing, setFacing] = useState('front');
+  const [flash, setFlash] = useState(false);
+
+  function flipDevice() {
+    if (facing === 'front') {
+      setFacing('back');
+    } else if (facing === 'back') {
+      setFacing('front');
+    }
+  }
+
+  function getCurrentDevice() {
+    if (facing === 'front') {
+      return devices.front;
+    } else if (facing === 'back') {
+      return devices.back;
+    }
+  }
 
   // Camera permissions
   const requestCameraPermission = useCallback(async () => {
@@ -133,11 +156,11 @@ export default function Home() {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
-      {device != null ? (
+      {getCurrentDevice() != null ? (
         <Camera
           ref={camera}
           style={StyleSheet.absoluteFill}
-          device={device}
+          device={getCurrentDevice()}
           isActive={isFocused}
           photo={true}
           enableZoomGesture
@@ -152,13 +175,29 @@ export default function Home() {
         style={{
           position: 'absolute',
           alignItems: 'center',
-          bottom: 30,
+          bottom: 20,
           left: 0,
           right: 0,
+
+          height: 100,
+          justifyContent: 'center',
         }}>
-        <Button mode="contained" onPress={onPhotoButtonPress} icon="camera">
-          Take photo
-        </Button>
+        <Image source={pictureButtonOutside} style={{width: 84, height: 84}} />
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          alignItems: 'center',
+          bottom: 20,
+          left: 0,
+          right: 0,
+
+          height: 100,
+          justifyContent: 'center',
+        }}>
+        <TouchableOpacity onPress={onPhotoButtonPress}>
+          <Image source={pictureButtonInside} style={{width: 68, height: 68}} />
+        </TouchableOpacity>
       </View>
     </View>
   );
