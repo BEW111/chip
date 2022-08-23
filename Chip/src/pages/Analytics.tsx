@@ -19,7 +19,9 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import firestore, {
+  FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 
 import {useSelector} from 'react-redux';
@@ -191,13 +193,16 @@ export default function Analytics() {
       .doc(uid)
       .collection('chips')
       .onSnapshot(querySnapshot => {
-        const newChips = [];
+        let newChips = [];
         querySnapshot.forEach(documentSnapshot => {
           newChips.push({
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
         });
+        newChips = newChips.sort((a, b) =>
+          a.timeSubmitted < b.timeSubmitted ? 1 : -1,
+        );
         setChips(newChips);
         setLoading(false);
       });
