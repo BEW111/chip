@@ -246,18 +246,20 @@ export default function Home() {
         <IconButton
           icon="camera-flip-outline"
           size={32}
-          style={{
-            backgroundColor: 'white',
-          }}
           onPress={onFlipDevicePressed}
+          style={{
+            borderColor: 'white',
+            borderWidth: 1,
+          }}
         />
         <IconButton
           icon={flash === 'on' ? 'flash' : 'flash-off'}
           size={32}
-          style={{
-            backgroundColor: 'white',
-          }}
           onPress={onFlashPressed}
+          style={{
+            borderColor: 'white',
+            borderWidth: 1,
+          }}
         />
       </View>
       <View

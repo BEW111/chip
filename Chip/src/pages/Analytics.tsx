@@ -28,6 +28,7 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 
+import auth from '@react-native-firebase/auth';
 import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
@@ -353,13 +354,21 @@ function MainPage({navigation}) {
 }
 
 function Settings(props) {
+  function onLogoutPressed() {
+    console.log('logging out');
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'));
+  }
+
   return (
     <DrawerContentScrollView {...props}>
       <Text style={{marginLeft: 10, fontSize: 24, marginBottom: 10}}>Settings</Text>
       <Drawer.Item
         style={{ backgroundColor: '#64ffda' }}
         icon="logout"
-        label="Log out"
+        label="Sign out"
+        onPress={onLogoutPressed}
       />
     </DrawerContentScrollView>
   );

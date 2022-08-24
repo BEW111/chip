@@ -18,6 +18,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import Onboarding from './src/pages/Onboarding';
 import OnboardingRegister from './src/pages/OnboardingRegister';
+import SignIn from './src/pages/SignIn';
 import Home from './src/pages/Home';
 import Analytics from './src/pages/Analytics';
 import Social from './src/pages/Social';
@@ -38,9 +39,9 @@ const theme = {
   version: 3,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3498db',
-    secondary: '#f1c40f',
-    tertiary: '#a1b2c3',
+    primary: '#ff0000',
+    secondary: '#00ff00',
+    tertiary: '#00ffff',
   },
 };
 
@@ -73,9 +74,13 @@ function Main() {
   // Handle user state changes
   function onAuthStateChanged(newUser) {
     console.log('auth state change');
+
     if (newUser) {
       dispatch(updateUser(newUser.toJSON()));
       dispatch(updateUid(newUser.uid));
+    } else {
+      dispatch(updateUser(null));
+      dispatch(updateUid(null));
     }
 
     if (initializing) {
@@ -100,6 +105,7 @@ function Main() {
             name="OnboardingRegister"
             component={OnboardingRegister}
           />
+          <Stack.Screen name="SignIn" component={SignIn} />
         </Stack.Navigator>
       </NavigationContainer>
     );
@@ -116,7 +122,7 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <SafeAreaProvider>
-        <PaperProvider theme={theme}>
+        <PaperProvider>
           <Main />
         </PaperProvider>
       </SafeAreaProvider>
