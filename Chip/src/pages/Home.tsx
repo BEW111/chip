@@ -7,13 +7,13 @@ import {TextInput, IconButton, Text} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedGestureHandler,
-  useAnimatedProps,
+  Easing,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  withRepeat,
+  withTiming,
+  cancelAnimation,
 } from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -30,6 +30,7 @@ import {selectUid} from '../redux/authSlice';
 
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
+import videoButtonOutside from '../../assets/video-button-outside.png';
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
@@ -183,6 +184,38 @@ export default function Home() {
     };
   });
 
+  // Taking a video
+  const [takingVideo, setTakingVideo] = useState(false);
+  const videoButtonRotation = useSharedValue(0);
+  const videoButtonAnimatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotateZ: `${videoButtonRotation.value}deg`,
+        },
+      ],
+    };
+  }, [videoButtonRotation.value]);
+
+  useEffect(() => {
+    videoButtonRotation.value = withRepeat(
+      withTiming(360, {
+        duration: 2500,
+        easing: Easing.linear,
+      }),
+      -1,
+    );
+    return () => cancelAnimation(videoButtonRotation);
+  }, [videoButtonRotation]);
+
+  function startTakingVideo() {
+    setTakingVideo(true);
+  }
+
+  function stopTakingVideo() {
+    setTakingVideo(false);
+  }
+
   // Viewing/editing a photo
   const viewingPhoto = useSelector(state => state.chipSubmitter.viewingPhoto);
 
@@ -238,7 +271,16 @@ export default function Home() {
           height: 100,
           justifyContent: 'center',
         }}>
-        <Image source={pictureButtonOutside} style={{width: 84, height: 84}} />
+        <Animated.View
+          style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
+          <Image
+            source={takingVideo ? videoButtonOutside : pictureButtonOutside}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        </Animated.View>
       </View>
       <View
         style={{
@@ -253,14 +295,24 @@ export default function Home() {
         }}>
         <Pressable
           onPressIn={() => {
-            console.log('on press in');
-            photoButtonScale.value = withSpring(0.9);
+            photoButtonScale.value = withSpring(0.9, {
+              damping: 10,
+              stiffness: 200,
+            });
           }}
           onPressOut={() => {
-            console.log('on press out');
-            photoButtonScale.value = withSpring(1);
+            photoButtonScale.value = withSpring(1, {
+              damping: 10,
+              stiffness: 200,
+            });
+            if (takingVideo) {
+              stopTakingVideo();
+            }
           }}
-          onPress={onPhotoButtonPress}>
+          onPress={onPhotoButtonPress}
+          onLongPress={() => {
+            startTakingVideo();
+          }}>
           <Animated.View style={photoButtonAnimatedStyles}>
             <Image
               style={{

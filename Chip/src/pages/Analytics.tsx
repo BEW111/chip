@@ -16,9 +16,11 @@ import {
   Headline,
   AnimatedFAB,
   ActivityIndicator,
+  Divider,
 } from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import firestore, {
   FirebaseFirestoreTypes,
@@ -28,7 +30,11 @@ import storage from '@react-native-firebase/storage';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../redux/authSlice';
 
-const Tab = createMaterialTopTabNavigator();
+import backgroundImage from '../../assets/background.png';
+import chipsIcon from '../../assets/chips-icon.png';
+
+const Tab = createMaterialTopTabNavigator(); // for stats view
+const Drawer = createDrawerNavigator(); // for settings
 
 interface ChipObject {
   key: string;
@@ -41,13 +47,13 @@ function Sidebar() {
   return (
     <ScrollView
       style={{
-        backgroundColor: 'rgb(200, 200, 200)',
         flex: 1,
       }}>
       <View
         style={{
           display: 'flex',
           alignItems: 'center',
+          marginTop: 5,
         }}>
         <Surface
           style={{
@@ -59,6 +65,7 @@ function Sidebar() {
             justifyContent: 'center',
             alignItems: 'center',
             marginVertical: 5,
+            borderRadius: 20,
           }}>
           <IconButton icon="plus" color="purple" size={36} />
         </Surface>
@@ -85,6 +92,7 @@ function TempGoal() {
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 5,
+        borderRadius: 20,
       }}>
       <Text>Goal</Text>
     </Surface>
@@ -176,6 +184,30 @@ function StatsView() {
   );
 }
 
+function Header() {
+  return (
+    <View style={{height: 50, justifyContent: 'center', marginBottom: 5}}>
+      <Image
+        source={chipsIcon}
+        style={{
+          position: 'absolute',
+          height: 50,
+          width: 50,
+          left: 12,
+        }}
+      />
+      <IconButton
+        icon="cog"
+        size={36}
+        style={{
+          position: 'absolute',
+          right: 0,
+        }}
+      />
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
@@ -185,7 +217,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Analytics() {
+function Settings({navigation}) {
+  return (
+    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <IconButton onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
+
+function MainPage({navigation}) {
   const insets = useSafeAreaInsets();
   const uid = useSelector(selectUid);
 
@@ -222,11 +262,21 @@ export default function Analytics() {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
+      <Image
+        source={backgroundImage}
+        style={{
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+        }}
+      />
       <View
         style={{
           height: '100%',
           paddingTop: insets.top,
         }}>
+        <Header />
+        <Divider style={{height: 2}} />
         <View
           style={{
             flex: 1,
@@ -237,7 +287,7 @@ export default function Analytics() {
           {/* Sidebar */}
           <Sidebar />
           {/* Main view */}
-          <View style={{backgroundColor: 'white', flex: 3, display: 'flex'}}>
+          <View style={{flex: 3, display: 'flex'}}>
             <View
               style={{
                 height: 80,
@@ -246,7 +296,7 @@ export default function Analytics() {
               }}>
               <Headline variant="displayMedium">Habit name goes here</Headline>
             </View>
-            <View style={{backgroundColor: 'white'}}>
+            <View>
               <Surface
                 style={{
                   height: 200,
@@ -298,5 +348,14 @@ export default function Analytics() {
         extended={false}
       />
     </View>
+  );
+}
+
+export default function Analytics() {
+  return (
+    <Drawer.Navigator initialRouteName="AnalyticsMain">
+      <Drawer.Screen name="AnalyticsMain" component={MainPage} />
+      <Drawer.Screen name="Settings" component={Settings} />
+    </Drawer.Navigator>
   );
 }
