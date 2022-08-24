@@ -20,10 +20,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
   takePhoto,
   toggleViewingPhoto,
-  toggleFlash,
   selectPhotoSource,
   updateGoal,
-  selectFlash,
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
 import {selectUid} from '../redux/authSlice';

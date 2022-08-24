@@ -12,6 +12,7 @@ import {
 } from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import store from './src/redux/store';
 import {useSelector, useDispatch} from 'react-redux';
@@ -24,8 +25,10 @@ import Analytics from './src/pages/Analytics';
 import Social from './src/pages/Social';
 import {
   selectInitializing,
+  selectNewlyCreated,
   selectUser,
   updateInitializing,
+  updateNewlyCreated,
   updateUid,
   updateUser,
 } from './src/redux/authSlice';
@@ -70,14 +73,35 @@ function Main() {
   const dispatch = useDispatch();
   const initializing = useSelector(selectInitializing);
   const user = useSelector(selectUser);
+  const newlyCreated = useSelector(selectNewlyCreated);
 
   // Handle user state changes
-  function onAuthStateChanged(newUser) {
+  function onAuthStateChanged(updatedUser) {
     console.log('auth state change');
 
-    if (newUser) {
-      dispatch(updateUser(newUser.toJSON()));
-      dispatch(updateUid(newUser.uid));
+    if (updatedUser) {
+      dispatch(updateUser(updatedUser.toJSON()));
+      dispatch(updateUid(updatedUser.uid));
+
+      // Handle if this is the first time the user has logged in
+      if (newlyCreated) {
+        dispatch(updateNewlyCreated(false));
+
+        const currentdt = new Date();
+
+        firestore()
+          .collection('users')
+          .doc(updatedUser.uid)
+          .set({
+            timeCreated: currentdt,
+          })
+          .then(() => {
+            console.log('User added to firestore!');
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
     } else {
       dispatch(updateUser(null));
       dispatch(updateUid(null));

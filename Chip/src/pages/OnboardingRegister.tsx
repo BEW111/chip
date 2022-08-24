@@ -4,23 +4,18 @@ import {Button, TextInput, Text, Card, HelperText} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
-import {
-  updateInitializing,
-  updateUser,
-  selectInitializing,
-  selectUser,
-} from '../redux/authSlice';
+import {useDispatch} from 'react-redux';
+
+import {updateNewlyCreated} from '../redux/authSlice';
 
 export default function OnboardingRegister({navigation}) {
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
   const [confirmPassText, setConfirmPassText] = useState('');
 
-  function onRegisterPressed() {
-    console.log(emailText);
-    console.log(passText);
-    console.log(confirmPassText);
+  const dispatch = useDispatch();
 
+  function onRegisterPressed() {
     if (passText !== confirmPassText) {
       console.log('Passwords must match');
     } else {
@@ -28,6 +23,7 @@ export default function OnboardingRegister({navigation}) {
         .createUserWithEmailAndPassword(emailText, passText)
         .then(() => {
           console.log('User account created & signed in!');
+          dispatch(updateNewlyCreated(true));
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
@@ -88,7 +84,12 @@ export default function OnboardingRegister({navigation}) {
             placeholder=""
             onChangeText={newText => setEmailText(newText)}
             defaultValue={emailText}
-            style={{color: 'white', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+            style={{
+              color: 'white',
+              fontSize: 18,
+              marginBottom: 20,
+              textAlign: 'auto',
+            }}
             underlineColor="gray"
             activeUnderlineColor="white"
           />
@@ -101,7 +102,12 @@ export default function OnboardingRegister({navigation}) {
             placeholder=""
             onChangeText={newText => setPassText(newText)}
             defaultValue={passText}
-            style={{color: 'white', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+            style={{
+              color: 'white',
+              fontSize: 18,
+              marginBottom: 20,
+              textAlign: 'auto',
+            }}
             underlineColor="gray"
             activeUnderlineColor="white"
           />
@@ -114,11 +120,19 @@ export default function OnboardingRegister({navigation}) {
             placeholder=""
             onChangeText={newText => setConfirmPassText(newText)}
             defaultValue={confirmPassText}
-            style={{color: 'white', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+            style={{
+              color: 'white',
+              fontSize: 18,
+              marginBottom: 20,
+              textAlign: 'auto',
+            }}
             underlineColor="gray"
             activeUnderlineColor="white"
           />
-          <HelperText type="error" visible={hasErrors()} style={{marginBottom: 10, paddingTop: 0}}>
+          <HelperText
+            type="error"
+            visible={hasErrors()}
+            style={{marginBottom: 10, paddingTop: 0}}>
             Passwords must match
           </HelperText>
           <View style={{display: 'flex', alignItems: 'center'}}>

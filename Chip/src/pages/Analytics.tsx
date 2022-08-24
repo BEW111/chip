@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
-  Button,
   IconButton,
   Surface,
   Text,
@@ -18,15 +17,10 @@ import {
   AnimatedFAB,
   ActivityIndicator,
   Divider,
-  Drawer,
 } from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import auth from '@react-native-firebase/auth';
 import firestore, {
@@ -36,6 +30,8 @@ import storage from '@react-native-firebase/storage';
 
 import {useSelector} from 'react-redux';
 import {selectUid} from '../redux/authSlice';
+
+import Settings from '../components/Settings';
 
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
@@ -350,27 +346,6 @@ function MainPage({navigation}) {
         extended={false}
       />
     </View>
-  );
-}
-
-function Settings(props) {
-  function onLogoutPressed() {
-    console.log('logging out');
-    auth()
-      .signOut()
-      .then(() => console.log('User signed out!'));
-  }
-
-  return (
-    <DrawerContentScrollView {...props}>
-      <Text style={{marginLeft: 10, fontSize: 24, marginBottom: 10}}>Settings</Text>
-      <Drawer.Item
-        style={{ backgroundColor: '#64ffda' }}
-        icon="logout"
-        label="Sign out"
-        onPress={onLogoutPressed}
-      />
-    </DrawerContentScrollView>
   );
 }
 
