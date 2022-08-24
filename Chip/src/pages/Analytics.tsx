@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {
+  Button,
   IconButton,
   Surface,
   Text,
@@ -17,10 +18,15 @@ import {
   AnimatedFAB,
   ActivityIndicator,
   Divider,
+  Drawer,
 } from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList,
+} from '@react-navigation/drawer';
 
 import firestore, {
   FirebaseFirestoreTypes,
@@ -34,7 +40,7 @@ import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
 
 const Tab = createMaterialTopTabNavigator(); // for stats view
-const Drawer = createDrawerNavigator(); // for settings
+const SettingsDrawer = createDrawerNavigator(); // for settings
 
 interface ChipObject {
   key: string;
@@ -184,7 +190,7 @@ function StatsView() {
   );
 }
 
-function Header() {
+function Header({navigation}) {
   return (
     <View style={{height: 50, justifyContent: 'center', marginBottom: 5}}>
       <Image
@@ -203,6 +209,9 @@ function Header() {
           position: 'absolute',
           right: 0,
         }}
+        onPress={() => {
+          navigation.toggleDrawer();
+        }}
       />
     </View>
   );
@@ -216,14 +225,6 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
 });
-
-function Settings({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <IconButton onPress={() => navigation.goBack()} />
-    </View>
-  );
-}
 
 function MainPage({navigation}) {
   const insets = useSafeAreaInsets();
@@ -275,7 +276,7 @@ function MainPage({navigation}) {
           height: '100%',
           paddingTop: insets.top,
         }}>
-        <Header />
+        <Header navigation={navigation} />
         <Divider style={{height: 2}} />
         <View
           style={{
@@ -351,11 +352,34 @@ function MainPage({navigation}) {
   );
 }
 
+function Settings(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <Text style={{marginLeft: 10, fontSize: 24, marginBottom: 10}}>Settings</Text>
+      <Drawer.Item
+        style={{ backgroundColor: '#64ffda' }}
+        icon="logout"
+        label="Log out"
+      />
+    </DrawerContentScrollView>
+  );
+}
+
 export default function Analytics() {
   return (
-    <Drawer.Navigator initialRouteName="AnalyticsMain">
-      <Drawer.Screen name="AnalyticsMain" component={MainPage} />
-      <Drawer.Screen name="Settings" component={Settings} />
-    </Drawer.Navigator>
+    <SettingsDrawer.Navigator
+      initialRouteName="AnalyticsMain"
+      drawerContent={props => <Settings {...props} />}>
+      <SettingsDrawer.Screen
+        name="AnalyticsMain"
+        component={MainPage}
+        options={{
+          headerShown: false,
+          drawerPosition: 'right',
+          drawerType: 'front',
+          swipeEnabled: false,
+        }}
+      />
+    </SettingsDrawer.Navigator>
   );
 }
