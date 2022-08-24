@@ -2,16 +2,18 @@
 import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
 import {TextInput, IconButton, Text} from 'react-native-paper';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
-import Reanimated, {
+import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedGestureHandler,
   useAnimatedProps,
   useSharedValue,
+  useAnimatedStyle,
+  withSpring,
 } from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -172,6 +174,15 @@ export default function Home() {
     dispatch(toggleViewingPhoto());
   }
 
+  // Take photo button
+  const photoButtonScale = useSharedValue(1);
+  const photoButtonAnimatedStyles = useAnimatedStyle(() => {
+    return {
+      width: 68 * photoButtonScale.value,
+      height: 68 * photoButtonScale.value,
+    };
+  });
+
   // Viewing/editing a photo
   const viewingPhoto = useSelector(state => state.chipSubmitter.viewingPhoto);
 
@@ -240,9 +251,26 @@ export default function Home() {
           height: 100,
           justifyContent: 'center',
         }}>
-        <TouchableOpacity onPress={onPhotoButtonPress}>
-          <Image source={pictureButtonInside} style={{width: 68, height: 68}} />
-        </TouchableOpacity>
+        <Pressable
+          onPressIn={() => {
+            console.log('on press in');
+            photoButtonScale.value = withSpring(0.9);
+          }}
+          onPressOut={() => {
+            console.log('on press out');
+            photoButtonScale.value = withSpring(1);
+          }}
+          onPress={onPhotoButtonPress}>
+          <Animated.View style={photoButtonAnimatedStyles}>
+            <Image
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+              source={pictureButtonInside}
+            />
+          </Animated.View>
+        </Pressable>
       </View>
     </View>
   );
