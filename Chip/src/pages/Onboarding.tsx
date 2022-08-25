@@ -32,7 +32,7 @@ export default function Onboarding({navigation}) {
               onChangeText={newText => setText(newText)}
               defaultValue={text}
               style={{
-                backgroundColor: 'black',
+                backgroundColor: 'gray',
                 flex: 1,
                 fontSize: 24,
                 paddingHorizontal: 0,

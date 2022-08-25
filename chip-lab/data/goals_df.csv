@@ -1,0 +1,605 @@
+Goal,Source,Style,Type,root,Unnamed: 5,Unnamed: 6,xcomps,quantities,sentiment,sentiment_confidence
+Blog,,Practice,,blog,,,[],[],POSITIVE,0.7880194187164307
+Lose weight,,Lifestyle,,lose,,,[],[],NEGATIVE,0.9995598196983337
+Write a book,,Target,,write,,,[],[],POSITIVE,0.9962592124938965
+Stop procrastinating,,Lifestyle,,stop,,,[],[],NEGATIVE,0.9984186887741089
+Fall in love,,Target,,fall,,,[],[],POSITIVE,0.9987572431564331
+Be happy,,Lifestyle,,happy,,,[],[],POSITIVE,0.9998737573623657
+Journal,,Practice,,Journal,,,[],[],POSITIVE,0.9654771685600281
+Get a tattoo,,Target,,get,,,[],[],POSITIVE,0.9744714498519897
+Go on a road trip with no predetermined destination,,Target,,go,,,[],[],NEGATIVE,0.9884003400802612
+Get married,,Target,,marry,,,[],[],POSITIVE,0.996825098991394
+Travel the world,,Target,,Travel,,,[],[],POSITIVE,0.9993171691894531
+Drink more water,,Practice,,drink,,,[],[],NEGATIVE,0.896675169467926
+See the Northern Lights,,Target,,see,,,[],[],POSITIVE,0.9957296252250671
+Learn Spanish,,,,learn,,,[],[],POSITIVE,0.9979630708694458
+Save money,,,,save,,,[],[],POSITIVE,0.9871343970298767
+Take more pictures,,,,take,,,[],[],NEGATIVE,0.7316718697547913
+Kiss in the rain,,,,kiss,,,[],[],POSITIVE,0.9973663687705994
+Buy a house,,,,buy,,,[],[],POSITIVE,0.9961280822753906
+Make new friends,,,,make,,,[],[],POSITIVE,0.9998565912246704
+Learn how to play the guitar,,,,learn,,,[],[],POSITIVE,0.9980576634407043
+Run a marathon,,,,run,,,[],[],POSITIVE,0.9676716327667236
+Learn French,,,,learn,,,[],[],POSITIVE,0.9989131689071655
+Get a job,,,,get,,,[],[],POSITIVE,0.996857762336731
+Get out of debt,,,,get,,,[],[],NEGATIVE,0.9785158634185791
+Read more books,,,,read,,,[],[],POSITIVE,0.9929076433181763
+Be more confident,,,,confident,,,[],[],POSITIVE,0.9994537234306335
+Write a novel,,,,write,,,[],[],POSITIVE,0.9991033673286438
+Be successful,,,,successful,,,[],[],POSITIVE,0.9998506307601929
+Skydive,,,,skydive,,,[],[],POSITIVE,0.996190071105957
+Eat healthier,,,,eat,,,[],[],POSITIVE,0.9990249872207642
+Exercise regularly,,,,Exercise,,,[],[],POSITIVE,0.9800026416778564
+Learn Japanese,,,,learn,,,[],[],POSITIVE,0.9980169534683228
+Get in shape,,,,get,,,[],[],POSITIVE,0.9992948770523071
+Learn to cook,,,,learn,,,['cook'],[],POSITIVE,0.9991773962974548
+Start my own business,,,,start,,,[],[],POSITIVE,0.9918012022972107
+Quit smoking,,,,quit,,,[],[],NEGATIVE,0.9935977458953857
+Travel,,,,travel,,,[],[],POSITIVE,0.9982280135154724
+Visit all 50 states,,,,visit,,,[],"[{'item': 'states', 'amount': '50'}]",POSITIVE,0.9977013468742371
+Get my finances in order,,,,get,,,[],[],NEGATIVE,0.9916841983795166
+Start a company,,,,start,,,[],[],POSITIVE,0.998598039150238
+Get more organized,,,,get,,,['organize'],[],POSITIVE,0.9634715914726257
+Buy a new home,,,,buy,,,[],[],POSITIVE,0.9982084035873413
+Exercise more ,,,,Exercise,,,[],[],NEGATIVE,0.5418069958686829
+Spend more time with friends and family,,,,spend,,,[],[],POSITIVE,0.996690034866333
+Travel more,,,,Travel,,,[],[],POSITIVE,0.9951764345169067
+Start a business,,,,start,,,[],[],POSITIVE,0.9989370703697205
+Learn to play the flute,,,,learn,,,['play'],[],POSITIVE,0.9960047602653503
+Buy a new car,,,,buy,,,[],[],POSITIVE,0.9825766682624817
+Lose weight,,,,lose,,,[],[],NEGATIVE,0.9995598196983337
+Volunteer more often,,,,volunteer,,,[],[],POSITIVE,0.9822777509689331
+Disconnect from technology,,,,disconnect,,,[],[],NEGATIVE,0.9995538592338562
+Remodel my home,,,,remodel,,,[],[],POSITIVE,0.9956117868423462
+Quit my vices,,,,quit,,,[],[],NEGATIVE,0.9995111227035522
+Redecorate my home,,,,redecorate,,,[],[],POSITIVE,0.9995738863945007
+Cook more frequently,,,,cook,,,[],[],POSITIVE,0.9954429864883423
+Organize closet,,,,organize,,,[],[],NEGATIVE,0.988412082195282
+Get a dog,,,,get,,,[],[],NEGATIVE,0.9446981549263
+Be famous,,,,famous,,,[],[],POSITIVE,0.9996954202651978
+Master a difficult skill,,,,master,,,[],[],POSITIVE,0.9980699419975281
+Become a thought leader,,,,become,,,['leader'],[],POSITIVE,0.9992448091506958
+Get promoted to an executive role,,,,promote,,,[],[],POSITIVE,0.995191216468811
+Become a millionaire,,,,become,,,['millionaire'],[],POSITIVE,0.998479425907135
+Go on a trip around the world,,,,go,,,[],[],POSITIVE,0.9986922144889832
+Travel to my dream country,,,,Travel,,,[],[],POSITIVE,0.9995530247688293
+Double my personal income,,,,Double,,,[],[],POSITIVE,0.6083599925041199
+Publish a novel,,,,publish,,,[],[],POSITIVE,0.9989357590675354
+Take a motorcycle trip,,,,take,,,[],[],POSITIVE,0.5976356863975525
+Volunteer at a hospital,,,,volunteer,,,[],[],NEGATIVE,0.8960680961608887
+Run in a marathon,,,,run,,,[],[],POSITIVE,0.8576578497886658
+Get six-pack abs,,,,get,,,[],"[{'item': 'pack', 'amount': 'six'}]",POSITIVE,0.6815662384033203
+Achieve zero debt,,,,achieve,,,[],"[{'item': 'debt', 'amount': 'zero'}]",POSITIVE,0.9917271137237549
+Invest in the stock market,,,,invest,,,[],[],POSITIVE,0.9950315952301025
+Buy a Ferrari,,,,buy,,,[],[],POSITIVE,0.9884748458862305
+See one of the Seven Wonders of the World,,,,see,,,[],[],POSITIVE,0.9998749494552612
+Plan for my retirement,,,,plan,,,[],[],NEGATIVE,0.990287184715271
+Graduate from college,,,,Graduate,,,[],[],POSITIVE,0.9984778761863708
+Learn to fluently speak French,,,,learn,,,['speak'],[],POSITIVE,0.9987059831619263
+Meditate daily,,,,meditate,,,[],[],POSITIVE,0.9930852651596069
+Donate to a charity annually,,,,donate,,,[],[],POSITIVE,0.9940496683120728
+Have a long-term relationship,,,,have,,,[],[],POSITIVE,0.99642014503479
+Climb a mountain,,,,climb,,,[],[],POSITIVE,0.9986588954925537
+Learn how to surf,,,,learn,,,[],[],POSITIVE,0.9986887574195862
+Master a musical instrument,,,,master,,,[],[],POSITIVE,0.9996135830879211
+Learn how to rock climb,,,,learn,,,['climb'],[],POSITIVE,0.9987775683403015
+Live in a foreign country,,,,live,,,[],[],POSITIVE,0.8207262754440308
+Drink enough water everyday,,,,drink,,,[],[],POSITIVE,0.994816243648529
+Give up junk food for a year,,,,give,,,[],[],NEGATIVE,0.9993701577186584
+Paint a picture,,,,paint,,,[],[],POSITIVE,0.9917435050010681
+Craft something using pottery skills,,,,craft,,,[],[],POSITIVE,0.9976640939712524
+Master ballroom dancing,,,,dancing,,,[],[],POSITIVE,0.9997614026069641
+Compose a song,,,,compose,,,[],[],POSITIVE,0.9986780285835266
+Maintain my ideal body weight,,,,maintain,,,[],[],POSITIVE,0.9996069073677063
+Get paid doing what I'm passionate about,,,,pay,,,['do'],[],POSITIVE,0.9927634596824646
+Find my life partner,,,,find,,,[],[],POSITIVE,0.9992067217826843
+Actually eat healthy meals,,,,eat,,,[],[],POSITIVE,0.9997628331184387
+Bulk,,,,bulk,,,[],[],POSITIVE,0.8335099220275879
+Regularly call my parents,,,,call,,,[],[],POSITIVE,0.9406408667564392
+Create multiple income sources,,,,create,,,[],[],POSITIVE,0.998892605304718
+Keep a life journal,,,,keep,,,[],[],POSITIVE,0.9993483424186707
+Build muscle,,,,build,,,[],[],POSITIVE,0.9989805817604065
+Buy my first house,,,,buy,,,[],[],POSITIVE,0.9962266683578491
+Build my dream house,,,,build,,,[],[],POSITIVE,0.9997783303260803
+Go skydiving,,,,go,,,[],[],POSITIVE,0.9973644614219666
+Go hang gliding,,,,go,,,['hang'],[],POSITIVE,0.9924744963645935
+Ride in a hot air balloon,,,,Ride,,,[],[],POSITIVE,0.9989818930625916
+Snorkel in the ocean,,,,snorkel,,,[],[],NEGATIVE,0.9090738296508789
+Climb on a glacier,,,,climb,,,[],[],POSITIVE,0.9889466166496277
+Find my soulmate,,,,find,,,[],[],POSITIVE,0.999646782875061
+Become rich,,,,become,,,['rich'],[],POSITIVE,0.999762237071991
+Go to the Olympics,,,,go,,,[],[],POSITIVE,0.9994970560073853
+Get a hole-in-one,,,,get,,,[],[],NEGATIVE,0.9949157238006592
+Golf 18 holes under par,,,,hole,,,[],"[{'item': 'holes', 'amount': '18'}]",POSITIVE,0.5196796655654907
+Create a portfolio,,,,create,,,[],[],POSITIVE,0.9996196031570435
+Run a six-minute mile,,,,run,,,[],"[{'item': 'minute', 'amount': 'six'}]",POSITIVE,0.724156379699707
+Declutter my home,,,,declutter,,,[],[],NEGATIVE,0.9986187219619751
+Appear on a podcast,,,,appear,,,[],[],NEGATIVE,0.9563837051391602
+Read two books every month,,,,read,,,[],"[{'item': 'books', 'amount': 'two'}]",POSITIVE,0.9843609929084778
+Leave a financial inheritance,,,,leave,,,[],[],POSITIVE,0.6683374047279358
+Trace my ancestry and visit their country of origin,,,,trace,,,[],[],POSITIVE,0.991127073764801
+Try a vegan diet for a month,,,,try,,,[],[],NEGATIVE,0.9883571267127991
+See my favorite musician in concert as often as I can,,,,see,,,[],[],POSITIVE,0.9996869564056396
+Create a new family tradition,,,,create,,,[],[],POSITIVE,0.9997095465660095
+Maintain a healthy work-life balance,,,,maintain,,,[],[],POSITIVE,0.9997981190681458
+Start an online business,,,,start,,,[],[],POSITIVE,0.9968763589859009
+Celebrate my relationship anniversaries,,,,celebrate,,,[],[],POSITIVE,0.9998180270195007
+Meet an athlete or celebrity I admire,,,,meet,,,[],[],POSITIVE,0.999734103679657
+Practice gratitude everyday,,,,practice,,,[],[],POSITIVE,0.9995092153549194
+Start a small business,,,,start,,,[],[],POSITIVE,0.9891635179519653
+See the ball drop in person on New Year’s Eve when it’s safe to do so,,,,see,,,['do'],[],POSITIVE,0.8379966020584106
+Adopt and care for my dream pet,,,,adopt,,,[],[],POSITIVE,0.9989007711410522
+Give up drinking soda,,,,give,,,[],[],NEGATIVE,0.9950556755065918
+Witness the Northern Lights,,,,Witness,,,[],[],POSITIVE,0.9977778792381287
+Watch a volcano erupt (from a safe distance!),,,,watch,,,['erupt'],[],NEGATIVE,0.5977227687835693
+Go to Mardi Gras,,,,go,,,[],[],POSITIVE,0.997674286365509
+Develop a good credit score,,,,develop,,,[],[],POSITIVE,0.9998641014099121
+Learn self-defense,,,,learn,,,[],[],POSITIVE,0.9810925126075745
+See my doctor and dentist regularly,,,,see,,,[],[],POSITIVE,0.9864121675491333
+"Always say “yes” to trying new, positive things",,,,say,,,[],[],POSITIVE,0.9997130036354065
+Learn yoga,,,,learn,,,[],[],POSITIVE,0.9963575005531311
+Expand vocabulary,,,,expand,,,[],[],POSITIVE,0.9994240999221802
+Participate in a recreational sports league,,,,participate,,,[],[],POSITIVE,0.9974774718284607
+Grow a thriving garden,,,,grow,,,[],[],POSITIVE,0.999840497970581
+Go on a electronics-free camping trip,,,,go,,,[],[],NEGATIVE,0.9853642582893372
+Write a movie script or TV episode,,,,write,,,[],[],POSITIVE,0.5759086608886719
+Learn how to sing,,,,learn,,,[],[],POSITIVE,0.9992862343788147
+Make my own website,,,,make,,,[],[],POSITIVE,0.8950265645980835
+Become a venture capitalist,,,,become,,,['capitalist'],[],POSITIVE,0.9754160046577454
+Sponsor a child in need,,,,sponsor,,,[],[],POSITIVE,0.985475480556488
+Go on a cross-country road trip,,,,go,,,[],[],POSITIVE,0.9978398084640503
+Pay off my student loans sooner than later,,,,pay,,,[],[],POSITIVE,0.6890556216239929
+Learn how to code,,,,learn,,,[],[],POSITIVE,0.9988744854927063
+Improve my drawing skills,,,,improve,,,[],[],POSITIVE,0.9994910955429077
+Give up TV for a week,,,,give,,,[],[],NEGATIVE,0.9987313151359558
+Spend a full day at the spa,,,,spend,,,[],[],NEGATIVE,0.9471592903137207
+Go on a solo vacation,,,,go,,,[],[],POSITIVE,0.9950982928276062
+Throw friends a surprise party,,,,throw,,,[],[],POSITIVE,0.9993727803230286
+Learn how to knit or sew,,,,learn,,,[],[],POSITIVE,0.995152473449707
+Become more fit and healthy,,,,become,,,['fit'],[],POSITIVE,0.9995527863502502
+Find purpose in life,,,,find,,,[],[],POSITIVE,0.9993081092834473
+Acquire more skills for success,,,,acquire,,,[],[],POSITIVE,0.9990971088409424
+Improve personal relationships,,,,improve,,,[],[],POSITIVE,0.9997103810310364
+Be more committed,,,,commit,,,[],[],POSITIVE,0.9761186838150024
+Do more challenging things,,,,do,,,[],[],POSITIVE,0.9993316531181335
+Develop a higher level of self-esteem and positivity,,,,develop,,,[],[],POSITIVE,0.9972476363182068
+Be more confident,,,,confident,,,[],[],POSITIVE,0.9994537234306335
+Stop eating unhealthy,,,,stop,,,"['eat', 'unhealthy']",[],NEGATIVE,0.999413251876831
+Ask more questions,,,,ask,,,[],[],NEGATIVE,0.8692582249641418
+Be a good listener,,,,listener,,,[],[],POSITIVE,0.9998161196708679
+Get into a club,,,,get,,,[],[],POSITIVE,0.9977662563323975
+Learn more,,,,learn,,,[],[],POSITIVE,0.9950567483901978
+Keep a Daily Journal or Gratitude Log ,,,,keep,,,[],[],POSITIVE,0.9944742321968079
+Quit drinking,,,,quit,,,[],[],NEGATIVE,0.9834385514259338
+Code a video game,,,,code,,,[],[],NEGATIVE,0.9789455533027649
+Be a better person,,,,person,,,[],[],POSITIVE,0.985382080078125
+Have a trusted circle of friends,,,,have,,,[],[],POSITIVE,0.9998199343681335
+Keep good ties with relatives,,,,keep,,,[],[],POSITIVE,0.9997928738594055
+Network,,,,network,,,[],[],POSITIVE,0.9776425361633301
+Be more social,,,,social,,,[],[],POSITIVE,0.9532100558280945
+Learn how to cook,,,,learn,,,[],[],POSITIVE,0.9992483258247375
+stop playing video games,,,,stop,,,['play'],[],NEGATIVE,0.9996547698974609
+Do community service,,,,do,,,[],[],POSITIVE,0.9995077848434448
+Do 30 push-ups every day,,,,do,,,[],"[{'item': 'ups', 'amount': '30'}]",NEGATIVE,0.9855471849441528
+Do 20 sit-ups every day,,,,do,,,[],"[{'item': 'sit-ups', 'amount': '20'}]",POSITIVE,0.9864805340766907
+Go to the gym 3 times a week,,,,go,,,[],"[{'item': 'times', 'amount': '3'}]",POSITIVE,0.68718421459198
+Find a career that you love.,,,,find,,,[],[],POSITIVE,0.9993264675140381
+Find a life partner.,,,,find,,,[],[],POSITIVE,0.9963518381118774
+Become an expert or leader in my field.,,,,become,,,['expert'],[],POSITIVE,0.9986670017242432
+Go for a walk every day.,,,,go,,,[],[],POSITIVE,0.9970472455024719
+Become a better listener.,,,,become,,,['listener'],[],POSITIVE,0.9808796048164368
+Buy my first home.,,,,buy,,,[],[],POSITIVE,0.9941946864128113
+save money for retirement,,,,save,,,[],[],NEGATIVE,0.9858435988426208
+Give back to my community in ways that matter to you.,,,,give,,,[],[],POSITIVE,0.9996291399002075
+"Save enough money to buy something you've always wanted like a boat, cabin, or another item.",,,,save,,,[],[],NEGATIVE,0.9845065474510193
+Learn how to dance.,,,,learn,,,[],[],POSITIVE,0.9994020462036133
+Pay off my student loans.,,,,pay,,,[],[],NEGATIVE,0.7608347535133362
+Go on a trip with my best friends.,,,,go,,,[],[],POSITIVE,0.9992002844810486
+Lose 10 pounds.,,,,lose,,,[],"[{'item': 'pounds', 'amount': '10'}]",NEGATIVE,0.9996700286865234
+Eat less sugar and junk food.,,,,eat,,,[],[],NEGATIVE,0.9968193769454956
+Get a degree in a subject that matters to you.,,,,get,,,[],[],POSITIVE,0.99936443567276
+Read 1 new book per week.,,,,read,,,[],"[{'item': 'book', 'amount': '1'}]",POSITIVE,0.8952779769897461
+Learn how to bake.,,,,learn,,,[],[],POSITIVE,0.9908267855644226
+Get into graduate school.,,,,get,,,[],[],POSITIVE,0.9361941814422607
+Help someone else reach one of their dreams.,,,,help,,,['reach'],[],NEGATIVE,0.9528887271881104
+Write a book.,,,,write,,,[],[],POSITIVE,0.9964067339897156
+Go to Switzerland.,,,,go,,,[],[],POSITIVE,0.9943414926528931
+Visit all of the American national parks.,,,,visit,,,[],[],POSITIVE,0.9987127780914307
+Cut my consumption of plastic in half.,,,,cut,,,[],[],NEGATIVE,0.9990628361701965
+Practice gratitude daily.,,,,practice,,,[],[],POSITIVE,0.9992212057113647
+Improve my public speaking skills.,,,,improve,,,[],[],POSITIVE,0.9993187189102173
+Learn a foreign language.,,,,learn,,,[],[],POSITIVE,0.9881006479263306
+Forgive someone who has hurt you.,,,,forgive,,,[],[],POSITIVE,0.9681604504585266
+Improve my growth mindset.,,,,improve,,,[],[],POSITIVE,0.9997898936271667
+Be more proactive.,,,,proactive,,,[],[],POSITIVE,0.8999027609825134
+Learn to understand myself.,,,,learn,,,['understand'],[],POSITIVE,0.9992237091064453
+Be persistent despite obstacles.,,,,persistent,,,[],[],POSITIVE,0.8884172439575195
+Learn to accept my limits.,,,,learn,,,['accept'],[],POSITIVE,0.9984849095344543
+Learn how to make effective decisions.,,,,learn,,,[],[],POSITIVE,0.9993590712547302
+Practice gratitude.,,,,practice,,,[],[],POSITIVE,0.9997155070304871
+Stay open-minded to new opportunities.,,,,stay,,,['minded'],[],POSITIVE,0.9996261596679688
+Learn something new.,,,,learn,,,[],[],POSITIVE,0.998651921749115
+Live according to my values.,,,,live,,,[],[],POSITIVE,0.9992307424545288
+Learn healthy ways to cope with stress.,,,,learn,,,[],[],POSITIVE,0.9986122846603394
+Recreate my work-life balance.,,,,recreate,,,[],[],POSITIVE,0.9997926354408264
+Start good habits.,,,,start,,,[],[],POSITIVE,0.9994217157363892
+Consider leaving behind expectations.,,,,consider,,,['leave'],[],NEGATIVE,0.9902185797691345
+Learn from failure.,,,,learn,,,[],[],NEGATIVE,0.9979473948478699
+Eliminate bad habits.,,,,eliminate,,,[],[],POSITIVE,0.9419844746589661
+Improve my communication skills.,,,,improve,,,[],[],POSITIVE,0.9992423057556152
+Avoid negativity in the workplace.,,,,avoid,,,[],[],NEGATIVE,0.9757368564605713
+Improve my financial management skills.,,,,improve,,,[],[],POSITIVE,0.9993040561676025
+Develop time management skills.,,,,develop,,,[],[],POSITIVE,0.9994155168533325
+volunteer at a soup kitchen,,,,volunteer,,,[],[],NEGATIVE,0.9759839177131653
+get fluent in chinese,,,,get,,,['fluent'],[],POSITIVE,0.9988930821418762
+go on hikes regularly,,,,go,,,[],[],POSITIVE,0.9946574568748474
+stop procrastinating,,,,stop,,,[],[],NEGATIVE,0.9984186887741089
+read more,,,,read,,,[],[],POSITIVE,0.9879837036132812
+Improve Job Performance,,,,improve,,,[],[],POSITIVE,0.9994813799858093
+Increase Savings,,,,Savings,,,[],[],POSITIVE,0.9997407793998718
+Live Within A Budget,,,,live,,,[],[],POSITIVE,0.9929741621017456
+Eat More Fruits and Vegetables,,,,eat,,,[],[],POSITIVE,0.9850184321403503
+Get Regular Exercise,,,,get,,,[],[],POSITIVE,0.8844707608222961
+Express Love to your Spouse,,,,Express,,,[],[],POSITIVE,0.9998176693916321
+Strengthen Family Bonds,,,,strengthen,,,[],[],POSITIVE,0.9998486042022705
+Increase Outdoor Activity,,,,increase,,,[],[],POSITIVE,0.9996895790100098
+Increase Knowledge,,,,knowledge,,,[],[],POSITIVE,0.9997435212135315
+Build a Robust Morning Routine,,,,build,,,[],[],POSITIVE,0.997654139995575
+Tap into the Power of Meditation,,,,tap,,,[],[],POSITIVE,0.9995146989822388
+Develop a vision for your life,,,,develop,,,[],[],POSITIVE,0.9997491240501404
+Establish a positive mindset,,,,establish,,,[],[],POSITIVE,0.9998785257339478
+Accept what you can’t change,,,,accept,,,[],[],POSITIVE,0.9984931945800781
+Never set limits on yourself,,,,set,,,[],[],NEGATIVE,0.6205739378929138
+Cut your path,,,,cut,,,[],[],NEGATIVE,0.9954400062561035
+Embrace change,,,,embrace,,,[],[],POSITIVE,0.9996988773345947
+Manage stress,,,,manage,,,[],[],POSITIVE,0.9921781420707703
+Live in the moment,,,,live,,,[],[],POSITIVE,0.999538779258728
+Improve your self-confidence,,,,improve,,,[],[],POSITIVE,0.9993906021118164
+Get up early,,,,get,,,[],[],POSITIVE,0.9954102635383606
+Hustle every day,,,,hustle,,,[],[],POSITIVE,0.9968056678771973
+Stop procrastinating,,,,stop,,,[],[],NEGATIVE,0.9984186887741089
+Ask for what you want,,,,ask,,,[],[],NEGATIVE,0.8897253274917603
+Get enough sleep,,,,get,,,[],[],NEGATIVE,0.9984645843505859
+Exercise regularly,,,,Exercise,,,[],[],POSITIVE,0.9800026416778564
+Become a lifelong learner,,,,become,,,['learner'],[],POSITIVE,0.9998024106025696
+Keep a journal,,,,keep,,,[],[],POSITIVE,0.9954925775527954
+create a budget,,,,create,,,[],[],POSITIVE,0.9975911378860474
+Practice self-care,,,,practice,,,[],[],POSITIVE,0.9881576895713806
+Improve your interpersonal skills,,,,improve,,,[],[],POSITIVE,0.9991481304168701
+Learn to be patient,,,,learn,,,['patient'],[],POSITIVE,0.9974703788757324
+Work smart,,,,work,,,['smart'],[],POSITIVE,0.9998470544815063
+Capitalize on change,,,,capitalize,,,[],[],POSITIVE,0.9768054485321045
+Capitalize on failure,,,,capitalize,,,[],[],NEGATIVE,0.9997660517692566
+Become a better listener,,,,become,,,['listener'],[],POSITIVE,0.9888017177581787
+Plan and prepare your meals,,,,plan,,,[],[],POSITIVE,0.9994193315505981
+Have family meals 3 times a week,,,,have,,,[],"[{'item': 'times', 'amount': '3'}]",POSITIVE,0.9969273209571838
+Improve your time management skills,,,,improve,,,[],[],POSITIVE,0.9988279938697815
+Find work-life balance,,,,find,,,[],[],POSITIVE,0.9991937279701233
+Learn how to express yourself,,,,learn,,,[],[],POSITIVE,0.9989089965820312
+Master a new skill,,,,master,,,[],[],POSITIVE,0.9997168183326721
+Control your temper,,,,control,,,[],[],NEGATIVE,0.9277455806732178
+Learn to say no,,,,learn,,,['say'],[],NEGATIVE,0.9772576689720154
+Become more decisive,,,,become,,,['decisive'],[],POSITIVE,0.9996850490570068
+Improve your body language,,,,improve,,,[],[],POSITIVE,0.9991187453269958
+Improve one of your weaknesses,,,,improve,,,[],[],POSITIVE,0.9382755160331726
+Become a better leader,,,,become,,,['leader'],[],POSITIVE,0.9983770847320557
+Volunteer for a cause you believe in,,,,volunteer,,,[],[],POSITIVE,0.998577356338501
+Discover your best place to live,,,,discover,,,[],[],POSITIVE,0.9994151592254639
+Make a “bucket list”,,,,make,,,[],[],POSITIVE,0.9839497804641724
+Plan and take a special trip,,,,plan,,,[],[],POSITIVE,0.9976676106452942
+Read a new book,,,,read,,,[],[],POSITIVE,0.9973379969596863
+Take on a new challenge,,,,take,,,[],[],POSITIVE,0.997962474822998
+Expand your network of friends,,,,expand,,,[],[],POSITIVE,0.9996342658996582
+Find your perfect life partner,,,,find,,,[],[],POSITIVE,0.9998652935028076
+Become a better spouse,,,,become,,,['spouse'],[],POSITIVE,0.9957914352416992
+Grow into a better parent,,,,grow,,,[],[],POSITIVE,0.9989827275276184
+Remove toxic people from your life,,,,remove,,,[],[],NEGATIVE,0.8933206796646118
+Find a mentor,,,,find,,,[],[],POSITIVE,0.9903430938720703
+Become a mentor,,,,become,,,['mentor'],[],POSITIVE,0.9994382262229919
+lose 20 pounds,,,,lose,,,[],"[{'item': 'pounds', 'amount': '20'}]",NEGATIVE,0.9994848966598511
+wake up at 6am every day,,,,wake,,,[],"[{'item': 'am', 'amount': '6'}]",POSITIVE,0.9918429255485535
+wake up early every day,,,,wake,,,[],[],POSITIVE,0.9986699819564819
+wake up at 7 am every day,,,,wake,,,[],"[{'item': 'am', 'amount': '7'}]",POSITIVE,0.9940435290336609
+wake up at 4:30 am every day,,,,wake,,,[],"[{'item': 'am', 'amount': '4:30'}]",POSITIVE,0.9931815266609192
+get better at communicating,,,,get,,,['good'],[],NEGATIVE,0.8984268307685852
+plan more,,,,plan,,,[],[],POSITIVE,0.9955564141273499
+wake up earlier,,,,wake,,,[],[],POSITIVE,0.965848445892334
+be more productive,,,,productive,,,[],[],POSITIVE,0.9899629950523376
+get a degree  ,,,,get,,,[],[],POSITIVE,0.9919122457504272
+go to college,,,,go,,,[],[],POSITIVE,0.9844056963920593
+go to university,,,,go,,,[],[],POSITIVE,0.9854177236557007
+do push-ups every day,,,,do,,,[],[],NEGATIVE,0.9432931542396545
+stop drinking soda,,,,stop,,,[],[],NEGATIVE,0.9966751337051392
+stop gossiping,,,,stop,,,[],[],NEGATIVE,0.9984496831893921
+get a job,,,,get,,,[],[],POSITIVE,0.996857762336731
+find a job,,,,find,,,[],[],POSITIVE,0.8310376405715942
+find a new job,,,,find,,,[],[],NEGATIVE,0.5422172546386719
+find a better job,,,,find,,,[],[],NEGATIVE,0.9984239339828491
+get a better job,,,,get,,,[],[],NEGATIVE,0.9519846439361572
+meet more people,,,,meet,,,[],[],POSITIVE,0.9986213445663452
+meet one new person each week,,,,meet,,,[],"[{'item': 'person', 'amount': 'one'}]",POSITIVE,0.9925131797790527
+meet 3 new people each month,,,,meet,,,[],"[{'item': 'people', 'amount': '3'}]",POSITIVE,0.9955292344093323
+earn a promotion,,,,earn,,,[],[],POSITIVE,0.999589741230011
+ask a good question every day,,,,ask,,,[],[],POSITIVE,0.9950577020645142
+go to australia,,,,go,,,[],[],POSITIVE,0.997856080532074
+skydive,,,,skydive,,,[],[],POSITIVE,0.996190071105957
+lift,,,,lift,,,[],[],POSITIVE,0.9998224377632141
+workout,,,,workout,,,[],[],POSITIVE,0.9984484910964966
+lift more,,,,lift,,,[],[],POSITIVE,0.9997747540473938
+do something fun,,,,do,,,[],[],POSITIVE,0.9998667240142822
+do something challenging,,,,do,,,[],[],POSITIVE,0.9997802376747131
+go on a date night,,,,go,,,[],[],POSITIVE,0.9987460374832153
+go on a cruise,,,,go,,,[],[],POSITIVE,0.997082531452179
+be a better friend,,,,friend,,,[],[],POSITIVE,0.999038815498352
+be a better boyfriend,,,,boyfriend,,,[],[],NEGATIVE,0.8810156583786011
+be a better girlfriend,,,,girlfriend,,,[],[],NEGATIVE,0.8850576877593994
+be kind,,,,kind,,,[],[],POSITIVE,0.9995349645614624
+get a girlfriend,,,,get,,,[],[],POSITIVE,0.9754649996757507
+get a boyfriend,,,,get,,,[],[],POSITIVE,0.9549239873886108
+get a partner,,,,get,,,[],[],POSITIVE,0.9994914531707764
+be a better partner,,,,partner,,,[],[],POSITIVE,0.9804379940032959
+give a compliment every day,,,,give,,,[],[],POSITIVE,0.9998588562011719
+lose weight,,,,lose,,,[],[],NEGATIVE,0.9995598196983337
+yoga,,,,yoga,,,[],[],POSITIVE,0.9896374940872192
+Do yoga,,,,do,,,[],[],POSITIVE,0.9820296168327332
+TRAVEL THE WORLD,,,,TRAVEL,,,[],[],POSITIVE,0.9993171691894531
+join a gym,,,,join,,,[],[],POSITIVE,0.8791785836219788
+hit the gym,,,,hit,,,[],[],NEGATIVE,0.9914032816886902
+get 8 hours of sleep each night,,,,get,,,[],"[{'item': 'hours', 'amount': '8'}]",NEGATIVE,0.9867016673088074
+get eight hours of sleep every night,,,,get,,,[],"[{'item': 'hours', 'amount': 'eight'}]",NEGATIVE,0.9921203851699829
+stop eating candy,,,,stop,,,['eat'],[],NEGATIVE,0.999541163444519
+cut back on sugar,,,,cut,,,[],[],NEGATIVE,0.9886603355407715
+Ask for a raise,,,,ask,,,[],[],POSITIVE,0.679767906665802
+Pay back all my debt,,,,pay,,,[],[],NEGATIVE,0.76673823595047
+buy a home,,,,buy,,,[],[],POSITIVE,0.9985305070877075
+get better at tracking my finances,,,,get,,,['good'],[],NEGATIVE,0.9981071949005127
+manage my finances better,,,,manage,,,['good'],[],POSITIVE,0.9894095659255981
+start manging my money better,,,,start,,,"['mange', 'good']",[],NEGATIVE,0.9955254197120667
+start budgeting,,,,start,,,[],[],NEGATIVE,0.7028033137321472
+budget,,,,budget,,,[],[],POSITIVE,0.9782419800758362
+Read more,,,,read,,,[],[],POSITIVE,0.9879837036132812
+start reading more,,,,start,,,['read'],[],POSITIVE,0.959976077079773
+be more friendly,,,,friendly,,,[],[],POSITIVE,0.9938456416130066
+meet a ton of people,,,,meet,,,[],[],POSITIVE,0.9995948672294617
+meditate,,,,meditate,,,[],[],POSITIVE,0.9853814244270325
+start meditating,,,,start,,,[],[],POSITIVE,0.737206757068634
+journal,,,,journal,,,[],[],POSITIVE,0.9654771685600281
+start a journal,,,,start,,,[],[],POSITIVE,0.9957844614982605
+zipline,,,,zipline,,,[],[],POSITIVE,0.9769014716148376
+eat more healthily,,,,eat,,,[],[],POSITIVE,0.9977462887763977
+eat healthier,,,,eat,,,[],[],POSITIVE,0.9990249872207642
+eat more healthy foods,,,,eat,,,[],[],POSITIVE,0.9969960451126099
+cook more,,,,cook,,,[],[],POSITIVE,0.997275173664093
+learn to cook,,,,learn,,,['cook'],[],POSITIVE,0.9991773962974548
+be more positive,,,,positive,,,[],[],POSITIVE,0.9997050166130066
+give more compliments,,,,give,,,[],[],POSITIVE,0.9997847676277161
+grind,,,,grind,,,[],[],NEGATIVE,0.9996578693389893
+become a doctor,,,,become,,,['doctor'],[],POSITIVE,0.9968515038490295
+work harder,,,,work,,,['hard'],[],POSITIVE,0.9760855436325073
+Be more efficient,,,,efficient,,,[],[],POSITIVE,0.9857401251792908
+Meditate for 30 minutes a day,,,,meditate,,,[],"[{'item': 'minutes', 'amount': '30'}]",NEGATIVE,0.8138619661331177
+Meditate for 15 minutes each day,,,,meditate,,,[],"[{'item': 'minutes', 'amount': '15'}]",NEGATIVE,0.7440338730812073
+meditate for 20 mins every day,,,,meditate,,,[],"[{'item': 'mins', 'amount': '20'}]",NEGATIVE,0.6666386127471924
+Go to the gym every day,,,,go,,,[],[],POSITIVE,0.974220335483551
+start a charity,,,,start,,,[],[],POSITIVE,0.9917362332344055
+write an autobiography,,,,write,,,[],[],POSITIVE,0.9973561763763428
+become famous,,,,become,,,['famous'],[],POSITIVE,0.99974125623703
+get into fashion,,,,get,,,[],[],POSITIVE,0.9985612034797668
+go to Paris fashion week,,,,go,,,[],[],POSITIVE,0.9966306090354919
+learn how to sew,,,,learn,,,[],[],POSITIVE,0.9979853630065918
+run a marathon,,,,run,,,[],[],POSITIVE,0.9676716327667236
+marathon,,,,marathon,,,[],[],POSITIVE,0.9821919798851013
+donate more,,,,donate,,,[],[],POSITIVE,0.9975793957710266
+learn how to code,,,,learn,,,[],[],POSITIVE,0.9988744854927063
+create an app,,,,create,,,[],[],POSITIVE,0.9924584031105042
+create a brand,,,,create,,,[],[],POSITIVE,0.9997262358665466
+create a fashion brand,,,,create,,,[],[],POSITIVE,0.9995392560958862
+read,,,,read,,,[],[],POSITIVE,0.9962683320045471
+read more,,,,read,,,[],[],POSITIVE,0.9879837036132812
+Read more books,,,,read,,,[],[],POSITIVE,0.9929076433181763
+leetcode every day,,,,leetcode,,,[],[],POSITIVE,0.8648279309272766
+do leetcode every day,,,,do,,,[],[],NEGATIVE,0.9195490479469299
+get into Google,,,,get,,,[],[],NEGATIVE,0.7240718007087708
+get into google,,,,get,,,[],[],NEGATIVE,0.7240718007087708
+find a good job,,,,find,,,[],[],POSITIVE,0.9997157454490662
+get married,,,,marry,,,[],[],POSITIVE,0.996825098991394
+See exotic places,,,,see,,,[],[],POSITIVE,0.9993112087249756
+Have kids,,,,have,,,[],[],POSITIVE,0.9992451667785645
+Become a doctor,,,,become,,,['doctor'],[],POSITIVE,0.9968515038490295
+have a stable income,,,,have,,,[],[],POSITIVE,0.9997721314430237
+propose,,,,propose,,,[],[],POSITIVE,0.9937666654586792
+get into med school,,,,get,,,[],[],NEGATIVE,0.939340353012085
+Be actually happy.,,,,happy,,,[],[],POSITIVE,0.9998819828033447
+get engaged,,,,engage,,,[],[],POSITIVE,0.9993950128555298
+see exotic places,,,,see,,,[],[],POSITIVE,0.9993112087249756
+have children,,,,have,,,[],[],POSITIVE,0.9981920123100281
+get a hot girlfriend,,,,get,,,[],[],POSITIVE,0.9830034971237183
+get a hot boyfriend,,,,get,,,[],[],POSITIVE,0.9813598394393921
+get a well-paid job,,,,get,,,[],[],POSITIVE,0.9934604167938232
+become a millionare,,,,become,,,['millionare'],[],POSITIVE,0.9944309592247009
+buy a pool,,,,buy,,,[],[],POSITIVE,0.988832950592041
+get an apartment,,,,get,,,[],[],POSITIVE,0.9944943785667419
+move to NYC,,,,move,,,[],[],POSITIVE,0.9988443851470947
+retire,,,,retire,,,[],[],NEGATIVE,0.9973370432853699
+become an actor,,,,become,,,['actor'],[],POSITIVE,0.9975142478942871
+become a famous actor,,,,become,,,['actor'],[],POSITIVE,0.9996449947357178
+become a celebrity,,,,become,,,['celebrity'],[],POSITIVE,0.9994115829467773
+become a famous singer,,,,become,,,['singer'],[],POSITIVE,0.9997484087944031
+actually get fit,,,,get,,,[],[],POSITIVE,0.9997109770774841
+get fit,,,,get,,,[],[],POSITIVE,0.9990125894546509
+buy a luxury car,,,,buy,,,[],[],POSITIVE,0.9980915188789368
+get a Bugatti,,,,get,,,[],[],NEGATIVE,0.9996874332427979
+learn karate,,,,learn,,,[],[],POSITIVE,0.991419792175293
+get abs,,,,get,,,[],[],POSITIVE,0.9158647656440735
+learn taekwondo,,,,learn,,,[],[],POSITIVE,0.9916150569915771
+build a treehouse,,,,build,,,[],[],POSITIVE,0.9955046772956848
+stop eating unhealthy,,,,stop,,,"['eat', 'unhealthy']",[],NEGATIVE,0.999413251876831
+stop eating chips,,,,stop,,,['eat'],[],NEGATIVE,0.9994795918464661
+run every day,,,,run,,,[],[],POSITIVE,0.9920165538787842
+run 3 times a week,,,,run,,,[],"[{'item': 'times', 'amount': '3'}]",POSITIVE,0.8529476523399353
+Jog 4 times a week,,,,jog,,,[],"[{'item': 'times', 'amount': '4'}]",POSITIVE,0.7590137720108032
+Run 50 miles this month,,,,run,,,[],"[{'item': 'miles', 'amount': '50'}]",POSITIVE,0.9867990612983704
+become a ceo,,,,become,,,['ceo'],[],POSITIVE,0.9981697797775269
+IPO my company at 1 billion,,,,ipo,,,[],"[{'item': 'billion', 'amount': '1'}]",NEGATIVE,0.669842541217804
+learn how to bake,,,,learn,,,[],[],POSITIVE,0.9948893785476685
+open a restaurant,,,,open,,,[],[],POSITIVE,0.9991530179977417
+be popular,,,,popular,,,[],[],POSITIVE,0.9997050166130066
+read a paper every day,,,,read,,,[],[],POSITIVE,0.9338367581367493
+write a research paper,,,,write,,,[],[],POSITIVE,0.79781574010849
+publish a research paper,,,,publish,,,[],[],POSITIVE,0.989335834980011
+publish a magazine,,,,publish,,,[],[],POSITIVE,0.9911523461341858
+write more,,,,write,,,[],[],POSITIVE,0.9635167717933655
+exercise more,,,,exercise,,,[],[],NEGATIVE,0.5418069958686829
+Run at least 4 miles a day,,,,run,,,[],"[{'item': 'miles', 'amount': '4'}]",POSITIVE,0.9939776659011841
+get straight As,,,,get,,,[],[],POSITIVE,0.926724374294281
+win an award,,,,win,,,[],[],POSITIVE,0.9998362064361572
+make more friends,,,,make,,,[],[],POSITIVE,0.9998379945755005
+start talking to more people,,,,start,,,['talk'],[],POSITIVE,0.9687215089797974
+pay more attention to the news,,,,pay,,,[],[],POSITIVE,0.9404214024543762
+start following politics,,,,start,,,[],[],POSITIVE,0.9828474521636963
+improve the way I dress,,,,improve,,,[],[],POSITIVE,0.9995964169502258
+do 50 pushups a day,,,,do,,,[],"[{'item': 'pushups', 'amount': '50'}]",NEGATIVE,0.9370400309562683
+Run a half marathon,,,,run,,,[],[],NEGATIVE,0.8255804181098938
+become popular,,,,become,,,['popular'],[],POSITIVE,0.9997715353965759
+be more sociable,,,,sociable,,,[],[],POSITIVE,0.9722775816917419
+meet a new person every week,,,,meet,,,[],[],POSITIVE,0.9978892207145691
+diet,,,,diet,,,[],[],POSITIVE,0.9967978596687317
+go vegan,,,,go,,,['vegan'],[],POSITIVE,0.9862804412841797
+start a business,,,,start,,,[],[],POSITIVE,0.9989370703697205
+create a startup,,,,create,,,[],[],POSITIVE,0.9981447458267212
+create a start-up,,,,create,,,[],[],POSITIVE,0.9993079900741577
+create a label,,,,create,,,[],[],POSITIVE,0.9965142607688904
+start a record label,,,,start,,,[],[],POSITIVE,0.9967688322067261
+release an album,,,,release,,,[],[],POSITIVE,0.9985705614089966
+find my soulmate,,,,find,,,[],[],POSITIVE,0.999646782875061
+clean my room,,,,clean,,,[],[],POSITIVE,0.7917870283126831
+Do 70 push-ups every day,,,,do,,,[],"[{'item': 'ups', 'amount': '70'}]",NEGATIVE,0.9826309084892273
+do 40 pushups every day,,,,do,,,[],"[{'item': 'pushups', 'amount': '40'}]",NEGATIVE,0.9451788663864136
+Do 10 pull-ups a day,,,,do,,,[],"[{'item': 'ups', 'amount': '10'}]",NEGATIVE,0.9437723159790039
+learn something new every day,,,,learn,,,[],[],POSITIVE,0.9989588260650635
+stop masturbating,,,,stop,,,[],[],NEGATIVE,0.981687605381012
+stop doing drugs,,,,stop,,,['do'],[],NEGATIVE,0.9971177577972412
+stop vaping,,,,stop,,,[],[],NEGATIVE,0.9992235898971558
+stop doing heroin,,,,stop,,,['do'],[],NEGATIVE,0.9961361289024353
+stop smoking,,,,stop,,,[],[],NEGATIVE,0.9700389504432678
+stop gambling,,,,stop,,,[],[],NEGATIVE,0.9919346570968628
+stop betting,,,,stop,,,[],[],NEGATIVE,0.9996293783187866
+get my finances in order,,,,get,,,[],[],NEGATIVE,0.9916841983795166
+create a budget,,,,create,,,[],[],POSITIVE,0.9975911378860474
+do my homework on time,,,,do,,,[],[],POSITIVE,0.9693845510482788
+get an A+ on my physics exam,,,,get,,,[],[],POSITIVE,0.9657499194145203
+become the German embassy,,,,become,,,['embassy'],[],POSITIVE,0.6623110175132751
+become a rapper,,,,become,,,['rapper'],[],POSITIVE,0.9975777268409729
+turn in my homework on time,,,,turn,,,[],[],POSITIVE,0.9591858983039856
+turn in my assignments on time,,,,turn,,,[],[],POSITIVE,0.9761739373207092
+get my work done,,,,get,,,['do'],[],NEGATIVE,0.5746082663536072
+become a bartender,,,,become,,,['bartender'],[],POSITIVE,0.9531061053276062
+learn mixology,,,,learn,,,[],[],POSITIVE,0.996566653251648
+start a youtube channel,,,,start,,,[],[],NEGATIVE,0.6939679384231567
+get 10k followers on instagram,,,,get,,,[],"[{'item': 'followers', 'amount': 'k'}]",NEGATIVE,0.6621176600456238
+get 1000 followers,,,,get,,,[],"[{'item': 'followers', 'amount': '1000'}]",POSITIVE,0.9904975295066833
+find my purpose,,,,find,,,[],[],POSITIVE,0.9904206991195679
+get good grades this year,,,,get,,,[],[],POSITIVE,0.9998121857643127
+have better time management,,,,have,,,[],[],NEGATIVE,0.9710931777954102
+get my driver's license,,,,get,,,[],[],NEGATIVE,0.9901251792907715
+take the SAT,,,,take,,,[],[],POSITIVE,0.9067414402961731
+be a good friend,,,,friend,,,[],[],POSITIVE,0.9998493194580078
+hug mom,,,,hug,,,[],[],POSITIVE,0.9995748400688171
+bake more,,,,bake,,,[],[],NEGATIVE,0.9851166605949402
+be a better dog mom,,,,mom,,,[],[],NEGATIVE,0.9808481931686401
+reduce body fat,,,,reduce,,,[],[],NEGATIVE,0.9694585800170898
+get elected president,,,,get,,,[],[],POSITIVE,0.9988431930541992
+become president,,,,become,,,['president'],[],POSITIVE,0.9993346333503723
+get elected to a government position,,,,elect,,,[],[],POSITIVE,0.9909982681274414
+get elected to the senate,,,,elect,,,[],[],POSITIVE,0.9965697526931763
+be a good boyfriend,,,,boyfriend,,,[],[],POSITIVE,0.99964439868927
+be a good girlfriend,,,,girlfriend,,,[],[],POSITIVE,0.9997825026512146
+be a good partner,,,,partner,,,[],[],POSITIVE,0.999869704246521
+turn things in on time,,,,turn,,,[],[],POSITIVE,0.9989757537841797
+be better at communicating,,,,good,,,[],[],NEGATIVE,0.9889382123947144
+respond to texts regularly,,,,respond,,,[],[],POSITIVE,0.9981606602668762
+check my email every day,,,,check,,,[],[],NEGATIVE,0.9454612731933594
+find something I'm interested in,,,,find,,,[],[],POSITIVE,0.9979100823402405
+find something I actually enjoy,,,,find,,,[],[],POSITIVE,0.9997038245201111
+find a friend,,,,find,,,[],[],POSITIVE,0.9986795783042908
+get an A on my exam,,,,get,,,[],[],POSITIVE,0.9237325191497803
+get a 4.0,,,,get,,,[],[],POSITIVE,0.9918835163116455
+get a 4.0 this semester,,,,get,,,[],[],POSITIVE,0.9925388693809509
+volunteer at a kitchen,,,,volunteer,,,[],[],NEGATIVE,0.5417989492416382
+do more volunteer work,,,,do,,,[],[],POSITIVE,0.9499260783195496
+save the environment,,,,save,,,[],[],POSITIVE,0.9919455647468567
+become a starter,,,,become,,,['starter'],[],POSITIVE,0.9991635084152222
+get good at basketball,,,,get,,,['good'],[],POSITIVE,0.999437153339386
+get good at baseball,,,,get,,,['good'],[],POSITIVE,0.9995403289794922
+get good at football,,,,get,,,['good'],[],POSITIVE,0.9995959401130676
+score a touchdown,,,,score,,,[],[],POSITIVE,0.9989377856254578
+hit a homerun,,,,hit,,,[],[],POSITIVE,0.9745646119117737
+get good at running,,,,get,,,['good'],[],POSITIVE,0.9995682835578918
+beat my mile time,,,,beat,,,[],[],POSITIVE,0.8560259938240051
+run a sub-6 mile,,,,run,,,[],"[{'item': 'sub', 'amount': '6'}]",NEGATIVE,0.9568987488746643
+run a sub-5 mile,,,,run,,,[],"[{'item': 'mile', 'amount': '5'}]",NEGATIVE,0.9580391645431519
+be attractive,,,,attractive,,,[],[],POSITIVE,0.99983811378479
+do my taxes,,,,do,,,[],[],NEGATIVE,0.6935551762580872
+save more money,,,,save,,,[],[],NEGATIVE,0.9856094717979431
+stop spending extra money,,,,stop,,,['spend'],[],NEGATIVE,0.9996143579483032
+join the NBA,,,,join,,,[],[],POSITIVE,0.9875174164772034
+join the NFL,,,,join,,,[],[],POSITIVE,0.9855369925498962
+get recruited,,,,recruit,,,[],[],POSITIVE,0.978646457195282
+start a firm,,,,start,,,[],[],POSITIVE,0.9987265467643738
+get a job at goldman,,,,get,,,[],[],POSITIVE,0.9642141461372375
+get a job at mckinsey,,,,get,,,[],[],POSITIVE,0.990802526473999
+get a job at google,,,,get,,,[],[],POSITIVE,0.6897069215774536
+get into Harvard,,,,get,,,[],[],POSITIVE,0.9784573316574097
+get into MIT,,,,get,,,[],[],POSITIVE,0.7332931160926819
+get into Yale,,,,get,,,[],[],POSITIVE,0.9841386675834656
+get into Princeton,,,,get,,,[],[],POSITIVE,0.9905548691749573
+get into an elite college,,,,get,,,[],[],POSITIVE,0.997663140296936
+become first chair,,,,become,,,['chair'],[],POSITIVE,0.9988149404525757
+have a live performance,,,,have,,,[],[],POSITIVE,0.9997391104698181
+study regularly,,,,study,,,[],[],POSITIVE,0.9936995506286621
+be committed,,,,commit,,,[],[],POSITIVE,0.9975296854972839
+learn how to wrestle,,,,learn,,,[],[],POSITIVE,0.9978359341621399
+win my wrestling tournament,,,,win,,,[],[],POSITIVE,0.9997820258140564
+join a frat,,,,join,,,[],[],NEGATIVE,0.5060619115829468
+join a school club,,,,join,,,[],[],POSITIVE,0.9270208477973938
+get into a nightclub,,,,get,,,[],[],NEGATIVE,0.9007214307785034
+practice coding problems every day,,,,practice,,,[],[],NEGATIVE,0.9971928000450134
+be more relaxed,,,,relaxed,,,[],[],POSITIVE,0.9976054430007935
+have a happy relationship,,,,have,,,[],[],POSITIVE,0.999882698059082
+make a ton of money,,,,make,,,[],[],POSITIVE,0.996904194355011
+retire early,,,,retire,,,[],[],NEGATIVE,0.9919931888580322
+make a garden,,,,make,,,[],[],POSITIVE,0.9994174242019653
+get a pizza oven,,,,get,,,[],[],NEGATIVE,0.9348126649856567
+stop being depressed,,,,stop,,,['depressed'],[],NEGATIVE,0.7576894760131836
+exercise without being out of breath,,,,exercise,,,[],[],POSITIVE,0.9990111589431763
+stay healhy,,,,stay,,,[],[],POSITIVE,0.9978002905845642
+hike once a week,,,,hike,,,[],[],POSITIVE,0.9829509854316711
+recover from surgery,,,,recover,,,[],[],POSITIVE,0.9903843402862549
+get a group of friends,,,,get,,,[],[],POSITIVE,0.9995298385620117
+get a best friend,,,,get,,,[],[],POSITIVE,0.999423623085022
+get stronger,,,,get,,,['strong'],[],POSITIVE,0.9989432692527771
+explore the outdoors more,,,,explore,,,[],[],POSITIVE,0.9994112253189087
+build a cabin,,,,build,,,[],[],POSITIVE,0.9970372915267944
+build a birdhouse,,,,build,,,[],[],POSITIVE,0.9935184121131897
+learn about carpentry,,,,learn,,,[],[],POSITIVE,0.9980732202529907
+go sub-7 on the erg,,,,go,,,[],[],NEGATIVE,0.9907453060150146
+get a sub 7 minute time rowing,,,,get,,,[],"[{'item': 'minute', 'amount': '7'}]",NEGATIVE,0.8672965168952942
+sub 7,,,,sub,,,[],[],POSITIVE,0.6104258298873901
+sub 6:30,,,,sub,,,[],[],POSITIVE,0.5060652494430542
+get a sub 6:30,,,,get,,,[],[],NEGATIVE,0.9704420566558838
+climb mount everest,,,,climb,,,[],[],POSITIVE,0.9971728324890137
+join an esports team,,,,join,,,[],[],POSITIVE,0.9888759255409241
+go scuba diving,,,,go,,,[],[],POSITIVE,0.9695209860801697
+graduate summa cum laude,,,,graduate,,,[],[],POSITIVE,0.9979187846183777
+do a backflip,,,,do,,,[],[],NEGATIVE,0.9811986684799194
+swim every day,,,,swim,,,[],[],POSITIVE,0.9975862503051758
+workout every day,,,,workout,,,[],[],POSITIVE,0.997359573841095
+swim 5 times a week,,,,swim,,,[],"[{'item': 'times', 'amount': '5'}]",POSITIVE,0.9896687865257263
+jog 3 times a week,,,,jog,,,[],"[{'item': 'times', 'amount': '3'}]",POSITIVE,0.6578505039215088
+cycle every day,,,,cycle,,,[],[],POSITIVE,0.9966656565666199
+go cycling every day,,,,go,,,['cycle'],[],POSITIVE,0.9978658556938171
+earn more money,,,,earn,,,[],[],POSITIVE,0.9943923354148865
+study  ,,,,study,,,[],[],POSITIVE,0.9933806657791138
+get better at makeup,,,,get,,,['good'],[],NEGATIVE,0.8938106894493103
+be pretty,,,,be,,,[],[],POSITIVE,0.9996984004974365
+start investing,,,,start,,,[],[],POSITIVE,0.9978947043418884
