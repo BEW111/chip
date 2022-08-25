@@ -18,7 +18,7 @@ export default function Onboarding({navigation}) {
       alwaysBounceVertical={false}>
       <View style={{width: '100%', paddingHorizontal: 15}}>
         <Text style={{color: 'white', fontSize: 24, marginBottom: 10}}>
-          I want to...
+          What's something you'd like to accomplish?
         </Text>
         <View>
           <View

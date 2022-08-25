@@ -33,6 +33,8 @@ import {
   updateUser,
 } from './src/redux/authSlice';
 
+import GoalGalaxyView from './src/components/GoalGalaxy/GoalGalaxyView';
+
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -147,7 +149,7 @@ export default function App() {
     <StoreProvider store={store}>
       <SafeAreaProvider>
         <PaperProvider>
-          <Main />
+          <GoalGalaxyView width={500} height={500} margin={50} />
         </PaperProvider>
       </SafeAreaProvider>
     </StoreProvider>
