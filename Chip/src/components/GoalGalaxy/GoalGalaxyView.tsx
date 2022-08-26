@@ -54,69 +54,65 @@ function Galaxy({width, height, margin, scale}) {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: `translate(10, 10)`,
+      transform: [
+        {translateX: translateX.value},
+        {translateY: translateY.value},
+      ],
     };
   });
 
+  const gestureHandler = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startX = translateX.value;
+      ctx.startY = translateY.value;
+    },
+    onActive: (event, ctx) => {
+      translateX.value = ctx.startX + event.translationX;
+      translateY.value = ctx.startY + event.translationY;
+    },
+    onEnd: _ => {
+      translateX.value = withSpring(0);
+      translateY.value = withSpring(0);
+    },
+  });
+
   return (
-    <View>
-      <Svg
-        width={width}
-        height={height}
-        stroke="#6231ff"
-        style={{backgroundColor: 'blue'}}>
-        <G>
-          {goalGalaxyData.map(point => (
-            <G key={point.x}>
-              <AnimatedCircle
-                style={animatedStyle}
-                // animatedProps={animatedProps}
-                cx={x(point.x)}
-                cy={y(point.y)}
-                r={3}
-                stroke="none"
-                fill="white"
-              />
-              <AnimatedText
-                style={animatedStyle}
-                // animatedProps={animatedProps}
-                stroke="gray"
-                x={x(point.x)}
-                y={y(point.y)}
-                textAnchor="middle">
-                {point.goal}
-              </AnimatedText>
-            </G>
-          ))}
-        </G>
-      </Svg>
-      <Button
-        title="test"
-        onPress={() => {
-          translateX.value = 500;
-          console.log(translateX);
-        }}
-      />
-    </View>
+    <PanGestureHandler onGestureEvent={gestureHandler}>
+      <Animated.View>
+        <Svg
+          width={width}
+          height={height}
+          stroke="#6231ff"
+          style={{backgroundColor: 'black'}}>
+          <G>
+            {goalGalaxyData.map(point => (
+              <G key={point.x}>
+                <AnimatedCircle
+                  style={animatedStyle}
+                  cx={x(point.x)}
+                  cy={y(point.y)}
+                  r={3}
+                  stroke="none"
+                  fill="white"
+                />
+                <AnimatedText
+                  style={animatedStyle}
+                  stroke="gray"
+                  x={x(point.x)}
+                  y={y(point.y)}
+                  textAnchor="middle">
+                  {point.goal}
+                </AnimatedText>
+              </G>
+            ))}
+          </G>
+        </Svg>
+      </Animated.View>
+    </PanGestureHandler>
   );
-};
+}
 
 export default function GoalGalaxyView({width, height, margin}) {
-  // const gestureHandler = useAnimatedGestureHandler({
-  //   onStart: (_, ctx) => {
-  //     ctx.startX = translateX.value;
-  //     ctx.startY = translateY.value;
-  //   },
-  //   onActive: (event, ctx) => {
-  //     translateX.value = ctx.startX + event.translationX;
-  //     translateY.value = ctx.startY + event.translationY;
-  //   },
-  //   onEnd: _ => {
-  //     translateX.value = withSpring(0);
-  //     translateY.value = withSpring(0);
-  //   },
-  // });
-
   return (
     <View
       style={{
@@ -126,9 +122,7 @@ export default function GoalGalaxyView({width, height, margin}) {
         alignItems: 'center',
         backgroundColor: 'black',
       }}>
-      {/* <PanGestureHandler> */}
       <Galaxy width={width} height={height} margin={margin} scale={1} />
-      {/* </PanGestureHandler> */}
     </View>
   );
 }

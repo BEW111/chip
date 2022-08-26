@@ -149,6 +149,7 @@ export default function App() {
     <StoreProvider store={store}>
       <SafeAreaProvider>
         <PaperProvider>
+          {/* <Main /> */}
           <GoalGalaxyView width={500} height={500} margin={50} />
         </PaperProvider>
       </SafeAreaProvider>
