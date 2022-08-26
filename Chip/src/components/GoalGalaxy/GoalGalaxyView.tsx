@@ -7,7 +7,7 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import {PanGestureHandler} from 'react-native-gesture-handler';
+import {PanGestureHandler, PinchGestureHandler} from 'react-native-gesture-handler';
 
 import Svg, {G, Circle, Text} from 'react-native-svg';
 import {scaleLinear} from 'd3';
@@ -61,52 +61,74 @@ function Galaxy({width, height, margin, scale}) {
     };
   });
 
+  const springParams = {
+    damping: 10,
+    mass: 0.12,
+    stiffness: 150,
+  };
+
   const gestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       ctx.startX = translateX.value;
       ctx.startY = translateY.value;
     },
     onActive: (event, ctx) => {
-      translateX.value = ctx.startX + event.translationX;
-      translateY.value = ctx.startY + event.translationY;
+      translateX.value = withSpring(
+        ctx.startX + event.translationX,
+        springParams,
+      );
+      translateY.value = withSpring(
+        ctx.startY + event.translationY,
+        springParams,
+      );
     },
-    onEnd: _ => {
-      translateX.value = withSpring(0);
-      translateY.value = withSpring(0);
+    onEnd: (event, ctx) => {
+      translateX.value = withSpring(
+        ctx.startX + event.translationX,
+        springParams,
+      );
+      translateY.value = withSpring(
+        ctx.startY + event.translationY,
+        springParams,
+      );
     },
   });
 
   return (
     <PanGestureHandler onGestureEvent={gestureHandler}>
       <Animated.View>
-        <Svg
-          width={width}
-          height={height}
-          stroke="#6231ff"
-          style={{backgroundColor: 'black'}}>
-          <G>
-            {goalGalaxyData.map(point => (
-              <G key={point.x}>
-                <AnimatedCircle
-                  style={animatedStyle}
-                  cx={x(point.x)}
-                  cy={y(point.y)}
-                  r={3}
-                  stroke="none"
-                  fill="white"
-                />
-                <AnimatedText
-                  style={animatedStyle}
-                  stroke="gray"
-                  x={x(point.x)}
-                  y={y(point.y)}
-                  textAnchor="middle">
-                  {point.goal}
-                </AnimatedText>
+        <PinchGestureHandler>
+          <Animated.View>
+            <Svg
+            width={width}
+            height={height}
+            stroke="#6231ff"
+            style={{backgroundColor: 'black'}}>
+              <G>
+                {goalGalaxyData.map(point => (
+                  <G key={point.x}>
+                    <AnimatedCircle
+                      style={animatedStyle}
+                      cx={x(point.x)}
+                      cy={y(point.y)}
+                      r={3}
+                      stroke="none"
+                      fill="white"
+                    />
+                    <AnimatedText
+                      style={animatedStyle}
+                      stroke="gray"
+                      x={x(point.x)}
+                      y={y(point.y)}
+                      textAnchor="middle">
+                      {point.goal}
+                    </AnimatedText>
+                  </G>
+                ))}
               </G>
-            ))}
-          </G>
-        </Svg>
+            </Svg>
+          </Animated.View>
+        </PinchGestureHandler>
       </Animated.View>
     </PanGestureHandler>
   );
