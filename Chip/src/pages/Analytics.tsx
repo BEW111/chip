@@ -1,23 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  StatusBar,
-  TouchableWithoutFeedback,
-  Image,
-} from 'react-native';
-import FastImage from 'react-native-fast-image';
+import {StyleSheet, View, ScrollView, StatusBar, Image} from 'react-native';
+
 import {
   IconButton,
   Surface,
   Text,
-  Headline,
   AnimatedFAB,
   ActivityIndicator,
   Divider,
 } from 'react-native-paper';
+import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -32,6 +25,10 @@ import {useSelector} from 'react-redux';
 import {selectUid} from '../redux/authSlice';
 
 import Settings from '../components/Settings';
+import Dropdown from '../components/Analytics/Dropdown';
+
+import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
+import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
 
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
@@ -99,59 +96,6 @@ function TempGoal() {
       }}>
       <Text>Goal</Text>
     </Surface>
-  );
-}
-
-function ChipDisplay(props) {
-  const uid = useSelector(selectUid);
-  const path = `user/${uid}/chip-photo/${props.photo}`;
-  const [downloadURL, setDownloadURL] = useState('');
-  const [selected, setSelected] = useState(false);
-
-  useEffect(() => {
-    async function grabURL() {
-      const newURL = await storage().ref(path).getDownloadURL();
-      setDownloadURL(newURL);
-    }
-    grabURL();
-  }, [path]);
-
-  const toggleSelect = () => {
-    setSelected(!selected);
-  };
-
-  return (
-    <TouchableWithoutFeedback onPress={toggleSelect}>
-      <View
-        style={{
-          height: 100,
-          width: '32.64%',
-          margin: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        {downloadURL ? (
-          <FastImage
-            source={{uri: downloadURL}}
-            style={{
-              height: '100%',
-              width: '100%',
-              borderWidth: selected ? 3 : 0,
-              borderColor: 'pink',
-              overflow: 'hidden',
-            }}
-          />
-        ) : (
-          <></>
-        )}
-        <View style={{position: 'absolute', alignItems: 'center'}}>
-          <Text style={{color: 'white'}}>{props.date}</Text>
-          <Text style={{color: 'white'}}>{props.time}</Text>
-          <Text style={{color: 'white'}}>{props.verb}</Text>
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
   );
 }
 
@@ -229,6 +173,25 @@ function MainPage({navigation}) {
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState('workouts');
+
+  const chipViewType: 'tiled' | 'swipe' = 'swipe';
+
+  const goalsList = [
+    {
+      label: 'Workouts',
+      value: 'workouts',
+    },
+    {
+      label: 'Eating healthy',
+      value: 'eating',
+    },
+    {
+      label: 'Studying',
+      value: 'studying',
+    },
+  ];
 
   useEffect(() => {
     const subscriber = firestore()
@@ -282,8 +245,6 @@ function MainPage({navigation}) {
             display: 'flex',
             flexDirection: 'row',
           }}>
-          {/* Sidebar */}
-          <Sidebar />
           {/* Main view */}
           <View style={{flex: 3, display: 'flex'}}>
             <View
@@ -292,7 +253,15 @@ function MainPage({navigation}) {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Headline variant="displayMedium">Habit name goes here</Headline>
+              <Dropdown
+                mode={'flat'}
+                visible={showDropdown}
+                showDropDown={() => setShowDropdown(true)}
+                onDismiss={() => setShowDropdown(false)}
+                value={selectedGoal}
+                setValue={setSelectedGoal}
+                list={goalsList}
+              />
             </View>
             <View>
               <Surface
@@ -305,46 +274,85 @@ function MainPage({navigation}) {
                 <StatsView />
               </Surface>
             </View>
-            <ScrollView
-              style={{
-                flex: 1,
-              }}
-              contentContainerStyle={{
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <View
+            {chipViewType === 'tiled' ? (
+              <ScrollView
                 style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'flex-start',
+                  flex: 1,
+                }}
+                contentContainerStyle={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'flex-start',
+                  }}>
+                  {chips.map((chip: ChipObject) => {
+                    const date = chip.timeSubmitted
+                      .toDate()
+                      .toLocaleDateString();
+                    const time = chip.timeSubmitted
+                      .toDate()
+                      .toLocaleTimeString();
+                    return (
+                      <ChipDisplayMini
+                        key={chip.key}
+                        verb={chip.verb}
+                        photo={chip.photo}
+                        date={date}
+                        time={time}
+                      />
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            ) : (
+              <Swiper key={chips.length}>
                 {chips.map((chip: ChipObject) => {
                   const date = chip.timeSubmitted.toDate().toLocaleDateString();
                   const time = chip.timeSubmitted.toDate().toLocaleTimeString();
                   return (
-                    <ChipDisplay
-                      key={chip.key}
-                      verb={chip.verb}
-                      photo={chip.photo}
-                      date={date}
-                      time={time}
-                    />
+                    <View
+                      style={{
+                        height: '100%',
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <View
+                        style={{
+                          height: '90%',
+                          width: '90%',
+                        }}>
+                        <ChipDisplayLarge
+                          key={chip.key}
+                          verb={chip.verb}
+                          photo={chip.photo}
+                          date={date}
+                          time={time}
+                        />
+                      </View>
+                    </View>
                   );
                 })}
-              </View>
-            </ScrollView>
+              </Swiper>
+            )}
           </View>
         </View>
       </View>
-      <AnimatedFAB
-        style={styles.fab}
-        icon="share"
-        onPress={() => console.log('Share button pressed')}
-        label={'Share'}
-        extended={false}
-      />
+      {chipViewType === 'tiled' && (
+        <AnimatedFAB
+          style={styles.fab}
+          icon="share"
+          onPress={() => console.log('Share button pressed')}
+          label={'Share'}
+          extended={false}
+        />
+      )}
     </View>
   );
 }

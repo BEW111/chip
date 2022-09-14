@@ -7,7 +7,10 @@ import Animated, {
   useAnimatedProps,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import {PanGestureHandler, PinchGestureHandler} from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  PinchGestureHandler,
+} from 'react-native-gesture-handler';
 
 import Svg, {G, Circle, Text} from 'react-native-svg';
 import {scaleLinear} from 'd3';
@@ -16,6 +19,7 @@ import {GoalDataPoint, goalGalaxyData} from './GoalGalaxyData';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedG = Animated.createAnimatedComponent(G);
 
 const generateAxes = (
   data: GoalDataPoint[],
@@ -50,6 +54,7 @@ const generateAxes = (
 function Galaxy({width, height, margin, scale}) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  // const scale = useSharedValue(1);
   const {x, y} = generateAxes(goalGalaxyData, width, height, margin, scale);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -63,11 +68,11 @@ function Galaxy({width, height, margin, scale}) {
 
   const springParams = {
     damping: 10,
-    mass: 0.12,
+    mass: 0.3,
     stiffness: 150,
   };
 
-  const gestureHandler = useAnimatedGestureHandler({
+  const panGestureHandler = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       ctx.startX = translateX.value;
       ctx.startY = translateY.value;
@@ -94,21 +99,49 @@ function Galaxy({width, height, margin, scale}) {
     },
   });
 
+  // const pinchGestureHandler = useAnimatedGestureHandler({
+  //   onStart: (_, ctx) => {
+  //     ctx.startX = translateX.value;
+  //     ctx.startY = translateY.value;
+  //     ctx.startScale = scale.value;
+  //   },
+  //   onActive: (event, ctx) => {
+  //     translateX.value = withSpring(
+  //       ,
+  //       springParams,
+  //     );
+  //     translateY.value = withSpring(
+  //       ,
+  //       springParams,
+  //     );
+  //     scale.value = withSpring(ctx.startScale + event.scale, springParams);
+  //   },
+  //   onEnd: (event, ctx) => {
+  //     translateX.value = withSpring(
+  //       ctx.startX + event.translationX,
+  //       springParams,
+  //     );
+  //     translateY.value = withSpring(
+  //       ctx.startY + event.translationY,
+  //       springParams,
+  //     );
+  //   },
+  // });
+
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
-      <Animated.View>
+    <PanGestureHandler onGestureEvent={panGestureHandler}>
+      <Animated.View style={animatedStyle}>
         <PinchGestureHandler>
           <Animated.View>
             <Svg
-            width={width}
-            height={height}
-            stroke="#6231ff"
-            style={{backgroundColor: 'black'}}>
-              <G>
+              width={width}
+              height={height}
+              stroke="#6231ff"
+              style={{backgroundColor: 'black'}}>
+              <AnimatedG>
                 {goalGalaxyData.map(point => (
                   <G key={point.x}>
                     <AnimatedCircle
-                      style={animatedStyle}
                       cx={x(point.x)}
                       cy={y(point.y)}
                       r={3}
@@ -116,7 +149,6 @@ function Galaxy({width, height, margin, scale}) {
                       fill="white"
                     />
                     <AnimatedText
-                      style={animatedStyle}
                       stroke="gray"
                       x={x(point.x)}
                       y={y(point.y)}
@@ -125,7 +157,7 @@ function Galaxy({width, height, margin, scale}) {
                     </AnimatedText>
                   </G>
                 ))}
-              </G>
+              </AnimatedG>
             </Svg>
           </Animated.View>
         </PinchGestureHandler>

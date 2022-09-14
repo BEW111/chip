@@ -3,6 +3,8 @@ import {ScrollView, View} from 'react-native';
 import {Text, Button, IconButton, TextInput} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
+import GoalGalaxyView from '../components/GoalGalaxy/GoalGalaxyView';
+
 export default function Onboarding({navigation}) {
   const [text, setText] = useState('');
   const insets = useSafeAreaInsets();
@@ -17,16 +19,23 @@ export default function Onboarding({navigation}) {
       }}
       alwaysBounceVertical={false}>
       <View style={{width: '100%', paddingHorizontal: 15}}>
-        <Text style={{color: 'white', fontSize: 24, marginBottom: 10}}>
-          What's something you'd like to accomplish?
-        </Text>
-        <View>
+        <GoalGalaxyView width={1500} height={1500} margin={50} />
+        <View
+          style={{
+            top: 100,
+            position: 'absolute',
+            backgroundColor: 'red',
+          }}>
           <View
             style={{
+              backgroundColor: 'blue',
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
             }}>
+            <Text style={{color: 'white', fontSize: 24, marginBottom: 10}}>
+              What's something you'd like to accomplish?
+            </Text>
             <TextInput
               placeholder="Enter a goal you have"
               onChangeText={newText => setText(newText)}
@@ -50,8 +59,15 @@ export default function Onboarding({navigation}) {
           </View>
         </View>
       </View>
-      <View style={{position: 'absolute', bottom: insets.bottom + 50}}>
-        <Button onPress={() => navigation.navigate('SignIn')}>Sign in to existing account</Button>
+      <View
+        style={{
+          backgroundColor: 'white',
+          position: 'absolute',
+          bottom: insets.bottom + 50,
+        }}>
+        <Button onPress={() => navigation.navigate('SignIn')}>
+          Sign in to existing account
+        </Button>
       </View>
     </ScrollView>
   );

@@ -34,6 +34,12 @@ General
     ```
     npm install --save react-native-paper@4.12.4
     ```
+- Misc components
+    ```
+    npm install --save react-native-swiper@next
+    npm install --save react-native-paper-dropdown
+    npm install --save react-native-paper-dates
+    ```
 - Images
     ```
     npm install react-native-fast-image

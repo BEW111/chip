@@ -4,6 +4,8 @@ import React from 'react';
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
 import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
 import {TextInput, IconButton, Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
 import Animated, {
@@ -83,18 +85,19 @@ function PhotoViewer(props) {
           />
         </View>
         <IconButton
-          icon="arrow-u-left-bottom"
+          icon="arrow-undo-outline"
           size={36}
           style={{
             backgroundColor: 'blue',
             position: 'absolute',
             left: 5,
             bottom: 5,
+            alignItems: 'center',
           }}
           onPress={() => dispatch(toggleViewingPhoto())}
         />
         <IconButton
-          icon="arrow-right"
+          icon="arrow-forward-circle-outline"
           size={36}
           style={{
             backgroundColor: 'blue',
@@ -242,8 +245,8 @@ export default function Home() {
           right: 10,
         }}>
         <IconButton
-          icon="camera-flip-outline"
-          size={32}
+          icon="camera-reverse-outline"
+          size={24}
           onPress={onFlipDevicePressed}
           style={{
             borderColor: 'white',
@@ -252,7 +255,7 @@ export default function Home() {
         />
         <IconButton
           icon={flash === 'on' ? 'flash' : 'flash-off'}
-          size={32}
+          size={24}
           onPress={onFlashPressed}
           style={{
             borderColor: 'white',
