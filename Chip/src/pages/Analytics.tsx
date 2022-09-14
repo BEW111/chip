@@ -12,14 +12,13 @@ import {
 } from 'react-native-paper';
 import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
 import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+// import storage from '@react-native-firebase/storage';
 
 import {useSelector} from 'react-redux';
 import {selectUid} from '../redux/authSlice';
@@ -33,7 +32,6 @@ import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
 
-const Tab = createMaterialTopTabNavigator(); // for stats view
 const SettingsDrawer = createDrawerNavigator(); // for settings
 
 interface ChipObject {
@@ -41,62 +39,6 @@ interface ChipObject {
   verb: string;
   timeSubmitted: FirebaseFirestoreTypes.Timestamp;
   photo: string;
-}
-
-function Sidebar() {
-  return (
-    <ScrollView
-      style={{
-        flex: 1,
-      }}>
-      <View
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: 5,
-        }}>
-        <Surface
-          style={{
-            backgroundColor: 'rgb(220, 200, 220)',
-            height: 80,
-            width: 80,
-            margin: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginVertical: 5,
-            borderRadius: 20,
-          }}>
-          <IconButton icon="plus" color="purple" size={36} />
-        </Surface>
-        <TempGoal />
-        <TempGoal />
-        <TempGoal />
-        <TempGoal />
-        <TempGoal />
-        <TempGoal />
-      </View>
-    </ScrollView>
-  );
-}
-
-function TempGoal() {
-  return (
-    <Surface
-      style={{
-        backgroundColor: 'rgb(200, 220, 220)',
-        height: 80,
-        width: 80,
-        margin: 1,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 5,
-        borderRadius: 20,
-      }}>
-      <Text>Goal</Text>
-    </Surface>
-  );
 }
 
 function Stats1() {
@@ -123,23 +65,23 @@ function StatsView() {
         backgroundColor="#61dafb"
         barStyle="dark-content"
       />
-      <Tab.Navigator tabBar={() => null}>
-        <Tab.Screen name="Stats1" component={Stats1} />
-        <Tab.Screen name="Stats2" component={Stats2} />
-      </Tab.Navigator>
+      <Swiper>
+        <Stats1 />
+        <Stats2 />
+      </Swiper>
     </View>
   );
 }
 
 function Header({navigation}) {
   return (
-    <View style={{height: 50, justifyContent: 'center', marginBottom: 5}}>
+    <View style={{height: 40, justifyContent: 'center', marginBottom: 5}}>
       <Image
         source={chipsIcon}
         style={{
           position: 'absolute',
-          height: 50,
-          width: 50,
+          height: 40,
+          width: 40,
           left: 12,
         }}
       />
@@ -310,7 +252,7 @@ function MainPage({navigation}) {
                 </View>
               </ScrollView>
             ) : (
-              <Swiper key={chips.length}>
+              <Swiper key={chips.length} loop={false}>
                 {chips.map((chip: ChipObject) => {
                   const date = chip.timeSubmitted.toDate().toLocaleDateString();
                   const time = chip.timeSubmitted.toDate().toLocaleTimeString();
@@ -319,14 +261,13 @@ function MainPage({navigation}) {
                       style={{
                         height: '100%',
                         width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
                       }}>
                       <View
                         style={{
-                          height: '90%',
-                          width: '90%',
+                          height: '100%',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
                         }}>
                         <ChipDisplayLarge
                           key={chip.key}

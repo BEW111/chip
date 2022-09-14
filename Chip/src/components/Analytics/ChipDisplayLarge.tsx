@@ -3,7 +3,7 @@ import {View} from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
-import {Text} from 'react-native-paper';
+import {Text, Surface} from 'react-native-paper';
 
 import {selectUid} from '../../redux/authSlice';
 
@@ -30,35 +30,59 @@ export default function ChipDisplayLarge(props) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={toggleSelect}>
+    <Surface
+      style={{
+        height: '80%',
+        width: '95%',
+        display: 'flex',
+
+        backgroundColor: 'white',
+        borderRadius: 5,
+        top: 10,
+      }}>
+      <Text
+        style={{
+          color: 'black',
+          marginTop: 7,
+          fontSize: 24,
+          alignSelf: 'center',
+        }}>
+        {props.verb}
+      </Text>
       <View
         style={{
-          height: '100%',
-          width: '100%',
+
+          flexGrow: 1,
+          flexBasis: 0,
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          flexDirection: 'row',
         }}>
-        {downloadURL ? (
-          <FastImage
-            source={{uri: downloadURL}}
-            style={{
-              height: '100%',
-              width: '100%',
-              borderWidth: selected ? 3 : 0,
-              borderColor: 'pink',
-              overflow: 'hidden',
-            }}
-          />
-        ) : (
-          <></>
-        )}
-        <View style={{position: 'absolute', alignItems: 'center'}}>
-          <Text style={{color: 'white'}}>{props.date}</Text>
-          <Text style={{color: 'white'}}>{props.time}</Text>
-          <Text style={{color: 'white'}}>{props.verb}</Text>
+        <View
+          style={{
+            height: '100%',
+            aspectRatio: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          {downloadURL ? (
+            <FastImage
+              source={{uri: downloadURL}}
+              style={{
+                height: '90%',
+                aspectRatio: 1,
+                overflow: 'hidden',
+                borderRadius: 5,
+              }}
+            />
+          ) : (
+            <View style={{height: '90%', aspectRatio: 1, borderRadius: 5, backgroundColor: 'gray'}} />
+          )}
         </View>
+        <Text style={{color: 'black', marginTop: 10, fontSize: 16}}>
+          {props.date + '\n' + props.time}
+        </Text>
       </View>
-    </TouchableWithoutFeedback>
+    </Surface>
   );
 }
