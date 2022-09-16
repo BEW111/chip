@@ -2,9 +2,10 @@
 import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Image, Pressable, Button} from 'react-native';
-import {TextInput, IconButton, Text} from 'react-native-paper';
+import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
+import {IconButton, Text, Surface} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Picker} from 'react-native-wheel-pick';
 
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
@@ -16,6 +17,7 @@ import Animated, {
   withRepeat,
   withTiming,
   cancelAnimation,
+  makeMutable,
 } from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -23,7 +25,6 @@ import {
   takePhoto,
   toggleViewingPhoto,
   selectPhotoSource,
-  updateGoal,
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
 import {selectUid} from '../redux/authSlice';
@@ -31,11 +32,14 @@ import {selectUid} from '../redux/authSlice';
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
+import DropDown from '../components/Analytics/Dropdown';
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
-  const userGoalText = useSelector(state => state.chipSubmitter.goal);
   const uid = useSelector(selectUid);
+
+  const [popupShowing, setPopupShowing] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState('');
 
   return (
     <View
@@ -43,80 +47,112 @@ function PhotoViewer(props) {
         width: '100%',
         height: '100%',
         position: 'absolute',
+
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        }}>
-        <View
+      {popupShowing ? (
+        <></>
+      ) : (
+        <Surface
+          pointerEvents={'box-none'}
           style={{
-            flex: 1,
+            width: '90%',
+            height: '40%',
 
-            position: 'absolute',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
+            borderRadius: 10,
 
-            bottom: 10,
+            backgroundColor: 'white',
           }}>
-          <TextInput
-            placeholder="Enter goal here"
-            onChangeText={text => dispatch(updateGoal(text))}
-            defaultValue={userGoalText}
+          <View
+            pointerEvents={'box-none'}
             style={{
-              backgroundColor: 'gray',
-              textAlign: 'center',
               flex: 1,
-              color: 'white',
-              fontSize: 24,
-              paddingHorizontal: 15,
-            }}
-            underlineColor="gray"
-            activeUnderlineColor="white"
-          />
-        </View>
-      </View>
-      <View
+
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Picker
+              pointerEvents={'box-none'}
+              style={{
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                width: 330,
+                height: 250,
+                borderRadius: 15,
+                justifyContent: 'center',
+                overflow: 'hidden',
+              }}
+              selectedValue={'Exercise'}
+              pickerData={['Exercise', 'Eat healthy', 'Study']}
+              onValueChange={value => {
+                setSelectedGoal(value);
+              }}
+            />
+          </View>
+          <Pressable
+            onPress={() => setPopupShowing(!popupShowing)}
+            style={{
+              width: 40,
+              height: 40,
+
+              position: 'absolute',
+              top: 10,
+              right: 10,
+
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon name="close" size={24} />
+          </Pressable>
+        </Surface>
+      )}
+      <Pressable
+        onPress={() => dispatch(toggleViewingPhoto())}
         style={{
-          overflow: 'hidden',
-          width: '100%',
-          aspectRatio: 1,
+          backgroundColor: 'rgba(200, 200, 200, 0.3)',
+          height: 50,
+          width: 50,
+          borderRadius: 7,
 
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+
+          position: 'absolute',
+          left: 20,
+          bottom: 20,
+        }}>
+        <Icon name="trash-outline" size={36} style={{marginLeft: 2}} />
+      </Pressable>
+      <Pressable
+        onPress={() => {
+          dispatch(toggleViewingPhoto());
+          submitChip(props.photoSource, selectedGoal, uid);
         }}
-      />
-      <View
         style={{
-          flex: 1,
+          backgroundColor: '#EC407A',
+          height: 50,
+          width: 50,
+          borderRadius: 7,
 
           display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
 
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          position: 'absolute',
+          right: 20,
+          bottom: 20,
         }}>
-        <Pressable
-          onPress={() => dispatch(toggleViewingPhoto())}
-          style={{
-            backgroundColor: 'rgba(200, 200, 200, 0.3)',
-            height: 50,
-            width: 50,
-            borderRadius: 7,
-
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-
-            left: 20,
-            marginTop: 'auto',
-            marginBottom: 20,
-
-            zIndex: 5,
-          }}>
-          <Icon name="trash-outline" size={36} style={{marginLeft: 2}} />
-        </Pressable>
-      </View>
+        <Icon
+          name="checkmark-circle-outline"
+          size={36}
+          style={{marginLeft: 2}}
+          color={'black'}
+        />
+      </Pressable>
     </View>
   );
 }
@@ -311,7 +347,7 @@ export default function Home() {
           right: 0,
 
           height: 100,
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}>
         <Pressable
           disabled={viewingPhoto}

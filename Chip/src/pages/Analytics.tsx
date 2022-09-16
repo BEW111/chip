@@ -60,7 +60,7 @@ function Stats2() {
 function StatsView() {
   return (
     <View style={{width: '100%', height: '100%'}}>
-      <Swiper>
+      <Swiper key={2} index={0}>
         <Stats1 />
         <Stats2 />
       </Swiper>

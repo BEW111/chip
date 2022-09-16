@@ -64,8 +64,8 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: '#B4004E',
-    secondary: '#00ff00',
-    tertiary: '#00ffff',
+    secondary: '#EC407A',
+    tertiary: '#DFA349',
   },
   fonts: configureFonts(fontConfig),
 };

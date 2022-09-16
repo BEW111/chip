@@ -85,11 +85,11 @@ function MainTabs() {
             component={Social}
             options={{
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center'}}>
+                <View style={{alignItems: 'center', margin: -3}}>
                   <Icon
                     name={focused ? 'people-circle' : 'people-circle-outline'}
                     color={color}
-                    size={20}
+                    size={28}
                   />
                 </View>
               ),
@@ -101,11 +101,11 @@ function MainTabs() {
             options={{
               tabBarShowLabel: false,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center'}}>
+                <View style={{alignItems: 'center', margin: -3}}>
                   <Icon
                     name={focused ? 'camera' : 'camera-outline'}
                     color={color}
-                    size={20}
+                    size={28}
                   />
                 </View>
               ),
@@ -117,11 +117,11 @@ function MainTabs() {
             options={{
               tabBarShowLabel: false,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center'}}>
+                <View style={{alignItems: 'center', margin: -3}}>
                   <Icon
                     name={focused ? 'stats-chart' : 'stats-chart-outline'}
                     color={color}
-                    size={20}
+                    size={28}
                   />
                 </View>
               ),

@@ -39,6 +39,9 @@ General
     npm install --save react-native-swiper@next
     npm install --save react-native-paper-dropdown
     npm install --save react-native-paper-dates
+    npm install react-native-wheel-pick --save --legacy-peer-deps
+    npm install @react-native-picker/picker --save --legacy-peer-deps
+    npm install @react-native-community/datetimepicker --save --legacy-peer-deps
     ```
 - Images
     ```
