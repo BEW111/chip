@@ -43,7 +43,7 @@ interface ChipObject {
 
 function Stats1() {
   return (
-    <View style={{flex: 1, backgroundColor: 'pink'}}>
+    <View style={{flex: 1, backgroundColor: 'pink', borderRadius: 10}}>
       <Text> stats1 </Text>
     </View>
   );
@@ -51,7 +51,7 @@ function Stats1() {
 
 function Stats2() {
   return (
-    <View style={{flex: 1, backgroundColor: 'rgb(200, 200, 255)'}}>
+    <View style={{flex: 1, backgroundColor: 'rgb(200, 200, 255)', borderRadius: 10}}>
       <Text> stats2 </Text>
     </View>
   );
@@ -60,11 +60,6 @@ function Stats2() {
 function StatsView() {
   return (
     <View style={{width: '100%', height: '100%'}}>
-      <StatusBar
-        animated={true}
-        backgroundColor="#61dafb"
-        barStyle="dark-content"
-      />
       <Swiper>
         <Stats1 />
         <Stats2 />
@@ -164,7 +159,7 @@ function MainPage({navigation}) {
   }
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{flex: 1}}>
       <Image
         source={backgroundImage}
         style={{
@@ -188,10 +183,10 @@ function MainPage({navigation}) {
             flexDirection: 'row',
           }}>
           {/* Main view */}
-          <View style={{flex: 3, display: 'flex'}}>
+          <View style={{flex: 1, display: 'flex'}}>
             <View
               style={{
-                height: 80,
+                paddingVertical: 7,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
@@ -205,16 +200,20 @@ function MainPage({navigation}) {
                 list={goalsList}
               />
             </View>
-            <View>
-              <Surface
+            <View
+              style={{
+                flex: 0.5,
+
+                alignItems: 'center',
+              }}>
+              <View
                 style={{
-                  height: 200,
-                  margin: 5,
+                  width: '95%',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
                 <StatsView />
-              </Surface>
+              </View>
             </View>
             {chipViewType === 'tiled' ? (
               <ScrollView
@@ -252,7 +251,9 @@ function MainPage({navigation}) {
                 </View>
               </ScrollView>
             ) : (
-              <Swiper key={chips.length} loop={false}>
+              <Swiper
+                key={chips.length}
+                loop={false}>
                 {chips.map((chip: ChipObject) => {
                   const date = chip.timeSubmitted.toDate().toLocaleDateString();
                   const time = chip.timeSubmitted.toDate().toLocaleTimeString();
@@ -300,19 +301,26 @@ function MainPage({navigation}) {
 
 export default function Analytics() {
   return (
-    <SettingsDrawer.Navigator
-      initialRouteName="AnalyticsMain"
-      drawerContent={props => <Settings {...props} />}>
-      <SettingsDrawer.Screen
-        name="AnalyticsMain"
-        component={MainPage}
-        options={{
-          headerShown: false,
-          drawerPosition: 'right',
-          drawerType: 'front',
-          swipeEnabled: false,
-        }}
+    <>
+      <StatusBar
+        animated={true}
+        backgroundColor="#61dafb"
+        barStyle="dark-content"
       />
-    </SettingsDrawer.Navigator>
+      <SettingsDrawer.Navigator
+        initialRouteName="AnalyticsMain"
+        drawerContent={props => <Settings {...props} />}>
+        <SettingsDrawer.Screen
+          name="AnalyticsMain"
+          component={MainPage}
+          options={{
+            headerShown: false,
+            drawerPosition: 'right',
+            drawerType: 'front',
+            swipeEnabled: false,
+          }}
+        />
+      </SettingsDrawer.Navigator>
+    </>
   );
 }

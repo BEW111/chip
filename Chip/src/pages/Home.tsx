@@ -2,7 +2,7 @@
 import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
+import {StyleSheet, View, Linking, Image, Pressable, Button} from 'react-native';
 import {TextInput, IconButton, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -41,24 +41,14 @@ function PhotoViewer(props) {
     <View
       style={{
         width: '100%',
+        height: '100%',
         position: 'absolute',
-
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }}>
       <View
         style={{
-          borderRadius: 10,
-          overflow: 'hidden',
-          width: 350,
-          height: 350,
-
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          flex: 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
         }}>
-        <Image source={props.photoSource} style={{width: 350, height: 350}} />
         <View
           style={{
             flex: 1,
@@ -67,6 +57,8 @@ function PhotoViewer(props) {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+
+            bottom: 10,
           }}>
           <TextInput
             placeholder="Enter goal here"
@@ -84,31 +76,46 @@ function PhotoViewer(props) {
             activeUnderlineColor="white"
           />
         </View>
-        <IconButton
-          icon="arrow-undo-outline"
-          size={36}
-          style={{
-            backgroundColor: 'blue',
-            position: 'absolute',
-            left: 5,
-            bottom: 5,
-            alignItems: 'center',
-          }}
+      </View>
+      <View
+        style={{
+          overflow: 'hidden',
+          width: '100%',
+          aspectRatio: 1,
+
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      />
+      <View
+        style={{
+          flex: 1,
+
+          display: 'flex',
+
+          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        }}>
+        <Pressable
           onPress={() => dispatch(toggleViewingPhoto())}
-        />
-        <IconButton
-          icon="arrow-forward-circle-outline"
-          size={36}
           style={{
-            backgroundColor: 'blue',
-            position: 'absolute',
-            right: 5,
-            bottom: 5,
-          }}
-          onPress={() => {
-            submitChip(props.photoSource, userGoalText, uid);
-          }}
-        />
+            backgroundColor: 'rgba(200, 200, 200, 0.3)',
+            height: 50,
+            width: 50,
+            borderRadius: 7,
+
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+
+            left: 20,
+            marginTop: 'auto',
+            marginBottom: 20,
+
+            zIndex: 5,
+          }}>
+          <Icon name="trash-outline" size={36} style={{marginLeft: 2}} />
+        </Pressable>
       </View>
     </View>
   );
@@ -227,7 +234,7 @@ export default function Home() {
           ref={camera}
           style={StyleSheet.absoluteFill}
           device={device}
-          isActive={isFocused}
+          isActive={isFocused && !viewingPhoto}
           photo={true}
           enableZoomGesture
         />
@@ -236,34 +243,42 @@ export default function Home() {
           <Text>No camera found (likely running on simulator)</Text>
         </View>
       )}
-      {viewingPhoto ? <PhotoViewer photoSource={photoSource} /> : <></>}
+      {viewingPhoto ? (
+        <PhotoViewer photoSource={photoSource} />
+      ) : (
+        <>
+          <View
+            style={{
+              position: 'absolute',
+              alignItems: 'center',
+              top: 70,
+              right: 10,
+            }}>
+            <IconButton
+              icon="camera-reverse-outline"
+              size={24}
+              onPress={onFlipDevicePressed}
+              style={{
+                borderColor: 'white',
+                borderWidth: 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              }}
+            />
+            <IconButton
+              icon={flash === 'on' ? 'flash' : 'flash-off'}
+              size={24}
+              onPress={onFlashPressed}
+              style={{
+                borderColor: 'white',
+                borderWidth: 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              }}
+            />
+          </View>
+        </>
+      )}
       <View
-        style={{
-          position: 'absolute',
-          alignItems: 'center',
-          top: 70,
-          right: 10,
-        }}>
-        <IconButton
-          icon="camera-reverse-outline"
-          size={24}
-          onPress={onFlipDevicePressed}
-          style={{
-            borderColor: 'white',
-            borderWidth: 1,
-          }}
-        />
-        <IconButton
-          icon={flash === 'on' ? 'flash' : 'flash-off'}
-          size={24}
-          onPress={onFlashPressed}
-          style={{
-            borderColor: 'white',
-            borderWidth: 1,
-          }}
-        />
-      </View>
-      <View
+        pointerEvents={'box-none'}
         style={{
           position: 'absolute',
           alignItems: 'center',
@@ -281,11 +296,13 @@ export default function Home() {
             style={{
               width: '100%',
               height: '100%',
+              opacity: !viewingPhoto,
             }}
           />
         </Animated.View>
       </View>
       <View
+        pointerEvents={'box-none'}
         style={{
           position: 'absolute',
           alignItems: 'center',
@@ -294,11 +311,12 @@ export default function Home() {
           right: 0,
 
           height: 100,
-          justifyContent: 'center',
+          justifyContent: 'center'
         }}>
         <Pressable
+          disabled={viewingPhoto}
           onPressIn={() => {
-            photoButtonScale.value = withSpring(0.9, {
+            photoButtonScale.value = withSpring(0.2, {
               damping: 10,
               stiffness: 200,
             });
@@ -321,6 +339,7 @@ export default function Home() {
               style={{
                 width: '100%',
                 height: '100%',
+                opacity: !viewingPhoto,
               }}
               source={pictureButtonInside}
             />

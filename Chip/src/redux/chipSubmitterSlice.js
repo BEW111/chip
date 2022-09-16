@@ -8,6 +8,7 @@ export const takePhoto = createAsyncThunk(
     const flash = payload.flash;
     const photo = await camera.current.takePhoto({
       flash: flash,
+      qualityPrioritization: 'speed',
     });
     return photo.path;
   },
