@@ -3,7 +3,7 @@ import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
 import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
-import {IconButton, Text, Surface} from 'react-native-paper';
+import {IconButton, Text, TextInput, Surface} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
 
@@ -32,14 +32,14 @@ import {selectUid} from '../redux/authSlice';
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
-import DropDown from '../components/Analytics/Dropdown';
 
 function PhotoViewer(props) {
   const dispatch = useDispatch();
   const uid = useSelector(selectUid);
 
-  const [popupShowing, setPopupShowing] = useState(false);
+  const [popupShowing, setPopupShowing] = useState(true);
   const [selectedGoal, setSelectedGoal] = useState('');
+  const [chipDescription, setChipDescription] = useState('');
 
   return (
     <View
@@ -53,8 +53,6 @@ function PhotoViewer(props) {
         alignItems: 'center',
       }}>
       {popupShowing ? (
-        <></>
-      ) : (
         <Surface
           pointerEvents={'box-none'}
           style={{
@@ -91,6 +89,12 @@ function PhotoViewer(props) {
               }}
             />
           </View>
+          <TextInput
+            style={{margin: 10}}
+            label="Description"
+            value={chipDescription}
+            onChangeText={text => setChipDescription(text)}
+          />
           <Pressable
             onPress={() => setPopupShowing(!popupShowing)}
             style={{
@@ -108,11 +112,13 @@ function PhotoViewer(props) {
             <Icon name="close" size={24} />
           </Pressable>
         </Surface>
+      ) : (
+        <></>
       )}
       <Pressable
         onPress={() => dispatch(toggleViewingPhoto())}
         style={{
-          backgroundColor: 'rgba(200, 200, 200, 0.3)',
+          backgroundColor: '#546E7A',
           height: 50,
           width: 50,
           borderRadius: 7,
@@ -123,10 +129,32 @@ function PhotoViewer(props) {
 
           position: 'absolute',
           left: 20,
-          bottom: 20,
+          bottom: 30,
         }}>
         <Icon name="trash-outline" size={36} style={{marginLeft: 2}} />
       </Pressable>
+      {popupShowing ? (
+        <></>
+      ) : (
+        <Pressable
+          onPress={() => setPopupShowing(true)}
+          style={{
+            backgroundColor: '#FAC576',
+            height: 45,
+            width: 45,
+            borderRadius: 100,
+
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+
+            position: 'absolute',
+            right: 15,
+            bottom: 480,
+          }}>
+          <Icon name="create-outline" size={30} style={{marginLeft: 2}} />
+        </Pressable>
+      )}
       <Pressable
         onPress={() => {
           dispatch(toggleViewingPhoto());
@@ -144,7 +172,7 @@ function PhotoViewer(props) {
 
           position: 'absolute',
           right: 20,
-          bottom: 20,
+          bottom: 30,
         }}>
         <Icon
           name="checkmark-circle-outline"
@@ -267,6 +295,7 @@ export default function Home() {
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
       {device != null ? (
         <Camera
+          zoom={device.neutralZoom}
           ref={camera}
           style={StyleSheet.absoluteFill}
           device={device}
