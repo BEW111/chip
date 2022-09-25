@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
-export async function submitChip(photoFile, verb, UID) {
+export async function submitChip(photoFile, goal, desc, UID) {
   const currentdt = new Date();
   const localPath = photoFile.uri;
   const photoNameIndex = localPath.lastIndexOf('/') + 1;
@@ -21,7 +21,8 @@ export async function submitChip(photoFile, verb, UID) {
         .doc(UID)
         .collection('chips')
         .add({
-          verb: verb,
+          goal: goal,
+          description: desc,
           timeSubmitted: currentdt,
           photo: localPath.slice(photoNameIndex),
         })

@@ -6,6 +6,7 @@ import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
 import {IconButton, Text, TextInput, Surface} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
@@ -17,7 +18,6 @@ import Animated, {
   withRepeat,
   withTiming,
   cancelAnimation,
-  makeMutable,
 } from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -34,6 +34,8 @@ import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
 
 function PhotoViewer(props) {
+  const insets = useSafeAreaInsets();
+
   const dispatch = useDispatch();
   const uid = useSelector(selectUid);
 
@@ -61,7 +63,7 @@ function PhotoViewer(props) {
 
             borderRadius: 10,
 
-            backgroundColor: 'white',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
           }}>
           <View
             pointerEvents={'box-none'}
@@ -118,10 +120,10 @@ function PhotoViewer(props) {
       <Pressable
         onPress={() => dispatch(toggleViewingPhoto())}
         style={{
-          backgroundColor: '#546E7A',
-          height: 50,
-          width: 50,
-          borderRadius: 7,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          height: 40,
+          width: 40,
+          borderRadius: 100,
 
           display: 'flex',
           justifyContent: 'center',
@@ -129,9 +131,9 @@ function PhotoViewer(props) {
 
           position: 'absolute',
           left: 20,
-          bottom: 30,
+          top: 0 + insets.top,
         }}>
-        <Icon name="trash-outline" size={36} style={{marginLeft: 2}} />
+        <Icon name="close" size={32} color="white" style={{marginLeft: 2}} />
       </Pressable>
       {popupShowing ? (
         <></>
@@ -140,28 +142,28 @@ function PhotoViewer(props) {
           onPress={() => setPopupShowing(true)}
           style={{
             backgroundColor: '#FAC576',
-            height: 45,
-            width: 45,
-            borderRadius: 100,
+            height: 50,
+            width: 50,
+            borderRadius: 7,
 
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
 
             position: 'absolute',
-            right: 15,
-            bottom: 480,
+            right: 20,
+            bottom: 120,
           }}>
-          <Icon name="create-outline" size={30} style={{marginLeft: 2}} />
+          <Icon name="create-outline" size={36} style={{marginLeft: 2}} />
         </Pressable>
       )}
       <Pressable
         onPress={() => {
           dispatch(toggleViewingPhoto());
-          submitChip(props.photoSource, selectedGoal, uid);
+          submitChip(props.photoSource, selectedGoal, chipDescription, uid);
         }}
         style={{
-          backgroundColor: '#EC407A',
+          backgroundColor: '#29E8A5',
           height: 50,
           width: 50,
           borderRadius: 7,

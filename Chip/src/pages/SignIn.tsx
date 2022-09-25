@@ -4,6 +4,7 @@ import {Button, TextInput, Text, Card, HelperText} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import backgroundImage from '../../assets/background.png';
+import lightHeader from '../../assets/chip_header_light.png';
 
 import auth from '@react-native-firebase/auth';
 
@@ -47,12 +48,22 @@ export default function OnboardingRegister({navigation}) {
             columnGap: '40px',
           }}
           alwaysBounceVertical={false}>
+          <Image
+            source={lightHeader}
+            style={{
+              position: 'absolute',
+              width: 210,
+              height: 70,
+              top: 80,
+            }}
+          />
           <Card
             style={{
               width: '90%',
               marginTop: 25,
               marginBottom: 40,
               padding: 15,
+              backgroundColor: 'rgba(255, 255, 255, 0.6)',
             }}>
             <Text style={{color: 'black', fontSize: 18, marginBottom: 5}}>
               Email

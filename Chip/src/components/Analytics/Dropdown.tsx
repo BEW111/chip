@@ -22,6 +22,7 @@ import React, {
   useCallback,
   Fragment,
 } from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Theme} from 'react-native-paper/lib/typescript/types';
 import {TextInputProps} from 'react-native-paper/lib/typescript/components/TextInput/TextInput';
 
@@ -159,13 +160,16 @@ const DropDown = forwardRef<TouchableWithoutFeedback, DropDownPropsInterface>(
                 style={{
                   backgroundColor: 'rgba(0, 0, 0, 0)',
                   height: 60,
-                  width: 250,
-                  fontSize: 30,
+                  width: 230,
+                  fontSize: 24,
                   fontFamily: 'Barlow-Medium',
                 }}
                 textAlign={'center'}
               />
-            </View>
+              <View style={{position: 'absolute', right: 0, top: 0, bottom: 0, justifyContent: 'center'}}>
+                <Icon name="chevron-down-outline" size={24} />
+              </View>
+              </View>
           </TouchableRipple>
         }
         style={{

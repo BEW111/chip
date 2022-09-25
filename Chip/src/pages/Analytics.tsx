@@ -13,6 +13,7 @@ import {
 import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // import auth from '@react-native-firebase/auth';
 import firestore, {
@@ -36,9 +37,10 @@ const SettingsDrawer = createDrawerNavigator(); // for settings
 
 interface ChipObject {
   key: string;
-  verb: string;
+  goal: string;
   timeSubmitted: FirebaseFirestoreTypes.Timestamp;
   photo: string;
+  description: string;
 }
 
 function Stats1() {
@@ -51,7 +53,12 @@ function Stats1() {
 
 function Stats2() {
   return (
-    <View style={{flex: 1, backgroundColor: 'rgb(200, 200, 255)', borderRadius: 10}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'rgb(200, 200, 255)',
+        borderRadius: 10,
+      }}>
       <Text> stats2 </Text>
     </View>
   );
@@ -113,7 +120,7 @@ function MainPage({navigation}) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState('workouts');
 
-  const chipViewType: 'tiled' | 'swipe' = 'swipe';
+  const chipViewType: 'tiled' | 'swipe' = 'tiled';
 
   const goalsList = [
     {
@@ -253,7 +260,35 @@ function MainPage({navigation}) {
             ) : (
               <Swiper
                 key={chips.length}
-                loop={false}>
+                loop={false}
+                dot={
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(0,0,0,.2)',
+                      width: 12,
+                      height: 6,
+                      borderRadius: 4,
+                      marginLeft: 3,
+                      marginRight: 3,
+                      marginTop: 3,
+                      marginBottom: 3,
+                    }}
+                  />
+                }
+                activeDot={
+                  <View
+                    style={{
+                      backgroundColor: '#B4004E',
+                      width: 12,
+                      height: 6,
+                      borderRadius: 4,
+                      marginLeft: 3,
+                      marginRight: 3,
+                      marginTop: 3,
+                      marginBottom: 3,
+                    }}
+                  />
+                }>
                 {chips.map((chip: ChipObject) => {
                   const date = chip.timeSubmitted.toDate().toLocaleDateString();
                   const time = chip.timeSubmitted.toDate().toLocaleTimeString();
@@ -272,8 +307,9 @@ function MainPage({navigation}) {
                         }}>
                         <ChipDisplayLarge
                           key={chip.key}
-                          verb={chip.verb}
+                          goal={chip.goal}
                           photo={chip.photo}
+                          description={chip.description}
                           date={date}
                           time={time}
                         />
@@ -286,15 +322,13 @@ function MainPage({navigation}) {
           </View>
         </View>
       </View>
-      {chipViewType === 'tiled' && (
-        <AnimatedFAB
-          style={styles.fab}
-          icon="share"
-          onPress={() => console.log('Share button pressed')}
-          label={'Share'}
-          extended={false}
-        />
-      )}
+      <AnimatedFAB
+        style={styles.fab}
+        icon="share"
+        onPress={() => console.log('Share button pressed')}
+        label={'Share'}
+        extended={false}
+      />
     </View>
   );
 }

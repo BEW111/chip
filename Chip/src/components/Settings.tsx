@@ -22,15 +22,15 @@ export default function Settings(props) {
       <Text
         style={{
           marginLeft: 15,
-          fontSize: 24,
+          fontSize: 18,
           marginBottom: 10,
           color: 'black',
         }}>
-        {user.email}
+        Logged in as {user.email}
       </Text>
       <Drawer.Item
-        style={{backgroundColor: 'black'}}
-        icon="logout"
+        style={{backgroundColor: 'white'}}
+        icon="log-out-outline"
         label="Sign out"
         onPress={onLogoutPressed}
       />
