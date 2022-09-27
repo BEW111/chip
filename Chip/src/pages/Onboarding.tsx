@@ -19,7 +19,7 @@ export default function Onboarding({navigation}) {
       }}
       alwaysBounceVertical={false}>
       <View style={{width: '100%', paddingHorizontal: 15}}>
-        <GoalGalaxyView width={1500} height={1500} margin={50} />
+        {/* <GoalGalaxyView width={1500} height={1500} margin={50} /> */}
         <View
           style={{
             top: 100,
