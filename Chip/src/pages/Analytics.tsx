@@ -226,13 +226,12 @@ function MainPage({navigation}) {
               <ScrollView
                 style={{
                   flex: 1,
-                }}
-                contentContainerStyle={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
                 }}>
                 <View
                   style={{
+                    width: '100%',
+                    height: '100%',
+
                     display: 'flex',
                     flexDirection: 'row',
                     flexWrap: 'wrap',
@@ -246,13 +245,15 @@ function MainPage({navigation}) {
                       .toDate()
                       .toLocaleTimeString();
                     return (
-                      <ChipDisplayMini
-                        key={chip.key}
-                        verb={chip.verb}
-                        photo={chip.photo}
-                        date={date}
-                        time={time}
-                      />
+                      <View style={{width: '33.3%', aspectRatio: 1}} key={chip.key}>
+                        <ChipDisplayMini
+                          key={chip.key}
+                          verb={chip.description}
+                          photo={chip.photo}
+                          date={date}
+                          time={time}
+                        />
+                      </View>
                     );
                   })}
                 </View>

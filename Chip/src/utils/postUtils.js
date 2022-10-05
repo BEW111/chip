@@ -9,30 +9,38 @@ export async function createNewUser(email, password, newGoal) {
   try {
     const currentdt = new Date();
 
-    const result = await auth().createUserWithEmailAndPassword(email, password); // register
+    const authResult = await auth().createUserWithEmailAndPassword(email, password); // register
     const UID = auth().currentUser.uid; // get uid for this user
 
     // Add user doc to firestore
-    await firestore()
+    const firestoreResult = await firestore()
       .collection('users')
       .doc(UID)
       .set({
         username: '',
+        friends: [],
         timeCreated: currentdt,
         goals: [newGoal],
       });
 
     console.log('User added to firestore!');
+    return {
+      status: "success",
+      authResult: authResult,
+      firestoreResult: firestoreResult,
+    };
+
   } 
   catch (error) {
-    console.log(error);
-
-    if (error.code) {
-      console.log(error.code);
+    return {
+      status: "error",
+      code: error.code,
+      message: error.message,
     }
   }
 }
 
+// Updates the local state for user goals
 export async function dispatchUpdateUserGoals(UID, dispatch) {
   try {
     const userData = await firestore().collection('users').doc(UID).get(); // retrive user data from firestore
@@ -43,6 +51,7 @@ export async function dispatchUpdateUserGoals(UID, dispatch) {
   }
 }
 
+// Submits a chip to firestore
 export async function submitChip(photoFile, goal, desc, UID) {
   const currentdt = new Date();
   const localPath = photoFile.uri;
@@ -74,6 +83,7 @@ export async function submitChip(photoFile, goal, desc, UID) {
     .catch(e => console.log(e));
 }
 
+// Adds a goal to firestore
 export async function addGoal(goal, UID) {
   const url = `user/${UID}`;
 

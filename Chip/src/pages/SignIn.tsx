@@ -47,7 +47,8 @@ export default function SignIn({navigation}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            alwaysBounceVertical={false}>
+            alwaysBounceVertical={false}
+            keyboardShouldPersistTaps='handled'>
             <Card
               style={{
                 width: '90%',

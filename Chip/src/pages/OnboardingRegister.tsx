@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, ScrollView, View, Image} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, View, Image, Platform} from 'react-native';
 import {Button, TextInput, Text, Card, HelperText, Headline} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -17,23 +17,32 @@ export default function OnboardingRegister({navigation}) {
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
   const [confirmPassText, setConfirmPassText] = useState('');
+  const [displayError, setDisplayError] = useState('');
 
   const newGoal = useSelector(selectNewGoal);
 
-  const dispatch = useDispatch();
-
-  function onRegisterPressed() {
-    if (passText !== confirmPassText) {
-      console.log('Passwords must match');
+  async function onRegisterPressed() {
+    // Check for more obvious errors
+    if (emailText === "") {
+      setDisplayError('Email cannot be empty');
+    } else if (passText === "") {
+      setDisplayError('Password cannot be empty');
+    } else if (passText !== confirmPassText) {
+      setDisplayError('Passwords must match');
     } else {
-      console.log(newGoal);
-      createNewUser(emailText, passText, newGoal);
+      const result = await createNewUser(emailText, passText, newGoal);
+      
+      if (result.status === 'error') {
+        if (result.code === 'auth/email-already-in-use') {
+          setDisplayError('Email already in use');
+        } else if (result.code === 'auth/invalid-email') {
+          setDisplayError('Please enter a valid email');
+        } else if (result.code === 'auth/weak-password') {
+          setDisplayError('Please enter a stronger password');
+        }
+      }
     }
   }
-
-  const hasErrors = () => {
-    return passText !== confirmPassText;
-  };
 
   return (
     <View style={{flex: 1}}>
@@ -55,7 +64,8 @@ export default function OnboardingRegister({navigation}) {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            alwaysBounceVertical={false}>
+            alwaysBounceVertical={false}
+            keyboardShouldPersistTaps='handled'>
             <Card
               style={{
                 width: '90%',
@@ -104,9 +114,9 @@ export default function OnboardingRegister({navigation}) {
               />
               <HelperText
                 type="error"
-                visible={hasErrors()}
+                visible={displayError !== ""}
                 style={{marginBottom: 10, paddingTop: 0}}>
-                Passwords must match
+                {displayError}
               </HelperText>
               <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
                 <Button

@@ -33,9 +33,8 @@ export default function ChipDisplayMini(props) {
     <TouchableWithoutFeedback onPress={toggleSelect}>
       <View
         style={{
-          height: 100,
-          width: 100,
-          margin: 1,
+          height: '100%',
+          width: '100%',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -44,8 +43,8 @@ export default function ChipDisplayMini(props) {
           <FastImage
             source={{uri: downloadURL}}
             style={{
-              height: '100%',
-              width: '100%',
+              height: '99%',
+              width: '99%',
               borderWidth: selected ? 3 : 0,
               borderColor: 'pink',
               overflow: 'hidden',

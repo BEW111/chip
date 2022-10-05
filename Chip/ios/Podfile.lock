@@ -1093,6 +1093,11 @@ PODS:
     - RNFBApp
   - RNGestureHandler (2.5.0):
     - React-Core
+  - RNNotifee (7.0.1):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 7.0.1)
+  - RNNotifee/NotifeeCore (7.0.1):
+    - React-Core
   - RNReanimated (2.10.0):
     - DoubleConversion
     - FBLazyVector
@@ -1183,6 +1188,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - "RNFBStorage (from `../node_modules/@react-native-firebase/storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1306,6 +1312,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/storage"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1388,6 +1396,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: d0366fc866b70b184e71dae24a2e408fe334276d
   RNFBStorage: 77eb84ba48b06b34fb5eee2d83da6cce2ca609e5
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
+  RNNotifee: 3655e26c064d1a77132ce3c21d6aaf2b69bcbdc7
   RNReanimated: 7faa787e8d4493fbc95fab2ad331fa7625828cfa
   RNScreens: 4a1af06327774490d97342c00aee0c2bafb497b7
   RNSVG: 42a0c731b11179ebbd27a3eeeafa7201ebb476ff
