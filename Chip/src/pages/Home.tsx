@@ -27,7 +27,7 @@ import {
   selectPhotoSource,
 } from '../redux/chipSubmitterSlice';
 import {submitChip} from '../utils/postUtils';
-import {selectUid} from '../redux/authSlice';
+import {selectUid, selectUserGoals} from '../redux/authSlice';
 
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
@@ -38,6 +38,8 @@ function PhotoViewer(props) {
 
   const dispatch = useDispatch();
   const uid = useSelector(selectUid);
+
+  const userGoals = useSelector(selectUserGoals);
 
   const [popupShowing, setPopupShowing] = useState(true);
   const [selectedGoal, setSelectedGoal] = useState('');
@@ -85,7 +87,7 @@ function PhotoViewer(props) {
                 overflow: 'hidden',
               }}
               selectedValue={'Exercise'}
-              pickerData={['Exercise', 'Eat healthy', 'Study']}
+              pickerData={[...new Set([...userGoals, ...['Exercise', 'Eat healthy', 'Study']])]}
               onValueChange={value => {
                 setSelectedGoal(value);
               }}

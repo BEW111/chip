@@ -25,6 +25,7 @@ import Home from './src/pages/Home';
 import Analytics from './src/pages/Analytics';
 import Social from './src/pages/Social';
 import {
+  selectUserGoals,
   selectInitializing,
   selectNewlyCreated,
   selectUser,
@@ -32,13 +33,16 @@ import {
   updateNewlyCreated,
   updateUid,
   updateUser,
+  updateUserGoals,
 } from './src/redux/authSlice';
+import {selectNewGoal} from './src/redux/onboardingSlice';
 
 import theme from './src/theme';
 
 import backgroundImage from './assets/background.png';
 
 import GoalGalaxyView from './src/components/GoalGalaxy/GoalGalaxyView';
+import {dispatchUpdateUserGoals} from './src/utils/postUtils';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -137,38 +141,19 @@ function Main() {
   const dispatch = useDispatch();
   const initializing = useSelector(selectInitializing);
   const user = useSelector(selectUser);
-  const newlyCreated = useSelector(selectNewlyCreated);
 
   // Handle user state changes
   function onAuthStateChanged(updatedUser) {
-    console.log('auth state change');
+    console.log('auth state changed');
 
     if (updatedUser) {
       dispatch(updateUser(updatedUser.toJSON()));
       dispatch(updateUid(updatedUser.uid));
-
-      // Handle if this is the first time the user has logged in
-      if (newlyCreated) {
-        dispatch(updateNewlyCreated(false));
-
-        const currentdt = new Date();
-
-        firestore()
-          .collection('users')
-          .doc(updatedUser.uid)
-          .set({
-            timeCreated: currentdt,
-          })
-          .then(() => {
-            console.log('User added to firestore!');
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      }
+      dispatchUpdateUserGoals(updatedUser.uid, dispatch);
     } else {
       dispatch(updateUser(null));
       dispatch(updateUid(null));
+      dispatch(updateUserGoals([]));
     }
 
     if (initializing) {

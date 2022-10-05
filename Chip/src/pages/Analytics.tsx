@@ -325,7 +325,7 @@ function MainPage({navigation}) {
       <AnimatedFAB
         style={styles.fab}
         icon="share"
-        onPress={() => console.log('Share button pressed')}
+        // onPress={() => console.log('Share button pressed')}
         label={'Share'}
         extended={false}
       />

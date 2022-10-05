@@ -11,10 +11,10 @@ export default function Settings(props) {
   const user = useSelector(selectUser);
 
   function onLogoutPressed() {
-    console.log('logging out');
+    // console.log('logging out');
     auth()
       .signOut()
-      .then(() => console.log('User signed out!'));
+      // .then(() => console.log('User signed out!'));
   }
 
   return (
