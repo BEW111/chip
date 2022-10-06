@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, ScrollView, StatusBar, Image} from 'react-native';
+import {StyleSheet, View, ScrollView, StatusBar, Image, Dimensions} from 'react-native';
 
 import {
   IconButton,
@@ -13,7 +13,16 @@ import {
 import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/Ionicons';
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+  AbstractChart,
+} from "react-native-chart-kit";
 
 // import auth from '@react-native-firebase/auth';
 import firestore, {
@@ -22,7 +31,7 @@ import firestore, {
 // import storage from '@react-native-firebase/storage';
 
 import {useSelector} from 'react-redux';
-import {selectUid} from '../redux/authSlice';
+import {selectUid, selectUserGoals} from '../redux/authSlice';
 
 import Settings from '../components/Settings';
 import Dropdown from '../components/Analytics/Dropdown';
@@ -43,10 +52,71 @@ interface ChipObject {
   description: string;
 }
 
-function Stats1() {
+function TestChart({width, height}) {
   return (
-    <View style={{flex: 1, backgroundColor: 'pink', borderRadius: 10}}>
-      <Text> stats1 </Text>
+    <LineChart
+      data={{
+        labels: [...Array(7).keys()].map(k => {
+          let d = new Date();
+          d.setDate(d.getDate() - (6 - k));
+          var dd = String(d.getDate()).padStart(2, '0');
+          var mm = String(d.getMonth() + 1).padStart(2, '0'); //January is 0!
+          return `${mm}/${dd}`;
+        }),
+        datasets: [
+          {
+            data: [
+              Math.random() * 100,
+              Math.random() * 100,
+              Math.random() * 100,
+              Math.random() * 100,
+              Math.random() * 100,
+              Math.random() * 100,
+              Math.random() * 100
+            ]
+          }
+        ]
+      }}
+      width={width} // from react-native
+      height={height}
+      yAxisLabel="$"
+      yAxisSuffix="k"
+      yAxisInterval={1} // optional, defaults to 1
+      chartConfig={{
+        backgroundColor: "#29434E",
+        backgroundGradientFrom: "#546E7A",
+        backgroundGradientTo: "#A7C5D2",
+        decimalPlaces: 2, // optional, defaults to 2dp
+        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        style: {
+          borderRadius: 16,
+        },
+        propsForDots: {
+          r: "6",
+          strokeWidth: "2",
+          stroke: "#29434E"
+        }
+      }}
+      bezier
+      style={{
+        borderRadius: 0,
+      }}
+    />
+  );
+}
+
+function Stats1() {
+  const [chartWidth, setChartWidth] = useState(0);
+  const [chartHeight, setChartHeight] = useState(0);
+
+  return (
+    <View style={{flex: 1}} onLayout={(event) => {
+      var {width, height} = event.nativeEvent.layout;
+      setChartWidth(width);
+      setChartHeight(height);
+    }}>
+      <TestChart width={chartWidth} height={chartHeight}/>
     </View>
   );
 }
@@ -67,10 +137,11 @@ function Stats2() {
 function StatsView() {
   return (
     <View style={{width: '100%', height: '100%'}}>
-      <Swiper key={2} index={0}>
+      {/* <Swiper key={2} index={0}>
         <Stats1 />
         <Stats2 />
-      </Swiper>
+      </Swiper> */}
+      <Stats1 />
     </View>
   );
 }
@@ -114,28 +185,19 @@ const styles = StyleSheet.create({
 function MainPage({navigation}) {
   const insets = useSafeAreaInsets();
   const uid = useSelector(selectUid);
+  const userGoals = useSelector(selectUserGoals);
+
+  const allGoals = [...new Set([...userGoals, ...['Exercise', 'Eat healthy', 'Study']])];
+  const goalsList = allGoals.map(goal => {
+    return {label: goal, value: goal};
+  })
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState('workouts');
+  const [selectedGoal, setSelectedGoal] = useState(allGoals[0]);
 
   const chipViewType: 'tiled' | 'swipe' = 'tiled';
-
-  const goalsList = [
-    {
-      label: 'Workouts',
-      value: 'workouts',
-    },
-    {
-      label: 'Eating healthy',
-      value: 'eating',
-    },
-    {
-      label: 'Studying',
-      value: 'studying',
-    },
-  ];
 
   useEffect(() => {
     const subscriber = firestore()
@@ -209,13 +271,13 @@ function MainPage({navigation}) {
             </View>
             <View
               style={{
-                flex: 0.5,
-
+                flex: 0.7,
                 alignItems: 'center',
+                marginBottom: 5,
               }}>
               <View
                 style={{
-                  width: '95%',
+                  width: '98%',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
@@ -226,6 +288,8 @@ function MainPage({navigation}) {
               <ScrollView
                 style={{
                   flex: 1,
+                  width: '98%',
+                  alignSelf: 'center',
                 }}>
                 <View
                   style={{
@@ -237,7 +301,7 @@ function MainPage({navigation}) {
                     flexWrap: 'wrap',
                     justifyContent: 'flex-start',
                   }}>
-                  {chips.map((chip: ChipObject) => {
+                  {chips.filter((chip: ChipObject) => (chip.goal === selectedGoal)).map((chip: ChipObject) => {
                     const date = chip.timeSubmitted
                       .toDate()
                       .toLocaleDateString('en-US', { dateStyle: 'short' });
