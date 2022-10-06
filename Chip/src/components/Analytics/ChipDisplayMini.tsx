@@ -3,7 +3,8 @@ import {View} from 'react-native';
 
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
-import {Text} from 'react-native-paper';
+import {Surface, Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import {selectUid} from '../../redux/authSlice';
 
@@ -39,24 +40,56 @@ export default function ChipDisplayMini(props) {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        {downloadURL ? (
-          <FastImage
-            source={{uri: downloadURL}}
-            style={{
-              height: '99%',
-              width: '99%',
-              borderWidth: selected ? 3 : 0,
-              borderColor: 'pink',
-              overflow: 'hidden',
-            }}
-          />
-        ) : (
-          <></>
-        )}
-        <View style={{position: 'absolute', alignItems: 'center'}}>
-          <Text style={{color: 'white'}}>{props.date}</Text>
-          <Text style={{color: 'white'}}>{props.time}</Text>
-          <Text style={{color: 'white'}}>{props.verb}</Text>
+        <View
+          style={{
+            height: '99%',
+            width: '99%',
+        }}>
+          {downloadURL ? (
+            <FastImage
+              source={{uri: downloadURL}}
+              style={{
+                position: 'absolute',
+                height: '100%',
+                width: '100%',
+                overflow: 'hidden',
+              }}
+            />
+          ) : (
+            <></>
+          )}
+          {selected ? (
+            <View 
+              style={{
+                position: 'absolute',
+                height: '100%',
+                width: '100%',
+                backgroundColor: 'rgba(180, 180, 200, 0.2)'
+            }}>
+              <Icon 
+                name="checkmark-circle" 
+                size={24}
+                style={{
+                  position: 'absolute',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  bottom: 1,
+                  right: 1,
+                }}
+              />
+            </View>
+          ) : (
+            <></>
+          )}
+          <Surface style={{
+            width: '95%',
+            marginTop: 2,
+            alignSelf: 'center',
+            borderRadius: 5,
+            paddingHorizontal: 5,
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          }}>
+            <Text style={{color: 'white', fontWeight: '500'}}>{props.date}, {props.time}</Text>
+          </Surface>
         </View>
       </View>
     </TouchableWithoutFeedback>

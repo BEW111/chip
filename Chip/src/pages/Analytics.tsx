@@ -240,10 +240,10 @@ function MainPage({navigation}) {
                   {chips.map((chip: ChipObject) => {
                     const date = chip.timeSubmitted
                       .toDate()
-                      .toLocaleDateString();
+                      .toLocaleDateString('en-US', { dateStyle: 'short' });
                     const time = chip.timeSubmitted
                       .toDate()
-                      .toLocaleTimeString();
+                      .toLocaleTimeString('en-US', { timeStyle: 'short' });
                     return (
                       <View style={{width: '33.3%', aspectRatio: 1}} key={chip.key}>
                         <ChipDisplayMini
