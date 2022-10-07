@@ -563,10 +563,13 @@
 				DEVELOPMENT_TEAM = Q2SSLHK7Y8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Chip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chip;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -592,10 +595,13 @@
 				DEVELOPMENT_TEAM = Q2SSLHK7Y8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Chip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Chip;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.0.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
