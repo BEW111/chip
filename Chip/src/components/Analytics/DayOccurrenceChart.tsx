@@ -3,6 +3,8 @@ import {View} from 'react-native';
 import Svg, {Rect, Text, Circle, Line, G, LinearGradient, Defs, Stop} from 'react-native-svg';
 import {ChipObject} from '../../pages/Analytics';
 
+import BarlowRegular from '../../../assets/fonts/Barlow-Regular.ttf';
+
 
 const isToday = (someDate, offset) => {
     const today = new Date();
@@ -44,7 +46,7 @@ export default function DayOccurrenceChart({chips}) {
     const MARKER_COLOR = "#e6f7ff";
 
     const COLUMN_WIDTH = 30;
-    const COLUMN_COLOR = "#547685";
+    const COLUMN_COLOR = "rgba(100, 100, 150, 0.3)";
   
     return (
       <View style={{flex: 1}} onLayout={(event) => {
@@ -78,7 +80,9 @@ export default function DayOccurrenceChart({chips}) {
                     fill={COLUMN_COLOR} />
                 <Text
                     key={i}
-                    stroke="rgba(255, 255, 255, 0.5)"
+                    font={BarlowRegular}
+                    stroke="none"
+                    fill="rgba(255, 255, 255, 0.5)"
                     fontSize={14}
                     x={paddingHorizontal + timeTextSpace + dateColumnPadding + xSpacing * i}
                     y={chartHeight - dateTextSpace + 3}
@@ -97,7 +101,7 @@ export default function DayOccurrenceChart({chips}) {
                         key={j + (i * 100)}
                         x={paddingHorizontal + timeTextSpace + dateColumnPadding + xSpacing * i - (MARKER_WIDTH / 2)}
                         width={MARKER_WIDTH}
-                        y={y * chartHeight - (MARKER_HEIGHT / 2)}
+                        y={paddingVertical + (y * (chartHeight - dateTextSpace - 2 * paddingVertical)) - (MARKER_HEIGHT / 2)}
                         height={MARKER_HEIGHT}
                         stroke="none"
                         fill={MARKER_COLOR}
@@ -119,7 +123,9 @@ export default function DayOccurrenceChart({chips}) {
                     strokeDasharray="5, 3" />
                 <Text
                     key={i}
-                    stroke="rgba(255, 255, 255, 0.5)"
+                    font={BarlowRegular}
+                    stroke="none"
+                    fill="rgba(255, 255, 255, 0.5)"
                     fontSize={18}
                     x={paddingHorizontal}
                     y={paddingVertical + i * ySpacing + (18 / 2)}

@@ -17,8 +17,6 @@ export default function ChipDisplayLarge(props) {
   const [downloadURL, setDownloadURL] = useState('');
   const [selected, setSelected] = useState(false);
 
-  // console.log(props);
-
   useEffect(() => {
     async function grabURL() {
       const newURL = await storage().ref(path).getDownloadURL();

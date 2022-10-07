@@ -45,106 +45,12 @@ import chipsIcon from '../../assets/chips-icon.png';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 
-interface ChipObject {
+export interface ChipObject {
   key: string;
   goal: string;
   timeSubmitted: FirebaseFirestoreTypes.Timestamp;
   photo: string;
   description: string;
-}
-
-function TestChart({width, height, chips}) {
-  const isToday = (someDate, offset) => {
-    const today = new Date();
-    today.setDate(today.getDate() - offset);
-    return someDate.getDate() == today.getDate() &&
-      someDate.getMonth() == today.getMonth() &&
-      someDate.getFullYear() == today.getFullYear();
-  }
-
-  console.log(chips.map((chip: ChipObject) => {
-    return isToday(chip.timeSubmitted.toDate(), 1)
-  }));
-
-  let newDatasets = [...Array(7).keys()].map(k => {data: []});
-  // [...Array(7).keys()].forEach()
-
-  return (
-    <LineChart
-      data={{
-        labels: [...Array(7).keys()].map(k => {
-          let d = new Date();
-          d.setDate(d.getDate() - (6 - k));
-          var dd = String(d.getDate()).padStart(2, '0');
-          var mm = String(d.getMonth() + 1).padStart(2, '0'); //January is 0!
-          return `${mm}/${dd}`;
-        }),
-        datasets: [
-          {
-            data: [
-              1,
-              2,
-              3,
-              4,
-              5,
-              6,
-            ]
-          },
-          {
-            data: [
-              4,
-              2,
-              3,
-              4,
-              5,
-              6,
-            ]
-          }
-        ]
-      }}
-      width={width} // from react-native
-      height={height}
-      yAxisInterval={1} // optional, defaults to 1
-      formatYLabel={yLabel => {
-        return yLabel;
-      }}
-      chartConfig={{
-        backgroundColor: "#29434E",
-        backgroundGradientFrom: "#546E7A88",
-        backgroundGradientTo: "#A7C5D288",
-        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        style: {
-          borderRadius: 16,
-        },
-        propsForDots: {
-          r: "6",
-          strokeWidth: "2",
-          stroke: "#29434E"
-        },
-        barPercentage: 0.5,
-        // propsForLabels: {
-        //   opacity: 0.9,
-        // }
-      }}
-      style={{
-        borderRadius: 10,
-      }}
-    />
-  );
-}
-
-function Stats2() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: 'rgb(200, 200, 255)',
-        borderRadius: 10,
-      }}>
-      <Text> stats2 </Text>
-    </View>
-  );
 }
 
 function StatsView({filteredChips}) {
