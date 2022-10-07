@@ -38,6 +38,7 @@ import Dropdown from '../components/Analytics/Dropdown';
 
 import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
 import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
+import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
@@ -52,7 +53,22 @@ interface ChipObject {
   description: string;
 }
 
-function TestChart({width, height}) {
+function TestChart({width, height, chips}) {
+  const isToday = (someDate, offset) => {
+    const today = new Date();
+    today.setDate(today.getDate() - offset);
+    return someDate.getDate() == today.getDate() &&
+      someDate.getMonth() == today.getMonth() &&
+      someDate.getFullYear() == today.getFullYear();
+  }
+
+  console.log(chips.map((chip: ChipObject) => {
+    return isToday(chip.timeSubmitted.toDate(), 1)
+  }));
+
+  let newDatasets = [...Array(7).keys()].map(k => {data: []});
+  // [...Array(7).keys()].forEach()
+
   return (
     <LineChart
       data={{
@@ -66,27 +82,36 @@ function TestChart({width, height}) {
         datasets: [
           {
             data: [
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100,
-              Math.random() * 100
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+            ]
+          },
+          {
+            data: [
+              4,
+              2,
+              3,
+              4,
+              5,
+              6,
             ]
           }
         ]
       }}
       width={width} // from react-native
       height={height}
-      yAxisLabel="$"
-      yAxisSuffix="k"
       yAxisInterval={1} // optional, defaults to 1
+      formatYLabel={yLabel => {
+        return yLabel;
+      }}
       chartConfig={{
         backgroundColor: "#29434E",
-        backgroundGradientFrom: "#546E7A",
-        backgroundGradientTo: "#A7C5D2",
-        decimalPlaces: 2, // optional, defaults to 2dp
+        backgroundGradientFrom: "#546E7A88",
+        backgroundGradientTo: "#A7C5D288",
         color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
         labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
         style: {
@@ -96,28 +121,16 @@ function TestChart({width, height}) {
           r: "6",
           strokeWidth: "2",
           stroke: "#29434E"
-        }
+        },
+        barPercentage: 0.5,
+        // propsForLabels: {
+        //   opacity: 0.9,
+        // }
       }}
-      bezier
       style={{
-        borderRadius: 0,
+        borderRadius: 10,
       }}
     />
-  );
-}
-
-function Stats1() {
-  const [chartWidth, setChartWidth] = useState(0);
-  const [chartHeight, setChartHeight] = useState(0);
-
-  return (
-    <View style={{flex: 1}} onLayout={(event) => {
-      var {width, height} = event.nativeEvent.layout;
-      setChartWidth(width);
-      setChartHeight(height);
-    }}>
-      <TestChart width={chartWidth} height={chartHeight}/>
-    </View>
   );
 }
 
@@ -134,14 +147,10 @@ function Stats2() {
   );
 }
 
-function StatsView() {
+function StatsView({filteredChips}) {
   return (
     <View style={{width: '100%', height: '100%'}}>
-      {/* <Swiper key={2} index={0}>
-        <Stats1 />
-        <Stats2 />
-      </Swiper> */}
-      <Stats1 />
+      <DayOccurrenceChart chips={filteredChips}/>
     </View>
   );
 }
@@ -281,7 +290,7 @@ function MainPage({navigation}) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <StatsView />
+                <StatsView filteredChips={chips.filter((chip: ChipObject) => (chip.goal === selectedGoal))}/>
               </View>
             </View>
             {chipViewType === 'tiled' ? (
