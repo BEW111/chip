@@ -4,31 +4,21 @@ import {StyleSheet, View, ScrollView, StatusBar, Image, Dimensions} from 'react-
 
 import {
   IconButton,
-  Surface,
-  Text,
+  FAB,
+  Portal,
+  Provider,
   AnimatedFAB,
   ActivityIndicator,
   Divider,
+  Button,
 } from 'react-native-paper';
 import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-  AbstractChart,
-} from "react-native-chart-kit";
-
-// import auth from '@react-native-firebase/auth';
 import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
-// import storage from '@react-native-firebase/storage';
 
 import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
@@ -42,6 +32,7 @@ import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 
@@ -112,6 +103,9 @@ function MainPage({navigation}) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(allGoals[0]);
 
+  const [fabOpen, setFabOpen] = useState(false);
+  const onFabStateChange = ({ open }) => setFabOpen(open);
+
   const chipViewType: 'tiled' | 'swipe' = 'tiled';
 
   useEffect(() => {
@@ -143,173 +137,202 @@ function MainPage({navigation}) {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <Image
-        source={backgroundImage}
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-        }}
-      />
-      <View
-        style={{
-          height: '100%',
-          paddingTop: insets.top,
-        }}>
-        <Header navigation={navigation} />
-        <Divider style={{height: 2}} />
+    <>
+      <View style={{flex: 1}}>
+        <Image
+          source={backgroundImage}
+          style={{
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+          }}
+        />
         <View
           style={{
-            flex: 1,
-
-            display: 'flex',
-            flexDirection: 'row',
+            height: '100%',
+            paddingTop: insets.top,
           }}>
-          {/* Main view */}
-          <View style={{flex: 1, display: 'flex'}}>
-            <View
-              style={{
-                paddingVertical: 7,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Dropdown
-                mode={'flat'}
-                visible={showDropdown}
-                showDropDown={() => setShowDropdown(true)}
-                onDismiss={() => setShowDropdown(false)}
-                value={selectedGoal}
-                setValue={setSelectedGoal}
-                list={goalsList}
-              />
-            </View>
-            <View
-              style={{
-                flex: 0.7,
-                alignItems: 'center',
-                marginBottom: 5,
-              }}>
+          <Header navigation={navigation} />
+          <Divider style={{height: 2}} />
+          <View
+            style={{
+              flex: 1,
+
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
+            {/* Main view */}
+            <View style={{flex: 1, display: 'flex'}}>
               <View
                 style={{
-                  width: '98%',
+                  paddingVertical: 7,
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <StatsView filteredChips={chips.filter((chip: ChipObject) => (chip.goal === selectedGoal))}/>
+                <Dropdown
+                  mode={'flat'}
+                  visible={showDropdown}
+                  showDropDown={() => setShowDropdown(true)}
+                  onDismiss={() => setShowDropdown(false)}
+                  value={selectedGoal}
+                  setValue={setSelectedGoal}
+                  list={goalsList}
+                />
               </View>
-            </View>
-            {chipViewType === 'tiled' ? (
-              <ScrollView
+              <View
                 style={{
-                  flex: 1,
-                  width: '98%',
-                  alignSelf: 'center',
+                  flex: 0.7,
+                  alignItems: 'center',
+                  marginBottom: 5,
                 }}>
                 <View
                   style={{
-                    width: '100%',
-                    height: '100%',
-
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    justifyContent: 'flex-start',
+                    width: '98%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  {chips.filter((chip: ChipObject) => (chip.goal === selectedGoal)).map((chip: ChipObject) => {
-                    const date = chip.timeSubmitted
-                      .toDate()
-                      .toLocaleDateString('en-US', { dateStyle: 'short' });
-                    const time = chip.timeSubmitted
-                      .toDate()
-                      .toLocaleTimeString('en-US', { timeStyle: 'short' });
-                    return (
-                      <View style={{width: '33.3%', aspectRatio: 1}} key={chip.key}>
-                        <ChipDisplayMini
-                          key={chip.key}
-                          verb={chip.description}
-                          photo={chip.photo}
-                          date={date}
-                          time={time}
-                        />
-                      </View>
-                    );
-                  })}
+                  <StatsView filteredChips={chips.filter((chip: ChipObject) => (chip.goal === selectedGoal))}/>
                 </View>
-              </ScrollView>
-            ) : (
-              <Swiper
-                key={chips.length}
-                loop={false}
-                dot={
+              </View>
+              {chipViewType === 'tiled' ? (
+                <ScrollView
+                  style={{
+                    flex: 1,
+                    width: '98%',
+                    alignSelf: 'center',
+                  }}>
                   <View
                     style={{
-                      backgroundColor: 'rgba(0,0,0,.2)',
-                      width: 12,
-                      height: 6,
-                      borderRadius: 4,
-                      marginLeft: 3,
-                      marginRight: 3,
-                      marginTop: 3,
-                      marginBottom: 3,
-                    }}
-                  />
-                }
-                activeDot={
-                  <View
-                    style={{
-                      backgroundColor: '#B4004E',
-                      width: 12,
-                      height: 6,
-                      borderRadius: 4,
-                      marginLeft: 3,
-                      marginRight: 3,
-                      marginTop: 3,
-                      marginBottom: 3,
-                    }}
-                  />
-                }>
-                {chips.map((chip: ChipObject) => {
-                  const date = chip.timeSubmitted.toDate().toLocaleDateString();
-                  const time = chip.timeSubmitted.toDate().toLocaleTimeString();
-                  return (
+                      width: '100%',
+                      height: '100%',
+
+                      display: 'flex',
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      justifyContent: 'flex-start',
+                    }}>
+                    {chips.filter((chip: ChipObject) => (chip.goal === selectedGoal)).map((chip: ChipObject) => {
+                      const date = chip.timeSubmitted
+                        .toDate()
+                        .toLocaleDateString('en-US', { dateStyle: 'short' });
+                      const time = chip.timeSubmitted
+                        .toDate()
+                        .toLocaleTimeString('en-US', { timeStyle: 'short' });
+                      return (
+                        <View style={{width: '33.3%', aspectRatio: 1}} key={chip.key}>
+                          <ChipDisplayMini
+                            key={chip.key}
+                            verb={chip.description}
+                            photo={chip.photo}
+                            date={date}
+                            time={time}
+                          />
+                        </View>
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              ) : (
+                <Swiper
+                  key={chips.length}
+                  loop={false}
+                  dot={
                     <View
                       style={{
-                        height: '100%',
-                        width: '100%',
-                      }}>
+                        backgroundColor: 'rgba(0,0,0,.2)',
+                        width: 12,
+                        height: 6,
+                        borderRadius: 4,
+                        marginLeft: 3,
+                        marginRight: 3,
+                        marginTop: 3,
+                        marginBottom: 3,
+                      }}
+                    />
+                  }
+                  activeDot={
+                    <View
+                      style={{
+                        backgroundColor: '#B4004E',
+                        width: 12,
+                        height: 6,
+                        borderRadius: 4,
+                        marginLeft: 3,
+                        marginRight: 3,
+                        marginTop: 3,
+                        marginBottom: 3,
+                      }}
+                    />
+                  }>
+                  {chips.map((chip: ChipObject) => {
+                    const date = chip.timeSubmitted.toDate().toLocaleDateString();
+                    const time = chip.timeSubmitted.toDate().toLocaleTimeString();
+                    return (
                       <View
                         style={{
                           height: '100%',
                           width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
                         }}>
-                        <ChipDisplayLarge
-                          key={chip.key}
-                          goal={chip.goal}
-                          photo={chip.photo}
-                          description={chip.description}
-                          date={date}
-                          time={time}
-                        />
+                        <View
+                          style={{
+                            height: '100%',
+                            width: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}>
+                          <ChipDisplayLarge
+                            key={chip.key}
+                            goal={chip.goal}
+                            photo={chip.photo}
+                            description={chip.description}
+                            date={date}
+                            time={time}
+                          />
+                        </View>
                       </View>
-                    </View>
-                  );
-                })}
-              </Swiper>
-            )}
+                    );
+                  })}
+                </Swiper>
+              )}
+            </View>
           </View>
         </View>
       </View>
-      <AnimatedFAB
-        style={styles.fab}
-        icon="share"
-        // onPress={() => console.log('Share button pressed')}
-        label={'Share'}
-        extended={false}
-      />
-    </View>
+      <View style={{position: 'absolute', height: '100%', width: '100%'}} pointerEvents={"box-none"}>
+        <FAB.Group
+          visible={true}
+          open={fabOpen}
+          icon={fabOpen ? 'close' : 'add'}
+          actions={[
+            {
+              icon: 'alarm',
+              label: 'Remind (to be implemented)',
+              onPress: () => console.log('Pressed notifications'),
+            },
+            {
+              icon: 'share',
+              label: 'Share (to be implemented)',
+              onPress: () => console.log('Pressed star'),
+            },
+            {
+              icon: 'trash',
+              label: 'Delete (to be implemented)',
+              onPress: () => console.log('Pressed email'),
+            },
+          ]}
+          onStateChange={(o) => {
+            console.log(o);
+            onFabStateChange(o);
+          }}
+          onPress={() => {
+            if (fabOpen) {
+              console.log('test');
+              // setFabOpen(false);
+            }
+          }}
+        />
+      </View>
+    </>
   );
 }
 

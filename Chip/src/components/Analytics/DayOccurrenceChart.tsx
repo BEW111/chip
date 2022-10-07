@@ -71,7 +71,7 @@ export default function DayOccurrenceChart({chips}) {
             {dates.map((dateStr, i) => (
               <G key={i}>
                 <Rect 
-                    key={i}
+                    key={i + 100}
                     x={paddingHorizontal + timeTextSpace + dateColumnPadding - (COLUMN_WIDTH / 2) + xSpacing * i}
                     width={COLUMN_WIDTH}
                     y={paddingVertical} 
@@ -79,7 +79,7 @@ export default function DayOccurrenceChart({chips}) {
                     stroke="none" 
                     fill={COLUMN_COLOR} />
                 <Text
-                    key={i}
+                    key={i + 200}
                     font={BarlowRegular}
                     stroke="none"
                     fill="rgba(255, 255, 255, 0.5)"
@@ -111,7 +111,7 @@ export default function DayOccurrenceChart({chips}) {
               </G>
             ))}
             {times.map((timeStr, i) => (
-              <G key={i}>
+              <G key={i + 100}>
                 <Line 
                     key={i}
                     x1={paddingHorizontal + timeTextSpace}
@@ -122,7 +122,7 @@ export default function DayOccurrenceChart({chips}) {
                     strokeLinecap="round"
                     strokeDasharray="5, 3" />
                 <Text
-                    key={i}
+                    key={i + 100}
                     font={BarlowRegular}
                     stroke="none"
                     fill="rgba(255, 255, 255, 0.5)"
