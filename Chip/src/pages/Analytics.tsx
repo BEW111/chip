@@ -1,16 +1,19 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, ScrollView, StatusBar, Image, Dimensions} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import {
   IconButton,
   FAB,
   Portal,
-  Provider,
-  AnimatedFAB,
   ActivityIndicator,
   Divider,
   Button,
+  Text,
+  Menu,
+  Modal,
+  TextInput,
 } from 'react-native-paper';
 import Swiper from 'react-native-swiper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -20,11 +23,11 @@ import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
+import {selectSelectedGoal, updateSelectedGoal} from '../redux/analyticsSlice';
 
 import Settings from '../components/Settings';
-import Dropdown from '../components/Analytics/Dropdown';
 
 import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
 import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
@@ -32,7 +35,8 @@ import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 
 import backgroundImage from '../../assets/background.png';
 import chipsIcon from '../../assets/chips-icon.png';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
+import { addGoal } from '../utils/postUtils';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 
@@ -52,29 +56,107 @@ function StatsView({filteredChips}) {
   );
 }
 
-function Header({navigation}) {
-  return (
-    <View style={{height: 40, justifyContent: 'center', marginBottom: 5}}>
+function Header({navigation, goals}) {
+  const [goal, setGoal] = useState(goals[0]);
+  const uid = useSelector(selectUid);
+
+  const [menuVisible, setMenuVisible] = useState(false);
+  const openMenu = () => setMenuVisible(true);
+  const closeMenu = () => setMenuVisible(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+  const modalStyle = {
+    backgroundColor: 'white', 
+    padding: 20,
+    marginHorizontal: 20,
+    borderRadius: 5,
+  };
+
+  const [newGoalText, setNewGoalText] = useState('');
+
+  const insets = useSafeAreaInsets();
+
+  const dispatch = useDispatch();
+  dispatch(updateSelectedGoal(goal));
+
+  const menuAnchor = <IconButton
+    icon={({ size, color }) => (
       <Image
         source={chipsIcon}
-        style={{
-          position: 'absolute',
-          height: 40,
-          width: 40,
-          left: 12,
-        }}
+        style={{ width: size, height: size }}
       />
-      <IconButton
-        icon="cog"
-        size={36}
+    )}
+    size={42}
+    style={{
+      marginVertical: -5,
+    }}
+    onPress={openMenu}
+  />
+  
+  return (
+    <View style={{backgroundColor: 'rgba(255, 255, 255, 0.2)', alignItems: 'center', paddingTop: insets.top, paddingBottom: 5, display: 'flex', flexDirection: 'row'}}>
+      <Menu
+        visible={menuVisible}
+        onDismiss={closeMenu}
+        anchor={menuAnchor}
         style={{
-          position: 'absolute',
-          right: 0,
-        }}
-        onPress={() => {
-          navigation.toggleDrawer();
-        }}
-      />
+          marginTop: 60,
+        }}>
+        {goals.map(g => (
+          <Menu.Item
+            icon="arrow-forward-circle" 
+            onPress={() => {setGoal(g); dispatch(updateSelectedGoal(g)); closeMenu()}} 
+            title={g} 
+            key={g}
+            contentStyle={{
+              marginLeft: -10
+            }}
+          />
+        ))}
+        <Menu.Item 
+          icon="add-circle"
+          onPress={() => {setNewGoalText(''); setModalVisible(true); closeMenu()}}
+          title="Create new goal"
+          contentStyle={{
+            marginLeft: -10
+          }}
+        />
+      </Menu>
+      <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+        {goal}
+      </Text>
+      <View style={{display: 'flex', marginLeft: 'auto'}}>
+        <IconButton
+          icon="cog"
+          size={42}
+          style={{
+            marginVertical: -5
+          }}
+          onPress={() => {
+            navigation.toggleDrawer();
+          }}
+        />
+      </View>
+      <Portal>
+        <Modal visible={modalVisible} onDismiss={hideModal} contentContainerStyle={modalStyle}>
+          <Text style={{color: 'black', fontSize: 24, marginBottom: 10, textAlign: 'auto', fontWeight: 'bold'}}>Ready to set another goal?</Text>
+          <TextInput
+            mode="outlined"
+            placeholder="Something new"
+            onChangeText={newText => setNewGoalText(newText)}
+            defaultValue={newGoalText}
+            style={{color: 'black', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+            underlineColor="gray"
+            activeUnderlineColor="white"
+          />
+          <Button mode="contained" labelStyle={{fontSize: 18}} onPress={() => {
+            addGoal(newGoalText, uid); 
+            hideModal(); 
+          }}>Add goal</Button>
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -89,19 +171,16 @@ const styles = StyleSheet.create({
 });
 
 function MainPage({navigation}) {
-  const insets = useSafeAreaInsets();
   const uid = useSelector(selectUid);
   const userGoals = useSelector(selectUserGoals);
 
   const allGoals = [...new Set([...userGoals, ...['Exercise', 'Eat healthy', 'Study']])];
-  const goalsList = allGoals.map(goal => {
-    return {label: goal, value: goal};
-  })
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState(allGoals[0]);
+  const selectedGoal = useSelector(selectSelectedGoal);
+
+  console.log(selectedGoal);
 
   const [fabOpen, setFabOpen] = useState(false);
   const onFabStateChange = ({ open }) => setFabOpen(open);
@@ -139,7 +218,7 @@ function MainPage({navigation}) {
   return (
     <>
       <View style={{flex: 1}}>
-        <Image
+        <FastImage
           source={backgroundImage}
           style={{
             position: 'absolute',
@@ -150,10 +229,9 @@ function MainPage({navigation}) {
         <View
           style={{
             height: '100%',
-            paddingTop: insets.top,
           }}>
-          <Header navigation={navigation} />
-          <Divider style={{height: 2}} />
+          <Header navigation={navigation} goals={allGoals} />
+          <Divider style={{height: 2, marginBottom: 10}} />
           <View
             style={{
               flex: 1,
@@ -163,22 +241,6 @@ function MainPage({navigation}) {
             }}>
             {/* Main view */}
             <View style={{flex: 1, display: 'flex'}}>
-              <View
-                style={{
-                  paddingVertical: 7,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Dropdown
-                  mode={'flat'}
-                  visible={showDropdown}
-                  showDropDown={() => setShowDropdown(true)}
-                  onDismiss={() => setShowDropdown(false)}
-                  value={selectedGoal}
-                  setValue={setSelectedGoal}
-                  list={goalsList}
-                />
-              </View>
               <View
                 style={{
                   flex: 0.7,
@@ -302,7 +364,7 @@ function MainPage({navigation}) {
         <FAB.Group
           visible={true}
           open={fabOpen}
-          icon={fabOpen ? 'close' : 'add'}
+          icon={fabOpen ? 'close' : 'menu'}
           actions={[
             {
               icon: 'alarm',
@@ -321,14 +383,9 @@ function MainPage({navigation}) {
             },
           ]}
           onStateChange={(o) => {
-            console.log(o);
             onFabStateChange(o);
           }}
           onPress={() => {
-            if (fabOpen) {
-              console.log('test');
-              // setFabOpen(false);
-            }
           }}
         />
       </View>

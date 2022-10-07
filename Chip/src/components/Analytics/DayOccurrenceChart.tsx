@@ -5,7 +5,6 @@ import {ChipObject} from '../../pages/Analytics';
 
 import BarlowRegular from '../../../assets/fonts/Barlow-Regular.ttf';
 
-
 const isToday = (someDate, offset) => {
     const today = new Date();
     today.setDate(today.getDate() - offset);
@@ -13,8 +12,6 @@ const isToday = (someDate, offset) => {
       someDate.getMonth() == today.getMonth() &&
       someDate.getFullYear() == today.getFullYear();
 }
-
-
 
 export default function DayOccurrenceChart({chips}) {
     const [chartWidth, setChartWidth] = useState(0);

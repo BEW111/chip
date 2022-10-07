@@ -85,12 +85,13 @@ export async function submitChip(photoFile, goal, desc, UID) {
 
 // Adds a goal to firestore
 export async function addGoal(goal, UID) {
-  const url = `user/${UID}`;
+  console.log(goal);
+  console.log(UID);
 
   firestore()
     .collection('users')
     .doc(UID)
     .update({
       goals: firestore.FieldValue.arrayUnion(goal),
-    })
+    });
 }
