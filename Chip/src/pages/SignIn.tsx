@@ -1,6 +1,19 @@
 import React, {useState} from 'react';
-import {ScrollView, View, Image, KeyboardAvoidingView, Platform} from 'react-native';
-import {Button, TextInput, Text, Card, HelperText, Headline} from 'react-native-paper';
+import {
+  ScrollView,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import {
+  Button,
+  TextInput,
+  Text,
+  Card,
+  HelperText,
+  Headline,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import backgroundImage from '../../assets/background.png';
@@ -38,7 +51,9 @@ export default function SignIn({navigation}) {
         }}
       />
       <SafeAreaView>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{width: '100%'}}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{width: '100%'}}>
           <ScrollView
             style={{height: '100%'}}
             contentContainerStyle={{
@@ -48,7 +63,7 @@ export default function SignIn({navigation}) {
               alignItems: 'center',
             }}
             alwaysBounceVertical={false}
-            keyboardShouldPersistTaps='handled'>
+            keyboardShouldPersistTaps="handled">
             <Card
               style={{
                 width: '90%',
@@ -57,13 +72,25 @@ export default function SignIn({navigation}) {
                 padding: 15,
                 backgroundColor: 'rgba(255, 255, 255, 0.6)',
               }}>
-              <Headline style={{alignSelf: 'center', marginBottom: 20, fontWeight: 'bold'}}>Welcome back.</Headline>
+              <Headline
+                style={{
+                  alignSelf: 'center',
+                  marginBottom: 20,
+                  fontWeight: 'bold',
+                }}>
+                Welcome back.
+              </Headline>
               <TextInput
                 mode="outlined"
                 placeholder="Email"
                 onChangeText={newText => setEmailText(newText)}
                 defaultValue={emailText}
-                style={{color: 'black', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  marginBottom: 20,
+                  textAlign: 'auto',
+                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
@@ -73,11 +100,22 @@ export default function SignIn({navigation}) {
                 placeholder="Password"
                 onChangeText={newText => setPassText(newText)}
                 defaultValue={passText}
-                style={{color: 'white', fontSize: 18, marginBottom: 50, textAlign: 'auto'}}
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  marginBottom: 50,
+                  textAlign: 'auto',
+                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
-              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                }}>
                 <Button
                   mode="outlined"
                   onPress={() => navigation.navigate('Onboarding')}>

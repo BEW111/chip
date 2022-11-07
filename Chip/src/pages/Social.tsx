@@ -3,31 +3,55 @@ import {View, ScrollView, Text} from 'react-native';
 import {Button, IconButton, Modal, Portal} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import { scheduleNotification, onDisplayNotification, onCreateTriggerNotification, requestNotificationsPermission } from '../utils/notifcations';
+import {
+  scheduleNotification,
+  onDisplayNotification,
+  onCreateTriggerNotification,
+  requestNotificationsPermission,
+} from '../utils/notifcations';
 
 export default function Social() {
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20, width: '90%', alignSelf: 'center'};
-
-
+  const containerStyle = {
+    backgroundColor: 'white',
+    padding: 20,
+    width: '90%',
+    alignSelf: 'center',
+  };
 
   return (
     <SafeAreaView>
-      <View style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={{
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <Portal>
-          <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-            <Text>Example Modal.  Click outside this area to dismiss.</Text>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={containerStyle}>
+            <Text>.</Text>
 
-            <Button icon="notifications" mode="contained" onPress={() => {
-              var soon = new Date();
-              soon.setSeconds(soon.getSeconds() + 10);
-              console.log(soon.toDateString());
+            <Button
+              icon="notifications"
+              mode="contained"
+              onPress={() => {
+                var soon = new Date();
+                soon.setSeconds(soon.getSeconds() + 10);
+                console.log(soon.toDateString());
 
-              scheduleNotification(soon, 'Prep for workout', 'Set your clothes out for the gym tomorrow');
-            }}>
+                scheduleNotification(
+                  soon,
+                  'Prep for workout',
+                  'Set your clothes out for the gym tomorrow',
+                );
+              }}>
               Schedule notifcation
             </Button>
           </Modal>
@@ -37,5 +61,5 @@ export default function Social() {
         </Button>
       </View>
     </SafeAreaView>
-  )
+  );
 }

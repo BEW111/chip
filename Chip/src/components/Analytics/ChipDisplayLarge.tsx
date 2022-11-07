@@ -66,7 +66,14 @@ export default function ChipDisplayLarge(props) {
               }}
             />
           ) : (
-            <View style={{height: '90%', aspectRatio: 1, borderRadius: 5, backgroundColor: 'gray'}} />
+            <View
+              style={{
+                height: '90%',
+                aspectRatio: 1,
+                borderRadius: 5,
+                backgroundColor: 'gray',
+              }}
+            />
           )}
         </View>
         <View
@@ -76,15 +83,31 @@ export default function ChipDisplayLarge(props) {
           <Text style={{color: 'black', marginTop: 10, fontSize: 16}}>
             {props.date + '\n' + props.time}
           </Text>
-          <Button icon="flame-outline" mode="contained" compact={true} style={{borderRadius: 20, marginTop: 20}}>
+          <Button
+            icon="flame-outline"
+            mode="contained"
+            compact={true}
+            style={{borderRadius: 20, marginTop: 20}}>
             7
           </Button>
-          <Button icon="pencil-outline" mode="contained" compact={true} style={{borderRadius: 20, marginTop: 15}}>
-          </Button>
-          <Button icon="lock-closed-outline" mode="contained" compact={true} style={{borderRadius: 20, marginTop: 15}}>
-          </Button>
-          <Button icon="trash-outline" mode="contained" compact={true} style={{borderRadius: 20, marginTop: 15}}>
-          </Button>
+          <Button
+            icon="pencil-outline"
+            mode="contained"
+            compact={true}
+            style={{borderRadius: 20, marginTop: 15}}
+          />
+          <Button
+            icon="lock-closed-outline"
+            mode="contained"
+            compact={true}
+            style={{borderRadius: 20, marginTop: 15}}
+          />
+          <Button
+            icon="trash-outline"
+            mode="contained"
+            compact={true}
+            style={{borderRadius: 20, marginTop: 15}}
+          />
         </View>
       </View>
       <Text

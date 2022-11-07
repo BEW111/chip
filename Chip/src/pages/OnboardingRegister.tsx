@@ -1,6 +1,19 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, ScrollView, View, Image, Platform} from 'react-native';
-import {Button, TextInput, Text, Card, HelperText, Headline} from 'react-native-paper';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  Image,
+  Platform,
+} from 'react-native';
+import {
+  Button,
+  TextInput,
+  Text,
+  Card,
+  HelperText,
+  Headline,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
@@ -23,15 +36,15 @@ export default function OnboardingRegister({navigation}) {
 
   async function onRegisterPressed() {
     // Check for more obvious errors
-    if (emailText === "") {
+    if (emailText === '') {
       setDisplayError('Email cannot be empty');
-    } else if (passText === "") {
+    } else if (passText === '') {
       setDisplayError('Password cannot be empty');
     } else if (passText !== confirmPassText) {
       setDisplayError('Passwords must match');
     } else {
       const result = await createNewUser(emailText, passText, newGoal);
-      
+
       if (result.status === 'error') {
         if (result.code === 'auth/email-already-in-use') {
           setDisplayError('Email already in use');
@@ -55,7 +68,9 @@ export default function OnboardingRegister({navigation}) {
         }}
       />
       <SafeAreaView>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{width: '100%'}}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{width: '100%'}}>
           <ScrollView
             style={{height: '100%'}}
             contentContainerStyle={{
@@ -65,7 +80,7 @@ export default function OnboardingRegister({navigation}) {
               alignItems: 'center',
             }}
             alwaysBounceVertical={false}
-            keyboardShouldPersistTaps='handled'>
+            keyboardShouldPersistTaps="handled">
             <Card
               style={{
                 width: '90%',
@@ -75,7 +90,13 @@ export default function OnboardingRegister({navigation}) {
                 paddingTop: 10,
                 backgroundColor: 'rgba(255, 255, 255, 0.6)',
               }}>
-              <Headline style={{fontSize: 24, alignSelf: 'center', marginBottom: 10, fontWeight: 'bold'}}>
+              <Headline
+                style={{
+                  fontSize: 24,
+                  alignSelf: 'center',
+                  marginBottom: 10,
+                  fontWeight: 'bold',
+                }}>
                 {"Let's get started."}
               </Headline>
               <TextInput
@@ -83,7 +104,12 @@ export default function OnboardingRegister({navigation}) {
                 placeholder="Email"
                 onChangeText={newText => setEmailText(newText)}
                 defaultValue={emailText}
-                style={{color: 'black', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+                style={{
+                  color: 'black',
+                  fontSize: 18,
+                  marginBottom: 20,
+                  textAlign: 'auto',
+                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
@@ -93,7 +119,12 @@ export default function OnboardingRegister({navigation}) {
                 placeholder="Password"
                 onChangeText={newText => setPassText(newText)}
                 defaultValue={passText}
-                style={{color: 'white', fontSize: 18, marginBottom: 20, textAlign: 'auto'}}
+                style={{
+                  color: 'white',
+                  fontSize: 18,
+                  marginBottom: 20,
+                  textAlign: 'auto',
+                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
@@ -114,19 +145,23 @@ export default function OnboardingRegister({navigation}) {
               />
               <HelperText
                 type="error"
-                visible={displayError !== ""}
+                visible={displayError !== ''}
                 style={{marginBottom: 10, paddingTop: 0}}>
                 {displayError}
               </HelperText>
-              <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  alignItems: 'center',
+                }}>
                 <Button
                   mode="outlined"
                   onPress={() => navigation.navigate('Onboarding')}>
                   Back
                 </Button>
-                <Button
-                  mode="contained"
-                  onPress={onRegisterPressed}>
+                <Button mode="contained" onPress={onRegisterPressed}>
                   Register
                 </Button>
               </View>

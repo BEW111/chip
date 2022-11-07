@@ -87,7 +87,12 @@ function PhotoViewer(props) {
                 overflow: 'hidden',
               }}
               selectedValue={'Exercise'}
-              pickerData={[...new Set([...userGoals, ...['Exercise', 'Eat healthy', 'Study']])]}
+              pickerData={[
+                ...new Set([
+                  ...userGoals,
+                  ...['Exercise', 'Eat healthy', 'Study'],
+                ]),
+              ]}
               onValueChange={value => {
                 setSelectedGoal(value);
               }}

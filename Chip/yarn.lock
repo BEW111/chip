@@ -3328,11 +3328,6 @@
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.0.tgz"
   "version" "3.1.0"
 
-"d3-array@^1.2.0":
-  "integrity" "sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw=="
-  "resolved" "https://registry.npmjs.org/d3-array/-/d3-array-1.2.4.tgz"
-  "version" "1.2.4"
-
 "d3-array@^3.2.0":
   "integrity" "sha512-3yXFQo0oG3QCxbF06rMPFyGRMGJNS7NvsV1+2joOjbBE+9xvWQ8+GcMJAjRCzw06zQ3/arXeJgbPYcjUCuC+3g=="
   "resolved" "https://registry.npmjs.org/d3-array/-/d3-array-3.2.0.tgz"
@@ -3376,11 +3371,6 @@
   "version" "3.0.1"
   dependencies:
     "d3-path" "1 - 3"
-
-"d3-collection@1":
-  "integrity" "sha512-ii0/r5f4sjKNTfh84Di+DpztYwqKhEyUlKoPrzUFfeSkWxjW49xU2QzO9qrPrNkpdI0XJkfzvmTu8V2Zylln6A=="
-  "resolved" "https://registry.npmjs.org/d3-collection/-/d3-collection-1.0.7.tgz"
-  "version" "1.0.7"
 
 "d3-color@1", "d3-color@1 - 3":
   "integrity" "sha512-p2sTHSLCJI2QKunbGb7ocOh7DgTAn8IrLx21QRc/BSnodXM4sv6aLQlnfpvehFMLZEfBc6g9pH9SWQccFYfJ9Q=="
@@ -3454,11 +3444,6 @@
   "resolved" "https://registry.npmjs.org/d3-format/-/d3-format-3.1.0.tgz"
   "version" "3.1.0"
 
-"d3-format@1":
-  "integrity" "sha512-J0piedu6Z8iB6TbIGfZgDzfXxUFN3qQRMofy2oPdXzQibYGqPB/9iMcxr/TGalU+2RsyDO+U4f33id8tbnSRMQ=="
-  "resolved" "https://registry.npmjs.org/d3-format/-/d3-format-1.4.5.tgz"
-  "version" "1.4.5"
-
 "d3-geo@3":
   "integrity" "sha512-Wt23xBych5tSy9IYAM1FR2rWIBFWa52B/oF/GYe5zbdHrg08FU8+BuI6X4PvTwPDdqdAdq04fuWJpELtsaEjeA=="
   "resolved" "https://registry.npmjs.org/d3-geo/-/d3-geo-3.0.1.tgz"
@@ -3471,14 +3456,7 @@
   "resolved" "https://registry.npmjs.org/d3-hierarchy/-/d3-hierarchy-3.1.2.tgz"
   "version" "3.1.2"
 
-"d3-interpolate-path@2.0.0":
-  "integrity" "sha512-q7Wqn0CoWpMfrvTqoLvD099MMqeKRE0jKY3MzruePkZoD5hYzJ8xbGadGDRkq0xjiX0hxpr0Jtt92iOYFt600A=="
-  "resolved" "https://registry.npmjs.org/d3-interpolate-path/-/d3-interpolate-path-2.0.0.tgz"
-  "version" "2.0.0"
-  dependencies:
-    "d3-interpolate" "^1.1.1"
-
-"d3-interpolate@^1.1.1", "d3-interpolate@1", "d3-interpolate@1 - 3":
+"d3-interpolate@1 - 3":
   "integrity" "sha512-V9znK0zc3jOPV4VD2zZn0sDhZU3WAE2bmlxdIwwQPPzPjvyLkd8B3JUVdS1IDUFDkWZ72c9qnv1GK2ZagTZ8EA=="
   "resolved" "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-1.4.0.tgz"
   "version" "1.4.0"
@@ -3496,11 +3474,6 @@
   "integrity" "sha512-gq6gZom9AFZby0YLduxT1qmrp4xpBA1YZr19OI717WIdKE2OM5ETq5qrHLb301IgxhLwcuxvGZVLeeWc/k1I6w=="
   "resolved" "https://registry.npmjs.org/d3-path/-/d3-path-3.0.1.tgz"
   "version" "3.0.1"
-
-"d3-path@1":
-  "integrity" "sha512-VLaYcn81dtHVTjEHd8B+pbe9yHWpXKZUC87PzoFmsFrJqgFwDe/qxfp5MlfsfM1V5E/iVt0MmEbWQ7FVIXh/bg=="
-  "resolved" "https://registry.npmjs.org/d3-path/-/d3-path-1.0.9.tgz"
-  "version" "1.0.9"
 
 "d3-polygon@3":
   "integrity" "sha512-3vbA7vXYwfe1SYhED++fPUQlWSYTTGmFmQiany/gdbiWgU/iEyQzyymwL9SkJjFFuCS4902BSzewVGsHHmHtXg=="
@@ -3525,19 +3498,6 @@
     "d3-color" "1 - 3"
     "d3-interpolate" "1 - 3"
 
-"d3-scale@^1.0.6":
-  "integrity" "sha512-KvU92czp2/qse5tUfGms6Kjig0AhHOwkzXG0+PqIJB3ke0WUv088AHMZI0OssO9NCkXt4RP8yju9rpH8aGB7Lw=="
-  "resolved" "https://registry.npmjs.org/d3-scale/-/d3-scale-1.0.7.tgz"
-  "version" "1.0.7"
-  dependencies:
-    "d3-array" "^1.2.0"
-    "d3-collection" "1"
-    "d3-color" "1"
-    "d3-format" "1"
-    "d3-interpolate" "1"
-    "d3-time" "1"
-    "d3-time-format" "2"
-
 "d3-scale@4":
   "integrity" "sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ=="
   "resolved" "https://registry.npmjs.org/d3-scale/-/d3-scale-4.0.2.tgz"
@@ -3554,13 +3514,6 @@
   "resolved" "https://registry.npmjs.org/d3-selection/-/d3-selection-3.0.0.tgz"
   "version" "3.0.0"
 
-"d3-shape@^1.0.6":
-  "integrity" "sha512-EUkvKjqPFUAZyOlhY5gzCxCeI0Aep04LwIRpsZ/mLFelJiUfnK56jo5JMDSE7yyP2kLSb6LtF+S5chMk7uqPqw=="
-  "resolved" "https://registry.npmjs.org/d3-shape/-/d3-shape-1.3.7.tgz"
-  "version" "1.3.7"
-  dependencies:
-    "d3-path" "1"
-
 "d3-shape@^3.1.0", "d3-shape@3":
   "integrity" "sha512-tGDh1Muf8kWjEDT/LswZJ8WF85yDZLvVJpYU9Nq+8+yW1Z5enxrmXOhTArlkaElU+CTn0OTVNli+/i+HP45QEQ=="
   "resolved" "https://registry.npmjs.org/d3-shape/-/d3-shape-3.1.0.tgz"
@@ -3575,24 +3528,12 @@
   dependencies:
     "d3-time" "1 - 3"
 
-"d3-time-format@2":
-  "integrity" "sha512-guv6b2H37s2Uq/GefleCDtbe0XZAuy7Wa49VGkPVPMfLL9qObgBST3lEHJBMUp8S7NdLQAGIvr2KXk8Hc98iKQ=="
-  "resolved" "https://registry.npmjs.org/d3-time-format/-/d3-time-format-2.3.0.tgz"
-  "version" "2.3.0"
-  dependencies:
-    "d3-time" "1"
-
 "d3-time@1 - 3", "d3-time@2.1.1 - 3", "d3-time@3":
   "integrity" "sha512-zmV3lRnlaLI08y9IMRXSDshQb5Nj77smnfpnd2LrBa/2K281Jijactokeak14QacHs/kKq0AQ121nidNYlarbQ=="
   "resolved" "https://registry.npmjs.org/d3-time/-/d3-time-3.0.0.tgz"
   "version" "3.0.0"
   dependencies:
     "d3-array" "2 - 3"
-
-"d3-time@1":
-  "integrity" "sha512-Xh0isrZ5rPYYdqhAVk8VLnMEidhz5aP7htAADH6MfzgmmicPkTo8LhkLxci61/lCB7n7UmE3bN0leRt+qvkLxA=="
-  "resolved" "https://registry.npmjs.org/d3-time/-/d3-time-1.1.0.tgz"
-  "version" "1.1.0"
 
 "d3-timer@1 - 3", "d3-timer@3":
   "integrity" "sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA=="
@@ -7036,7 +6977,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.6.0", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@*", "prop-types@^15.5.10", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -7214,18 +7155,7 @@
     "react-freeze" "^1.0.0"
     "warn-once" "^0.1.0"
 
-"react-native-svg-charts@^5.4.0":
-  "integrity" "sha512-5TaIGSihJaHCGFj32Tc07hZrqqTpvdyAx89PIrW2nLf2tijd61+3UE3jtsiHOvfeAyDgSTWjv6s9qG9d2di7Pw=="
-  "resolved" "https://registry.npmjs.org/react-native-svg-charts/-/react-native-svg-charts-5.4.0.tgz"
-  "version" "5.4.0"
-  dependencies:
-    "d3-array" "^1.2.0"
-    "d3-interpolate-path" "2.0.0"
-    "d3-scale" "^1.0.6"
-    "d3-shape" "^1.0.6"
-    "prop-types" "^15.6.0"
-
-"react-native-svg@^13.0.0", "react-native-svg@^6.2.1||^7.0.3", "react-native-svg@> 6.4.1":
+"react-native-svg@^13.0.0", "react-native-svg@> 6.4.1":
   "integrity" "sha512-CkWB8BYGjvmGiLqqJRHfTH8/Q5tJyhltUYCmi20sqOCbjfTR5dkQUUafV0oUOhvK2lS+zuB9Dpf1Beo92rls5Q=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.0.0.tgz"
   "version" "13.0.0"
@@ -7265,7 +7195,7 @@
   dependencies:
     "moment" "^2.19.1"
 
-"react-native@*", "react-native@>= 0.50.0", "react-native@>=0.42.0", "react-native@>=0.46.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.69.4":
+"react-native@*", "react-native@>= 0.50.0", "react-native@>=0.42.0", "react-native@>=0.57", "react-native@>=0.59", "react-native@>=0.60.0", "react-native@0.69.4":
   "integrity" "sha512-rqNMialM/T4pHRKWqTIpOxA65B/9kUjtnepxwJqvsdCeMP9Q2YdSx4VASFR9RoEFYcPRU41yGf6EKrChNfns3g=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.69.4.tgz"
   "version" "0.69.4"
@@ -7338,7 +7268,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.21.0"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.6 || ^17.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0", "react@> 16.7.0", "react@>=16", "react@>=16.0.0-alpha.12", "react@>=16.3.0", "react@>=17.0.0", "react@18.0.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.6 || ^17.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0", "react@> 16.7.0", "react@>=16", "react@>=16.3.0", "react@>=17.0.0", "react@18.0.0":
   "integrity" "sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.0.0.tgz"
   "version" "18.0.0"

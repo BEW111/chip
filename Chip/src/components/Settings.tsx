@@ -12,9 +12,8 @@ export default function Settings(props) {
 
   function onLogoutPressed() {
     // console.log('logging out');
-    auth()
-      .signOut()
-      // .then(() => console.log('User signed out!'));
+    auth().signOut();
+    // .then(() => console.log('User signed out!'));
   }
 
   return (

@@ -92,12 +92,7 @@ const generateAxes = (
 //   }
 // }
 
-export default function Galaxy({
-  width,
-  height,
-  margin,
-  scale,
-}) {
+export default function Galaxy({width, height, margin, scale}) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const {x, y} = generateAxes(goalGalaxyData, width, height, margin, scale);

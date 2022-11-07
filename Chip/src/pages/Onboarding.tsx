@@ -1,6 +1,13 @@
 import React, {useState} from 'react';
 import {ScrollView, View, Image} from 'react-native';
-import {Text, Button, IconButton, TextInput, Headline, Card} from 'react-native-paper';
+import {
+  Text,
+  Button,
+  IconButton,
+  TextInput,
+  Headline,
+  Card,
+} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -39,8 +46,14 @@ export default function Onboarding({navigation}) {
           alignItems: 'center',
         }}
         alwaysBounceVertical={false}
-        keyboardShouldPersistTaps='handled'>
-        <View style={{width: '100%', flex: 1, marginTop: insets.top, paddingHorizontal: 15}}>
+        keyboardShouldPersistTaps="handled">
+        <View
+          style={{
+            width: '100%',
+            flex: 1,
+            marginTop: insets.top,
+            paddingHorizontal: 15,
+          }}>
           {/* <GoalGalaxyView width={1500} height={1500} margin={50} /> */}
           <View
             style={{
@@ -56,25 +69,32 @@ export default function Onboarding({navigation}) {
                 marginBottom: 40,
                 padding: 15,
               }}>
-              <Headline style={{alignSelf: 'center', marginBottom: 20, fontWeight: 'bold'}}>What's something you'd like to accomplish?</Headline>
+              <Headline
+                style={{
+                  alignSelf: 'center',
+                  marginBottom: 20,
+                  fontWeight: 'bold',
+                }}>
+                What's something you'd like to accomplish?
+              </Headline>
               <TextInput
                 mode="flat"
                 placeholder=""
                 onChangeText={text => setText(text)}
                 defaultValue={text}
                 style={{
-                  color: 'black', 
-                  fontSize: 24, 
-                  marginBottom: 20, 
-                  textAlign: 'auto', 
+                  color: 'black',
+                  fontSize: 24,
+                  marginBottom: 20,
+                  textAlign: 'auto',
                   backgroundColor: 'rgba(0, 0, 0, 0)',
                   paddingHorizontal: 2,
                 }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
                 right={
-                  <TextInput.Icon 
-                    icon="caret-forward-outline" 
+                  <TextInput.Icon
+                    icon="caret-forward-outline"
                     onPress={onAccomplishPressed}
                   />
                 }
@@ -86,7 +106,7 @@ export default function Onboarding({navigation}) {
           style={{
             bottom: insets.bottom + 50,
           }}>
-          <Button mode='outlined' onPress={() => navigation.navigate('SignIn')}>
+          <Button mode="outlined" onPress={() => navigation.navigate('SignIn')}>
             Sign in to existing account
           </Button>
         </View>
