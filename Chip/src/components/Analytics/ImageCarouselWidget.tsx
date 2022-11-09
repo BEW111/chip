@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useState} from 'react';
-import {StyleSheet, FlatList, View, Dimensions, Pressable} from 'react-native';
+import {StyleSheet, FlatList, View} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,8 +10,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-import {Surface, Text, IconButton} from 'react-native-paper';
-import FastImage from 'react-native-fast-image';
+import {Surface, Text} from 'react-native-paper';
 import ChipDisplayMini from './ChipDisplayMini';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -23,9 +22,12 @@ export default function ImageCarouselWidget({chips}) {
   const transX = useSharedValue(0);
   const [widgetWidth, setWidgetWidth] = useState(0);
 
-  const renderItem = useCallback(({item, index}) => {
-    return <ChipDisplay index={index} chip={item} transX={transX} />;
-  }, []);
+  const renderItem = useCallback(
+    ({item, index}) => {
+      return <ChipDisplay index={index} chip={item} transX={transX} />;
+    },
+    [transX],
+  );
 
   const keyExtractor = useCallback((item, index) => `${item.id}-${index}`, []);
   const getItemLayout = useCallback(
@@ -93,10 +95,7 @@ export default function ImageCarouselWidget({chips}) {
             getItemLayout={getItemLayout}
             keyExtractor={keyExtractor}
             contentContainerStyle={{
-              //   flex: 1,
               display: 'flex',
-              //   justifyContent: 'center',
-              //   alignItems: 'center',
             }}
             inverted
           />
@@ -139,7 +138,6 @@ const ChipDisplay = ({index, chip, transX}) => {
         photo={chip.photo}
         // date={date}
         // time={time}
-        // offset={ITEM_OFFSET}
       />
       {/* <Text style={styles.label}>{index}</Text> */}
     </Animated.View>
@@ -200,27 +198,6 @@ const translateYAnimation = (udv, index) => {
           ITEM_WIDTH * 0.25,
           ITEM_WIDTH * 0.5,
         ],
-        Extrapolate.CLAMP,
-      );
-};
-
-const zIndexAnimation = (udv, index) => {
-  'worklet';
-
-  return udv.value === null
-    ? 0
-    : interpolate(
-        udv.value,
-        [
-          (index - 3) * ITEM_WIDTH,
-          (index - 2) * ITEM_WIDTH,
-          (index - 1) * ITEM_WIDTH,
-          (index + 0) * ITEM_WIDTH,
-          (index + 1) * ITEM_WIDTH,
-          (index + 2) * ITEM_WIDTH,
-          (index + 3) * ITEM_WIDTH,
-        ],
-        [7, 8, 9, 10, 9, 8, 7],
         Extrapolate.CLAMP,
       );
 };

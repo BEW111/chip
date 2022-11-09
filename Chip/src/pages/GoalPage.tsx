@@ -35,6 +35,7 @@ import ImageCarouselWidget from '../components/Analytics/ImageCarouselWidget';
 // import chipsIcon from '../../assets/chips-icon.png';
 
 import {ChipObject} from './Analytics';
+import TextWidget from '../components/Analytics/TextWidget';
 
 function StatsView({filteredChips}) {
   return (
@@ -150,6 +151,11 @@ export default function GoalPage({navigation, route}) {
             </View>
           </Header>
           <ScrollView style={{flex: 1, padding: 20}}>
+            <TextWidget
+              subtitle={'Try cooking a new dish this weekend'}
+              subtitleType="hint"
+            />
+            <Divider style={{marginVertical: 7, height: 0}} />
             <View
               style={{
                 height: 224,
