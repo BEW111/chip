@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 
@@ -31,70 +32,71 @@ export default function ChipDisplayMini(props) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={toggleSelect}>
-      <View
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View
+    // <TouchableWithoutFeedback
+    //   style={{
+    //     height: '100%',
+    //     width: '100%',
+    //   }}
+    //   onPress={toggleSelect}>
+    <View
+      style={{
+        height: '100%',
+        width: '100%',
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+      }}>
+      {downloadURL ? (
+        <FastImage
+          source={{uri: downloadURL}}
           style={{
-            height: '99%',
-            width: '99%',
-          }}>
-          {downloadURL ? (
-            <FastImage
-              source={{uri: downloadURL}}
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            overflow: 'hidden',
+            // right: props.offset,
+            borderRadius: 16,
+          }}
+        />
+      ) : (
+        <></>
+      )}
+      {/* {selected ? (
+          <View
+            style={{
+              position: 'absolute',
+              height: '100%',
+              width: '100%',
+              backgroundColor: 'rgba(180, 180, 200, 0.2)',
+            }}>
+            <Icon
+              name="checkmark-circle"
+              size={24}
               style={{
                 position: 'absolute',
-                height: '100%',
-                width: '100%',
-                overflow: 'hidden',
+                color: 'rgba(255, 255, 255, 0.8)',
+                bottom: 1,
+                right: 1,
               }}
             />
-          ) : (
-            <></>
-          )}
-          {selected ? (
-            <View
-              style={{
-                position: 'absolute',
-                height: '100%',
-                width: '100%',
-                backgroundColor: 'rgba(180, 180, 200, 0.2)',
-              }}>
-              <Icon
-                name="checkmark-circle"
-                size={24}
-                style={{
-                  position: 'absolute',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  bottom: 1,
-                  right: 1,
-                }}
-              />
-            </View>
-          ) : (
-            <></>
-          )}
-          <Surface
-            style={{
-              width: '95%',
-              marginTop: 2,
-              alignSelf: 'center',
-              borderRadius: 5,
-              paddingHorizontal: 5,
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-            }}>
-            <Text style={{color: 'white', fontWeight: '500'}}>
-              {props.date}, {props.time}
-            </Text>
-          </Surface>
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
+          </View>
+        ) : (
+          <></>
+        )} */}
+      {/* <Surface
+          style={{
+            width: '95%',
+            marginTop: 2,
+            alignSelf: 'center',
+            borderRadius: 5,
+            paddingHorizontal: 5,
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          }}>
+          <Text style={{color: 'white', fontWeight: '500'}}>
+            {props.date}, {props.time}
+          </Text>
+        </Surface> */}
+    </View>
+    // </TouchableWithoutFeedback>
   );
 }

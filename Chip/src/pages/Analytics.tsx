@@ -5,10 +5,12 @@ import {
   View,
   ScrollView,
   StatusBar,
-  Image,
-  Dimensions,
+  // Image,
+  // Dimensions,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
+
+// import Icon from 'react-native-vector-icons/Ionicons';
 
 // import {ActivityIndicator, Divider,} from 'react-native-paper';
 // import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -23,51 +25,37 @@ import FastImage from 'react-native-fast-image';
 
 // import Settings from '../components/Settings';
 
-// import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
-
-// import backgroundImage from '../../assets/background.png';
-
 // import { addGoal } from '../utils/postUtils';
 
 import GoalSurface from '../components/Analytics/GoalSurface';
 
-import {
-  IconButton,
-  FAB,
-  Portal,
-  ActivityIndicator,
-  Divider,
-  Button,
-  Text,
-  Menu,
-  Modal,
-  TextInput,
-} from 'react-native-paper';
-import Swiper from 'react-native-swiper';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ActivityIndicator, Divider, Text, IconButton} from 'react-native-paper';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
 import {selectSelectedGoal, updateSelectedGoal} from '../redux/analyticsSlice';
 
 import Settings from '../components/Settings';
 
-import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
-import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
+// import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
+// import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
 import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 
+import GoalPage from './GoalPage';
+
 import backgroundImage from '../../assets/background.png';
-import chipsIcon from '../../assets/chips-icon.png';
 
 import {addGoal} from '../utils/postUtils';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
+const Stack = createNativeStackNavigator();
 
 export interface ChipObject {
   key: string;
@@ -154,12 +142,25 @@ function MainPage({navigation}) {
           style={{
             height: '100%',
           }}>
-          <Header title="Goals" navigation={navigation} />
+          <Header navigation={navigation}>
+            <Text style={{fontSize: 24, fontWeight: 'bold'}}>Goals</Text>
+            <View style={{position: 'absolute', display: 'flex', right: 4}}>
+              <IconButton
+                icon="person-circle-outline"
+                size={36}
+                style={{
+                  marginVertical: -5,
+                }}
+                onPress={() => {
+                  navigation.toggleDrawer();
+                }}
+              />
+            </View>
+          </Header>
           <ScrollView style={{flex: 1, padding: 20}}>
             <View
               style={{
-                // flex: 0.7,
-                height: 250,
+                height: 224,
                 alignItems: 'center',
                 width: '100%',
               }}>
@@ -170,48 +171,34 @@ function MainPage({navigation}) {
               />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface />
+            <GoalSurface
+              title="Cook more"
+              subtitle="5 day streak"
+              subtitleType="streak"
+              navigation={navigation}
+            />
             <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface />
+            <GoalSurface
+              title="Read every day"
+              subtitle="12 mins left today"
+              subtitleType="todo"
+              navigation={navigation}
+            />
             <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface />
+            <GoalSurface
+              title="Learn Korean"
+              subtitle="Daily target completed"
+              subtitleType="completed"
+              navigation={navigation}
+            />
           </ScrollView>
         </View>
       </View>
-      {/* <View style={{position: 'absolute', height: '100%', width: '100%'}} pointerEvents={"box-none"}>
-        <FAB.Group
-          visible={true}
-          open={fabOpen}
-          icon={fabOpen ? 'close' : 'menu'}
-          actions={[
-            {
-              icon: 'alarm',
-              label: 'Remind (to be implemented)',
-              onPress: () => console.log('Pressed notifications'),
-            },
-            {
-              icon: 'share',
-              label: 'Share (to be implemented)',
-              onPress: () => console.log('Pressed star'),
-            },
-            {
-              icon: 'trash',
-              label: 'Delete (to be implemented)',
-              onPress: () => console.log('Pressed email'),
-            },
-          ]}
-          onStateChange={(o) => {
-            onFabStateChange(o);
-          }}
-          onPress={() => {
-          }}
-        />
-      </View> */}
     </>
   );
 }
 
-export default function Analytics() {
+function AnalyticsLandingPage() {
   return (
     <>
       <StatusBar
@@ -234,5 +221,22 @@ export default function Analytics() {
         />
       </SettingsDrawer.Navigator>
     </>
+  );
+}
+
+export default function AnalyticsPage() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="AnalyticsLandingPage"
+        component={AnalyticsLandingPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AnalyticsGoalPage"
+        component={GoalPage}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
   );
 }

@@ -51,15 +51,17 @@ export default function DayOccurrenceChart({chips}) {
     6;
   const ySpacing = (chartHeight - paddingVertical * 2 - dateTextSpace) / 4;
 
-  const FROM_COLOR = '#fff7e4';
-  const TO_COLOR = '#fbfbfb';
+  const FROM_COLOR = '#ffe4f3';
+  const TO_COLOR = '#ffeaea';
 
   const MARKER_WIDTH = 30;
   const MARKER_HEIGHT = 3;
-  const MARKER_COLOR = '#2a222a';
+  const MARKER_COLOR = '#000000';
 
   const COLUMN_WIDTH = 30;
   const COLUMN_COLOR = 'rgba(245, 166, 198, 0.3)';
+
+  const TEXT_COLOR = "rgba(68, 10, 23, 0.739)";
 
   return (
     <View
@@ -105,7 +107,7 @@ export default function DayOccurrenceChart({chips}) {
                 key={i + 200}
                 font={LatoRegular}
                 stroke="none"
-                fill="rgba(18, 15, 15, 0.5)"
+                fill={TEXT_COLOR}
                 fontSize={14}
                 x={
                   paddingHorizontal +
@@ -163,7 +165,7 @@ export default function DayOccurrenceChart({chips}) {
                 x2={chartWidth - paddingHorizontal}
                 y1={paddingVertical + i * ySpacing}
                 y2={paddingVertical + i * ySpacing}
-                stroke="rgba(36, 29, 29, 0.5)"
+                stroke={TEXT_COLOR}
                 strokeLinecap="round"
                 strokeDasharray="5, 3"
               />
@@ -171,7 +173,7 @@ export default function DayOccurrenceChart({chips}) {
                 key={i + 100}
                 font={LatoRegular}
                 stroke="none"
-                fill="rgba(40, 29, 29, 0.5)"
+                fill={TEXT_COLOR}
                 fontSize={18}
                 x={paddingHorizontal}
                 y={paddingVertical + i * ySpacing + 18 / 2}

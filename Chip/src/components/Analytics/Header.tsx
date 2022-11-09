@@ -20,7 +20,7 @@ import {updateSelectedGoal} from '../../redux/analyticsSlice';
 
 import {addGoal} from '../../utils/postUtils';
 
-export default function Header({title, navigation}) {
+export default function Header(props, {navigation}) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -38,19 +38,7 @@ export default function Header({title, navigation}) {
             flexDirection: 'row',
             justifyContent: 'center',
           }}>
-          <View style={{position: 'absolute', display: 'flex', right: 10}}>
-            <IconButton
-              icon="cog"
-              size={36}
-              style={{
-                marginVertical: -5,
-              }}
-              onPress={() => {
-                navigation.toggleDrawer();
-              }}
-            />
-          </View>
-          <Text style={{fontSize: 24, fontWeight: 'bold'}}>{title}</Text>
+          {props.children}
         </View>
       </View>
       <Divider style={{height: 2}} />

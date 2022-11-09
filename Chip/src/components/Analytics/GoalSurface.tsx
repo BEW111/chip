@@ -1,37 +1,86 @@
-import React from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useState} from 'react';
 
-import {View} from 'react-native';
+import {Pressable, View} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function GoalSurface() {
+const subtitleMap = {
+  streak: {
+    icon: 'flame-outline',
+    color: '#FF6B00',
+  },
+  hint: {
+    icon: 'bulb-outline',
+  },
+  scheduled: {
+    icon: 'alarm-outline',
+  },
+  todo: {
+    icon: 'sync-circle-outline',
+  },
+  completed: {
+    icon: 'checkmark-circle-outline',
+    color: '#478E00',
+  },
+};
+
+export default function GoalSurface({
+  title,
+  subtitle,
+  subtitleType = 'none',
+  navigation,
+}) {
+  const [pressed, setPressed] = useState(false);
+
   return (
-    <Surface
-      style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        padding: 12,
-        elevation: 0,
-        borderRadius: 10,
+    <Pressable
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      onPress={() => {
+        navigation.navigate('AnalyticsGoalPage', {
+          goal: title,
+        });
       }}>
-      <View style={{flex: 1}}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 4,
-            marginTop: -2,
-          }}>
-          Cook more
-        </Text>
-        <Text style={{fontSize: 18}}>
-          <Icon name="flame-outline" size={18} color="#000" /> 5 days
-        </Text>
-      </View>
-      <View style={{justifyContent: 'center'}}>
-        <Icon name="chevron-forward-outline" size={30} color="#000" />
-      </View>
-    </Surface>
+      <Surface
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'row',
+          padding: 12,
+          elevation: 0,
+          borderRadius: 10,
+          backgroundColor: '#FFEEF8',
+          opacity: pressed ? 0.8 : 1.0,
+        }}>
+        <View style={{flex: 1}}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 'bold',
+              marginBottom: 4,
+              marginTop: -2,
+            }}>
+            {title}
+          </Text>
+          <Text style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
+            {subtitleType != 'none' && (
+              <>
+                <Icon
+                  name={subtitleMap[subtitleType].icon}
+                  size={18}
+                  color={subtitleMap[subtitleType].color}
+                />
+                <Text> </Text>
+              </>
+            )}
+            {subtitle}
+          </Text>
+        </View>
+        <View style={{justifyContent: 'center'}}>
+          <Icon name="chevron-forward-outline" size={30} color="#000" />
+        </View>
+      </Surface>
+    </Pressable>
   );
 }

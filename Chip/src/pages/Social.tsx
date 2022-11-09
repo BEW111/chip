@@ -36,8 +36,6 @@ export default function Social() {
             visible={visible}
             onDismiss={hideModal}
             contentContainerStyle={containerStyle}>
-            <Text>.</Text>
-
             <Button
               icon="notifications"
               mode="contained"
