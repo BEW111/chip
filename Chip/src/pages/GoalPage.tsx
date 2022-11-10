@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, Text} from 'react-native';
-import {Button, IconButton, Modal, Portal} from 'react-native-paper';
+import {View, ScrollView, Text, StyleSheet} from 'react-native';
+import {Button, IconButton, Modal, Portal, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 
@@ -37,9 +37,11 @@ import ImageCarouselWidget from '../components/Analytics/ImageCarouselWidget';
 import {ChipObject} from './Analytics';
 import TextWidget from '../components/Analytics/TextWidget';
 
+import {styles, modalStyles} from '../styles';
+
 function StatsView({filteredChips}) {
   return (
-    <View style={{width: '100%', height: '100%'}}>
+    <View style={styles.full}>
       <DayOccurrenceChart chips={filteredChips} />
     </View>
   );
@@ -49,14 +51,15 @@ function ReminderFAB() {
   const [fabOpen, setFabOpen] = useState(false);
   const onFabStateChange = ({open}) => setFabOpen(open);
 
+  const {colors} = useTheme();
+
   return (
-    <View
-      style={{position: 'absolute', height: '100%', width: '100%'}}
-      pointerEvents={'box-none'}>
+    <View style={styles.absoluteFull} pointerEvents={'box-none'}>
       <FAB.Group
         visible={true}
         open={fabOpen}
         icon={fabOpen ? 'close' : 'menu'}
+        fabStyle={{backgroundColor: colors.primary}}
         actions={[
           {
             icon: 'alarm',
@@ -93,15 +96,21 @@ export default function GoalPage({navigation, route}) {
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
 
+  const [modalVisible, setModalVisible] = React.useState(false);
+
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+
   // const chipViewType: 'tiled' | 'swipe' = 'tiled';
 
+  // get all chips
   useEffect(() => {
     const subscriber = firestore()
       .collection('users')
       .doc(uid)
       .collection('chips')
       .onSnapshot(querySnapshot => {
-        let newChips = [];
+        let newChips: ChipObject[] = [];
         querySnapshot.forEach(documentSnapshot => {
           return newChips.push({
             ...documentSnapshot.data(),
@@ -117,7 +126,7 @@ export default function GoalPage({navigation, route}) {
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
-  }, []);
+  }, [uid]);
 
   if (loading) {
     return <ActivityIndicator />;
@@ -125,19 +134,32 @@ export default function GoalPage({navigation, route}) {
 
   return (
     <>
-      <View style={{flex: 1}}>
-        <FastImage
-          source={backgroundImage}
-          style={{
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-          }}
-        />
-        <View
-          style={{
-            height: '100%',
-          }}>
+      <Portal>
+        <Modal
+          visible={modalVisible}
+          onDismiss={hideModal}
+          contentContainerStyle={modalStyles.container}>
+          {/* <Text style={modalStyles.header}>Add a new goal</Text>
+          <TextInput
+            style={modalStyles.textInput}
+            label="Name of goal"
+            value={goalInput}
+            onChangeText={text => setGoalInput(text)}
+          /> */}
+          <Button
+            mode="contained"
+            onPress={() => {
+              // addGoal(uid, goalInput);
+              // setGoalInput('');
+              // hideModal();
+            }}>
+            Delete goal
+          </Button>
+        </Modal>
+      </Portal>
+      <View style={styles.expand}>
+        <FastImage source={backgroundImage} style={styles.absoluteFull} />
+        <View style={styles.full}>
           <Header navigation={navigation}>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goal}</Text>
             <View style={{position: 'absolute', display: 'flex', left: 4}}>
@@ -146,6 +168,15 @@ export default function GoalPage({navigation, route}) {
                 size={28}
                 onPress={() => {
                   navigation.navigate('AnalyticsLandingPage');
+                }}
+              />
+            </View>
+            <View style={{position: 'absolute', display: 'flex', right: 4}}>
+              <IconButton
+                icon="pencil"
+                size={32}
+                onPress={() => {
+                  showModal();
                 }}
               />
             </View>
@@ -170,6 +201,7 @@ export default function GoalPage({navigation, route}) {
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
             <ImageCarouselWidget
+              navigation={navigation}
               chips={chips.filter((chip: ChipObject) => chip.goal === goal)}
             />
           </ScrollView>

@@ -17,8 +17,7 @@ const _fontConfig = {
     fontFamily: 'Lato-Thin',
     fontWeight: 'normal',
   },
-  
-}
+};
 
 const fontConfig = {
   web: _fontConfig,

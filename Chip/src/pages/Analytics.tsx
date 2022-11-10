@@ -1,69 +1,32 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  StatusBar,
-  // Image,
-  // Dimensions,
-} from 'react-native';
+import {StyleSheet, View, ScrollView, StatusBar} from 'react-native';
 import FastImage from 'react-native-fast-image';
-
-// import Icon from 'react-native-vector-icons/Ionicons';
-
-// import {ActivityIndicator, Divider,} from 'react-native-paper';
-// import {createDrawerNavigator} from '@react-navigation/drawer';
-
-// import firestore, {
-//   FirebaseFirestoreTypes,
-// } from '@react-native-firebase/firestore';
-
-// import {useSelector} from 'react-redux';
-// import {selectUid, selectUserGoals} from '../redux/authSlice';
-// import {selectSelectedGoal} from '../redux/analyticsSlice';
-
-// import Settings from '../components/Settings';
-
-// import { addGoal } from '../utils/postUtils';
-
-import GoalSurface from '../components/Analytics/GoalSurface';
-
 import {ActivityIndicator, Divider, Text, IconButton} from 'react-native-paper';
+
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import firestore, {
-  FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
-import {selectSelectedGoal, updateSelectedGoal} from '../redux/analyticsSlice';
+import {selectSelectedGoal} from '../redux/analyticsSlice';
+
+import GoalSurface from '../components/Analytics/GoalSurface';
+import AddGoalSurface from '../components/Analytics/AddGoalSurface';
 
 import Settings from '../components/Settings';
-
-// import ChipDisplayMini from '../components/Analytics/ChipDisplayMini';
-// import ChipDisplayLarge from '../components/Analytics/ChipDisplayLarge';
 import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
-
 import GoalPage from './GoalPage';
+
+import {ChipObject} from '../types';
 
 import backgroundImage from '../../assets/background.png';
 
-import {addGoal} from '../utils/postUtils';
-
 const SettingsDrawer = createDrawerNavigator(); // for settings
 const Stack = createNativeStackNavigator();
-
-export interface ChipObject {
-  key: string;
-  goal: string;
-  timeSubmitted: FirebaseFirestoreTypes.Timestamp;
-  photo: string;
-  description: string;
-}
 
 function StatsView({filteredChips}) {
   return (
@@ -73,31 +36,18 @@ function StatsView({filteredChips}) {
   );
 }
 
-const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute',
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
-});
-
 function MainPage({navigation}) {
   const uid = useSelector(selectUid);
   const userGoals = useSelector(selectUserGoals);
-
-  const allGoals = [
-    ...new Set([...userGoals, ...['Exercise', 'Eat healthy', 'Study']]),
-  ];
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
   const selectedGoal = useSelector(selectSelectedGoal);
 
-  const [fabOpen, setFabOpen] = useState(false);
-  const onFabStateChange = ({open}) => setFabOpen(open);
+  // const [fabOpen, setFabOpen] = useState(false);
+  // const onFabStateChange = ({open}) => setFabOpen(open);
 
-  const chipViewType: 'tiled' | 'swipe' = 'tiled';
+  // const chipViewType: 'tiled' | 'swipe' = 'tiled';
 
   useEffect(() => {
     const subscriber = firestore()
@@ -191,6 +141,8 @@ function MainPage({navigation}) {
               subtitleType="completed"
               navigation={navigation}
             />
+            <Divider style={{marginVertical: 7, height: 0}} />
+            <AddGoalSurface />
           </ScrollView>
         </View>
       </View>

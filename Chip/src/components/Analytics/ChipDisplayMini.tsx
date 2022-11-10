@@ -17,7 +17,6 @@ export default function ChipDisplayMini(props) {
   const uid = useSelector(selectUid);
   const path = `user/${uid}/chip-photo/${props.photo}`;
   const [downloadURL, setDownloadURL] = useState('');
-  const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     async function grabURL() {
@@ -27,76 +26,26 @@ export default function ChipDisplayMini(props) {
     grabURL();
   }, [path]);
 
-  const toggleSelect = () => {
-    setSelected(!selected);
-  };
-
   return (
-    // <TouchableWithoutFeedback
-    //   style={{
-    //     height: '100%',
-    //     width: '100%',
-    //   }}
-    //   onPress={toggleSelect}>
     <View
       style={{
-        height: '100%',
         width: '100%',
-        // display: 'flex',
-        // justifyContent: 'center',
-        // alignItems: 'center',
+        height: '100%',
       }}>
       {downloadURL ? (
         <FastImage
           source={{uri: downloadURL}}
           style={{
-            position: 'absolute',
+            // position: 'absolute',
             height: '100%',
             width: '100%',
             overflow: 'hidden',
-            // right: props.offset,
             borderRadius: 16,
           }}
         />
       ) : (
         <></>
       )}
-      {/* {selected ? (
-          <View
-            style={{
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-              backgroundColor: 'rgba(180, 180, 200, 0.2)',
-            }}>
-            <Icon
-              name="checkmark-circle"
-              size={24}
-              style={{
-                position: 'absolute',
-                color: 'rgba(255, 255, 255, 0.8)',
-                bottom: 1,
-                right: 1,
-              }}
-            />
-          </View>
-        ) : (
-          <></>
-        )} */}
-      {/* <Surface
-          style={{
-            width: '95%',
-            marginTop: 2,
-            alignSelf: 'center',
-            borderRadius: 5,
-            paddingHorizontal: 5,
-            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          }}>
-          <Text style={{color: 'white', fontWeight: '500'}}>
-            {props.date}, {props.time}
-          </Text>
-        </Surface> */}
     </View>
-    // </TouchableWithoutFeedback>
   );
 }

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useState} from 'react';
-import {StyleSheet, FlatList, View} from 'react-native';
+import {StyleSheet, FlatList, View, Pressable} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,15 +10,14 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-import {Surface, Text} from 'react-native-paper';
+import {Surface, Text, IconButton} from 'react-native-paper';
 import ChipDisplayMini from './ChipDisplayMini';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const ITEM_WIDTH = 144;
 
-export default function ImageCarouselWidget({chips}) {
+export default function ImageCarouselWidget({navigation, chips}) {
   const transX = useSharedValue(0);
   const [widgetWidth, setWidgetWidth] = useState(0);
 
@@ -42,7 +41,6 @@ export default function ImageCarouselWidget({chips}) {
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: event => {
       transX.value = event.contentOffset.x + (widgetWidth / 2 - ITEM_WIDTH / 2);
-      console.log(transX.value);
     },
   });
 
@@ -58,13 +56,10 @@ export default function ImageCarouselWidget({chips}) {
       onLayout={event => {
         var {width} = event.nativeEvent.layout;
         setWidgetWidth(width);
-        console.log(width);
       }}>
       <View>
         <View
           style={{
-            padding: 12,
-            paddingBottom: 16,
             display: 'flex',
             justifyContent: 'space-between',
             flexDirection: 'row',
@@ -72,10 +67,18 @@ export default function ImageCarouselWidget({chips}) {
           <Text
             style={{
               fontSize: 18,
+              padding: 16,
+              paddingTop: 12,
             }}>
             Latest chips
           </Text>
-          <Icon name={'chevron-forward-outline'} size={24} color={'black'} />
+          <IconButton
+            icon={'search-circle-outline'}
+            size={36}
+            style={{margin: -2}}
+            color={'black'}
+            onPress={() => console.log('test')}
+          />
         </View>
       </View>
       <View style={styles.container}>
@@ -86,7 +89,7 @@ export default function ImageCarouselWidget({chips}) {
             showsHorizontalScrollIndicator={false}
             style={styles.list}
             data={chips}
-            decelerationRate="fast"
+            decelerationRate="normal"
             snapToInterval={ITEM_WIDTH}
             scrollEventThrottle={16}
             pagingEnabled
@@ -94,6 +97,15 @@ export default function ImageCarouselWidget({chips}) {
             renderItem={renderItem}
             getItemLayout={getItemLayout}
             keyExtractor={keyExtractor}
+            CellRendererComponent={({children, index, style, ...props}) => {
+              const cellStyle = [style, {zIndex: chips.length - index}];
+
+              return (
+                <View style={cellStyle} index={index} {...props}>
+                  {children}
+                </View>
+              );
+            }}
             contentContainerStyle={{
               display: 'flex',
             }}
@@ -127,11 +139,11 @@ const ChipDisplay = ({index, chip, transX}) => {
         {translateX: translateXAnimation(udv, index)},
         {translateY: translateYAnimation(udv, index)},
       ],
-      //   zIndex: zIndexAnimation(udv, index),
+      zIndex: zIndexAnimation(udv, index),
     };
   });
   return (
-    <Animated.View style={[styles.box, animatedStyle, {zIndex: index}]}>
+    <Animated.View style={[styles.box, animatedStyle]}>
       <ChipDisplayMini
         key={chip.key}
         verb={chip.description}
@@ -139,7 +151,6 @@ const ChipDisplay = ({index, chip, transX}) => {
         // date={date}
         // time={time}
       />
-      {/* <Text style={styles.label}>{index}</Text> */}
     </Animated.View>
   );
 };
@@ -223,6 +234,27 @@ const scaleAnimation = (udv, index) => {
       );
 };
 
+const zIndexAnimation = (udv, index) => {
+  'worklet';
+
+  return udv.value === null
+    ? 0
+    : interpolate(
+        udv.value,
+        [
+          (index - 3) * ITEM_WIDTH,
+          (index - 2) * ITEM_WIDTH,
+          (index - 1) * ITEM_WIDTH,
+          (index + 0) * ITEM_WIDTH,
+          (index + 1) * ITEM_WIDTH,
+          (index + 2) * ITEM_WIDTH,
+          (index + 3) * ITEM_WIDTH,
+        ],
+        [4, 6, 8, 10, 8, 6, 4],
+        Extrapolate.CLAMP,
+      );
+};
+
 const opacityAnimation = (udv, index) => {
   'worklet';
 
@@ -246,8 +278,8 @@ const opacityAnimation = (udv, index) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
     width: '100%',
   },
   listContainer: {
@@ -260,9 +292,7 @@ const styles = StyleSheet.create({
     width: ITEM_WIDTH,
     height: ITEM_WIDTH,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'purple',
+    backgroundColor: 'white',
   },
   label: {
     fontWeight: 'bold',

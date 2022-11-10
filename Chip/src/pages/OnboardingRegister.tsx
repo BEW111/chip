@@ -125,7 +125,7 @@ export default function OnboardingRegister({navigation}) {
                   marginBottom: 20,
                   textAlign: 'auto',
                 }}
-                underlineColor="gray"
+                underlineColor="#FFEEF8"
                 activeUnderlineColor="white"
               />
               <TextInput
@@ -153,17 +153,20 @@ export default function OnboardingRegister({navigation}) {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  alignItems: 'center',
                 }}>
-                <Button
-                  mode="outlined"
-                  onPress={() => navigation.navigate('Onboarding')}>
-                  Back
-                </Button>
-                <Button mode="contained" onPress={onRegisterPressed}>
-                  Register
-                </Button>
+                <View style={{flex: 1, marginRight: 12}}>
+                  <Button
+                    contentStyle={{alignSelf: 'stretch'}}
+                    mode="outlined"
+                    onPress={() => navigation.navigate('Onboarding')}>
+                    Back
+                  </Button>
+                </View>
+                <View style={{flex: 1}}>
+                  <Button mode="contained" onPress={onRegisterPressed}>
+                    Register
+                  </Button>
+                </View>
               </View>
             </Card>
           </ScrollView>

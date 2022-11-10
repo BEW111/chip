@@ -1,7 +1,6 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 
-import {Pressable, View} from 'react-native';
+import {Pressable, View, StyleSheet} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -43,26 +42,9 @@ export default function GoalSurface({
         });
       }}>
       <Surface
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'row',
-          padding: 12,
-          elevation: 0,
-          borderRadius: 10,
-          backgroundColor: '#FFEEF8',
-          opacity: pressed ? 0.8 : 1.0,
-        }}>
+        style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
         <View style={{flex: 1}}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              marginBottom: 4,
-              marginTop: -2,
-            }}>
-            {title}
-          </Text>
+          <Text style={goalSurfaceStyles.goalName}>{title}</Text>
           <Text style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
             {subtitleType != 'none' && (
               <>
@@ -77,10 +59,29 @@ export default function GoalSurface({
             {subtitle}
           </Text>
         </View>
-        <View style={{justifyContent: 'center'}}>
+        <View style={goalSurfaceStyles.arrow}>
           <Icon name="chevron-forward-outline" size={30} color="#000" />
         </View>
       </Surface>
     </Pressable>
   );
 }
+
+const goalSurfaceStyles = StyleSheet.create({
+  surface: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 12,
+    elevation: 0,
+    borderRadius: 10,
+    backgroundColor: '#FFEEF8',
+  },
+  goalName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    marginTop: -2,
+  },
+  arrow: {justifyContent: 'center'},
+});
