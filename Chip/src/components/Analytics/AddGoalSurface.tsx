@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 
-import {addGoal} from '../../utils/postUtils';
+import {addGoal} from '../../firebase/goals';
 import {styles, modalStyles} from '../../styles';
 
 export default function AddGoalSurface() {

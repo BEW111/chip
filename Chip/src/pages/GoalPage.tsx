@@ -25,7 +25,7 @@ import {
   onDisplayNotification,
   onCreateTriggerNotification,
   requestNotificationsPermission,
-} from '../utils/notifcations';
+} from '../notifications/notifcations';
 
 import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';

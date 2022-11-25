@@ -1,14 +1,25 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import {Goal} from '../types';
+
+interface AuthState {
+  initializing: boolean;
+  newlyCreated: boolean;
+  user: {} | null;
+  uid: string | null;
+  userGoals: Goal[];
+}
+
+const initialState: AuthState = {
+  initializing: true,
+  newlyCreated: false,
+  user: null,
+  uid: null,
+  userGoals: [],
+};
 
 export const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    initializing: true,
-    newlyCreated: false,
-    user: null,
-    uid: null,
-    userGoals: [],
-  },
+  initialState,
   reducers: {
     updateInitializing: (state, action) => {
       state.initializing = action.payload;
@@ -24,12 +35,17 @@ export const authSlice = createSlice({
     },
     updateUserGoals: (state, action) => {
       state.userGoals = action.payload;
-    }
+    },
   },
 });
 
-export const {updateInitializing, updateUser, updateUid, updateNewlyCreated, updateUserGoals} =
-  authSlice.actions;
+export const {
+  updateInitializing,
+  updateUser,
+  updateUid,
+  updateNewlyCreated,
+  updateUserGoals,
+} = authSlice.actions;
 export const selectInitializing = state => state.auth.initializing;
 export const selectUser = state => state.auth.user;
 export const selectUid = state => state.auth.uid;

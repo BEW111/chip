@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, ScrollView, StatusBar} from 'react-native';
+import {View, ScrollView, StatusBar} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ActivityIndicator, Divider, Text, IconButton} from 'react-native-paper';
 
@@ -43,6 +43,8 @@ function MainPage({navigation}) {
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
   const selectedGoal = useSelector(selectSelectedGoal);
+
+  console.log(userGoals);
 
   // const [fabOpen, setFabOpen] = useState(false);
   // const onFabStateChange = ({open}) => setFabOpen(open);
@@ -121,27 +123,18 @@ function MainPage({navigation}) {
               />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface
-              title="Cook more"
-              subtitle="5 day streak"
-              subtitleType="streak"
-              navigation={navigation}
-            />
-            <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface
-              title="Read every day"
-              subtitle="12 mins left today"
-              subtitleType="todo"
-              navigation={navigation}
-            />
-            <Divider style={{marginVertical: 7, height: 0}} />
-            <GoalSurface
-              title="Learn Korean"
-              subtitle="Daily target completed"
-              subtitleType="completed"
-              navigation={navigation}
-            />
-            <Divider style={{marginVertical: 7, height: 0}} />
+            {userGoals.map(goal => (
+              <>
+                <GoalSurface
+                  title="Temp Goal"
+                  subtitle="Planned for 5pm today"
+                  subtitleType="scheduled"
+                  streak={3}
+                  navigation={navigation}
+                />
+                <Divider style={{marginVertical: 7, height: 0}} />
+              </>
+            ))}
             <AddGoalSurface />
           </ScrollView>
         </View>

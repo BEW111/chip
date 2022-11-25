@@ -13,7 +13,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 
 import store from './src/redux/store';
 import {useSelector, useDispatch} from 'react-redux';

@@ -47,8 +47,6 @@ import Header from '../../components/Analytics/Header';
 import backgroundImage from '../../../assets/background.png';
 import chipsIcon from '../../../assets/chips-icon.png';
 
-import {addGoal} from '../../utils/postUtils';
-
 export default function AnalyticsMainView() {
   return (
     <View style={{flex: 1, display: 'flex'}}>

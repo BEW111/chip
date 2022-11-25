@@ -8,7 +8,7 @@ import {
   onDisplayNotification,
   onCreateTriggerNotification,
   requestNotificationsPermission,
-} from '../utils/notifcations';
+} from '../notifications/notifcations';
 
 export default function Social() {
   const [visible, setVisible] = React.useState(false);
