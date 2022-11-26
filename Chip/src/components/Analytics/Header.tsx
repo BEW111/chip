@@ -18,8 +18,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 import {updateSelectedGoal} from '../../redux/analyticsSlice';
 
-import {addGoal} from '../../utils/postUtils';
-
 export default function Header(props, {navigation}) {
   const insets = useSafeAreaInsets();
 

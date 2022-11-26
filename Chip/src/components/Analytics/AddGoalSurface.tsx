@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Button,
+  SegmentedButtons,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -19,9 +20,10 @@ import {styles, modalStyles} from '../../styles';
 
 export default function AddGoalSurface() {
   const [pressed, setPressed] = useState(false);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [goalInput, setGoalInput] = useState('');
+  const [goalNameInput, setGoalNameInput] = useState('');
+  const [goalTypeInput, setGoalTypeInput] = useState('');
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -39,14 +41,29 @@ export default function AddGoalSurface() {
           <TextInput
             style={modalStyles.textInput}
             label="Name of goal"
-            value={goalInput}
-            onChangeText={text => setGoalInput(text)}
+            value={goalNameInput}
+            onChangeText={text => setGoalNameInput(text)}
           />
+          {/* <SegmentedButtons
+            value={goalTypeInput}
+            onValueChange={setGoalTypeInput}
+            buttons={[
+              {
+                value: 'form',
+                label: 'Form',
+              },
+              {
+                value: 'break',
+                label: 'Break',
+              },
+            ]}
+            // style={styles.group}
+          /> */}
           <Button
             mode="contained"
             onPress={() => {
-              addGoal(uid, goalInput);
-              setGoalInput('');
+              addGoal(uid, goalNameInput, '', 'form');
+              setGoalNameInput('');
               hideModal();
             }}>
             Make it happen
@@ -61,11 +78,9 @@ export default function AddGoalSurface() {
         }}>
         <Surface
           style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
-          <View style={styles.centered}>
-            <View style={goalSurfaceStyles.contentWrapper}>
-              <Icon name="add-circle-outline" size={36} />
-              <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
-            </View>
+          <View style={goalSurfaceStyles.contentWrapper}>
+            <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
+            <Icon name="add-circle-outline" size={21} color={'#ffddf1'} />
           </View>
         </Surface>
       </Pressable>
@@ -76,21 +91,24 @@ export default function AddGoalSurface() {
 const goalSurfaceStyles = StyleSheet.create({
   surface: {
     width: '100%',
-    padding: 12,
+    padding: 14,
+    paddingVertical: 8,
     elevation: 0,
     borderRadius: 10,
-    backgroundColor: '#ffddf1',
+
+    backgroundColor: '#222222',
 
     display: 'flex',
     alignItems: 'center',
   },
   addGoal: {
-    fontSize: 32,
-    marginLeft: 12,
+    fontSize: 18,
+    color: '#ffddf1',
+    flex: 1,
   },
   contentWrapper: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

@@ -10,8 +10,9 @@ export interface ChipUser {
 export interface Goal {
   id: string; // actual identifier of the goal
   name: string; // display name of the goal
+  timeCreated: FirebaseFirestoreTypes.Timestamp;
   description?: string;
-  type?: 'form' | 'break';
+  type?: 'form' | 'break' | 'do' | '';
   category?: string;
   streak?: number;
 }
