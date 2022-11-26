@@ -41,7 +41,7 @@ import theme from './src/theme';
 import backgroundImage from './assets/background.png';
 
 import GoalGalaxyView from './src/components/GoalGalaxy/GoalGalaxyView';
-import {dispatchUpdateUserGoals} from './src/utils/postUtils';
+import {dispatchUpdateUserGoals} from './src/firebase/goals';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();

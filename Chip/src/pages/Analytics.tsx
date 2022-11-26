@@ -21,7 +21,7 @@ import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 import GoalPage from './GoalPage';
 
-import {ChipObject} from '../types';
+import {ChipObject, Goal} from '../types';
 
 import backgroundImage from '../../assets/background.png';
 
@@ -123,17 +123,18 @@ function MainPage({navigation}) {
               />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
-            {userGoals.map(goal => (
-              <>
+            {userGoals.map((goal: Goal) => (
+              <View key={goal.id}>
                 <GoalSurface
-                  title="Temp Goal"
+                  goalId={goal.id}
+                  goalName={goal.name}
                   subtitle="Planned for 5pm today"
                   subtitleType="scheduled"
-                  streak={3}
+                  streak={goal.streak}
                   navigation={navigation}
                 />
                 <Divider style={{marginVertical: 7, height: 0}} />
-              </>
+              </View>
             ))}
             <AddGoalSurface />
           </ScrollView>

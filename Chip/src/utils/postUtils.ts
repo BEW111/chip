@@ -2,8 +2,6 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
-import {updateUserGoals} from '../redux/authSlice';
-
 // Registers a new user from their email and password
 // generates firestore document for the user
 export async function createNewUser(email, password, newGoal) {
@@ -39,16 +37,6 @@ export async function createNewUser(email, password, newGoal) {
       code: error.code,
       message: error.message,
     };
-  }
-}
-
-// Updates the local state for user goals
-export async function dispatchUpdateUserGoals(UID, dispatch) {
-  try {
-    const userData = await firestore().collection('users').doc(UID).get(); // retrive user data from firestore
-    dispatch(updateUserGoals(userData._data.goals));
-  } catch (error) {
-    console.log(error);
   }
 }
 

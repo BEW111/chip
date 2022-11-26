@@ -25,7 +25,8 @@ const subtitleMap = {
 };
 
 export default function GoalSurface({
-  title,
+  goalId,
+  goalName,
   subtitle,
   subtitleType = 'none',
   navigation,
@@ -38,13 +39,14 @@ export default function GoalSurface({
       onPressOut={() => setPressed(false)}
       onPress={() => {
         navigation.navigate('AnalyticsGoalPage', {
-          goal: title,
+          goalId: goalId,
+          routeGoalName: goalName,
         });
       }}>
       <Surface
         style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
         <View style={{flex: 1}}>
-          <Text style={goalSurfaceStyles.goalName}>{title}</Text>
+          <Text style={goalSurfaceStyles.goalName}>{goalName}</Text>
           <Text style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
             {subtitleType != 'none' && (
               <>

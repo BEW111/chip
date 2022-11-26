@@ -1,22 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, Text, StyleSheet} from 'react-native';
-import {Button, IconButton, Modal, Portal, useTheme} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  Button,
+  IconButton,
+  Modal,
+  Portal,
+  TextInput,
+  useTheme,
+} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 
 import {FAB, ActivityIndicator, Divider} from 'react-native-paper';
-
-import Icon from 'react-native-vector-icons/Ionicons';
-
-import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import firestore, {
   FirebaseFirestoreTypes,
 } from '@react-native-firebase/firestore';
 
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
-import {selectSelectedGoal} from '../redux/analyticsSlice';
 
 import Settings from '../components/Settings';
 
@@ -37,6 +38,8 @@ import ImageCarouselWidget from '../components/Analytics/ImageCarouselWidget';
 import {ChipObject} from './Analytics';
 import TextWidget from '../components/Analytics/TextWidget';
 
+import {editGoalName, deleteGoal} from '../firebase/goals';
+
 import {styles, modalStyles} from '../styles';
 
 function StatsView({filteredChips}) {
@@ -47,11 +50,13 @@ function StatsView({filteredChips}) {
   );
 }
 
-function ReminderFAB() {
+function ReminderFAB({uid, goalId, navigation}) {
   const [fabOpen, setFabOpen] = useState(false);
   const onFabStateChange = ({open}) => setFabOpen(open);
 
   const {colors} = useTheme();
+
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.absoluteFull} pointerEvents={'box-none'}>
@@ -73,8 +78,11 @@ function ReminderFAB() {
           },
           {
             icon: 'trash',
-            label: 'Delete (to be implemented)',
-            onPress: () => console.log('Pressed email'),
+            label: 'Delete',
+            onPress: () => {
+              deleteGoal(uid, goalId, dispatch);
+              navigation.navigate('AnalyticsLandingPage');
+            },
           },
         ]}
         onStateChange={o => {
@@ -87,14 +95,16 @@ function ReminderFAB() {
 }
 
 export default function GoalPage({navigation, route}) {
-  // const [visible, setVisible] = React.useState(false);
-
-  const {goal} = route.params;
+  const {goalId, routeGoalName} = route.params;
+  const [goalName, setGoalName] = useState(routeGoalName);
 
   const uid = useSelector(selectUid);
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
+
+  const [goalNameInput, setGoalNameInput] = useState('');
 
   const [modalVisible, setModalVisible] = React.useState(false);
 
@@ -139,21 +149,22 @@ export default function GoalPage({navigation, route}) {
           visible={modalVisible}
           onDismiss={hideModal}
           contentContainerStyle={modalStyles.container}>
-          {/* <Text style={modalStyles.header}>Add a new goal</Text>
+          <Text style={modalStyles.header}>Edit goal</Text>
           <TextInput
             style={modalStyles.textInput}
-            label="Name of goal"
-            value={goalInput}
-            onChangeText={text => setGoalInput(text)}
-          /> */}
+            label="Edit goal name"
+            value={goalNameInput}
+            onChangeText={text => setGoalNameInput(text)}
+          />
           <Button
             mode="contained"
             onPress={() => {
-              // addGoal(uid, goalInput);
-              // setGoalInput('');
-              // hideModal();
+              editGoalName(uid, goalId, goalNameInput, dispatch);
+              setGoalName(goalNameInput);
+              setGoalNameInput('');
+              hideModal();
             }}>
-            Delete goal
+            Change goal name
           </Button>
         </Modal>
       </Portal>
@@ -161,7 +172,7 @@ export default function GoalPage({navigation, route}) {
         <FastImage source={backgroundImage} style={styles.absoluteFull} />
         <View style={styles.full}>
           <Header navigation={navigation}>
-            <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goal}</Text>
+            <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goalName}</Text>
             <View style={{position: 'absolute', display: 'flex', left: 4}}>
               <IconButton
                 icon="chevron-back-outline"
@@ -195,19 +206,19 @@ export default function GoalPage({navigation, route}) {
               }}>
               <StatsView
                 filteredChips={chips.filter(
-                  (chip: ChipObject) => chip.goal === goal,
+                  (chip: ChipObject) => chip.goal === goalName,
                 )}
               />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
             <ImageCarouselWidget
               navigation={navigation}
-              chips={chips.filter((chip: ChipObject) => chip.goal === goal)}
+              chips={chips.filter((chip: ChipObject) => chip.goal === goalName)}
             />
           </ScrollView>
         </View>
       </View>
-      <ReminderFAB />
+      <ReminderFAB uid={uid} goalId={goalId} navigation={navigation} />
     </>
   );
 }
