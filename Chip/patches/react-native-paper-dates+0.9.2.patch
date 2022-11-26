@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-paper-dates/src/Date/CalendarHeader.tsx b/node_modules/react-native-paper-dates/src/Date/CalendarHeader.tsx
+index e094c92..578ef3c 100644
+--- a/node_modules/react-native-paper-dates/src/Date/CalendarHeader.tsx
++++ b/node_modules/react-native-paper-dates/src/Date/CalendarHeader.tsx
+@@ -48,7 +48,7 @@ function CalendarHeader({
+             ]}
+           >
+             <IconButton
+-              icon="chevron-left"
++              icon="arrow-back-outline"
+               accessibilityLabel={getTranslation(locale, 'previous')}
+               onPress={onPrev}
+             />
+@@ -61,7 +61,7 @@ function CalendarHeader({
+             ]}
+           >
+             <IconButton
+-              icon="chevron-right"
++              icon="arrow-forward-outline"
+               accessibilityLabel={getTranslation(locale, 'next')}
+               onPress={onNext}
+             />
