@@ -1,4 +1,4 @@
-import {configureFonts, DefaultTheme} from 'react-native-paper';
+import {configureFonts, MD2LightTheme} from 'react-native-paper';
 
 const _fontConfig = {
   regular: {
@@ -26,15 +26,15 @@ const fontConfig = {
 };
 
 const theme = {
-  ...DefaultTheme,
+  ...MD2LightTheme,
   roundness: 10,
   colors: {
-    ...DefaultTheme.colors,
+    ...MD2LightTheme.colors,
     primary: '#B4004E',
     secondary: '#EC407A',
     tertiary: '#DFA349',
   },
-  fonts: configureFonts(fontConfig),
+  fonts: configureFonts({config: fontConfig, isV3: false}),
 };
 
 export default theme;

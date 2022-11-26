@@ -2,6 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import {Goal} from '../types';
 
+import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 
 // Creates a new goal to add for this user

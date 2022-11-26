@@ -39,4 +39,8 @@ export const modalStyles = StyleSheet.create({
     backgroundColor: '#ffddf1',
     marginBottom: 24,
   },
+  segmentedButtons: {
+    width: '100%',
+    marginBottom: 24,
+  },
 });

@@ -331,24 +331,16 @@ export default function Home() {
             <IconButton
               icon="camera-reverse-outline"
               size={24}
-              color="white"
+              iconColor="white"
+              containerColor={'rgba(0, 0, 0, 0.3)'}
               onPress={onFlipDevicePressed}
-              style={{
-                borderColor: 'white',
-                borderWidth: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              }}
             />
             <IconButton
               icon={flash === 'on' ? 'flash' : 'flash-off'}
               size={24}
-              color="white"
+              iconColor="white"
+              containerColor={'rgba(0, 0, 0, 0.3)'}
               onPress={onFlashPressed}
-              style={{
-                borderColor: 'white',
-                borderWidth: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.3)',
-              }}
             />
           </View>
         </>

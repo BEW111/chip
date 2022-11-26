@@ -44,21 +44,29 @@ export default function AddGoalSurface() {
             value={goalNameInput}
             onChangeText={text => setGoalNameInput(text)}
           />
-          {/* <SegmentedButtons
+          <SegmentedButtons
+            style={modalStyles.segmentedButtons}
             value={goalTypeInput}
             onValueChange={setGoalTypeInput}
             buttons={[
               {
                 value: 'form',
-                label: 'Form',
+                label: 'Form habit',
+                icon: 'flask-outline',
+                style: {
+                  width: '50%',
+                },
               },
               {
                 value: 'break',
-                label: 'Break',
+                label: 'Break habit',
+                icon: 'build-outline',
+                style: {
+                  width: '50%',
+                },
               },
             ]}
-            // style={styles.group}
-          /> */}
+          />
           <Button
             mode="contained"
             onPress={() => {
