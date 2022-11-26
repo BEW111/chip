@@ -11,7 +11,7 @@ interface AuthState {
 
 interface AddUserGoalPayload {
   goalId: string;
-  name: string;
+  goalName: string;
 }
 
 interface UpdateUserGoalNamePayload {
@@ -53,7 +53,7 @@ export const authSlice = createSlice({
     addUserGoal: (state, action: PayloadAction<AddUserGoalPayload>) => {
       const newGoal = {
         id: action.payload.goalId,
-        name: action.payload.name,
+        name: action.payload.goalName,
       };
 
       state.userGoals = [...state.userGoals, newGoal];
@@ -62,7 +62,6 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<UpdateUserGoalNamePayload>,
     ) => {
-      // confirm we're updating an existing goal
       if (
         state.userGoals.filter(g => g.id === action.payload.goalId).length === 0
       ) {

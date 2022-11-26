@@ -4,7 +4,6 @@ import {Pressable, View, StyleSheet} from 'react-native';
 import {
   Portal,
   Modal,
-  Surface,
   Text,
   TextInput,
   Button,
@@ -13,11 +12,11 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 
 import {addGoal} from '../../firebase/goals';
-import {styles, modalStyles} from '../../styles';
+import {modalStyles} from '../../styles';
 
 export default function AddGoalSurface() {
   const [pressed, setPressed] = useState(false);
@@ -28,6 +27,8 @@ export default function AddGoalSurface() {
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
+
+  const dispatch = useDispatch();
 
   const uid = useSelector(selectUid);
 
@@ -71,7 +72,7 @@ export default function AddGoalSurface() {
           <Button
             mode="contained"
             onPress={() => {
-              addGoal(uid, goalNameInput, '', 'form');
+              addGoal(uid, goalNameInput, '', goalTypeInput, dispatch);
               setGoalNameInput('');
               hideModal();
             }}>

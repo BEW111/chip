@@ -51,7 +51,7 @@ export async function addGoal(UID, goalName, goalDesc, goalType, dispatch) {
   dispatch(
     addUserGoal({
       goalId: goalId,
-      name: name,
+      goalName: goalName,
     }),
   );
 

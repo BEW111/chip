@@ -104,7 +104,7 @@ export default function GoalPage({navigation, route}) {
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
 
-  const [goalNameInput, setGoalNameInput] = useState('');
+  const [goalNameInput, setGoalNameInput] = useState(routeGoalName);
 
   const [modalVisible, setModalVisible] = React.useState(false);
 
