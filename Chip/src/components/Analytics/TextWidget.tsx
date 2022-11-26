@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {BlurView} from '@react-native-community/blur';
 
 const subtitleMap = {
   streak: {
@@ -33,7 +34,10 @@ export default function TextWidget({subtitle, subtitleType = 'none'}) {
     <Pressable
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}>
-      <Surface
+      <BlurView
+        blurType="light"
+        blurAmount={32}
+        reducedTransparencyFallbackColor="white"
         style={{
           width: '100%',
           display: 'flex',
@@ -41,7 +45,7 @@ export default function TextWidget({subtitle, subtitleType = 'none'}) {
           padding: 12,
           elevation: 0,
           borderRadius: 10,
-          backgroundColor: '#FFEEF8',
+          // backgroundColor: '#FFEEF8',
           opacity: pressed ? 0.8 : 1.0,
         }}>
         <Text style={{fontSize: 18, color: subtitleMap[subtitleType]?.color}}>
@@ -57,7 +61,7 @@ export default function TextWidget({subtitle, subtitleType = 'none'}) {
           )}
           {subtitle}
         </Text>
-      </Surface>
+      </BlurView>
     </Pressable>
   );
 }

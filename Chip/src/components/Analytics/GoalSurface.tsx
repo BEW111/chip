@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import {Pressable, View, StyleSheet} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {BlurView} from '@react-native-community/blur';
 
 const subtitleMap = {
   streak: {
@@ -43,8 +44,11 @@ export default function GoalSurface({
           routeGoalName: goalName,
         });
       }}>
-      <Surface
-        style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
+      <BlurView
+        style={{...goalSurfaceStyles.blurSurface, opacity: pressed ? 0.5 : 1.0}}
+        blurType="light"
+        blurAmount={32}
+        reducedTransparencyFallbackColor="white">
         <View style={{flex: 1}}>
           <Text style={goalSurfaceStyles.goalName}>{goalName}</Text>
           <Text style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
@@ -64,12 +68,20 @@ export default function GoalSurface({
         <View style={goalSurfaceStyles.arrow}>
           <Icon name="chevron-forward-outline" size={30} color="#000" />
         </View>
-      </Surface>
+      </BlurView>
     </Pressable>
   );
 }
 
 const goalSurfaceStyles = StyleSheet.create({
+  blurSurface: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 12,
+    elevation: 0,
+    borderRadius: 10,
+  },
   surface: {
     width: '100%',
     display: 'flex',

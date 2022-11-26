@@ -11,6 +11,7 @@ import {
   SegmentedButtons,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {BlurView} from '@react-native-community/blur';
 
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
@@ -84,13 +85,16 @@ export default function AddGoalSurface() {
         onPress={() => {
           showModal();
         }}>
-        <Surface
+        <BlurView
+          blurType="dark"
+          blurAmount={32}
+          reducedTransparencyFallbackColor="white"
           style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
           <View style={goalSurfaceStyles.contentWrapper}>
             <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
             <Icon name="add-circle-outline" size={21} color={'#ffddf1'} />
           </View>
-        </Surface>
+        </BlurView>
       </Pressable>
     </>
   );
@@ -104,7 +108,7 @@ const goalSurfaceStyles = StyleSheet.create({
     elevation: 0,
     borderRadius: 10,
 
-    backgroundColor: '#222222',
+    // backgroundColor: '#222222',
 
     display: 'flex',
     alignItems: 'center',

@@ -10,6 +10,8 @@ import Svg, {
   Defs,
   Stop,
 } from 'react-native-svg';
+import {BlurView} from '@react-native-community/blur';
+
 import {ChipObject} from '../../pages/Analytics';
 
 import LatoRegular from '../../../assets/fonts/Lato-Regular.ttf';
@@ -61,7 +63,7 @@ export default function DayOccurrenceChart({chips}) {
   const COLUMN_WIDTH = 30;
   const COLUMN_COLOR = 'rgba(245, 166, 198, 0.3)';
 
-  const TEXT_COLOR = "rgba(68, 10, 23, 0.739)";
+  const TEXT_COLOR = 'rgba(68, 10, 23, 0.739)';
 
   return (
     <View
@@ -71,7 +73,10 @@ export default function DayOccurrenceChart({chips}) {
         setChartWidth(width);
         setChartHeight(height);
       }}>
-      <View
+      <BlurView
+        blurType="light"
+        blurAmount={32}
+        reducedTransparencyFallbackColor="white"
         style={{
           width: '100%',
           height: '100%',
@@ -85,7 +90,7 @@ export default function DayOccurrenceChart({chips}) {
               <Stop offset="1" stopColor={TO_COLOR} />
             </LinearGradient>
           </Defs>
-          <Rect width="100%" height="100%" fill="url(#grad)" />
+          {/* <Rect width="100%" height="100%" fill="url(#grad)" /> */}
           {dates.map((dateStr, i) => (
             <G key={i}>
               <Rect
@@ -184,7 +189,7 @@ export default function DayOccurrenceChart({chips}) {
             </G>
           ))}
         </Svg>
-      </View>
+      </BlurView>
     </View>
   );
 }
