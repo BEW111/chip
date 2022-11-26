@@ -1,5 +1,8 @@
-import notifee, { TimestampTrigger, TriggerType, AuthorizationStatus } from '@notifee/react-native';
-
+import notifee, {
+  TimestampTrigger,
+  TriggerType,
+  AuthorizationStatus,
+} from '@notifee/react-native';
 
 export async function requestNotificationsPermission() {
   const settings = await notifee.requestPermission();
@@ -12,7 +15,11 @@ export async function requestNotificationsPermission() {
 }
 
 // Schedule a generic notifcation for a specific time
-export async function scheduleNotification(date: Date, title: string, body: string) {
+export async function scheduleNotification(
+  date: Date,
+  title: string,
+  body: string,
+) {
   console.log('scheduling notification');
 
   // Create a time-based trigger
@@ -66,7 +73,7 @@ export async function onCreateTriggerNotification(date) {
 
 export async function onDisplayNotification() {
   // Request permissions (required for iOS)
-  await notifee.requestPermission()
+  await notifee.requestPermission();
 
   // Create a channel (required for Android)
   const channelId = await notifee.createChannel({

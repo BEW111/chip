@@ -5,6 +5,7 @@ import {
   IconButton,
   Modal,
   Portal,
+  SegmentedButtons,
   TextInput,
   useTheme,
 } from 'react-native-paper';
@@ -19,24 +20,16 @@ import firestore, {
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
 
-import Settings from '../components/Settings';
-
-import {
-  scheduleNotification,
-  onDisplayNotification,
-  onCreateTriggerNotification,
-  requestNotificationsPermission,
-} from '../notifications/notifcations';
-
-import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
+import DayOccurrenceChart from '../components/GoalWidgets/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 
 import backgroundImage from '../../assets/background.png';
-import ImageCarouselWidget from '../components/Analytics/ImageCarouselWidget';
+import ImageCarouselWidget from '../components/GoalWidgets/ImageCarouselWidget';
 // import chipsIcon from '../../assets/chips-icon.png';
 
 import {ChipObject} from './Analytics';
-import TextWidget from '../components/Analytics/TextWidget';
+import TextWidget from '../components/GoalWidgets/TextWidget';
+import RemindersModal from '../components/GoalDetail/ReminderModal';
 
 import {editGoalName, deleteGoal} from '../firebase/goals';
 
@@ -50,7 +43,45 @@ function StatsView({filteredChips}) {
   );
 }
 
-function ReminderFAB({uid, goalId, navigation}) {
+function EditGoalModal({
+  visible,
+  setGoalName,
+  hideModal,
+  uid,
+  goalId,
+  routeGoalName,
+}) {
+  const [goalNameInput, setGoalNameInput] = useState(routeGoalName);
+
+  const dispatch = useDispatch();
+
+  return (
+    <Modal
+      visible={visible}
+      onDismiss={hideModal}
+      contentContainerStyle={modalStyles.container}>
+      <Text style={modalStyles.header}>Edit goal</Text>
+      <TextInput
+        style={modalStyles.textInput}
+        label="Edit goal name"
+        value={goalNameInput}
+        onChangeText={text => setGoalNameInput(text)}
+      />
+      <Button
+        mode="contained"
+        onPress={() => {
+          editGoalName(uid, goalId, goalNameInput, dispatch);
+          setGoalName(goalNameInput);
+          setGoalNameInput('');
+          hideModal();
+        }}>
+        Change goal name
+      </Button>
+    </Modal>
+  );
+}
+
+function ReminderFAB({uid, goalId, navigation, showRemindersModal}) {
   const [fabOpen, setFabOpen] = useState(false);
   const onFabStateChange = ({open}) => setFabOpen(open);
 
@@ -68,8 +99,10 @@ function ReminderFAB({uid, goalId, navigation}) {
         actions={[
           {
             icon: 'alarm',
-            label: 'Remind (to be implemented)',
-            onPress: () => console.log('Pressed notifications'),
+            label: 'Reminders',
+            onPress: () => {
+              showRemindersModal();
+            },
           },
           {
             icon: 'share',
@@ -95,25 +128,25 @@ function ReminderFAB({uid, goalId, navigation}) {
 }
 
 export default function GoalPage({navigation, route}) {
+  // Managing goals and user data
   const {goalId, routeGoalName} = route.params;
   const [goalName, setGoalName] = useState(routeGoalName);
 
   const uid = useSelector(selectUid);
-  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
 
-  const [goalNameInput, setGoalNameInput] = useState(routeGoalName);
+  // Modals
+  const [editGoalModalVisible, setEditGoalModalVisible] = useState(false);
+  const showEditGoalModal = () => setEditGoalModalVisible(true);
+  const hideEditGoalModal = () => setEditGoalModalVisible(false);
 
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const [remindersModalVisible, setRemindersModalVisible] = useState(false);
+  const showRemindersModal = () => setRemindersModalVisible(true);
+  const hideRemindersModal = () => setRemindersModalVisible(false);
 
-  const showModal = () => setModalVisible(true);
-  const hideModal = () => setModalVisible(false);
-
-  // const chipViewType: 'tiled' | 'swipe' = 'tiled';
-
-  // get all chips
+  // Get all chips
   useEffect(() => {
     const subscriber = firestore()
       .collection('users')
@@ -138,6 +171,7 @@ export default function GoalPage({navigation, route}) {
     return () => subscriber();
   }, [uid]);
 
+  // Check if loading
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -145,28 +179,18 @@ export default function GoalPage({navigation, route}) {
   return (
     <>
       <Portal>
-        <Modal
-          visible={modalVisible}
-          onDismiss={hideModal}
-          contentContainerStyle={modalStyles.container}>
-          <Text style={modalStyles.header}>Edit goal</Text>
-          <TextInput
-            style={modalStyles.textInput}
-            label="Edit goal name"
-            value={goalNameInput}
-            onChangeText={text => setGoalNameInput(text)}
-          />
-          <Button
-            mode="contained"
-            onPress={() => {
-              editGoalName(uid, goalId, goalNameInput, dispatch);
-              setGoalName(goalNameInput);
-              setGoalNameInput('');
-              hideModal();
-            }}>
-            Change goal name
-          </Button>
-        </Modal>
+        <EditGoalModal
+          visible={editGoalModalVisible}
+          setGoalName={setGoalName}
+          hideModal={hideEditGoalModal}
+          uid={uid}
+          goalId={goalId}
+          routeGoalName={routeGoalName}
+        />
+        <RemindersModal
+          visible={remindersModalVisible}
+          hideModal={hideRemindersModal}
+        />
       </Portal>
       <View style={styles.expand}>
         <FastImage source={backgroundImage} style={styles.absoluteFull} />
@@ -187,7 +211,7 @@ export default function GoalPage({navigation, route}) {
                 icon="pencil"
                 size={32}
                 onPress={() => {
-                  showModal();
+                  showEditGoalModal();
                 }}
               />
             </View>
@@ -218,7 +242,12 @@ export default function GoalPage({navigation, route}) {
           </ScrollView>
         </View>
       </View>
-      <ReminderFAB uid={uid} goalId={goalId} navigation={navigation} />
+      <ReminderFAB
+        uid={uid}
+        goalId={goalId}
+        navigation={navigation}
+        showRemindersModal={showRemindersModal}
+      />
     </>
   );
 }

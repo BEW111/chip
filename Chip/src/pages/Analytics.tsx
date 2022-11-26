@@ -13,11 +13,11 @@ import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
 import {selectSelectedGoal} from '../redux/analyticsSlice';
 
-import GoalSurface from '../components/Analytics/GoalSurface';
-import AddGoalSurface from '../components/Analytics/AddGoalSurface';
+import GoalSurface from '../components/GoalWidgets/GoalSurface';
+import AddGoalSurface from '../components/GoalWidgets/AddGoalSurface';
 
 import Settings from '../components/Settings';
-import DayOccurrenceChart from '../components/Analytics/DayOccurrenceChart';
+import DayOccurrenceChart from '../components/GoalWidgets/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 import GoalPage from './GoalPage';
 

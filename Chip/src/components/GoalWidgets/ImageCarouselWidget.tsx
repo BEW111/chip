@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import {Surface, Text, IconButton} from 'react-native-paper';
-import ChipDisplayMini from './ChipDisplayMini';
+import ChipDisplayMini from '../GoalDetail/ChipDisplayMini';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 

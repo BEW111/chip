@@ -18,6 +18,11 @@ export const styles = StyleSheet.create({
   expand: {
     flex: 1,
   },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export const modalStyles = StyleSheet.create({
@@ -28,6 +33,9 @@ export const modalStyles = StyleSheet.create({
     shadowOpacity: 0,
     borderRadius: 10,
     padding: 18,
+  },
+  label: {
+    fontSize: 24,
   },
   header: {
     alignSelf: 'center',

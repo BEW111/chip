@@ -66,7 +66,7 @@ export default function GoalSurface({
           </Text>
         </View>
         <View style={goalSurfaceStyles.arrow}>
-          <Icon name="chevron-forward-outline" size={30} color="#000" />
+          <Icon name="chevron-forward-outline" size={24} color="#000" />
         </View>
       </BlurView>
     </Pressable>
@@ -81,15 +81,6 @@ const goalSurfaceStyles = StyleSheet.create({
     padding: 12,
     elevation: 0,
     borderRadius: 10,
-  },
-  surface: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 12,
-    elevation: 0,
-    borderRadius: 10,
-    backgroundColor: '#FFEEF8',
   },
   goalName: {
     fontSize: 24,
