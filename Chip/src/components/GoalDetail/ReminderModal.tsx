@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import {
   Button,
   Divider,
   Modal,
   Portal,
   SegmentedButtons,
+  Text,
 } from 'react-native-paper';
 import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';

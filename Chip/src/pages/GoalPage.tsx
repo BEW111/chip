@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, Text, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import {
   Button,
   IconButton,
@@ -7,6 +7,7 @@ import {
   Portal,
   SegmentedButtons,
   TextInput,
+  Text,
   useTheme,
 } from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
