@@ -18,9 +18,16 @@ export interface Goal {
 }
 
 export interface ChipObject {
-  key: string;
   goalId: string;
   timeSubmitted: FirebaseFirestoreTypes.Timestamp;
   photo: string;
   description: string;
+}
+
+export interface Reminder {
+  id: string;
+  goalId: string;
+  notificationIntent: 'none' | 'remind' | 'prepare' | 'now';
+  timeCreated: FirebaseFirestoreTypes.Timestamp;
+  timeSent: FirebaseFirestoreTypes.Timestamp;
 }

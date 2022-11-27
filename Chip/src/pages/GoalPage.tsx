@@ -190,6 +190,8 @@ export default function GoalPage({navigation, route}) {
         <RemindersModal
           visible={remindersModalVisible}
           hideModal={hideRemindersModal}
+          goalName={goalName}
+          goalId={goalId}
         />
       </Portal>
       <View style={styles.expand}>
@@ -217,10 +219,7 @@ export default function GoalPage({navigation, route}) {
             </View>
           </Header>
           <ScrollView style={{flex: 1, padding: 20}}>
-            <TextWidget
-              subtitle={'Try cooking a new dish this weekend'}
-              subtitleType="hint"
-            />
+            <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
             <Divider style={{marginVertical: 7, height: 0}} />
             <View
               style={{
@@ -230,14 +229,14 @@ export default function GoalPage({navigation, route}) {
               }}>
               <StatsView
                 filteredChips={chips.filter(
-                  (chip: ChipObject) => chip.goal === goalName,
+                  (chip: ChipObject) => chip.goalId === goalId,
                 )}
               />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
             <ImageCarouselWidget
               navigation={navigation}
-              chips={chips.filter((chip: ChipObject) => chip.goal === goalName)}
+              chips={chips.filter((chip: ChipObject) => chip.goalId === goalId)}
             />
           </ScrollView>
         </View>

@@ -7,6 +7,7 @@ import {IconButton, Text, TextInput, Surface} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {BlurView} from '@react-native-community/blur';
 
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
@@ -32,6 +33,7 @@ import {selectUid, selectUserGoals} from '../redux/authSlice';
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
+import {Goal} from '../types';
 
 function PhotoViewer(props) {
   const insets = useSafeAreaInsets();
@@ -39,10 +41,10 @@ function PhotoViewer(props) {
   const dispatch = useDispatch();
   const uid = useSelector(selectUid);
 
-  const userGoals = useSelector(selectUserGoals);
+  const userGoals: Goal[] = useSelector(selectUserGoals);
 
   const [popupShowing, setPopupShowing] = useState(true);
-  const [selectedGoal, setSelectedGoal] = useState('');
+  const [selectedGoalId, setSelectedGoalId] = useState('');
   const [chipDescription, setChipDescription] = useState('');
 
   return (
@@ -57,15 +59,13 @@ function PhotoViewer(props) {
         alignItems: 'center',
       }}>
       {popupShowing ? (
-        <Surface
-          pointerEvents={'box-none'}
+        <BlurView
+          blurType="light"
           style={{
             width: '90%',
             height: '40%',
 
             borderRadius: 10,
-
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
           }}>
           <View
             pointerEvents={'box-none'}
@@ -87,19 +87,18 @@ function PhotoViewer(props) {
                 overflow: 'hidden',
               }}
               selectedValue={'Exercise'}
-              pickerData={[
-                ...new Set([
-                  ...userGoals,
-                  ...['Exercise', 'Eat healthy', 'Study'],
-                ]),
-              ]}
+              pickerData={userGoals.map(g => ({
+                value: g.id,
+                label: g.name,
+              }))}
               onValueChange={value => {
-                setSelectedGoal(value);
+                setSelectedGoalId(value);
               }}
             />
           </View>
           <TextInput
-            style={{margin: 10}}
+            style={{margin: 10, backgroundColor: 'rgba(255, 255, 255, 0.4)'}}
+            mode="flat"
             label="Description"
             value={chipDescription}
             onChangeText={text => setChipDescription(text)}
@@ -120,7 +119,7 @@ function PhotoViewer(props) {
             }}>
             <Icon name="close" size={24} />
           </Pressable>
-        </Surface>
+        </BlurView>
       ) : (
         <></>
       )}
@@ -167,7 +166,7 @@ function PhotoViewer(props) {
       <Pressable
         onPress={() => {
           dispatch(toggleViewingPhoto());
-          submitChip(props.photoSource, selectedGoal, chipDescription, uid);
+          submitChip(props.photoSource, selectedGoalId, chipDescription, uid);
         }}
         style={{
           backgroundColor: '#29E8A5',
@@ -195,6 +194,8 @@ function PhotoViewer(props) {
 }
 
 export default function Home() {
+  const insets = useSafeAreaInsets();
+
   // Camera
   const camera = useRef<Camera>(null);
   const [isCameraInitialized, setIsCameraInitialized] = useState(false);
@@ -414,6 +415,16 @@ export default function Home() {
           </Animated.View>
         </Pressable>
       </View>
+      <BlurView
+        blurType="light"
+        blurAmount={8}
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          height: insets.top,
+        }}
+      />
     </View>
   );
 }

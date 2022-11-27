@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   SegmentedButtons,
+  Divider,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
@@ -16,7 +17,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 
 import {addGoal} from '../../firebase/goals';
-import {modalStyles} from '../../styles';
+import {modalStyles, styles} from '../../styles';
 
 export default function AddGoalSurface() {
   const [pressed, setPressed] = useState(false);
@@ -69,6 +70,7 @@ export default function AddGoalSurface() {
               },
             ]}
           />
+          <Divider style={styles.dividerSmall} />
           <Button
             mode="contained"
             onPress={() => {

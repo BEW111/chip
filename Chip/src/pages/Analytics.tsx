@@ -44,13 +44,6 @@ function MainPage({navigation}) {
   const [chips, setChips] = useState([]);
   const selectedGoal = useSelector(selectSelectedGoal);
 
-  console.log(userGoals);
-
-  // const [fabOpen, setFabOpen] = useState(false);
-  // const onFabStateChange = ({open}) => setFabOpen(open);
-
-  // const chipViewType: 'tiled' | 'swipe' = 'tiled';
-
   useEffect(() => {
     const subscriber = firestore()
       .collection('users')
@@ -116,11 +109,7 @@ function MainPage({navigation}) {
                 alignItems: 'center',
                 width: '100%',
               }}>
-              <StatsView
-                filteredChips={chips.filter(
-                  (chip: ChipObject) => chip.goal === selectedGoal,
-                )}
-              />
+              <StatsView filteredChips={chips} />
             </View>
             <Divider style={{marginVertical: 7, height: 0}} />
             {userGoals.map((goal: Goal) => (
@@ -128,7 +117,7 @@ function MainPage({navigation}) {
                 <GoalSurface
                   goalId={goal.id}
                   goalName={goal.name}
-                  subtitle="Planned for 5pm today"
+                  subtitle="Flavor text here"
                   subtitleType="scheduled"
                   streak={goal.streak}
                   navigation={navigation}

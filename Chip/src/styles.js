@@ -23,6 +23,21 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  justifyLeft: {
+    justifyContent: 'flex-start',
+  },
+  dividerTiny: {
+    marginVertical: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  dividerSmall: {
+    marginVertical: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  dividerMedium: {
+    marginVertical: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
 });
 
 export const modalStyles = StyleSheet.create({
@@ -33,6 +48,9 @@ export const modalStyles = StyleSheet.create({
     shadowOpacity: 0,
     borderRadius: 10,
     padding: 18,
+  },
+  labelSmall: {
+    fontSize: 18,
   },
   label: {
     fontSize: 24,
@@ -49,6 +67,6 @@ export const modalStyles = StyleSheet.create({
   },
   segmentedButtons: {
     width: '100%',
-    marginBottom: 24,
   },
+  textButtonLabel: {fontSize: 18, marginHorizontal: 0, marginVertical: 6},
 });

@@ -18,7 +18,7 @@ export async function requestNotificationsPermission() {
 export async function scheduleNotification(
   date: Date,
   title: string,
-  body: string,
+  intent: string,
 ) {
   console.log('scheduling notification');
 
@@ -28,11 +28,18 @@ export async function scheduleNotification(
     timestamp: date.getTime(),
   };
 
+  const intentMessages = {
+    none: 'Reminder',
+    remind: 'Just a reminder to stay on track 🏂',
+    prepare: 'Prep ahead of time to make it easier later 📚',
+    now: 'Get started as soon as you can!',
+  };
+
   // Create a trigger notification
   await notifee.createTriggerNotification(
     {
       title: title,
-      body: body,
+      body: intentMessages[intent],
       android: {
         channelId: 'your-channel-id',
       },

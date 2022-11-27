@@ -3,39 +3,45 @@ import {View, Text} from 'react-native';
 import {
   Button,
   Divider,
-  IconButton,
   Modal,
   Portal,
   SegmentedButtons,
-  TextInput,
-  useTheme,
 } from 'react-native-paper';
 import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
 
-import firestore, {
-  FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
-
-import {useSelector, useDispatch} from 'react-redux';
-import {selectUid} from '../redux/authSlice';
+import {useSelector} from 'react-redux';
+import {selectUid} from '../../redux/authSlice';
 
 import {
-  scheduleNotification,
-  onDisplayNotification,
-  onCreateTriggerNotification,
   requestNotificationsPermission,
-} from '../reminders/reminders';
+  scheduleNotification,
+  //   onDisplayNotification,
+  //   onCreateTriggerNotification,
+  //   requestNotificationsPermission,
+} from '../../reminders/reminders';
 
 import {styles, modalStyles} from '../../styles';
+import {datePlainFormat, timePlainFormat} from '../../utils/utils';
+import {addReminderFirebase} from '../../firebase/reminders';
 
-function AddReminderScreen() {
-  const [reminderFrequency, setReminderFrequency] = useState('one-time');
-  const [reminderDate, setReminderDate] = useState(new Date());
+function AddReminderScreen({hideModal, goalName, goalId}) {
+  const uid = useSelector(selectUid);
+
+  const now = new Date();
+
+  // Reminder data
+  const [reminderFrequency, setReminderFrequency] = useState<
+    'one-time' | 'daily' | 'weekly'
+  >('one-time');
+  const [reminderDate, setReminderDate] = useState<Date>(now);
   const [reminderTime, setReminderTime] = useState({
-    hours: 12,
-    minutes: 15,
+    hours: now.getHours(),
+    minutes: now.getMinutes(),
   });
+  const [reminderIntent, setReminderIntent] = useState<
+    'none' | 'remind' | 'prepare' | 'now'
+  >('remind');
 
   // Modals
   const [dateModalVisible, setDateModalVisible] = useState(false);
@@ -46,7 +52,10 @@ function AddReminderScreen() {
   };
   const dateModalConfirm = ({date}) => {
     setDateModalVisible(false);
-    console.log(date);
+    setReminderDate(date);
+  };
+  const dateModalUpdate = ({date}) => {
+    setReminderDate(date);
   };
 
   const timeModalDismiss = () => {
@@ -60,10 +69,29 @@ function AddReminderScreen() {
     });
   };
 
+  const onCreateReminder = async () => {
+    let reminderDatetime = reminderDate;
+
+    reminderDatetime.setHours(reminderTime.hours);
+    reminderDatetime.setMinutes(reminderTime.minutes);
+    reminderDatetime.setSeconds(0);
+
+    await requestNotificationsPermission();
+    await scheduleNotification(
+      reminderDatetime,
+      `Reminder: ${goalName}`,
+      reminderIntent,
+    );
+    await addReminderFirebase(uid, goalId, reminderIntent, reminderDatetime);
+
+    hideModal();
+  };
+
   return (
     <View>
       <Portal>
         <DatePickerModal
+          locale="en"
           mode="single"
           visible={dateModalVisible}
           onDismiss={dateModalDismiss}
@@ -74,11 +102,10 @@ function AddReminderScreen() {
           //     endDate: new Date(), // optional
           //     disabledDates: [new Date()] // optional
           //   }}
-          // onChange={} // same props as onConfirm but triggered without confirmed by user
-          // saveLabel="Save" // optional
-          // saveLabelDisabled={true} // optional, default is false
+          onChange={dateModalUpdate}
+          saveLabel="Save" // optional
+          saveLabelDisabled={false} // optional, default is false
           label="Select date" // optional
-          // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
           startYear={2000} // optional, default is 1800
           endYear={2100} // optional, default is 2200
           closeIcon="close-outline"
@@ -98,6 +125,28 @@ function AddReminderScreen() {
           clockIcon="time-outline"
         />
       </Portal>
+      <View style={styles.row}>
+        {/* <Icon name="time-outline" size={28} /> */}
+        <View>
+          <Button
+            uppercase={false}
+            labelStyle={modalStyles.textButtonLabel}
+            contentStyle={styles.justifyLeft}
+            onPress={() => setDateModalVisible(true)}
+            mode="text">
+            {datePlainFormat(reminderDate)}
+          </Button>
+          <Button
+            uppercase={false}
+            labelStyle={modalStyles.textButtonLabel}
+            contentStyle={styles.justifyLeft}
+            onPress={() => setTimeModalVisible(true)}
+            mode="text">
+            {timePlainFormat(reminderTime)}
+          </Button>
+        </View>
+      </View>
+      <Divider style={styles.dividerSmall} />
       <SegmentedButtons
         style={modalStyles.segmentedButtons}
         value={reminderFrequency}
@@ -126,19 +175,44 @@ function AddReminderScreen() {
           },
         ]}
       />
-      <View style={styles.row}>
-        <Button onPress={() => setDateModalVisible(true)} mode="outlined">
-          date
-        </Button>
-        <Button onPress={() => setTimeModalVisible(true)} mode="outlined">
-          {reminderTime.hours} : {reminderTime.minutes}
-        </Button>
-      </View>
+      <Divider style={styles.dividerSmall} />
+      <SegmentedButtons
+        style={modalStyles.segmentedButtons}
+        value={reminderIntent}
+        onValueChange={setReminderIntent}
+        buttons={[
+          {
+            value: 'now',
+            label: 'Do now',
+            style: {
+              width: '33.3%',
+            },
+          },
+          {
+            value: 'prepare',
+            label: 'Prepare',
+            style: {
+              width: '33.3%',
+            },
+          },
+          {
+            value: 'remind',
+            label: 'Passive',
+            style: {
+              width: '33.3%',
+            },
+          },
+        ]}
+      />
+      <Divider style={styles.dividerMedium} />
+      <Button mode="contained" onPress={onCreateReminder}>
+        Create reminder
+      </Button>
     </View>
   );
 }
 
-export default function RemindersModal({visible, hideModal}) {
+export default function RemindersModal({visible, hideModal, goalName, goalId}) {
   const [screen, setScreen] = useState('add');
 
   return (
@@ -146,7 +220,7 @@ export default function RemindersModal({visible, hideModal}) {
       visible={visible}
       onDismiss={hideModal}
       contentContainerStyle={modalStyles.container}>
-      <Text style={modalStyles.header}>Reminders</Text>
+      <Text style={modalStyles.header}>Your reminders</Text>
       <SegmentedButtons
         value={screen}
         onValueChange={setScreen}
@@ -157,6 +231,7 @@ export default function RemindersModal({visible, hideModal}) {
             style: {
               width: '50%',
             },
+            icon: 'add-circle-outline',
           },
           {
             value: 'manage',
@@ -164,11 +239,20 @@ export default function RemindersModal({visible, hideModal}) {
             style: {
               width: '50%',
             },
+            icon: 'hammer-outline',
           },
         ]}
       />
       <Divider style={{marginVertical: 10}} />
-      {screen === 'add' ? <AddReminderScreen /> : <View />}
+      {screen === 'add' ? (
+        <AddReminderScreen
+          hideModal={hideModal}
+          goalName={goalName}
+          goalId={goalId}
+        />
+      ) : (
+        <View />
+      )}
     </Modal>
   );
 }
