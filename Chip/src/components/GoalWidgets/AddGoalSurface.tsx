@@ -95,7 +95,7 @@ export default function AddGoalSurface() {
           style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
           <View style={goalSurfaceStyles.contentWrapper}>
             <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
-            <Icon name="add-circle-outline" size={21} color={'#ffddf1'} />
+            <Icon name="add-circle-outline" size={21} color={'#ecdce5'} />
           </View>
         </BlurView>
       </Pressable>
@@ -118,7 +118,7 @@ const goalSurfaceStyles = StyleSheet.create({
   },
   addGoal: {
     fontSize: 18,
-    color: '#ffddf1',
+    color: '#ecdce5',
     flex: 1,
   },
   contentWrapper: {

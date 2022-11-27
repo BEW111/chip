@@ -5,6 +5,16 @@ import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 
+import Animated, {
+  Easing,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withRepeat,
+  withTiming,
+  cancelAnimation,
+} from 'react-native-reanimated';
+
 const subtitleMap = {
   streak: {
     icon: 'flame-outline',
@@ -33,42 +43,66 @@ export default function GoalSurface({
   navigation,
 }) {
   const [pressed, setPressed] = useState(false);
+  const surfaceScale = useSharedValue(1);
+  const surfaceAnimatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: surfaceScale.value}],
+    };
+  });
 
   return (
     <Pressable
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
+      onPressIn={() => {
+        setPressed(true);
+        surfaceScale.value = withSpring(0.95, {
+          damping: 10,
+          stiffness: 200,
+        });
+      }}
+      onPressOut={() => {
+        setPressed(false);
+        surfaceScale.value = withSpring(1, {
+          damping: 10,
+          stiffness: 200,
+        });
+      }}
       onPress={() => {
         navigation.navigate('AnalyticsGoalPage', {
           goalId: goalId,
           routeGoalName: goalName,
         });
       }}>
-      <BlurView
-        style={{...goalSurfaceStyles.blurSurface, opacity: pressed ? 0.5 : 1.0}}
-        blurType="light"
-        blurAmount={32}
-        reducedTransparencyFallbackColor="white">
-        <View style={{flex: 1}}>
-          <Text style={goalSurfaceStyles.goalName}>{goalName}</Text>
-          <Text style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
-            {subtitleType != 'none' && (
-              <>
-                <Icon
-                  name={subtitleMap[subtitleType].icon}
-                  size={18}
-                  color={subtitleMap[subtitleType].color}
-                />
-                <Text> </Text>
-              </>
-            )}
-            {subtitle}
-          </Text>
-        </View>
-        <View style={goalSurfaceStyles.arrow}>
-          <Icon name="chevron-forward-outline" size={24} color="#000" />
-        </View>
-      </BlurView>
+      <Animated.View style={surfaceAnimatedStyles}>
+        <BlurView
+          style={{
+            ...goalSurfaceStyles.blurSurface,
+            opacity: pressed ? 0.5 : 1.0,
+          }}
+          blurType="light"
+          blurAmount={32}
+          reducedTransparencyFallbackColor="white">
+          <View style={{flex: 1}}>
+            <Text style={goalSurfaceStyles.goalName}>{goalName}</Text>
+            <Text
+              style={{fontSize: 18, color: subtitleMap[subtitleType].color}}>
+              {subtitleType != 'none' && (
+                <>
+                  <Icon
+                    name={subtitleMap[subtitleType].icon}
+                    size={18}
+                    color={subtitleMap[subtitleType].color}
+                  />
+                  <Text> </Text>
+                </>
+              )}
+              {subtitle}
+            </Text>
+          </View>
+          <View style={goalSurfaceStyles.arrow}>
+            <Icon name="chevron-forward-outline" size={24} color="#000" />
+          </View>
+        </BlurView>
+      </Animated.View>
     </Pressable>
   );
 }
