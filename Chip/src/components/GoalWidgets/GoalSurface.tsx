@@ -1,18 +1,14 @@
 import React, {useState} from 'react';
 
 import {Pressable, View, StyleSheet} from 'react-native';
-import {Surface, Text} from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 
 import Animated, {
-  Easing,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  withRepeat,
-  withTiming,
-  cancelAnimation,
 } from 'react-native-reanimated';
 
 const subtitleMap = {

@@ -13,6 +13,12 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
+
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 
@@ -22,6 +28,13 @@ import {modalStyles, styles} from '../../styles';
 export default function AddGoalSurface() {
   const [pressed, setPressed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const surfaceScale = useSharedValue(1);
+  const surfaceAnimatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: surfaceScale.value}],
+    };
+  });
 
   const [goalNameInput, setGoalNameInput] = useState('');
   const [goalTypeInput, setGoalTypeInput] = useState('');
@@ -82,23 +95,40 @@ export default function AddGoalSurface() {
           </Button>
         </Modal>
       </Portal>
-      <Pressable
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
-        onPress={() => {
-          showModal();
-        }}>
-        <BlurView
-          blurType="dark"
-          blurAmount={32}
-          reducedTransparencyFallbackColor="white"
-          style={{...goalSurfaceStyles.surface, opacity: pressed ? 0.8 : 1.0}}>
-          <View style={goalSurfaceStyles.contentWrapper}>
-            <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
-            <Icon name="add-circle-outline" size={21} color={'#ecdce5'} />
-          </View>
-        </BlurView>
-      </Pressable>
+      <Animated.View style={surfaceAnimatedStyles}>
+        <Pressable
+          onPressIn={() => {
+            setPressed(true);
+            surfaceScale.value = withSpring(0.95, {
+              damping: 10,
+              stiffness: 200,
+            });
+          }}
+          onPressOut={() => {
+            setPressed(false);
+            surfaceScale.value = withSpring(1, {
+              damping: 10,
+              stiffness: 200,
+            });
+          }}
+          onPress={() => {
+            showModal();
+          }}>
+          <BlurView
+            blurType="dark"
+            blurAmount={32}
+            reducedTransparencyFallbackColor="white"
+            style={{
+              ...goalSurfaceStyles.surface,
+              opacity: pressed ? 0.8 : 1.0,
+            }}>
+            <View style={goalSurfaceStyles.contentWrapper}>
+              <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
+              <Icon name="add-circle-outline" size={21} color={'#ecdce5'} />
+            </View>
+          </BlurView>
+        </Pressable>
+      </Animated.View>
     </>
   );
 }
