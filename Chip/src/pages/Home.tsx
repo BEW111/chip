@@ -3,7 +3,7 @@ import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
 import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
-import {IconButton, Text, TextInput, Surface} from 'react-native-paper';
+import {IconButton, Text, TextInput} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -415,6 +415,7 @@ export default function Home() {
           </Animated.View>
         </Pressable>
       </View>
+      {/* Safe zone blur */}
       <BlurView
         blurType="light"
         blurAmount={8}

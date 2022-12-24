@@ -6,14 +6,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
-import {
-  Button,
-  TextInput,
-  Text,
-  Card,
-  HelperText,
-  Headline,
-} from 'react-native-paper';
+import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import auth from '@react-native-firebase/auth';
@@ -25,6 +18,9 @@ import {selectNewGoal} from '../redux/onboardingSlice';
 import {createNewUser} from '../utils/postUtils';
 
 import backgroundImage from '../../assets/background.png';
+import BlurSurface from '../components/BlurSurface';
+import {styles} from '../styles';
+import BackgroundWrapper from '../components/BackgroundWrapper';
 
 export default function OnboardingRegister({navigation}) {
   const [emailText, setEmailText] = useState('');
@@ -58,15 +54,7 @@ export default function OnboardingRegister({navigation}) {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <Image
-        source={backgroundImage}
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-        }}
-      />
+    <BackgroundWrapper>
       <SafeAreaView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -81,16 +69,9 @@ export default function OnboardingRegister({navigation}) {
             }}
             alwaysBounceVertical={false}
             keyboardShouldPersistTaps="handled">
-            <Card
-              style={{
-                width: '90%',
-                marginTop: 25,
-                marginBottom: 40,
-                padding: 15,
-                paddingTop: 10,
-                backgroundColor: 'rgba(255, 255, 255, 0.6)',
-              }}>
-              <Headline
+            <BlurSurface style={styles.widthAlmostFull}>
+              <Text
+                variant="headlineSmall"
                 style={{
                   fontSize: 24,
                   alignSelf: 'center',
@@ -98,51 +79,44 @@ export default function OnboardingRegister({navigation}) {
                   fontWeight: 'bold',
                 }}>
                 {"Let's get started."}
-              </Headline>
+              </Text>
+              <Divider style={styles.dividerSmall} />
               <TextInput
                 mode="outlined"
                 placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
                 onChangeText={newText => setEmailText(newText)}
                 defaultValue={emailText}
-                style={{
-                  color: 'black',
-                  fontSize: 18,
-                  marginBottom: 20,
-                  textAlign: 'auto',
-                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
+              <Divider style={styles.dividerMedium} />
               <TextInput
                 secureTextEntry={true}
+                autoCapitalize="none"
+                autoCorrect={false}
                 mode="outlined"
                 placeholder="Password"
                 onChangeText={newText => setPassText(newText)}
                 defaultValue={passText}
-                style={{
-                  color: 'white',
-                  fontSize: 18,
-                  marginBottom: 20,
-                  textAlign: 'auto',
-                }}
                 underlineColor="#FFEEF8"
                 activeUnderlineColor="white"
               />
+              <Divider style={styles.dividerMedium} />
               <TextInput
                 secureTextEntry={true}
+                autoCapitalize="none"
+                autoCorrect={false}
                 mode="outlined"
                 placeholder="Confirm password"
                 onChangeText={newText => setConfirmPassText(newText)}
                 defaultValue={confirmPassText}
-                style={{
-                  color: 'white',
-                  fontSize: 18,
-                  marginBottom: 10,
-                  textAlign: 'auto',
-                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
+              <Divider style={styles.dividerMedium} />
               <HelperText
                 type="error"
                 visible={displayError !== ''}
@@ -168,10 +142,10 @@ export default function OnboardingRegister({navigation}) {
                   </Button>
                 </View>
               </View>
-            </Card>
+            </BlurSurface>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </View>
+    </BackgroundWrapper>
   );
 }

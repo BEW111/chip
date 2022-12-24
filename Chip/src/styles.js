@@ -15,6 +15,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  centeredExpand: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   expand: {
     flex: 1,
   },
@@ -22,6 +28,12 @@ export const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  rowCentered: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   justifyLeft: {
     justifyContent: 'flex-start',
@@ -37,6 +49,12 @@ export const styles = StyleSheet.create({
   dividerMedium: {
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  widthFull: {
+    width: '100%',
+  },
+  widthAlmostFull: {
+    width: '90%',
   },
 });
 

@@ -37,6 +37,7 @@ import {
 import {selectNewGoal} from './src/redux/onboardingSlice';
 
 import theme from './src/theme';
+import {styles} from './src/styles';
 
 import backgroundImage from './assets/background.png';
 
@@ -50,21 +51,9 @@ function MainTabs() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={{flex: 1}}>
-      <Image
-        source={backgroundImage}
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-        }}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-        }}>
+    <View style={styles.expand}>
+      <Image source={backgroundImage} style={styles.absoluteFull} />
+      <View style={styles.absoluteFull}>
         <Tab.Navigator
           tabBarPosition="bottom"
           initialLayout={{

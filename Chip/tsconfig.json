@@ -7,7 +7,4 @@
     /* Completeness */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  "include": [
-    "chip-env.d.ts"
-  ]
 }

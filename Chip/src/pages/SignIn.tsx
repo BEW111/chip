@@ -2,28 +2,26 @@ import React, {useState} from 'react';
 import {
   ScrollView,
   View,
-  Image,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
 } from 'react-native';
-import {
-  Button,
-  TextInput,
-  Text,
-  Card,
-  HelperText,
-  Headline,
-} from 'react-native-paper';
+import FastImage from 'react-native-fast-image';
+import {Button, TextInput, HelperText, Text, Divider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import backgroundImage from '../../assets/background.png';
-// import chipsIcon from '../../assets/chips-icon.png';
+import {styles} from '../styles';
+import chipImage from '../assets/chips.png';
 
 import auth from '@react-native-firebase/auth';
+import BlurSurface from '../components/BlurSurface';
+import BackgroundWrapper from '../components/BackgroundWrapper';
 
 export default function SignIn({navigation}) {
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   function onRegisterPressed() {
     console.log(emailText);
@@ -36,102 +34,89 @@ export default function SignIn({navigation}) {
       })
       .catch(error => {
         console.log(error.code);
+        if (error.code === 'auth/wrong-password') {
+          setErrorMessage('Incorrect password');
+        } else {
+          setErrorMessage(error.code);
+        }
         console.error(error);
       });
   }
 
   return (
-    <View style={{flex: 1}}>
-      <Image
-        source={backgroundImage}
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '100%',
-        }}
-      />
+    <BackgroundWrapper>
       <SafeAreaView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{width: '100%'}}>
+          style={styles.full}>
           <ScrollView
-            style={{height: '100%'}}
-            contentContainerStyle={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={styles.full}
+            contentContainerStyle={styles.centeredExpand}
             alwaysBounceVertical={false}
             keyboardShouldPersistTaps="handled">
-            <Card
-              style={{
-                width: '90%',
-                marginTop: 25,
-                marginBottom: 40,
-                padding: 15,
-                backgroundColor: 'rgba(255, 255, 255, 0.6)',
-              }}>
-              <Headline
+            <BlurSurface style={styles.widthAlmostFull}>
+              <Text
+                variant="headlineSmall"
                 style={{
                   alignSelf: 'center',
                   marginBottom: 20,
+                  marginTop: 10,
                   fontWeight: 'bold',
                 }}>
                 Welcome back.
-              </Headline>
+              </Text>
               <TextInput
                 mode="outlined"
                 placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
                 onChangeText={newText => setEmailText(newText)}
                 defaultValue={emailText}
-                style={{
-                  color: 'black',
-                  fontSize: 18,
-                  marginBottom: 20,
-                  textAlign: 'auto',
-                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
+              <Divider style={styles.dividerSmall} />
               <TextInput
                 secureTextEntry={true}
                 mode="outlined"
                 placeholder="Password"
+                autoCapitalize="none"
+                autoCorrect={false}
                 onChangeText={newText => setPassText(newText)}
                 defaultValue={passText}
-                style={{
-                  color: 'white',
-                  fontSize: 18,
-                  marginBottom: 50,
-                  textAlign: 'auto',
-                }}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  alignItems: 'center',
-                }}>
-                <Button
-                  mode="outlined"
-                  onPress={() => navigation.navigate('Onboarding')}>
-                  Create an account
-                </Button>
-                <Button
-                  mode="contained"
-                  style={{paddingHorizontal: 10}}
-                  onPress={onRegisterPressed}>
-                  Sign in
-                </Button>
-              </View>
-            </Card>
+              <Divider style={styles.dividerSmall} />
+              <HelperText type="error">{errorMessage}</HelperText>
+              <Divider style={styles.dividerMedium} />
+              <Button mode="contained" onPress={onRegisterPressed}>
+                Sign in
+              </Button>
+            </BlurSurface>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </View>
+      <View style={localStyles.signupView}>
+        <View style={styles.rowCentered}>
+          <Text variant="bodyLarge">Don't have an account?</Text>
+          <Button mode="text" onPress={() => navigation.navigate('Onboarding')}>
+            Sign up
+          </Button>
+        </View>
+      </View>
+    </BackgroundWrapper>
   );
 }
+
+const localStyles = StyleSheet.create({
+  signupView: {position: 'absolute', bottom: 60, width: '100%'},
+  blurSurface: {
+    width: '85%',
+    marginTop: 25,
+    marginBottom: 40,
+    padding: 15,
+    borderRadius: 10,
+  },
+});
