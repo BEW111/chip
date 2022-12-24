@@ -56,6 +56,9 @@ export const styles = StyleSheet.create({
   widthAlmostFull: {
     width: '90%',
   },
+  textCentered: {
+    textAlign: 'center',
+  },
 });
 
 export const modalStyles = StyleSheet.create({

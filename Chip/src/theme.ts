@@ -20,7 +20,7 @@ const _fontConfig: Fonts = {
   },
 };
 
-const theme: ThemeProp = {
+export const theme: ThemeProp = {
   ...MD3LightTheme,
   roundness: 5,
   version: 3,
@@ -40,6 +40,19 @@ const theme: ThemeProp = {
       fontFamily: 'Lato-Regular',
       letterSpacing: 0,
       fontWeight: 'normal',
+    },
+    titleLarge: {
+      ...MD3LightTheme.fonts.titleLarge,
+      fontFamily: 'Lato-Regular',
+      fontWeight: '700',
+    },
+    titleMedium: {
+      ...MD3LightTheme.fonts.titleMedium,
+      fontFamily: 'Lato-Regular',
+    },
+    titleSmall: {
+      ...MD3LightTheme.fonts.titleSmall,
+      fontFamily: 'Lato-Regular',
     },
     bodyLarge: {
       fontFamily: 'Lato-Regular',

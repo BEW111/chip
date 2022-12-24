@@ -58,28 +58,22 @@ export default function OnboardingRegister({navigation}) {
       <SafeAreaView>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={{width: '100%'}}>
+          style={styles.widthFull}>
           <ScrollView
-            style={{height: '100%'}}
-            contentContainerStyle={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={styles.full}
+            contentContainerStyle={styles.centeredExpand}
             alwaysBounceVertical={false}
             keyboardShouldPersistTaps="handled">
             <BlurSurface style={styles.widthAlmostFull}>
-              <Text
-                variant="headlineSmall"
-                style={{
-                  fontSize: 24,
-                  alignSelf: 'center',
-                  marginBottom: 10,
-                  fontWeight: 'bold',
-                }}>
-                {"Let's get started."}
-              </Text>
+              <View>
+                <Text variant="titleLarge" style={styles.textCentered}>
+                  Sign up for Chip
+                </Text>
+                <Divider style={styles.dividerTiny} />
+                <Text variant="titleSmall" style={styles.textCentered}>
+                  Start building habits with your friends
+                </Text>
+              </View>
               <Divider style={styles.dividerSmall} />
               <TextInput
                 mode="outlined"
@@ -123,11 +117,7 @@ export default function OnboardingRegister({navigation}) {
                 style={{marginBottom: 10, paddingTop: 0}}>
                 {displayError}
               </HelperText>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                }}>
+              <View style={styles.row}>
                 <View style={{flex: 1, marginRight: 12}}>
                   <Button
                     contentStyle={{alignSelf: 'stretch'}}
@@ -136,7 +126,7 @@ export default function OnboardingRegister({navigation}) {
                     Back
                   </Button>
                 </View>
-                <View style={{flex: 1}}>
+                <View style={styles.expand}>
                   <Button mode="contained" onPress={onRegisterPressed}>
                     Register
                   </Button>
