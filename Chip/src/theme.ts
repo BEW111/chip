@@ -29,7 +29,7 @@ export const theme: ThemeProp = {
     primary: '#EC407A',
     primaryContainer: '#EC407A',
     secondary: '#B4004E',
-    tertiary: '#DFA349',
+    tertiary: '#546E7A',
     background: '#FFFFFF',
     outline: '#0000',
     error: '#F80F00',

@@ -69,6 +69,7 @@ export default function SignIn({navigation}) {
                 mode="outlined"
                 placeholder="Email"
                 keyboardType="email-address"
+                textContentType="emailAddress"
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={newText => setEmailText(newText)}

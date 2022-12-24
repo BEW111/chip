@@ -35,36 +35,17 @@ export default function Onboarding({navigation}) {
         alwaysBounceVertical={false}
         keyboardShouldPersistTaps="handled">
         <View style={localStyles(insets.top).mainWrapper}>
-          {/* <GoalGalaxyView width={1500} height={1500} margin={50} /> */}
-          {/* <View style={localStyles(0).contentWrapper}>
-            <Text variant="headlineSmall" style={localStyles(0).headline}>
-              What's something you'd like to accomplish?
-            </Text>
-            <TextInput
-              mode="flat"
-              placeholder=""
-              autoCapitalize="none"
-              autoCorrect={false}
-              onChangeText={t => setText(t)}
-              defaultValue={text}
-              style={localStyles(0).prompt}
-              underlineColor="gray"
-              activeUnderlineColor="white"
-              right={
-                <TextInput.Icon
-                  icon="caret-forward-outline"
-                  onPress={onAccomplishPressed}
-                />
-              }
-            />
-          </View> */}
           <View style={styles.rowCentered}>
             <FastImage source={chipHeader} style={localStyles(0).header} />
+          </View>
+          <Divider style={styles.dividerMedium} />
+          <View>
+            <OnboardingCarousel />
           </View>
         </View>
         <View
           style={{
-            bottom: insets.bottom + 50,
+            bottom: insets.bottom + 40,
           }}>
           <Button
             mode="contained"
@@ -87,7 +68,7 @@ const localStyles = (top: number) =>
       width: '100%',
       flex: 1,
       marginTop: top,
-      paddingHorizontal: 15,
+      paddingTop: 40,
     },
     contentWrapper: {
       width: '100%',
@@ -95,22 +76,45 @@ const localStyles = (top: number) =>
       marginBottom: 40,
       padding: 15,
     },
-    headline: {
-      alignSelf: 'center',
-      marginBottom: 20,
-      fontWeight: 'bold',
-    },
-    prompt: {
-      color: 'black',
-      fontSize: 24,
-      marginBottom: 20,
-      textAlign: 'auto',
-      backgroundColor: 'rgba(0, 0, 0, 0)',
-      paddingHorizontal: 2,
-    },
+    // headline: {
+    //   alignSelf: 'center',
+    //   marginBottom: 20,
+    //   fontWeight: 'bold',
+    // },
+    // prompt: {
+    //   color: 'black',
+    //   fontSize: 24,
+    //   marginBottom: 20,
+    //   textAlign: 'auto',
+    //   backgroundColor: 'rgba(0, 0, 0, 0)',
+    //   paddingHorizontal: 2,
+    // },
     header: {
-      top: 50,
       height: 908 * 0.1,
       width: 2760 * 0.1,
     },
   });
+
+/* <GoalGalaxyView width={1500} height={1500} margin={50} /> */
+/* <View style={localStyles(0).contentWrapper}>
+            <Text variant="headlineSmall" style={localStyles(0).headline}>
+              What's something you'd like to accomplish?
+            </Text>
+            <TextInput
+              mode="flat"
+              placeholder=""
+              autoCapitalize="none"
+              autoCorrect={false}
+              onChangeText={t => setText(t)}
+              defaultValue={text}
+              style={localStyles(0).prompt}
+              underlineColor="gray"
+              activeUnderlineColor="white"
+              right={
+                <TextInput.Icon
+                  icon="caret-forward-outline"
+                  onPress={onAccomplishPressed}
+                />
+              }
+            />
+          </View> */
