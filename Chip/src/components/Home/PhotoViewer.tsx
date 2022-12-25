@@ -23,7 +23,7 @@ function HabitPopup({
   chipAmount,
   setChipAmount,
 }) {
-  const transparentBackgroundColor = 'rgba(255, 255, 255, 0.4)';
+  const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
 
   return (
     <BlurSurface blurType="light" style={styles.widthAlmostFull}>

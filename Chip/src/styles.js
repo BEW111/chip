@@ -71,13 +71,16 @@ export const styles = StyleSheet.create({
 });
 
 export const modalStyles = StyleSheet.create({
+  wrapper: {
+    // backgroundColor: 'red',
+  },
   container: {
-    backgroundColor: '#ffddf1',
-    width: '90%',
-    alignSelf: 'center',
+    padding: 20,
+    margin: 20,
+
+    backgroundColor: '#FFECF2',
     shadowOpacity: 0,
     borderRadius: 10,
-    padding: 18,
   },
   labelSmall: {
     fontSize: 18,
@@ -92,11 +95,7 @@ export const modalStyles = StyleSheet.create({
     marginBottom: 12,
   },
   textInput: {
-    backgroundColor: '#ffddf1',
-    marginBottom: 24,
-  },
-  segmentedButtons: {
-    width: '100%',
+    backgroundColor: '#FFECF2',
   },
   textButtonLabel: {fontSize: 18, marginHorizontal: 0, marginVertical: 6},
 });

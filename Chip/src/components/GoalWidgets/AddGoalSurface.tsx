@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 
-import {Pressable, View, StyleSheet} from 'react-native';
+import {
+  Pressable,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
 import {
   Portal,
   Modal,
@@ -9,6 +15,7 @@ import {
   Button,
   SegmentedButtons,
   Divider,
+  Surface,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
@@ -37,7 +44,9 @@ export default function AddGoalSurface() {
   });
 
   const [goalNameInput, setGoalNameInput] = useState('');
-  const [goalTypeInput, setGoalTypeInput] = useState('');
+  const [goalTypeInput, setGoalTypeInput] = useState('daily');
+  const [goalFreqInput, setGoalFreqInput] = useState('');
+  const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(0);
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -52,47 +61,65 @@ export default function AddGoalSurface() {
         <Modal
           visible={modalVisible}
           onDismiss={hideModal}
-          contentContainerStyle={modalStyles.container}>
-          <Text style={modalStyles.header}>Add a new goal</Text>
-          <TextInput
-            style={modalStyles.textInput}
-            label="Name of goal"
-            value={goalNameInput}
-            onChangeText={text => setGoalNameInput(text)}
-          />
-          <SegmentedButtons
-            style={modalStyles.segmentedButtons}
-            value={goalTypeInput}
-            onValueChange={setGoalTypeInput}
-            buttons={[
-              {
-                value: 'form',
-                label: 'Form habit',
-                icon: 'flask-outline',
-                style: {
-                  width: '50%',
-                },
-              },
-              {
-                value: 'break',
-                label: 'Break habit',
-                icon: 'build-outline',
-                style: {
-                  width: '50%',
-                },
-              },
-            ]}
-          />
-          <Divider style={styles.dividerSmall} />
-          <Button
-            mode="contained"
-            onPress={() => {
-              addGoal(uid, goalNameInput, '', goalTypeInput, dispatch);
-              setGoalNameInput('');
-              hideModal();
-            }}>
-            Make it happen
-          </Button>
+          contentContainerStyle={modalStyles.wrapper}>
+          <Surface style={modalStyles.container}>
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              alwaysBounceVertical={false}
+              keyboardShouldPersistTaps="handled">
+              <Text style={modalStyles.header}>Add a new habit</Text>
+              <Text variant="titleMedium">
+                Name your habit, e.g. eat healthier:
+              </Text>
+              <Divider style={styles.dividerTiny} />
+              <TextInput
+                style={modalStyles.textInput}
+                mode="outlined"
+                label="Habit name"
+                value={goalNameInput}
+                onChangeText={text => setGoalNameInput(text)}
+              />
+              <Divider style={styles.dividerSmall} />
+              <Text variant="titleMedium">
+                Set a goal for completing this habit:
+              </Text>
+              <Divider style={styles.dividerTiny} />
+              <TextInput
+                style={modalStyles.textInput}
+                mode="outlined"
+                label="Target amount"
+                keyboardType="decimal-pad"
+                value={goalFreqAmtInput}
+                onChangeText={text => setGoalFreqAmtInput(text)}
+                right={<TextInput.Affix text={'minutes ' + goalFreqInput} />}
+              />
+              <Divider style={styles.dividerSmall} />
+              <SegmentedButtons
+                value={goalFreqInput}
+                onValueChange={setGoalFreqInput}
+                buttons={[
+                  {
+                    value: 'daily',
+                    label: 'Daily',
+                  },
+                  {
+                    value: 'weekly',
+                    label: 'Weekly',
+                  },
+                ]}
+              />
+              <Divider style={styles.dividerSmall} />
+              <Button
+                mode="contained"
+                onPress={() => {
+                  addGoal(uid, goalNameInput, '', goalTypeInput, dispatch);
+                  setGoalNameInput('');
+                  hideModal();
+                }}>
+                Make it happen
+              </Button>
+            </ScrollView>
+          </Surface>
         </Modal>
       </Portal>
       <Animated.View style={surfaceAnimatedStyles}>
@@ -123,7 +150,7 @@ export default function AddGoalSurface() {
               opacity: pressed ? 0.8 : 1.0,
             }}>
             <View style={goalSurfaceStyles.contentWrapper}>
-              <Text style={goalSurfaceStyles.addGoal}>Add a new goal</Text>
+              <Text style={goalSurfaceStyles.addGoal}>Add a new habit</Text>
               <Icon name="add-circle-outline" size={21} color={'#ecdce5'} />
             </View>
           </BlurView>

@@ -22,17 +22,29 @@ const _fontConfig: Fonts = {
 
 export const theme: ThemeProp = {
   ...MD3LightTheme,
-  roundness: 5,
+  roundness: 4,
   version: 3,
   colors: {
     ...MD3LightTheme.colors,
+    backdrop: '#2236', // modal overlay
+    // background: '#F00',
+    // elevation: '#FF0',
+    error: '#F80F00',
+    // errorContainer: '#F80F00',
+    // inverseOnSurface: '#F00',
+    // inversePrimary: '#F00',
+    // inverseSurface: '#F00',
     primary: '#EC407A',
     primaryContainer: '#EC407A',
-    secondary: '#B4004E',
+    secondary: '#EDA3C6',
+    secondaryContainer: '#EDA3C6',
     tertiary: '#546E7A',
+    tertiaryContainer: '#546E7A',
     background: '#FFFFFF',
-    outline: '#0000',
-    error: '#F80F00',
+    outline: '#BE7896',
+    // surface: '#ffddf1',
+    // scrim: '#F00',
+    // shadow: '#F000',
   },
   fonts: {
     ...MD3LightTheme.fonts,
@@ -49,6 +61,7 @@ export const theme: ThemeProp = {
     titleMedium: {
       ...MD3LightTheme.fonts.titleMedium,
       fontFamily: 'Lato-Regular',
+      fontWeight: '500',
     },
     titleSmall: {
       ...MD3LightTheme.fonts.titleSmall,
