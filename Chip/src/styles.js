@@ -10,6 +10,15 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  absoluteFullCentered: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   centered: {
     display: 'flex',
     justifyContent: 'center',

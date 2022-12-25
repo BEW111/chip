@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  View,
-  Image,
-  Platform,
-} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, View, Platform} from 'react-native';
 import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -17,7 +11,6 @@ import {selectNewGoal} from '../redux/onboardingSlice';
 
 import {createNewUser} from '../utils/postUtils';
 
-import backgroundImage from '../../assets/background.png';
 import BlurSurface from '../components/BlurSurface';
 import {styles} from '../styles';
 import BackgroundWrapper from '../components/BackgroundWrapper';

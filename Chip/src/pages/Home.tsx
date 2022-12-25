@@ -2,10 +2,9 @@
 import React from 'react';
 
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Image, Pressable} from 'react-native';
-import {IconButton, Text, TextInput} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {Picker} from 'react-native-wheel-pick';
+import {StyleSheet, View, Linking, Pressable} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import {IconButton, Text} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BlurView} from '@react-native-community/blur';
 
@@ -27,171 +26,12 @@ import {
   toggleViewingPhoto,
   selectPhotoSource,
 } from '../redux/chipSubmitterSlice';
-import {submitChip} from '../utils/postUtils';
-import {selectUid, selectUserGoals} from '../redux/authSlice';
 
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
-import {Goal} from '../types';
 
-function PhotoViewer(props) {
-  const insets = useSafeAreaInsets();
-
-  const dispatch = useDispatch();
-  const uid = useSelector(selectUid);
-
-  const userGoals: Goal[] = useSelector(selectUserGoals);
-
-  const [popupShowing, setPopupShowing] = useState(true);
-  const [selectedGoalId, setSelectedGoalId] = useState('');
-  const [chipDescription, setChipDescription] = useState('');
-
-  return (
-    <View
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      {popupShowing ? (
-        <BlurView
-          blurType="light"
-          style={{
-            width: '90%',
-            height: '40%',
-
-            borderRadius: 10,
-          }}>
-          <View
-            pointerEvents={'box-none'}
-            style={{
-              flex: 1,
-
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Picker
-              pointerEvents={'box-none'}
-              style={{
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                width: 330,
-                height: 250,
-                borderRadius: 15,
-                justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-              selectedValue={'Exercise'}
-              pickerData={userGoals.map(g => ({
-                value: g.id,
-                label: g.name,
-              }))}
-              onValueChange={value => {
-                setSelectedGoalId(value);
-              }}
-            />
-          </View>
-          <TextInput
-            style={{margin: 10, backgroundColor: 'rgba(255, 255, 255, 0.4)'}}
-            mode="flat"
-            label="Description"
-            value={chipDescription}
-            onChangeText={text => setChipDescription(text)}
-          />
-          <Pressable
-            onPress={() => setPopupShowing(!popupShowing)}
-            style={{
-              width: 40,
-              height: 40,
-
-              position: 'absolute',
-              top: 10,
-              right: 10,
-
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon name="close" size={24} />
-          </Pressable>
-        </BlurView>
-      ) : (
-        <></>
-      )}
-      <Pressable
-        onPress={() => dispatch(toggleViewingPhoto())}
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          height: 40,
-          width: 40,
-          borderRadius: 100,
-
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-
-          position: 'absolute',
-          left: 20,
-          top: 0 + insets.top,
-        }}>
-        <Icon name="close" size={32} color="white" style={{marginLeft: 2}} />
-      </Pressable>
-      {popupShowing ? (
-        <></>
-      ) : (
-        <Pressable
-          onPress={() => setPopupShowing(true)}
-          style={{
-            backgroundColor: '#FAC576',
-            height: 50,
-            width: 50,
-            borderRadius: 7,
-
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-
-            position: 'absolute',
-            right: 20,
-            bottom: 120,
-          }}>
-          <Icon name="create-outline" size={36} style={{marginLeft: 2}} />
-        </Pressable>
-      )}
-      <Pressable
-        onPress={() => {
-          dispatch(toggleViewingPhoto());
-          submitChip(props.photoSource, selectedGoalId, chipDescription, uid);
-        }}
-        style={{
-          backgroundColor: '#29E8A5',
-          height: 50,
-          width: 50,
-          borderRadius: 7,
-
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-
-          position: 'absolute',
-          right: 20,
-          bottom: 30,
-        }}>
-        <Icon
-          name="checkmark-circle-outline"
-          size={36}
-          style={{marginLeft: 2}}
-          color={'black'}
-        />
-      </Pressable>
-    </View>
-  );
-}
+import PhotoViewer from '../components/Home/PhotoViewer';
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -360,7 +200,7 @@ export default function Home() {
         }}>
         <Animated.View
           style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
-          <Image
+          <FastImage
             source={takingVideo ? videoButtonOutside : pictureButtonOutside}
             style={{
               width: '100%',
@@ -379,10 +219,12 @@ export default function Home() {
           left: 0,
           right: 0,
 
-          height: 100,
+          height: viewingPhoto ? 0 : 100,
+
           justifyContent: 'center',
         }}>
         <Pressable
+          pointerEvents={viewingPhoto ? 'none' : 'auto'}
           disabled={viewingPhoto}
           onPressIn={() => {
             photoButtonScale.value = withSpring(0.2, {
@@ -404,7 +246,7 @@ export default function Home() {
             startTakingVideo();
           }}>
           <Animated.View style={photoButtonAnimatedStyles}>
-            <Image
+            <FastImage
               style={{
                 width: '100%',
                 height: '100%',

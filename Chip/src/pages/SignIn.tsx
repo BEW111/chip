@@ -24,9 +24,6 @@ export default function SignIn({navigation}) {
   const [errorMessage, setErrorMessage] = useState('');
 
   function onRegisterPressed() {
-    console.log(emailText);
-    console.log(passText);
-
     auth()
       .signInWithEmailAndPassword(emailText, passText)
       .then(() => {

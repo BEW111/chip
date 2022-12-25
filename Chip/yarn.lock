@@ -2155,6 +2155,14 @@
     "@types/react" "*"
     "@types/react-native" "*"
 
+"@types/react-native-wheel-pick@^1.1.2":
+  "integrity" "sha512-6JkEGgonZRtUtoWgZvBeaTSxSVoQO6yVIBT7fJzytX4f4JjreH+D6Nz0tgdgegMsmky/Xyw9Lj7EEI78+va7Nw=="
+  "resolved" "https://registry.npmjs.org/@types/react-native-wheel-pick/-/react-native-wheel-pick-1.1.2.tgz"
+  "version" "1.1.2"
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native@*", "@types/react-native@^0.69.3":
   "integrity" "sha512-mSUCuGUsW2kJlZiu4GmdYVDKZX/52iyC9rm6dxAmflJj1b7kSO/CMSDy5WbcfS8QerxTqbYGTrIwHD0GnXHzbQ=="
   "resolved" "https://registry.npmjs.org/@types/react-native/-/react-native-0.69.5.tgz"

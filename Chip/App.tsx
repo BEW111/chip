@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 
-import {Dimensions, View, Image} from 'react-native';
+import {Dimensions, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -52,7 +53,7 @@ function MainTabs() {
 
   return (
     <View style={styles.expand}>
-      <Image source={backgroundImage} style={styles.absoluteFull} />
+      <FastImage source={backgroundImage} style={styles.absoluteFull} />
       <View style={styles.absoluteFull}>
         <Tab.Navigator
           tabBarPosition="bottom"

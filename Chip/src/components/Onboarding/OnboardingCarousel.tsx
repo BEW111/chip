@@ -24,6 +24,8 @@ function OnboardingCarousel() {
   return (
     <View style={styles.full}>
       <Carousel
+        autoPlay
+        autoPlayInterval={4000}
         width={width}
         height={width}
         data={slides}
