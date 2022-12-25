@@ -151,7 +151,9 @@ function AnalyticsLandingPage() {
             headerShown: false,
             drawerPosition: 'right',
             drawerType: 'front',
-            swipeEnabled: false,
+            drawerStyle: {
+              width: '100%',
+            },
           }}
         />
       </SettingsDrawer.Navigator>

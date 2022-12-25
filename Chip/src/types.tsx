@@ -15,6 +15,8 @@ export interface Goal {
   type?: 'form' | 'break' | 'do' | '';
   category?: string;
   streak?: number;
+  frequency?: 'daily' | 'weekly' | '';
+  frequencyAmount?: number;
 }
 
 export interface ChipObject {

@@ -16,6 +16,7 @@ import {styles} from '../styles';
 import BackgroundWrapper from '../components/BackgroundWrapper';
 
 export default function OnboardingRegister({navigation}) {
+  const [usernameText, setUsernameText] = useState('');
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
   const [confirmPassText, setConfirmPassText] = useState('');
@@ -25,14 +26,21 @@ export default function OnboardingRegister({navigation}) {
 
   async function onRegisterPressed() {
     // Check for more obvious errors
-    if (emailText === '') {
+    if (usernameText === '') {
+      setDisplayError('Username cannot be empty');
+    } else if (emailText === '') {
       setDisplayError('Email cannot be empty');
     } else if (passText === '') {
       setDisplayError('Password cannot be empty');
     } else if (passText !== confirmPassText) {
       setDisplayError('Passwords must match');
     } else {
-      const result = await createNewUser(emailText, passText, newGoal);
+      const result = await createNewUser(
+        usernameText,
+        emailText,
+        passText,
+        newGoal,
+      );
 
       if (result.status === 'error') {
         if (result.code === 'auth/email-already-in-use') {
@@ -62,11 +70,21 @@ export default function OnboardingRegister({navigation}) {
                 <Text variant="titleLarge" style={styles.textCentered}>
                   Sign up for Chip
                 </Text>
-                <Divider style={styles.dividerTiny} />
                 <Text variant="titleSmall" style={styles.textCentered}>
                   Start building habits with your friends
                 </Text>
               </View>
+              <Divider style={styles.dividerSmall} />
+              <TextInput
+                mode="outlined"
+                placeholder="Username"
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={newText => setUsernameText(newText)}
+                defaultValue={usernameText}
+                underlineColor="gray"
+                activeUnderlineColor="white"
+              />
               <Divider style={styles.dividerSmall} />
               <TextInput
                 mode="outlined"
@@ -79,7 +97,7 @@ export default function OnboardingRegister({navigation}) {
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
-              <Divider style={styles.dividerMedium} />
+              <Divider style={styles.dividerSmall} />
               <TextInput
                 secureTextEntry={true}
                 autoCapitalize="none"
@@ -91,7 +109,7 @@ export default function OnboardingRegister({navigation}) {
                 underlineColor="#FFEEF8"
                 activeUnderlineColor="white"
               />
-              <Divider style={styles.dividerMedium} />
+              <Divider style={styles.dividerSmall} />
               <TextInput
                 secureTextEntry={true}
                 autoCapitalize="none"
@@ -103,18 +121,15 @@ export default function OnboardingRegister({navigation}) {
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
-              <Divider style={styles.dividerMedium} />
-              <HelperText
-                type="error"
-                visible={displayError !== ''}
-                style={{marginBottom: 10, paddingTop: 0}}>
+              <HelperText type="error" visible={displayError !== ''}>
                 {displayError}
               </HelperText>
+              <Divider style={styles.dividerSmall} />
               <View style={styles.row}>
                 <View style={{flex: 1, marginRight: 12}}>
                   <Button
                     contentStyle={{alignSelf: 'stretch'}}
-                    mode="outlined"
+                    mode="text"
                     onPress={() => navigation.navigate('Onboarding')}>
                     Back
                   </Button>

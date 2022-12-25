@@ -5,6 +5,16 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  fullPadded: {
+    width: '100%',
+    height: '100%',
+    padding: 20,
+  },
+  fullPaddedHorizontal: {
+    width: '100%',
+    height: '100%',
+    paddingHorizontal: 20,
+  },
   absoluteFull: {
     position: 'absolute',
     width: '100%',
@@ -44,6 +54,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  rowCenteredSpaceBetween: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   justifyLeft: {
     justifyContent: 'flex-start',
   },
@@ -57,6 +73,18 @@ export const styles = StyleSheet.create({
   },
   dividerMedium: {
     marginVertical: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  dividerHTiny: {
+    marginHorizontal: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  dividerHSmall: {
+    marginHorizontal: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
+  dividerHMedium: {
+    marginHorizontal: 12,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
   widthFull: {

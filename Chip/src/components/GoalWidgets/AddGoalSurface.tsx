@@ -44,7 +44,7 @@ export default function AddGoalSurface() {
   });
 
   const [goalNameInput, setGoalNameInput] = useState('');
-  const [goalTypeInput, setGoalTypeInput] = useState('daily');
+  const [goalTypeInput, setGoalTypeInput] = useState('form');
   const [goalFreqInput, setGoalFreqInput] = useState('');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(0);
 
@@ -91,7 +91,7 @@ export default function AddGoalSurface() {
                 keyboardType="decimal-pad"
                 value={goalFreqAmtInput}
                 onChangeText={text => setGoalFreqAmtInput(text)}
-                right={<TextInput.Affix text={'minutes ' + goalFreqInput} />}
+                right={<TextInput.Affix text={'count ' + goalFreqInput} />}
               />
               <Divider style={styles.dividerSmall} />
               <SegmentedButtons
@@ -112,8 +112,18 @@ export default function AddGoalSurface() {
               <Button
                 mode="contained"
                 onPress={() => {
-                  addGoal(uid, goalNameInput, '', goalTypeInput, dispatch);
+                  addGoal(
+                    uid,
+                    goalNameInput,
+                    '',
+                    goalTypeInput,
+                    goalFreqInput,
+                    goalFreqAmtInput,
+                    dispatch,
+                  );
                   setGoalNameInput('');
+                  setGoalFreqAmtInput(0);
+                  setGoalFreqInput('daily');
                   hideModal();
                 }}>
                 Make it happen

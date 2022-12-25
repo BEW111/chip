@@ -5,7 +5,7 @@ import {ChipObject} from '../types';
 
 // Registers a new user from their email and password
 // generates firestore document for the user
-export async function createNewUser(email, password, newGoal) {
+export async function createNewUser(username, email, password, newGoal) {
   try {
     const currentdt = new Date();
 
@@ -20,7 +20,7 @@ export async function createNewUser(email, password, newGoal) {
       .collection('users')
       .doc(UID)
       .set({
-        username: '',
+        username: username,
         friends: [],
         timeCreated: currentdt,
         goals: [newGoal],

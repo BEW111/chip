@@ -25,7 +25,15 @@ export async function getGoals(UID) {
 
 // Creates a new goal to add for this user
 // generates a random unique ID, and returns it
-export async function addGoal(UID, goalName, goalDesc, goalType, dispatch) {
+export async function addGoal(
+  UID,
+  goalName,
+  goalDesc,
+  goalType,
+  goalFreq,
+  goalFreqAmt,
+  dispatch,
+) {
   console.log('Adding new goal');
   const currentdt = firestore.Timestamp.fromDate(new Date());
   const goalId = uuidv4();
@@ -37,6 +45,8 @@ export async function addGoal(UID, goalName, goalDesc, goalType, dispatch) {
     description: goalDesc,
     type: goalType,
     streak: 0,
+    frequency: goalFreq,
+    frequencyAmount: goalFreqAmt,
   };
 
   await firestore()

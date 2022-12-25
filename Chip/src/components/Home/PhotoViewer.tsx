@@ -92,6 +92,14 @@ function HabitPopup({
           marginTop: 0,
           backgroundColor: transparentBackgroundColor,
         }}
+        contentStyle={{
+          color: 'black',
+        }}
+        outlineStyle={{
+          borderColor: '#AAF0',
+          borderWidth: 0,
+          color: 'black',
+        }}
         mode="outlined"
         label="Notes"
         value={chipDesc}
