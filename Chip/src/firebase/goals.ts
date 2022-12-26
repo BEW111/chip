@@ -144,11 +144,14 @@ export async function dispatchRefreshUserGoals(
 ) {
   try {
     const goals = await getGoals(UID); // retrive user data from firestore
+
+    console.log(goals);
     dispatch(
       updateUserGoals(
         goals.map(g => ({
           id: g.id,
           name: g.name,
+          streak: g.streak,
         })),
       ),
     );

@@ -71,7 +71,7 @@ function UserContainer(props: UserContainerType) {
         </View>
         {!isSelf &&
           (isFriend ? (
-            <IconButton mode="contained" icon="paper-plane-outline" size={18}>
+            <IconButton icon="paper-plane-outline" iconColor="white" size={18}>
               Send
             </IconButton>
           ) : isAccepted ? (

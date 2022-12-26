@@ -93,6 +93,11 @@ export const theme: ThemeProp = {
       letterSpacing: 0,
       fontWeight: '700',
     },
+    labelSmall: {
+      ...MD3LightTheme.fonts.labelSmall,
+      fontFamily: 'Lato-Regular',
+      fontWeight: '700',
+    },
     bodySmall: {
       ...MD3LightTheme.fonts.bodySmall,
       fontFamily: 'Lato-Regular',

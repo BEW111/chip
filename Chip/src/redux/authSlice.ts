@@ -64,9 +64,11 @@ export const authSlice = createSlice({
       state.userGoals = action.payload;
     },
     addUserGoal: (state, action: PayloadAction<AddUserGoalPayload>) => {
+      // for the creation of a new goal
       const newGoal = {
         id: action.payload.goalId,
         name: action.payload.goalName,
+        streak: 0,
       };
 
       state.userGoals = [...state.userGoals, newGoal];
@@ -75,15 +77,21 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<UpdateUserGoalNamePayload>,
     ) => {
+      // check if goal with this id exists
       if (
         state.userGoals.filter(g => g.id === action.payload.goalId).length === 0
       ) {
         return;
       }
 
+      const oldGoal = state.userGoals.filter(
+        g => g.id === action.payload.goalId,
+      )[0];
+
       const newGoal = {
         id: action.payload.goalId,
         name: action.payload.newName,
+        streak: oldGoal.streak,
       };
 
       state.userGoals = [

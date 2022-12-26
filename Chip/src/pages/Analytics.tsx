@@ -116,14 +116,7 @@ function MainPage({navigation}) {
             <Divider style={{marginVertical: 7, height: 0}} />
             {userGoals.map((goal: Goal) => (
               <View key={goal.id}>
-                <GoalSurface
-                  goalId={goal.id}
-                  goalName={goal.name}
-                  subtitle="Flavor text here"
-                  subtitleType="scheduled"
-                  streak={goal.streak}
-                  navigation={navigation}
-                />
+                <GoalSurface goal={goal} navigation={navigation} />
                 <Divider style={{marginVertical: 7, height: 0}} />
               </View>
             ))}
