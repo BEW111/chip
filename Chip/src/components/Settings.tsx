@@ -1,8 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {Pressable, View} from 'react-native';
 
-import {Button, Divider, Drawer, IconButton, Text} from 'react-native-paper';
+import {
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {DrawerActions} from '@react-navigation/native';
 
@@ -14,9 +21,14 @@ import {selectUser} from '../redux/authSlice';
 import {styles} from '../styles';
 
 import profileDefault from '../../assets/profile-default.png';
+import {updateUsername} from '../firebase/auth';
 
 export default function Settings(props) {
   const user = useSelector(selectUser);
+
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [usernameText, setUsernameText] = useState(user.displayName);
+  const [currentUsername, setCurrentUsername] = useState(user.displayName);
 
   function onLogoutPressed() {
     // console.log('logging out');
@@ -38,7 +50,43 @@ export default function Settings(props) {
           <FastImage source={profileDefault} style={{width: 64, height: 64}} />
           <Divider style={styles.dividerHSmall} />
           <View>
-            <Text variant="titleMedium">username</Text>
+            <View style={styles.row}>
+              {editingUsername ? (
+                <TextInput
+                  dense
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  value={usernameText}
+                  onChangeText={text => setUsernameText(text)}
+                  contentStyle={{
+                    marginBottom: -8,
+                    marginHorizontal: -4,
+                    width: 150,
+                  }}
+                />
+              ) : (
+                <Text variant="titleMedium">@{currentUsername}</Text>
+              )}
+              {editingUsername ? (
+                <IconButton
+                  icon={'checkmark-outline'}
+                  size={20}
+                  style={{margin: -2}}
+                  onPress={() => {
+                    updateUsername(usernameText);
+                    setEditingUsername(false);
+                    setCurrentUsername(usernameText);
+                  }}
+                />
+              ) : (
+                <IconButton
+                  icon={'create-outline'}
+                  size={20}
+                  style={{margin: -2}}
+                  onPress={() => setEditingUsername(true)}
+                />
+              )}
+            </View>
             <Text variant="titleSmall">{user.email}</Text>
           </View>
         </View>

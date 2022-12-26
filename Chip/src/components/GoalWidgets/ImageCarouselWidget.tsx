@@ -77,7 +77,7 @@ export default function ImageCarouselWidget({navigation, chips}) {
             size={36}
             style={{margin: -2}}
             color={'black'}
-            onPress={() => console.log('test')}
+            onPress={() => console.log('image carousel widget')}
           />
         </View>
       </View>

@@ -1,13 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  StatusBar,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, View, ScrollView, Image, Dimensions} from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 import {

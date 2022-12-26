@@ -10,6 +10,12 @@ export const styles = StyleSheet.create({
     height: '100%',
     padding: 20,
   },
+  fullPaddedDark: {
+    width: '100%',
+    height: '100%',
+    padding: 20,
+    backgroundColor: '#0E1011',
+  },
   fullPaddedHorizontal: {
     width: '100%',
     height: '100%',

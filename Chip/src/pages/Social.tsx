@@ -1,63 +1,90 @@
-import React from 'react';
-import {View, ScrollView, Text} from 'react-native';
-import {Button, IconButton, Modal, Portal} from 'react-native-paper';
+import React, {useState} from 'react';
+import {View, ScrollView, Pressable} from 'react-native';
+import {
+  Button,
+  IconButton,
+  TextInput,
+  Surface,
+  Divider,
+  Text,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import {
-  scheduleNotification,
-  onDisplayNotification,
-  onCreateTriggerNotification,
-  requestNotificationsPermission,
-} from '../reminders/reminders';
+import FastImage from 'react-native-fast-image';
+import profileDefault from '../../assets/profile-default.png';
+
+import {searchUsers, useSearchUsers} from '../firebase/users';
+import {styles} from '../styles';
+import {useTheme} from 'react-native-paper';
+import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+
+function UserContainer({user}) {
+  const [pressed, setPressed] = useState(false);
+
+  return (
+    <Pressable
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      style={{
+        backgroundColor: pressed ? '#DDD4' : '#0000',
+        padding: 10,
+        borderRadius: 10,
+      }}>
+      <View style={styles.row}>
+        <FastImage source={profileDefault} style={{width: 48, height: 48}} />
+        <Divider style={styles.dividerHSmall} />
+        <View>
+          <Text variant="titleMedium" style={{color: 'white'}}>
+            @{user.username}
+          </Text>
+          <Text variant="titleSmall" style={{color: 'gray'}}>
+            {user.email}
+          </Text>
+        </View>
+      </View>
+    </Pressable>
+  );
+}
 
 export default function Social() {
-  const [visible, setVisible] = React.useState(false);
+  const [search, setSearch] = useState('');
+  const [users, setUsers] = useState([]);
 
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {
-    backgroundColor: 'white',
-    padding: 20,
-    width: '90%',
-    alignSelf: 'center',
+  const theme = useTheme();
+
+  const onSearch = async (search: string) => {
+    setSearch(search);
+    const newUsers = await searchUsers(search);
+    setUsers(newUsers);
+    console.log(newUsers);
   };
 
   return (
-    <SafeAreaView>
-      <View
-        style={{
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Portal>
-          <Modal
-            visible={visible}
-            onDismiss={hideModal}
-            contentContainerStyle={containerStyle}>
-            <Button
-              icon="notifications"
-              mode="contained"
-              onPress={() => {
-                var soon = new Date();
-                soon.setSeconds(soon.getSeconds() + 10);
-                console.log(soon.toDateString());
-
-                scheduleNotification(
-                  soon,
-                  'Prep for workout',
-                  'Set your clothes out for the gym tomorrow',
-                );
-              }}>
-              Schedule notifcation
-            </Button>
-          </Modal>
-        </Portal>
-        <Button mode="contained" style={{marginTop: 30}} onPress={showModal}>
-          Set reminder
-        </Button>
-      </View>
-    </SafeAreaView>
+    <View style={styles.fullPaddedDark}>
+      <FocusAwareStatusBar animated={true} barStyle="light-content" />
+      <SafeAreaView>
+        <ScrollView
+          alwaysBounceVertical={false}
+          keyboardShouldPersistTaps="handled">
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            label="Search for friends"
+            value={search}
+            onChangeText={text => onSearch(text)}
+            style={{backgroundColor: '#222'}}
+            contentStyle={{color: 'white'}}
+            left={<TextInput.Icon icon="search-outline" />}
+          />
+          <Divider style={styles.dividerSmall} />
+          {users.map(user => (
+            <View key={user.email}>
+              <UserContainer user={user} />
+              <Divider style={styles.dividerSmall} />
+            </View>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }

@@ -45,6 +45,7 @@ export const theme: ThemeProp = {
     // surface: '#ffddf1',
     // scrim: '#F00',
     // shadow: '#F000',
+    dark: '#0E1011',
   },
   fonts: {
     ...MD3LightTheme.fonts,

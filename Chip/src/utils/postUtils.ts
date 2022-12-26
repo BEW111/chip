@@ -9,17 +9,37 @@ export async function createNewUser(username, email, password, newGoal) {
   try {
     const currentdt = new Date();
 
+    // check if the username is taken first
+    const snapshot = await firestore()
+      .collection('usersPublic')
+      .where('username', '==', username)
+      .get();
+    if (snapshot.docs.length > 0) {
+      return {
+        status: 'success',
+        code: 'user/username-taken',
+        message: 'This username is already taken',
+      };
+    }
+
     const authResult = await auth().createUserWithEmailAndPassword(
       email,
       password,
     ); // register
     const UID = auth().currentUser.uid; // get uid for this user
 
+    // add extra details
+    const extraDetails = {
+      displayName: username,
+    };
+    await auth().currentUser.updateProfile(extraDetails);
+
     // Add user doc to firestore
-    const firestoreResult = await firestore()
+    let firestoreResult = await firestore()
       .collection('users')
       .doc(UID)
       .set({
+        email: email,
         username: username,
         friends: [],
         timeCreated: currentdt,
@@ -27,6 +47,12 @@ export async function createNewUser(username, email, password, newGoal) {
       });
 
     console.log('User added to firestore!');
+
+    // Add user doc to firestore
+    firestoreResult = await firestore().collection('usersPublic').doc(UID).set({
+      email: email,
+      username: username,
+    });
     return {
       status: 'success',
       authResult: authResult,
@@ -40,6 +66,8 @@ export async function createNewUser(username, email, password, newGoal) {
     };
   }
 }
+
+// export async function editUsername(username, UID)
 
 // Submits a chip to firestore
 export async function submitChip(photoFile, goalId, desc, UID) {

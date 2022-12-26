@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, StatusBar} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ActivityIndicator, Divider, Text, IconButton} from 'react-native-paper';
 
@@ -24,6 +24,7 @@ import GoalPage from './GoalPage';
 import {ChipObject, Goal} from '../types';
 
 import backgroundImage from '../../assets/background.png';
+import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 const Stack = createNativeStackNavigator();
@@ -74,6 +75,7 @@ function MainPage({navigation}) {
 
   return (
     <>
+      <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       <View style={{flex: 1}}>
         <FastImage
           source={backgroundImage}
@@ -135,29 +137,22 @@ function MainPage({navigation}) {
 
 function AnalyticsLandingPage() {
   return (
-    <>
-      <StatusBar
-        animated={true}
-        backgroundColor="#61dafb"
-        barStyle="dark-content"
+    <SettingsDrawer.Navigator
+      initialRouteName="AnalyticsMain"
+      drawerContent={props => <Settings {...props} />}>
+      <SettingsDrawer.Screen
+        name="AnalyticsMain"
+        component={MainPage}
+        options={{
+          headerShown: false,
+          drawerPosition: 'right',
+          drawerType: 'front',
+          drawerStyle: {
+            width: '100%',
+          },
+        }}
       />
-      <SettingsDrawer.Navigator
-        initialRouteName="AnalyticsMain"
-        drawerContent={props => <Settings {...props} />}>
-        <SettingsDrawer.Screen
-          name="AnalyticsMain"
-          component={MainPage}
-          options={{
-            headerShown: false,
-            drawerPosition: 'right',
-            drawerType: 'front',
-            drawerStyle: {
-              width: '100%',
-            },
-          }}
-        />
-      </SettingsDrawer.Navigator>
-    </>
+    </SettingsDrawer.Navigator>
   );
 }
 

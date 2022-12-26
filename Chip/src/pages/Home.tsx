@@ -32,6 +32,7 @@ import pictureButtonInside from '../../assets/picture-button-inside.png';
 import videoButtonOutside from '../../assets/video-button-outside.png';
 
 import PhotoViewer from '../components/Home/PhotoViewer';
+import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
 export default function Home() {
   const insets = useSafeAreaInsets();
@@ -143,6 +144,7 @@ export default function Home() {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
+      <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       {device != null ? (
         <Camera
           zoom={device.neutralZoom}

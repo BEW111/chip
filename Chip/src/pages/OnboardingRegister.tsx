@@ -49,6 +49,8 @@ export default function OnboardingRegister({navigation}) {
           setDisplayError('Please enter a valid email');
         } else if (result.code === 'auth/weak-password') {
           setDisplayError('Please enter a stronger password');
+        } else if (result.code === 'user/username-taken') {
+          setDisplayError('This username is already taken');
         }
       }
     }
