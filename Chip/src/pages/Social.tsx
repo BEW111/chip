@@ -1,27 +1,24 @@
 import React, {useState} from 'react';
-import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {
-  IconButton,
-  Button,
-  TextInput,
-  Divider,
-  Text,
-  useTheme,
-} from 'react-native-paper';
+import {Button, TextInput, Divider, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
 
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import profileDefault from '../../assets/profile-default.png';
-import {inviteUser} from '../firebase/users';
 
 import {selectUid, selectInvitesSent, selectFriends} from '../redux/authSlice';
-import {searchUsers} from '../firebase/users';
+import {
+  inviteUser,
+  searchUsers,
+  useReceivedInvites,
+  getUser,
+} from '../firebase/users';
 
 import {styles} from '../styles';
 
-function UserContainer({user, isFriend, isInvited}) {
+function UserContainer({user, isFriend, isInvited, isReceived}) {
   const [pressed, setPressed] = useState(false);
 
   const currentUserUid = useSelector(selectUid);
@@ -57,7 +54,18 @@ function UserContainer({user, isFriend, isInvited}) {
           </View>
         </View>
         {!isSelf &&
-          (isInvited ? (
+          (isFriend ? (
+            <Button
+              disabled
+              mode="contained"
+              labelStyle={localStyles.userButtonLabel}>
+              Added
+            </Button>
+          ) : isReceived ? (
+            <Button mode="contained" labelStyle={localStyles.userButtonLabel}>
+              Add back
+            </Button>
+          ) : isInvited ? (
             <Button
               mode="contained"
               disabled
@@ -85,11 +93,18 @@ export default function Social() {
   const invitesSent = useSelector(selectInvitesSent);
   const friends = useSelector(selectFriends);
 
+  const currentUserUid = useSelector(selectUid);
+  const receivedInvites = useReceivedInvites(currentUserUid);
+
   const onSearch = async (search: string) => {
-    setSearch(search);
-    const newUsers = await searchUsers(search);
-    setUsers(newUsers);
-    console.log(newUsers);
+    if (search) {
+      setSearch(search);
+      const newUsers = await searchUsers(search);
+      setUsers(newUsers);
+    } else {
+      setSearch(search);
+      setUsers([]);
+    }
   };
 
   return (
@@ -122,6 +137,21 @@ export default function Social() {
                 user={user}
                 isFriend={friends.includes(user.id)}
                 isInvited={invitesSent.includes(user.id)}
+              />
+              <Divider style={styles.dividerSmall} />
+            </View>
+          ))}
+          <Divider style={styles.dividerSmall} />
+          <Text variant="labelLarge" style={{color: 'white'}}>
+            Friend requests
+          </Text>
+          {receivedInvites.map(user => (
+            <View key={user.email}>
+              <UserContainer
+                user={user}
+                isFriend={null}
+                isInvited={null}
+                isReceived={true}
               />
               <Divider style={styles.dividerSmall} />
             </View>

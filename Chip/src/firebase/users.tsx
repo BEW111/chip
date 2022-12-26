@@ -15,6 +15,30 @@ import {
   updateFriends,
 } from '../redux/authSlice';
 
+export function useReceivedInvites(uid: string) {
+  const [received, setReceived] = useState([]);
+
+  useEffect(() => {
+    const query = firestore()
+      .collection('usersPublic')
+      .where('invitesSent', 'array-contains', uid)
+      .limit(10);
+
+    const subscriber = query.onSnapshot(
+      querySnapshot => {
+        Promise.all(querySnapshot.docs.map(doc => getUser(doc.id))).then(
+          dataArray => setReceived(dataArray),
+        );
+      },
+      err => {
+        console.log(`Encountered error: ${err}`);
+      },
+    );
+  });
+
+  return received;
+}
+
 export async function checkUsernameTaken(username: String) {
   try {
     const snapshot = await firestore()
@@ -59,8 +83,6 @@ export async function inviteUser(
       };
     }
 
-    console.log(invitedUid);
-
     const result = await firestore()
       .collection('usersPublic')
       .doc(senderUid)
@@ -82,6 +104,16 @@ export async function inviteUser(
   }
 }
 
+export async function getUser(uid: string) {
+  try {
+    const snapshot = await firestore().collection('usersPublic').doc(uid).get();
+    return snapshot.data();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 // Updates the local state for user goals
 // TODO: rename to "dispatchRefreshUserGoals"
 export async function dispatchRefreshInvitesAndFriends(
@@ -96,8 +128,6 @@ export async function dispatchRefreshInvitesAndFriends(
     const friends = data.friends;
     dispatch(updateInvitesSent(invitesSent));
     dispatch(updateFriends(friends));
-
-    console.log(invitesSent);
   } catch (error) {
     console.log(error);
   }
