@@ -13,7 +13,7 @@ import {
   inviteUser,
   searchUsers,
   useReceivedInvites,
-  getUser,
+  acceptInvite,
 } from '../firebase/users';
 
 import {styles} from '../styles';
@@ -29,6 +29,11 @@ function UserContainer({user, isFriend, isInvited, isReceived}) {
   async function onSendInvite() {
     console.log('onSendInvite');
     const result = await inviteUser(currentUserUid, user.id, dispatch);
+  }
+
+  async function onAcceptInvite() {
+    console.log('onAcceptInvite');
+    const result = await acceptInvite(user.id, currentUserUid, dispatch);
   }
 
   return (
@@ -62,7 +67,10 @@ function UserContainer({user, isFriend, isInvited, isReceived}) {
               Added
             </Button>
           ) : isReceived ? (
-            <Button mode="contained" labelStyle={localStyles.userButtonLabel}>
+            <Button
+              mode="contained"
+              onPress={onAcceptInvite}
+              labelStyle={localStyles.userButtonLabel}>
               Add back
             </Button>
           ) : isInvited ? (
@@ -117,7 +125,7 @@ export default function Social() {
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}
-            label="Search for friends"
+            label="Search for users"
             value={search}
             onChangeText={text => onSearch(text)}
             style={{backgroundColor: '#222'}}
@@ -149,7 +157,7 @@ export default function Social() {
             <View key={user.email}>
               <UserContainer
                 user={user}
-                isFriend={null}
+                isFriend={friends.includes(user.id)}
                 isInvited={null}
                 isReceived={true}
               />

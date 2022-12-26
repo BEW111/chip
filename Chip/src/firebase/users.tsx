@@ -2,10 +2,8 @@
  * For dealing with users and friends
  */
 
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
-import auth from '@react-native-firebase/auth';
-import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {Dispatch} from '@reduxjs/toolkit';
 
@@ -13,6 +11,7 @@ import {
   addInviteSent,
   updateInvitesSent,
   updateFriends,
+  addFriend,
 } from '../redux/authSlice';
 
 export function useReceivedInvites(uid: string) {
@@ -26,8 +25,9 @@ export function useReceivedInvites(uid: string) {
 
     const subscriber = query.onSnapshot(
       querySnapshot => {
-        Promise.all(querySnapshot.docs.map(doc => getUser(doc.id))).then(
-          dataArray => setReceived(dataArray),
+        const docs = querySnapshot.docs;
+        Promise.all(docs.map(doc => getUser(doc.id))).then(dataArray =>
+          setReceived(dataArray.map((data, i) => ({...data, id: docs[i].id}))),
         );
       },
       err => {
@@ -104,6 +104,57 @@ export async function inviteUser(
   }
 }
 
+export async function acceptInvite(
+  senderUid: string, // should be a different user
+  invitedUid: string, // should be the current user
+  dispatch: Dispatch,
+) {
+  try {
+    console.log('Accepting friend invite');
+
+    // check if we're sending an invite to ourselves
+    if (senderUid === invitedUid) {
+      return {
+        status: 'error',
+        message: 'Cannot accept own invite',
+      };
+    }
+
+    // check whether or not the sender actually invited us
+    const senderSnapshot = await firestore()
+      .collection('usersPublic')
+      .doc(senderUid)
+      .get();
+
+    if (!senderSnapshot?.data()?.invitesSent.includes(invitedUid)) {
+      return {
+        status: 'error',
+        message: 'Current user did not receive a friend invite from this user',
+      };
+    }
+
+    const result = await firestore()
+      .collection('usersPublic')
+      .doc(invitedUid)
+      .update({
+        invitesAccepted: firestore.FieldValue.arrayUnion(senderUid),
+        friends: firestore.FieldValue.arrayUnion(senderUid),
+      });
+
+    dispatch(
+      addFriend({
+        uid: senderUid,
+      }),
+    );
+
+    return result;
+  } catch (error) {
+    return {
+      status: 'error',
+    };
+  }
+}
+
 export async function getUser(uid: string) {
   try {
     const snapshot = await firestore().collection('usersPublic').doc(uid).get();
@@ -132,9 +183,3 @@ export async function dispatchRefreshInvitesAndFriends(
     console.log(error);
   }
 }
-
-// export async function searchUsers(username) {
-//     const firestoreResult = await firestore()
-//       .collection('users')
-//       .
-// }
