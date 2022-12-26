@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import auth from '@react-native-firebase/auth';
 
-import store from './src/redux/store';
+import {store} from './src/redux/store';
 import {useSelector, useDispatch} from 'react-redux';
 
 import Onboarding from './src/pages/Onboarding';
@@ -25,25 +25,23 @@ import Home from './src/pages/Home';
 import Analytics from './src/pages/Analytics';
 import Social from './src/pages/Social';
 import {
-  selectUserGoals,
   selectInitializing,
-  selectNewlyCreated,
   selectUser,
   updateInitializing,
-  updateNewlyCreated,
   updateUid,
   updateUser,
   updateUserGoals,
+  updateFriends,
+  updateInvitesSent,
 } from './src/redux/authSlice';
-import {selectNewGoal} from './src/redux/onboardingSlice';
 
 import theme from './src/theme';
 import {styles} from './src/styles';
 
 import backgroundImage from './assets/background.png';
 
-import GoalGalaxyView from './src/components/GoalGalaxy/GoalGalaxyView';
-import {dispatchUpdateUserGoals} from './src/firebase/goals';
+import {dispatchRefreshUserGoals} from './src/firebase/goals';
+import {dispatchRefreshInvitesAndFriends} from './src/firebase/users';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -135,14 +133,18 @@ function Main() {
   function onAuthStateChanged(updatedUser) {
     console.log('auth state changed');
 
+    // TODO: put into separate function
     if (updatedUser) {
       dispatch(updateUser(updatedUser.toJSON()));
       dispatch(updateUid(updatedUser.uid));
-      dispatchUpdateUserGoals(updatedUser.uid, dispatch);
+      dispatchRefreshUserGoals(updatedUser.uid, dispatch);
+      dispatchRefreshInvitesAndFriends(updatedUser.uid, dispatch);
     } else {
       dispatch(updateUser(null));
       dispatch(updateUid(null));
       dispatch(updateUserGoals([]));
+      dispatch(updateInvitesSent([]));
+      dispatch(updateFriends([]));
     }
 
     if (initializing) {

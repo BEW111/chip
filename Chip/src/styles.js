@@ -63,6 +63,7 @@ export const styles = StyleSheet.create({
   rowSpaceBetween: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   rowCenteredSpaceBetween: {

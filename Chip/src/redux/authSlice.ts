@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Goal} from '../types';
+import {RootState} from './store';
 
 interface AuthState {
   initializing: boolean;
@@ -95,6 +96,12 @@ export const authSlice = createSlice({
         g => g.id !== action.payload.goalId,
       );
     },
+    updateInvitesSent: (state, action) => {
+      state.invitesSent = action.payload;
+    },
+    updateFriends: (state, action) => {
+      state.friends = action.payload;
+    },
     addInviteSent: (state, action: PayloadAction<AddInviteSentPayload>) => {
       state.invitesSent = [...state.invitesSent, action.payload.uid];
     },
@@ -113,13 +120,17 @@ export const {
   addUserGoal,
   updateUserGoalName,
   deleteUserGoal,
+  updateFriends,
+  updateInvitesSent,
   addInviteSent,
   addFriend,
 } = authSlice.actions;
-export const selectInitializing = state => state.auth.initializing;
-export const selectUser = state => state.auth.user;
-export const selectUid = state => state.auth.uid;
-export const selectNewlyCreated = state => state.auth.newlyCreated;
-export const selectUserGoals = state => state.auth.userGoals;
+export const selectInitializing = (state: RootState) => state.auth.initializing;
+export const selectUser = (state: RootState) => state.auth.user;
+export const selectUid = (state: RootState) => state.auth.uid;
+export const selectNewlyCreated = (state: RootState) => state.auth.newlyCreated;
+export const selectUserGoals = (state: RootState) => state.auth.userGoals;
+export const selectFriends = (state: RootState) => state.auth.friends;
+export const selectInvitesSent = (state: RootState) => state.auth.invitesSent;
 
 export default authSlice.reducer;

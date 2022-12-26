@@ -34,6 +34,8 @@ export const theme: ThemeProp = {
     // inverseOnSurface: '#F00',
     // inversePrimary: '#F00',
     // inverseSurface: '#F00',
+    surfaceDisabled: '#29434E',
+    onSurfaceDisabled: 'gray',
     primary: '#EC407A',
     primaryContainer: '#EC407A',
     secondary: '#EDA3C6',
@@ -90,6 +92,10 @@ export const theme: ThemeProp = {
       fontFamily: 'Lato-Regular',
       letterSpacing: 0,
       fontWeight: '700',
+    },
+    bodySmall: {
+      ...MD3LightTheme.fonts.bodySmall,
+      fontFamily: 'Lato-Regular',
     },
   },
 };

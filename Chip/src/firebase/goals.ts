@@ -10,9 +10,10 @@ import {
   deleteUserGoal,
   addUserGoal,
 } from '../redux/authSlice';
+import {Dispatch} from '@reduxjs/toolkit';
 
 // Gets all goals for a particular user
-export async function getGoals(UID) {
+export async function getGoals(UID: string) {
   console.log('Retrieving goals');
   const snapshot = await firestore()
     .collection('users')
@@ -26,13 +27,13 @@ export async function getGoals(UID) {
 // Creates a new goal to add for this user
 // generates a random unique ID, and returns it
 export async function addGoal(
-  UID,
-  goalName,
-  goalDesc,
-  goalType,
-  goalFreq,
-  goalFreqAmt,
-  dispatch,
+  UID: string,
+  goalName: string,
+  goalDesc: string,
+  goalType: '' | 'form' | 'break' | 'do' | undefined,
+  goalFreq: '' | 'daily' | 'weekly' | undefined,
+  goalFreqAmt: number,
+  dispatch: Dispatch,
 ) {
   console.log('Adding new goal');
   const currentdt = firestore.Timestamp.fromDate(new Date());
@@ -70,7 +71,12 @@ export async function addGoal(
 
 // Edits the name of an existing goal, given its ID
 // TODO: update local state
-export async function editGoalName(UID, goalId, newName, dispatch) {
+export async function editGoalName(
+  UID: string,
+  goalId: string,
+  newName: string,
+  dispatch: Dispatch,
+) {
   console.log('Editing goal name');
   await firestore()
     .collection('users')
@@ -93,7 +99,11 @@ export async function editGoalName(UID, goalId, newName, dispatch) {
 
 // Removes a goal for a user (currently doesn't remove chips)
 // TODO: update local state
-export async function deleteGoal(UID, goalId, dispatch) {
+export async function deleteGoal(
+  UID: string,
+  goalId: string,
+  dispatch: Dispatch,
+) {
   console.log('Deleting goal');
 
   const result = await firestore()
@@ -114,7 +124,10 @@ export async function deleteGoal(UID, goalId, dispatch) {
 
 // Updates the local state for user goals
 // TODO: rename to "dispatchRefreshUserGoals"
-export async function dispatchUpdateUserGoals(UID, dispatch) {
+export async function dispatchRefreshUserGoals(
+  UID: string,
+  dispatch: Dispatch,
+) {
   try {
     const goals = await getGoals(UID); // retrive user data from firestore
     dispatch(

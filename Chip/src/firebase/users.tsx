@@ -7,7 +7,13 @@ import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-import {addInviteSent} from '../redux/authSlice';
+import {Dispatch} from '@reduxjs/toolkit';
+
+import {
+  addInviteSent,
+  updateInvitesSent,
+  updateFriends,
+} from '../redux/authSlice';
 
 export async function checkUsernameTaken(username: String) {
   try {
@@ -40,7 +46,7 @@ export async function searchUsers(search: string) {
 export async function inviteUser(
   senderUid: string,
   invitedUid: string,
-  dispatch,
+  dispatch: Dispatch,
 ) {
   try {
     console.log('Sending friend invite to user');
@@ -73,6 +79,27 @@ export async function inviteUser(
     return {
       status: 'error',
     };
+  }
+}
+
+// Updates the local state for user goals
+// TODO: rename to "dispatchRefreshUserGoals"
+export async function dispatchRefreshInvitesAndFriends(
+  UID: string,
+  dispatch: Dispatch,
+) {
+  try {
+    const snapshot = await firestore().collection('usersPublic').doc(UID).get();
+    const data = snapshot.data();
+
+    const invitesSent = data.invitesSent; // retrive data from firestore
+    const friends = data.friends;
+    dispatch(updateInvitesSent(invitesSent));
+    dispatch(updateFriends(friends));
+
+    console.log(invitesSent);
+  } catch (error) {
+    console.log(error);
   }
 }
 
