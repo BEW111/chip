@@ -113,6 +113,7 @@ export async function deleteGoal(UID, goalId, dispatch) {
 }
 
 // Updates the local state for user goals
+// TODO: rename to "dispatchRefreshUserGoals"
 export async function dispatchUpdateUserGoals(UID, dispatch) {
   try {
     const goals = await getGoals(UID); // retrive user data from firestore

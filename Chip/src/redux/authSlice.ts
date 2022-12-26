@@ -7,6 +7,8 @@ interface AuthState {
   user: {} | null;
   uid: string | null;
   userGoals: Goal[];
+  friends: string[];
+  invitesSent: string[];
 }
 
 interface AddUserGoalPayload {
@@ -19,6 +21,14 @@ interface UpdateUserGoalNamePayload {
   newName: string;
 }
 
+interface AddInviteSentPayload {
+  uid: string;
+}
+
+interface AddFriendPayload {
+  uid: string;
+}
+
 interface DeleteUserGoalPayload {
   goalId: string;
 }
@@ -29,6 +39,8 @@ const initialState: AuthState = {
   user: null,
   uid: null,
   userGoals: [],
+  friends: [],
+  invitesSent: [],
 };
 
 export const authSlice = createSlice({
@@ -83,6 +95,12 @@ export const authSlice = createSlice({
         g => g.id !== action.payload.goalId,
       );
     },
+    addInviteSent: (state, action: PayloadAction<AddInviteSentPayload>) => {
+      state.invitesSent = [...state.invitesSent, action.payload.uid];
+    },
+    addFriend: (state, action: PayloadAction<AddFriendPayload>) => {
+      state.friends = [...state.friends, action.payload.uid];
+    },
   },
 });
 
@@ -95,6 +113,8 @@ export const {
   addUserGoal,
   updateUserGoalName,
   deleteUserGoal,
+  addInviteSent,
+  addFriend,
 } = authSlice.actions;
 export const selectInitializing = state => state.auth.initializing;
 export const selectUser = state => state.auth.user;

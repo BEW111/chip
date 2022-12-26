@@ -48,10 +48,12 @@ export async function createNewUser(username, email, password, newGoal) {
 
     console.log('User added to firestore!');
 
-    // Add user doc to firestore
+    // Add user doc to firestore (public info)
     firestoreResult = await firestore().collection('usersPublic').doc(UID).set({
       email: email,
       username: username,
+      invitesSent: [],
+      invitesAccepted: [],
     });
     return {
       status: 'success',

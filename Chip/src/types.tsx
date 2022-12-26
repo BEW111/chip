@@ -33,3 +33,9 @@ export interface Reminder {
   timeCreated: FirebaseFirestoreTypes.Timestamp;
   timeSent: FirebaseFirestoreTypes.Timestamp;
 }
+
+export interface DatabaseResponse {
+  status: 'success' | 'error';
+  code: string;
+  message: string;
+}

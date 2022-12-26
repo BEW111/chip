@@ -60,6 +60,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  rowSpaceBetween: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   rowCenteredSpaceBetween: {
     display: 'flex',
     flexDirection: 'row',

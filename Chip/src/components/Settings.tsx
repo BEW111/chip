@@ -36,6 +36,17 @@ export default function Settings(props) {
     // .then(() => console.log('User signed out!'));
   }
 
+  function onUpdateUsernamePressed() {
+    const result = updateUsername(usernameText);
+
+    if (result.status === 'error') {
+      console.log('Error occurred while editing username');
+    } else {
+      setEditingUsername(false);
+      setCurrentUsername(usernameText);
+    }
+  }
+
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.fullPaddedHorizontal}>
@@ -72,11 +83,7 @@ export default function Settings(props) {
                   icon={'checkmark-outline'}
                   size={20}
                   style={{margin: -2}}
-                  onPress={() => {
-                    updateUsername(usernameText);
-                    setEditingUsername(false);
-                    setCurrentUsername(usernameText);
-                  }}
+                  onPress={onUpdateUsernamePressed}
                 />
               ) : (
                 <IconButton

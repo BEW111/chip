@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {View, ScrollView, Pressable} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {
   Button,
   IconButton,
@@ -7,42 +8,63 @@ import {
   Surface,
   Divider,
   Text,
+  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector, useDispatch} from 'react-redux';
 
-import FastImage from 'react-native-fast-image';
-import profileDefault from '../../assets/profile-default.png';
-
-import {searchUsers, useSearchUsers} from '../firebase/users';
-import {styles} from '../styles';
-import {useTheme} from 'react-native-paper';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import profileDefault from '../../assets/profile-default.png';
+import {inviteUser} from '../firebase/users';
+
+import {selectUid} from '../redux/authSlice';
+import {searchUsers, useSearchUsers} from '../firebase/users';
+
+import {styles} from '../styles';
 
 function UserContainer({user}) {
   const [pressed, setPressed] = useState(false);
 
+  const currentUserUid = useSelector(selectUid);
+  const dispatch = useDispatch();
+
+  console.log(user);
+
+  async function onSendInvite() {
+    console.log('onSendInvite');
+    const result = await inviteUser(currentUserUid, user.id, dispatch);
+  }
+
   return (
-    <Pressable
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
+    <View
+      // onPressIn={() => setPressed(true)}
+      // onPressOut={() => setPressed(false)}
       style={{
         backgroundColor: pressed ? '#DDD4' : '#0000',
         padding: 10,
         borderRadius: 10,
       }}>
-      <View style={styles.row}>
-        <FastImage source={profileDefault} style={{width: 48, height: 48}} />
-        <Divider style={styles.dividerHSmall} />
-        <View>
-          <Text variant="titleMedium" style={{color: 'white'}}>
-            @{user.username}
-          </Text>
-          <Text variant="titleSmall" style={{color: 'gray'}}>
-            {user.email}
-          </Text>
+      <View style={styles.rowSpaceBetween}>
+        <View style={styles.row}>
+          <FastImage source={profileDefault} style={{width: 48, height: 48}} />
+          <Divider style={styles.dividerHSmall} />
+          <View>
+            <Text variant="titleMedium" style={{color: 'white'}}>
+              @{user.username}
+            </Text>
+            <Text variant="titleSmall" style={{color: 'gray'}}>
+              {user.email}
+            </Text>
+          </View>
         </View>
+        <IconButton
+          size={24}
+          iconColor="white"
+          icon="person-add-outline"
+          onPress={onSendInvite}
+        />
       </View>
-    </Pressable>
+    </View>
   );
 }
 
@@ -75,6 +97,12 @@ export default function Social() {
             style={{backgroundColor: '#222'}}
             contentStyle={{color: 'white'}}
             left={<TextInput.Icon icon="search-outline" />}
+            right={
+              <TextInput.Icon
+                icon="close-outline"
+                onPress={() => setSearch('')}
+              />
+            }
           />
           <Divider style={styles.dividerSmall} />
           {users.map(user => (
