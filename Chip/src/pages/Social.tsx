@@ -134,7 +134,7 @@ export default function Social() {
     Promise.all(friends.map(f => getUser(f))).then(dataArray =>
       setFriendsData(dataArray),
     );
-  }, friends);
+  }, [friends]);
 
   return (
     <View style={styles.fullPaddedDark}>

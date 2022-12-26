@@ -45,7 +45,7 @@ export default function AddGoalSurface() {
 
   const [goalNameInput, setGoalNameInput] = useState('');
   const [goalTypeInput, setGoalTypeInput] = useState('form');
-  const [goalFreqInput, setGoalFreqInput] = useState('');
+  const [goalFreqInput, setGoalFreqInput] = useState('daily');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(0);
 
   const showModal = () => setModalVisible(true);

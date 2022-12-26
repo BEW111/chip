@@ -10,13 +10,16 @@ export interface ChipUser {
 export interface Goal {
   id: string; // actual identifier of the goal
   name: string; // display name of the goal
-  timeCreated?: FirebaseFirestoreTypes.Timestamp;
+  timeCreated: FirebaseFirestoreTypes.Timestamp;
   description?: string;
   type?: 'form' | 'break' | 'do' | '';
   category?: string;
-  streak?: number;
-  frequency?: 'daily' | 'weekly' | '';
-  frequencyAmount?: number;
+  streak: number;
+  streakMet: boolean;
+  iterationPeriod: 'daily' | 'weekly' | '';
+  iterationAmount: number;
+  currentIterationProgress: number;
+  currentIterationStart: FirebaseFirestoreTypes.Timestamp;
 }
 
 export interface ChipObject {

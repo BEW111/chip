@@ -2,6 +2,8 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {ChipObject} from '../types';
 
+import {checkStreakIncremented} from './goals';
+
 // export async function editUsername(username, UID)
 
 // Submits a chip to firestore
@@ -21,19 +23,12 @@ export async function submitChip(photoFile, goalId, desc, UID) {
     photo: localPath.slice(photoNameIndex),
   };
 
-  // Upload file to storage (ASYNC)
-  reference
-    .putFile(localPath)
-    .then(r => {
-      // Upload the chip to firestore (ASYNC)
-      firestore()
-        .collection('users')
-        .doc(UID)
-        .collection('chips')
-        .add(chip)
-        .then(() => {
-          console.log('Chip added!');
-        });
-    })
-    .catch(e => console.log(e));
+  // Upload file to storage
+  await reference.putFile(localPath);
+
+  // Upload the chip to firestore
+  await firestore().collection('users').doc(UID).collection('chips').add(chip);
+
+  // Check if streak should be incremented
+  await checkStreakIncremented(UID, goalId);
 }
