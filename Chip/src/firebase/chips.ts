@@ -1,34 +1,59 @@
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import {FirebaseStorageTypes} from '@react-native-firebase/storage';
 import {ChipObject} from '../types';
 
-import {checkStreakIncremented} from './goals';
+import {updateAndCheckStreakIncremented} from './goals';
 
 // export async function editUsername(username, UID)
 
 // Submits a chip to firestore
-export async function submitChip(photoFile, goalId, desc, UID) {
+export async function submitChip(
+  photoFile,
+  goalId: string,
+  desc: string,
+  UID: string,
+  amount: number,
+) {
   const currentdt = new Date();
-  const localPath = photoFile.uri;
-  const photoNameIndex = localPath.lastIndexOf('/') + 1;
 
-  // Create a storage reference to the file that will be uploaded
-  const url = `user/${UID}/chip-photo/${localPath.slice(photoNameIndex)}`;
-  const reference = storage().ref(url);
+  let localPath = null;
+  let photoNameIndex = null;
+
+  let reference: FirebaseStorageTypes.Reference | null = null;
+
+  // we may be developing on the simulator
+  // TODO: should throw an actual error in prod?
+  if (photoFile.uri) {
+    localPath = photoFile.uri;
+    photoNameIndex = localPath.lastIndexOf('/') + 1;
+
+    // Create a storage reference to the file that will be uploaded
+    const url = `user/${UID}/chip-photo/${localPath.slice(photoNameIndex)}`;
+    reference = storage().ref(url);
+  } else {
+    console.log('No photo provided');
+  }
 
   const chip: ChipObject = {
     goalId: goalId,
     description: desc,
     timeSubmitted: firestore.Timestamp.fromDate(currentdt),
-    photo: localPath.slice(photoNameIndex),
+    photo: localPath ? localPath.slice(photoNameIndex) : null,
+    amount: amount,
   };
 
+  console.log(chip);
+
   // Upload file to storage
-  await reference.putFile(localPath);
+  if (reference) {
+    console.log('Uploading image');
+    await reference.putFile(localPath);
+  }
 
   // Upload the chip to firestore
   await firestore().collection('users').doc(UID).collection('chips').add(chip);
 
   // Check if streak should be incremented
-  await checkStreakIncremented(UID, goalId);
+  await updateAndCheckStreakIncremented(UID, goalId, amount);
 }

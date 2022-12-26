@@ -199,7 +199,15 @@ function PhotoViewer({photoSource}) {
         mode="contained"
         onPress={() => {
           dispatch(toggleViewingPhoto());
-          submitChip(photoSource, selectedGoalId, chipDescription, uid);
+          if (uid) {
+            submitChip(
+              photoSource,
+              selectedGoalId,
+              chipDescription,
+              uid,
+              chipAmount,
+            );
+          }
         }}
         contentStyle={{flexDirection: 'row-reverse', alignItems: 'center'}}
         style={{

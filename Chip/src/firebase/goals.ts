@@ -2,7 +2,9 @@
  * Goals, streaks, etc.
  */
 
-import firestore from '@react-native-firebase/firestore';
+import firestore, {
+  FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
 
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
@@ -155,11 +157,14 @@ export async function dispatchRefreshUserGoals(
   }
 }
 
-// (Add to current streak progress should happen when chip is uploaded)
-// Needs to be checked after a chip is uploads
-// 1. Check streakMet
-// 2. If current streak progress is more than iteration amount, set streakMet to 1 and increment streak
-export async function checkStreakIncremented(UID: string, goalID: string) {
+// 1. Add to current streak progress
+// 2. Check streakMet
+// 3. If current streak progress is more than iteration amount, set streakMet to 1 and increment streak
+export async function updateAndCheckStreakIncremented(
+  UID: string,
+  goalID: string,
+  incrementAmount: number,
+) {
   console.log('Checking if streak should be incremented');
   const goalDoc = await firestore()
     .collection('users')
@@ -185,33 +190,54 @@ export async function checkStreakIncremented(UID: string, goalID: string) {
     };
   }
 
-  if (goalData.currentIterationProgress > goalData.iterationAmount) {
+  console.log(goalData);
+
+  if (
+    goalData.currentIterationProgress + incrementAmount >=
+    goalData.iterationAmount
+  ) {
     const result = await goalDoc.update({
       streakMet: 1,
       streak: firestore.FieldValue.increment(1),
+      currentIterationProgress: firestore.FieldValue.increment(incrementAmount),
     });
 
     console.log('Streak incremented');
 
     return result;
+  } else {
+    const result = await goalDoc.update({
+      currentIterationProgress: firestore.FieldValue.increment(incrementAmount),
+    });
+
+    console.log('Not incrementing streak');
+    return result;
   }
 }
 
 // Needs to be checked when app is opened (and technically at the beginning of every day)
+// Assumes goal data has already been retrieved
 // 1. Check if current datetime - currentIteration start is more than iterationPeriod
 // 2. If so, set streakMet to 0, currentIterationAmount to 0, and check if streakMet
 // 3. If so, increment currentIterationStart by iterationPeriod
 // 4. Otherwise, set streak to 0, and set currentIterationStart to beginning of day today
-export async function checkStreakReset(UID: string, goalID: string) {
-  console.log('Checking if streak should be reset');
+export async function checkStreakReset(
+  UID: string,
+  goalId: string,
+  externalGoalData: FirebaseFirestoreTypes.DocumentData | undefined = undefined,
+) {
   const goalDoc = await firestore()
     .collection('users')
     .doc(UID)
     .collection('goals')
-    .doc(goalID);
+    .doc(goalId);
 
-  let snapshot = await goalDoc.get();
-  const goalData = snapshot.data();
+  let goalData = externalGoalData;
+
+  if (!externalGoalData) {
+    const goalSnapshot = await goalDoc.get();
+    goalData = goalSnapshot.data();
+  }
 
   if (!goalData) {
     return {
@@ -256,7 +282,7 @@ export async function checkStreakReset(UID: string, goalID: string) {
     // send updates
     const result = await goalDoc.update(goalDataUpdates);
 
-    console.log('Streak reset');
+    console.log(`Streak reset for "${goalData.name}"`);
 
     return result;
   }
@@ -265,4 +291,17 @@ export async function checkStreakReset(UID: string, goalID: string) {
     status: 'success',
     message: 'No changes',
   };
+}
+
+// This is not scalable at all but I will work on changing this later, I really just want it functional for now
+export async function checkAllStreaksReset(UID: string) {
+  console.log('Checking if any streaks should be reset');
+
+  const goals = await getGoals(UID);
+
+  const result = await Promise.all(
+    goals.map(goal => checkStreakReset(UID, goal.id, goal)),
+  );
+
+  return result;
 }

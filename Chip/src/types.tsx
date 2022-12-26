@@ -27,6 +27,7 @@ export interface ChipObject {
   timeSubmitted: FirebaseFirestoreTypes.Timestamp;
   photo: string;
   description: string;
+  amount?: number;
 }
 
 export interface Reminder {

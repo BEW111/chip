@@ -40,7 +40,10 @@ import {styles} from './src/styles';
 
 import backgroundImage from './assets/background.png';
 
-import {dispatchRefreshUserGoals} from './src/firebase/goals';
+import {
+  dispatchRefreshUserGoals,
+  checkAllStreaksReset,
+} from './src/firebase/goals';
 import {dispatchRefreshInvitesAndFriends} from './src/firebase/users';
 
 const Tab = createMaterialTopTabNavigator();
@@ -139,6 +142,7 @@ function Main() {
       dispatch(updateUid(updatedUser.uid));
       dispatchRefreshUserGoals(updatedUser.uid, dispatch);
       dispatchRefreshInvitesAndFriends(updatedUser.uid, dispatch);
+      checkAllStreaksReset(updatedUser.uid);
     } else {
       dispatch(updateUser(null));
       dispatch(updateUid(null));
