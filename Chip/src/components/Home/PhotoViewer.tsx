@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Pressable, Dimensions, StyleSheet} from 'react-native';
-import {Button, Divider, Text, TextInput, IconButton} from 'react-native-paper';
+import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -9,7 +9,7 @@ import {Picker} from 'react-native-wheel-pick';
 import BlurSurface from '../BlurSurface';
 
 import {toggleViewingPhoto} from '../../redux/chipSubmitterSlice';
-import {submitChip} from '../../utils/postUtils';
+import {submitChip} from '../../firebase/chips';
 import {selectUid, selectUserGoals} from '../../redux/authSlice';
 import {Goal} from '../../types';
 import {styles} from '../../styles';

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Button, TextInput, Divider, Text, useTheme} from 'react-native-paper';
+import {Button, TextInput, Divider, Text, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -14,11 +14,22 @@ import {
   searchUsers,
   useReceivedInvites,
   acceptInvite,
+  getUser,
 } from '../firebase/users';
 
 import {styles} from '../styles';
 
-function UserContainer({user, isFriend, isInvited, isReceived}) {
+interface UserContainerType {
+  user: string;
+  isFriend?: boolean;
+  isAccepted?: boolean;
+  isInvited?: boolean;
+  isReceived?: boolean;
+}
+
+function UserContainer(props: UserContainerType) {
+  const {user, isFriend, isAccepted, isInvited, isReceived} = props;
+
   const [pressed, setPressed] = useState(false);
 
   const currentUserUid = useSelector(selectUid);
@@ -60,6 +71,10 @@ function UserContainer({user, isFriend, isInvited, isReceived}) {
         </View>
         {!isSelf &&
           (isFriend ? (
+            <IconButton mode="contained" icon="paper-plane-outline" size={18}>
+              Send
+            </IconButton>
+          ) : isAccepted ? (
             <Button
               disabled
               mode="contained"
@@ -96,8 +111,8 @@ function UserContainer({user, isFriend, isInvited, isReceived}) {
 export default function Social() {
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
+  const [friendsData, setFriendsData] = useState([]);
 
-  const theme = useTheme();
   const invitesSent = useSelector(selectInvitesSent);
   const friends = useSelector(selectFriends);
 
@@ -114,6 +129,12 @@ export default function Social() {
       setUsers([]);
     }
   };
+
+  useEffect(() => {
+    Promise.all(friends.map(f => getUser(f))).then(dataArray =>
+      setFriendsData(dataArray),
+    );
+  }, friends);
 
   return (
     <View style={styles.fullPaddedDark}>
@@ -143,7 +164,7 @@ export default function Social() {
             <View key={user.email}>
               <UserContainer
                 user={user}
-                isFriend={friends.includes(user.id)}
+                isAccepted={friends.includes(user.id)}
                 isInvited={invitesSent.includes(user.id)}
               />
               <Divider style={styles.dividerSmall} />
@@ -157,10 +178,19 @@ export default function Social() {
             <View key={user.email}>
               <UserContainer
                 user={user}
-                isFriend={friends.includes(user.id)}
-                isInvited={null}
+                isAccepted={friends.includes(user.id)}
                 isReceived={true}
               />
+              <Divider style={styles.dividerSmall} />
+            </View>
+          ))}
+          <Divider style={styles.dividerSmall} />
+          <Text variant="labelLarge" style={{color: 'white'}}>
+            Friends
+          </Text>
+          {friendsData.map(user => (
+            <View key={user.email}>
+              <UserContainer user={user} isFriend={true} />
               <Divider style={styles.dividerSmall} />
             </View>
           ))}

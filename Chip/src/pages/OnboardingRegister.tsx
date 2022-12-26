@@ -9,7 +9,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {updateNewlyCreated} from '../redux/authSlice';
 import {selectNewGoal} from '../redux/onboardingSlice';
 
-import {createNewUser} from '../utils/postUtils';
+import {createNewUser} from '../firebase/auth';
 
 import BlurSurface from '../components/BlurSurface';
 import {styles} from '../styles';
