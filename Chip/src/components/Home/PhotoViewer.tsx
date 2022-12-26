@@ -13,6 +13,7 @@ import {submitChip} from '../../firebase/chips';
 import {selectUid, selectUserGoals} from '../../redux/authSlice';
 import {Goal} from '../../types';
 import {styles} from '../../styles';
+import {dispatchRefreshUserGoals} from '../../firebase/goals';
 
 function HabitPopup({
   userGoals,
@@ -207,6 +208,7 @@ function PhotoViewer({photoSource}) {
               uid,
               chipAmount,
             );
+            dispatchRefreshUserGoals(uid, dispatch);
           }
         }}
         contentStyle={{flexDirection: 'row-reverse', alignItems: 'center'}}
