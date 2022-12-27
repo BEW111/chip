@@ -31,9 +31,7 @@ export default function Settings(props) {
   const [currentUsername, setCurrentUsername] = useState(user.displayName);
 
   function onLogoutPressed() {
-    // console.log('logging out');
     auth().signOut();
-    // .then(() => console.log('User signed out!'));
   }
 
   function onUpdateUsernamePressed() {

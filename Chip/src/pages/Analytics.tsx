@@ -51,17 +51,20 @@ function MainPage({navigation}) {
       .doc(uid)
       .collection('chips')
       .onSnapshot(querySnapshot => {
-        let newChips = [];
-        querySnapshot.forEach(documentSnapshot => {
-          newChips.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
+        if (querySnapshot) {
+          let newChips = [];
+          querySnapshot.forEach(documentSnapshot => {
+            newChips.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
           });
-        });
-        newChips = newChips.sort((a, b) =>
-          a.timeSubmitted < b.timeSubmitted ? 1 : -1,
-        );
-        setChips(newChips);
+          newChips = newChips.sort((a, b) =>
+            a.timeSubmitted < b.timeSubmitted ? 1 : -1,
+          );
+          setChips(newChips);
+        }
+
         setLoading(false);
       });
 

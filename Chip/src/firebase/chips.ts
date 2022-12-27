@@ -43,7 +43,7 @@ export async function submitChip(
     amount: amount,
   };
 
-  console.log(chip);
+  console.log('Chip being submitted: ' + chip);
 
   // Upload file to storage
   if (reference) {

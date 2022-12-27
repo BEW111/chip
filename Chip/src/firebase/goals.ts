@@ -20,7 +20,7 @@ import {Dispatch} from '@reduxjs/toolkit';
 
 // Gets all goals for a particular user
 export async function getGoals(UID: string) {
-  console.log('Retrieving goals');
+  console.log('[getGoals]: Retrieving goals for user ' + UID);
   const snapshot = await firestore()
     .collection('users')
     .doc(UID)
@@ -141,22 +141,28 @@ export async function deleteGoal(
 export async function dispatchRefreshUserGoals(
   UID: string,
   dispatch: Dispatch,
+  externalGoals: FirebaseFirestoreTypes.DocumentData[] | undefined = undefined,
 ) {
   try {
-    const goals = await getGoals(UID); // retrive user data from firestore
+    let goals = externalGoals;
 
-    console.log(goals);
-    dispatch(
-      updateUserGoals(
-        goals.map(g => ({
-          id: g.id,
-          name: g.name,
-          streak: g.streak,
-        })),
-      ),
-    );
+    if (!externalGoals) {
+      goals = await getGoals(UID);
+    }
+
+    if (goals) {
+      dispatch(
+        updateUserGoals(
+          goals.map(g => ({
+            id: g.id,
+            name: g.name,
+            streak: g.streak,
+          })),
+        ),
+      );
+    }
   } catch (error) {
-    console.log(error);
+    console.log('Error when refreshing user goals: ' + error);
   }
 }
 
@@ -192,8 +198,6 @@ export async function updateAndCheckStreakIncremented(
       status: 'success',
     };
   }
-
-  console.log(goalData);
 
   if (
     goalData.currentIterationProgress + incrementAmount >=
@@ -297,14 +301,27 @@ export async function checkStreakReset(
 }
 
 // This is not scalable at all but I will work on changing this later, I really just want it functional for now
-export async function checkAllStreaksReset(UID: string) {
+export async function checkAllStreaksReset(UID: string, externalGoals = null) {
   console.log('Checking if any streaks should be reset');
 
-  const goals = await getGoals(UID);
+  let goals: FirebaseFirestoreTypes.DocumentData[];
 
-  const result = await Promise.all(
-    goals.map(goal => checkStreakReset(UID, goal.id, goal)),
-  );
+  if (!externalGoals) {
+    goals = await getGoals(UID);
+  }
+
+  let result;
+
+  if (goals) {
+    result = await Promise.all(
+      goals.map(goal => checkStreakReset(UID, goal.id, goal)),
+    );
+  } else {
+    result = {
+      status: 'success',
+      message: 'No goals at all to reset streaks for',
+    };
+  }
 
   return result;
 }

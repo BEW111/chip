@@ -58,8 +58,6 @@ export default function GoalSurface({goal, navigation}) {
     };
   });
 
-  console.log(goal);
-
   return (
     <Pressable
       onPressIn={() => {
@@ -117,9 +115,9 @@ const goalSurfaceStyles = (pressed: boolean) =>
 
 const goalBadgeStyles = StyleSheet.create({
   badge: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFB',
     borderRadius: 50,
-    padding: 3,
+    padding: 2,
     paddingHorizontal: 6,
   },
 });

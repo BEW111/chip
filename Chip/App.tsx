@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Dimensions, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -43,6 +43,7 @@ import backgroundImage from './assets/background.png';
 import {
   dispatchRefreshUserGoals,
   checkAllStreaksReset,
+  getGoals,
 } from './src/firebase/goals';
 import {dispatchRefreshInvitesAndFriends} from './src/firebase/users';
 
@@ -133,22 +134,31 @@ function Main() {
   const user = useSelector(selectUser);
 
   // Handle user state changes
-  function onAuthStateChanged(updatedUser) {
-    console.log('auth state changed');
-
+  var authFlag = true; // hacky, but prevents contents from being called twice inside
+  async function onAuthStateChanged(newUser) {
     // TODO: put into separate function
-    if (updatedUser) {
-      dispatch(updateUser(updatedUser.toJSON()));
-      dispatch(updateUid(updatedUser.uid));
-      dispatchRefreshUserGoals(updatedUser.uid, dispatch);
-      dispatchRefreshInvitesAndFriends(updatedUser.uid, dispatch);
-      checkAllStreaksReset(updatedUser.uid);
-    } else {
-      dispatch(updateUser(null));
-      dispatch(updateUid(null));
-      dispatch(updateUserGoals([]));
-      dispatch(updateInvitesSent([]));
-      dispatch(updateFriends([]));
+    if (authFlag) {
+      authFlag = false;
+
+      if (newUser) {
+        dispatch(updateUser(newUser.toJSON()));
+        dispatch(updateUid(newUser.uid));
+
+        const goals = await getGoals(newUser.uid); // retrive user data from firestore
+
+        if (goals.length) {
+          dispatchRefreshUserGoals(newUser.uid, dispatch, goals);
+          checkAllStreaksReset(newUser.uid, goals);
+        }
+
+        dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
+      } else {
+        dispatch(updateUser(null));
+        dispatch(updateUid(null));
+        dispatch(updateUserGoals([]));
+        dispatch(updateInvitesSent([]));
+        dispatch(updateFriends([]));
+      }
     }
 
     if (initializing) {
