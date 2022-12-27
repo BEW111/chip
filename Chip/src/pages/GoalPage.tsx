@@ -82,13 +82,34 @@ function EditGoalModal({
   );
 }
 
-function ReminderFAB({uid, goalId, navigation, showRemindersModal}) {
+function DeleteGoalModal({visible, hideModal, uid, goalId, navigation}) {
+  const dispatch = useDispatch();
+
+  return (
+    <Modal
+      visible={visible}
+      onDismiss={hideModal}
+      contentContainerStyle={modalStyles.container}>
+      <Text style={modalStyles.header}>
+        Are you sure you'd like to delete this goal?
+      </Text>
+      <Button
+        mode="contained"
+        onPress={() => {
+          deleteGoal(uid, goalId, dispatch);
+          navigation.navigate('AnalyticsLandingPage');
+        }}>
+        Delete
+      </Button>
+    </Modal>
+  );
+}
+
+function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
   const [fabOpen, setFabOpen] = useState(false);
   const onFabStateChange = ({open}) => setFabOpen(open);
 
   const {colors} = useTheme();
-
-  const dispatch = useDispatch();
 
   return (
     <View style={styles.absoluteFull} pointerEvents={'box-none'}>
@@ -114,8 +135,7 @@ function ReminderFAB({uid, goalId, navigation, showRemindersModal}) {
             icon: 'trash',
             label: 'Delete',
             onPress: () => {
-              deleteGoal(uid, goalId, dispatch);
-              navigation.navigate('AnalyticsLandingPage');
+              showDeleteGoalModal();
             },
           },
         ]}
@@ -146,6 +166,10 @@ export default function GoalPage({navigation, route}) {
   const [remindersModalVisible, setRemindersModalVisible] = useState(false);
   const showRemindersModal = () => setRemindersModalVisible(true);
   const hideRemindersModal = () => setRemindersModalVisible(false);
+
+  const [deleteGoalModalVisible, setDeleteGoalModalVisible] = useState(false);
+  const showDeleteGoalModal = () => setDeleteGoalModalVisible(true);
+  const hideDeleteGoalModal = () => setDeleteGoalModalVisible(false);
 
   // Get all chips
   useEffect(() => {
@@ -194,6 +218,13 @@ export default function GoalPage({navigation, route}) {
           goalName={goalName}
           goalId={goalId}
         />
+        <DeleteGoalModal
+          visible={deleteGoalModalVisible}
+          hideModal={hideDeleteGoalModal}
+          navigation={navigation}
+          uid={uid}
+          goalId={goalId}
+        />
       </Portal>
       <View style={styles.expand}>
         <FastImage source={backgroundImage} style={styles.absoluteFull} />
@@ -221,7 +252,7 @@ export default function GoalPage({navigation, route}) {
           </Header>
           <ScrollView style={{flex: 1, padding: 20}}>
             <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
-            <Divider style={{marginVertical: 7, height: 0}} />
+            <Divider style={styles.dividerSmall} />
             <View
               style={{
                 height: 224,
@@ -234,7 +265,7 @@ export default function GoalPage({navigation, route}) {
                 )}
               />
             </View>
-            <Divider style={{marginVertical: 7, height: 0}} />
+            <Divider style={styles.dividerSmall} />
             <ImageCarouselWidget
               navigation={navigation}
               chips={chips.filter((chip: ChipObject) => chip.goalId === goalId)}
@@ -247,6 +278,7 @@ export default function GoalPage({navigation, route}) {
         goalId={goalId}
         navigation={navigation}
         showRemindersModal={showRemindersModal}
+        showDeleteGoalModal={showDeleteGoalModal}
       />
     </>
   );

@@ -136,9 +136,6 @@ function Main() {
   // Handle user state changes
   var authFlag = true; // hacky, but prevents contents from being called twice inside
   async function onAuthStateChanged(newUser) {
-    console.log('authFlag: ' + authFlag);
-    console.log('userChanged: ' + newUser != user);
-
     // TODO: put into separate function
     if (newUser && authFlag) {
       authFlag = false;
