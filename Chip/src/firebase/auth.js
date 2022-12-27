@@ -1,3 +1,7 @@
+/**
+ * Everything having to do with authentication and private users
+ */
+
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
@@ -33,7 +37,7 @@ export async function createNewUser(username, email, password, newGoal) {
     };
     await auth().currentUser.updateProfile(extraDetails);
 
-    // Add user doc to firestore
+    // Add user doc to firestore (private user data)
     let firestoreResult = await firestore()
       .collection('users')
       .doc(UID)
@@ -47,12 +51,13 @@ export async function createNewUser(username, email, password, newGoal) {
 
     console.log('User added to firestore!');
 
-    // Add user doc to firestore (public info)
+    // Add user doc to firestore (public user data)
     firestoreResult = await firestore().collection('usersPublic').doc(UID).set({
       email: email,
       username: username,
       invitesSent: [],
       invitesAccepted: [],
+      goalsPublic: [],
     });
     return {
       status: 'success',

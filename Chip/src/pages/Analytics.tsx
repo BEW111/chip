@@ -154,7 +154,7 @@ function AnalyticsLandingPage() {
 
 export default function AnalyticsPage() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="AnalyticsLandingPage">
       <Stack.Screen
         name="AnalyticsLandingPage"
         component={AnalyticsLandingPage}

@@ -16,6 +16,7 @@ import {
   SegmentedButtons,
   Divider,
   Surface,
+  IconButton,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
@@ -31,6 +32,7 @@ import {selectUid} from '../../redux/authSlice';
 
 import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
+import {GoalVisibility} from '../../types';
 
 export default function AddGoalSurface() {
   const [pressed, setPressed] = useState(false);
@@ -47,6 +49,15 @@ export default function AddGoalSurface() {
   const [goalTypeInput, setGoalTypeInput] = useState('form');
   const [goalFreqInput, setGoalFreqInput] = useState('daily');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(0);
+  const [goalVisibility, setGoalVisibility] =
+    useState<GoalVisibility>('private');
+  const toggleGoalVisibility = () => {
+    if (goalVisibility === 'public') {
+      setGoalVisibility('private');
+    } else {
+      setGoalVisibility('public');
+    }
+  };
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -94,20 +105,33 @@ export default function AddGoalSurface() {
                 right={<TextInput.Affix text={'count ' + goalFreqInput} />}
               />
               <Divider style={styles.dividerSmall} />
-              <SegmentedButtons
-                value={goalFreqInput}
-                onValueChange={setGoalFreqInput}
-                buttons={[
-                  {
-                    value: 'daily',
-                    label: 'Daily',
-                  },
-                  {
-                    value: 'weekly',
-                    label: 'Weekly',
-                  },
-                ]}
-              />
+              <View style={styles.row}>
+                <View style={styles.expand}>
+                  <SegmentedButtons
+                    value={goalFreqInput}
+                    onValueChange={setGoalFreqInput}
+                    buttons={[
+                      {
+                        value: 'daily',
+                        label: 'Daily',
+                      },
+                      {
+                        value: 'weekly',
+                        label: 'Weekly',
+                      },
+                    ]}
+                  />
+                </View>
+                <IconButton
+                  icon={
+                    goalVisibility === 'public'
+                      ? 'earth-outline'
+                      : 'lock-closed-outline'
+                  }
+                  size={28}
+                  onPress={toggleGoalVisibility}
+                />
+              </View>
               <Divider style={styles.dividerSmall} />
               <Button
                 mode="contained"
@@ -119,6 +143,7 @@ export default function AddGoalSurface() {
                     goalTypeInput,
                     goalFreqInput,
                     goalFreqAmtInput,
+                    goalVisibility,
                     dispatch,
                   );
                   setGoalNameInput('');

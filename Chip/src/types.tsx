@@ -43,3 +43,7 @@ export interface DatabaseResponse {
   code: string;
   message: string;
 }
+
+export type GoalVisibility = 'public' | 'private';
+export type GoalType = 'form' | 'break' | 'do';
+export type GoalIterationPeriod = 'daily' | 'weekly';
