@@ -136,28 +136,33 @@ function Main() {
   // Handle user state changes
   var authFlag = true; // hacky, but prevents contents from being called twice inside
   async function onAuthStateChanged(newUser) {
+    console.log('authFlag: ' + authFlag);
+    console.log('userChanged: ' + newUser != user);
+
     // TODO: put into separate function
-    if (authFlag) {
+    if (newUser && authFlag) {
       authFlag = false;
 
-      if (newUser) {
-        dispatch(updateUser(newUser.toJSON()));
-        dispatch(updateUid(newUser.uid));
+      dispatch(updateUser(newUser.toJSON()));
+      dispatch(updateUid(newUser.uid));
 
-        const goals = await getGoals(newUser.uid); // retrive user data from firestore
+      const goals = await getGoals(newUser.uid); // retrive user data from firestore
 
-        if (goals.length) {
-          dispatchRefreshUserGoals(newUser.uid, dispatch, goals);
-          checkAllStreaksReset(newUser.uid, goals);
-        }
+      if (goals.length) {
+        dispatchRefreshUserGoals(newUser.uid, dispatch, goals);
+        checkAllStreaksReset(newUser.uid, goals);
+      }
 
-        dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
-      } else {
+      dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
+    } else {
+      if (!newUser) {
+        console.log('Signed out');
         dispatch(updateUser(null));
         dispatch(updateUid(null));
         dispatch(updateUserGoals([]));
         dispatch(updateInvitesSent([]));
         dispatch(updateFriends([]));
+        authFlag = true;
       }
     }
 
