@@ -60,6 +60,7 @@ export const theme: ThemeProp = {
       ...MD3LightTheme.fonts.titleLarge,
       fontFamily: 'Lato-Regular',
       fontWeight: '700',
+      fontSize: 20,
     },
     titleMedium: {
       ...MD3LightTheme.fonts.titleMedium,

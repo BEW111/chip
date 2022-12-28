@@ -158,7 +158,7 @@ export async function acceptInvite(
 export async function getUser(uid: string) {
   try {
     const snapshot = await firestore().collection('usersPublic').doc(uid).get();
-    return snapshot.data();
+    return {id: uid, ...snapshot.data()};
   } catch (error) {
     console.log(error);
     return error;

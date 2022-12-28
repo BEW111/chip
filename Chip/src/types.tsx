@@ -20,6 +20,7 @@ export interface Goal {
   iterationAmount: number;
   currentIterationProgress: number;
   currentIterationStart: FirebaseFirestoreTypes.Timestamp;
+  visibility: GoalVisibility;
 }
 
 export interface ChipObject {

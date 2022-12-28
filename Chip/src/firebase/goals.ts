@@ -63,6 +63,7 @@ export async function addGoal(
     iterationAmount: goalIterationAmount,
     currentIterationProgress: 0,
     currentIterationStart: startOfToday,
+    visibility: goalVisibility,
   };
 
   await firestore()
@@ -73,9 +74,6 @@ export async function addGoal(
     .set(goal);
 
   console.log('Goal added!');
-
-  // set goal visibility
-  updateGoalVisibility(UID, goalId, goalVisibility);
 
   dispatch(
     addUserGoal({
@@ -141,30 +139,30 @@ export async function deleteGoal(
 }
 
 // Updates a goal to the new provided visibility level
-export async function updateGoalVisibility(
-  UID: string,
-  goalId: string,
-  visibility: GoalVisibility,
-) {
-  console.log('Updating goal visibility');
-  if (visibility === 'private') {
-    const result = await firestore()
-      .collection('usersPublic')
-      .doc(UID)
-      .update({
-        goalsPublic: firestore.FieldValue.arrayRemove(goalId),
-      });
-    return result;
-  } else {
-    const result = await firestore()
-      .collection('usersPublic')
-      .doc(UID)
-      .update({
-        goalsPublic: firestore.FieldValue.arrayUnion(goalId),
-      });
-    return result;
-  }
-}
+// export async function updateGoalVisibility(
+//   UID: string,
+//   goalId: string,
+//   visibility: GoalVisibility,
+// ) {
+//   console.log('Updating goal visibility');
+//   if (visibility === 'private') {
+//     const result = await firestore()
+//       .collection('users')
+//       .doc(UID)
+//       .update({
+//         goalsPublic: firestore.FieldValue.arrayRemove(goalId),
+//       });
+//     return result;
+//   } else {
+//     const result = await firestore()
+//       .collection('usersP')
+//       .doc(UID)
+//       .update({
+//         goalsPublic: firestore.FieldValue.arrayUnion(goalId),
+//       });
+//     return result;
+//   }
+// }
 
 // Updates the local state for user goals
 // TODO: rename to "dispatchRefreshUserGoals"
@@ -359,20 +357,12 @@ export async function checkAllStreaksReset(UID: string, externalGoals = null) {
 // Gets all of the public goals for another user
 export async function getGoalsPublic(UID: string) {
   console.log('[getGoalsPublic]: Retrieving public goals for user ' + UID);
-  // 1. Find which goals are actually public
-  const snapshotPublic = await firestore()
-    .collection('usersPublic')
-    .doc(UID)
-    .get();
 
-  const publicGoalsList: string[] = snapshotPublic.data().goalsPublic;
-
-  // 2. Retrieve those goals
   const snapshot = await firestore()
     .collection('users')
     .doc(UID)
     .collection('goals')
-    .where('id', 'in', publicGoalsList)
+    .where('visibility', '==', 'public')
     .get();
 
   return snapshot.docs.map(doc => doc.data());
