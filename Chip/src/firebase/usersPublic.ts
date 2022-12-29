@@ -169,9 +169,10 @@ export async function getUsers(uids: string[]) {
   if (uids.length > 0) {
     console.log('[getUsers] Getting users: ' + uids);
     try {
+      console.log(uids);
       const snapshot = await firestore()
         .collection('usersPublic')
-        .where('uid', '==', 'UvpqqS3coSbrYGOAQDyz19bEBo83')
+        .where('uid', 'in', uids)
         .get();
 
       return snapshot.docs.map(doc => doc.data());

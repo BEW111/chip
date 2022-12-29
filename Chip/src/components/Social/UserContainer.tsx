@@ -188,6 +188,7 @@ function UserContainer(props: UserContainerType) {
                 onPress={onChallenge}
                 iconColor="white"
                 icon="ellipsis-horizontal-outline"
+                size={24}
               />
             ) : isAccepted ? (
               <Button

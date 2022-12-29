@@ -39,9 +39,12 @@ export default function Social() {
   // Update local friends data
   useEffect(() => {
     if (friends.length > 0) {
+      console.log('setting friends data');
       getUsers(friends).then(dataArray => {
         setFriendsData(dataArray);
       });
+      console.log(friends);
+      console.log(friendsData);
     }
   }, [friends]);
 
