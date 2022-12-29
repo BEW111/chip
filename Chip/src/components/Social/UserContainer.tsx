@@ -19,6 +19,7 @@ import {inviteUser, acceptInvite} from '../../firebase/friends';
 
 import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
+import {createSuperstreak} from '../../firebase/superstreaks';
 
 import {PublicUser} from '../../types';
 
@@ -33,6 +34,7 @@ interface UserContainerType {
 }
 
 function ChallengeUserModal({visible, hideModal, user}) {
+  const currentUserUid = useSelector(selectUid);
   const thisUserGoals = useSelector(selectUserGoals);
   const thisUserMenuItems = thisUserGoals.map(g => ({
     title: g.name,
@@ -57,8 +59,14 @@ function ChallengeUserModal({visible, hideModal, user}) {
   }
 
   async function onRequestSuperstreak() {
-    console.log(thisUserSelected);
-    console.log(otherUserSelected);
+    // const thisGoal = g
+    createSuperstreak(
+      currentUserUid,
+      user.uid,
+      thisUserSelected.value,
+      otherUserSelected.value,
+      'daily',
+    );
   }
 
   useEffect(() => {

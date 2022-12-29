@@ -4,13 +4,14 @@
 
 import firestore from '@react-native-firebase/firestore';
 
-import {Goal, Superstreak} from '../types';
+import {Goal, GoalIterationPeriod, Superstreak} from '../types';
 
 export async function createSuperstreak(
   senderUid: string,
   recepientUid: string,
-  senderGoal: Goal,
-  recepientGoal: Goal,
+  senderGoalId: string,
+  recepientGoalId: string,
+  iterationPeriod: GoalIterationPeriod,
 ) {
   console.log('[createSuperstreak]');
   let now = new Date();
@@ -18,18 +19,20 @@ export async function createSuperstreak(
 
   const superstreak: Superstreak = {
     users: [senderUid, recepientUid],
-    goals: [senderGoal.id, recepientGoal.id],
+    goals: [senderGoalId, recepientGoalId],
     goalsMap: {
-      senderUid: senderGoal.id,
-      recepientUid: recepientGoal.id,
+      [senderUid]: senderGoalId,
+      [recepientUid]: recepientGoalId,
     },
     timeCreated: currentdt,
     streak: 0,
     streakPartiallyMet: false,
     streakPartiallyMetBy: '',
     streakMet: false,
-    iterationPeriod: senderGoal.iterationPeriod, // TODO: validate that this is the same for both
+    iterationPeriod: iterationPeriod, // TODO: validate that this is the same for both
   };
+
+  console.log(superstreak);
 
   await firestore().collection('superstreaks').add(superstreak);
 }
