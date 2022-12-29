@@ -1,24 +1,14 @@
+// https://m3.material.io/styles/typography/applying-type
+// Display: largest text, expressive
+// Headline: second-largest, express
+// Title: medium-emphasis, less expressive, page titles, app bar, category header, secondary header
+// Body: readable for long passages of text
+// Labels: the smallest text, captions
+
 import {configureFonts, MD3LightTheme} from 'react-native-paper';
 import {Fonts, ThemeProp} from 'react-native-paper/lib/typescript/types';
 
-const _fontConfig: Fonts = {
-  regular: {
-    fontFamily: 'Lato-Regular',
-    fontWeight: 'normal',
-  },
-  medium: {
-    fontFamily: 'Lato-Medium',
-    fontWeight: 'normal',
-  },
-  light: {
-    fontFamily: 'Lato-Light',
-    fontWeight: 'normal',
-  },
-  thin: {
-    fontFamily: 'Lato-Thin',
-    fontWeight: 'normal',
-  },
-};
+const primaryFontFamily = 'Lato-Regular';
 
 export const theme: ThemeProp = {
   ...MD3LightTheme,
@@ -53,55 +43,67 @@ export const theme: ThemeProp = {
     ...MD3LightTheme.fonts,
     default: {
       fontFamily: 'Lato-Regular',
-      letterSpacing: 0,
       fontWeight: 'normal',
     },
-    titleLarge: {
-      ...MD3LightTheme.fonts.titleLarge,
-      fontFamily: 'Lato-Regular',
-      fontWeight: '700',
-      fontSize: 20,
+    displayLarge: {
+      ...MD3LightTheme.fonts.displayLarge,
+      fontFamily: primaryFontFamily,
     },
-    titleMedium: {
-      ...MD3LightTheme.fonts.titleMedium,
-      fontFamily: 'Lato-Regular',
-      fontWeight: '500',
+    displayMedium: {
+      ...MD3LightTheme.fonts.displayMedium,
+      fontFamily: primaryFontFamily,
     },
-    titleSmall: {
-      ...MD3LightTheme.fonts.titleSmall,
-      fontFamily: 'Lato-Regular',
+    displaySmall: {
+      ...MD3LightTheme.fonts.displaySmall,
+      fontFamily: primaryFontFamily,
     },
-    bodyLarge: {
-      fontFamily: 'Lato-Regular',
-      letterSpacing: 0,
-      fontWeight: '700',
-      fontSize: 18,
+    headlineLarge: {
+      ...MD3LightTheme.fonts.headlineLarge,
+      fontFamily: primaryFontFamily,
+    },
+    headlineMedium: {
+      ...MD3LightTheme.fonts.headlineMedium,
+      fontFamily: primaryFontFamily,
     },
     headlineSmall: {
       ...MD3LightTheme.fonts.headlineSmall,
-      fontFamily: 'Lato-Regular',
+      fontFamily: primaryFontFamily,
     },
-    labelLarge: {
-      ...MD3LightTheme.fonts.labelLarge,
-      fontFamily: 'Lato-Regular',
-      letterSpacing: 0,
-      fontWeight: '700',
-      fontSize: 18,
+    titleLarge: {
+      ...MD3LightTheme.fonts.titleLarge,
+      fontFamily: primaryFontFamily,
     },
-    labelMedium: {
-      ...MD3LightTheme.fonts.labelMedium,
-      fontFamily: 'Lato-Regular',
-      letterSpacing: 0,
-      fontWeight: '700',
+    titleMedium: {
+      ...MD3LightTheme.fonts.titleMedium,
+      fontFamily: primaryFontFamily,
     },
-    labelSmall: {
-      ...MD3LightTheme.fonts.labelSmall,
-      fontFamily: 'Lato-Regular',
-      fontWeight: '700',
+    titleSmall: {
+      ...MD3LightTheme.fonts.titleSmall,
+      fontFamily: primaryFontFamily,
+    },
+    bodyLarge: {
+      ...MD3LightTheme.fonts.bodyLarge,
+      fontFamily: primaryFontFamily,
+    },
+    bodyMedium: {
+      ...MD3LightTheme.fonts.bodyMedium,
+      fontFamily: primaryFontFamily,
     },
     bodySmall: {
       ...MD3LightTheme.fonts.bodySmall,
-      fontFamily: 'Lato-Regular',
+      fontFamily: primaryFontFamily,
+    },
+    labelLarge: {
+      ...MD3LightTheme.fonts.labelLarge,
+      fontFamily: primaryFontFamily,
+    },
+    labelMedium: {
+      ...MD3LightTheme.fonts.labelMedium,
+      fontFamily: primaryFontFamily,
+    },
+    labelSmall: {
+      ...MD3LightTheme.fonts.labelSmall,
+      fontFamily: primaryFontFamily,
     },
   },
 };

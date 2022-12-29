@@ -8,19 +8,19 @@ import {
   IconButton,
   Modal,
   Portal,
+  Card,
 } from 'react-native-paper';
 import {useSelector, useDispatch} from 'react-redux';
 
 import profileDefault from '../../../assets/profile-default.png';
 
 import {selectUid, selectUserGoals} from '../../redux/authSlice';
-import {inviteUser, acceptInvite} from '../../firebase/users';
+import {inviteUser, acceptInvite} from '../../firebase/usersPublic';
 
 import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
 
 import InputFieldMenu from '../InputFieldMenu';
-import {$CombinedState} from '@reduxjs/toolkit';
 
 interface UserContainerType {
   user: string;
@@ -29,21 +29,6 @@ interface UserContainerType {
   isInvited?: boolean;
   isReceived?: boolean;
 }
-
-const items = [
-  {
-    title: 'Item 1',
-    value: 1,
-  },
-  {
-    title: 'Item 2',
-    value: 2,
-  },
-  {
-    title: 'Item 3',
-    value: 3,
-  },
-];
 
 function ChallengeUserModal({visible, hideModal, user}) {
   const thisUserGoals = useSelector(selectUserGoals);
@@ -80,23 +65,39 @@ function ChallengeUserModal({visible, hideModal, user}) {
       visible={visible}
       onDismiss={hideModal}
       contentContainerStyle={modalStyles.container}>
-      <Text variant="titleLarge" style={styles.textCentered}>
-        Start a superstreak with @{user.username}
-      </Text>
+      <View style={styles.row}>
+        <FastImage source={profileDefault} style={{width: 48, height: 48}} />
+        <Divider style={styles.dividerHSmall} />
+        <View>
+          <Text variant="titleLarge">@{user.username}</Text>
+          <Text variant="titleSmall">{user.email}</Text>
+        </View>
+      </View>
       <Divider style={styles.dividerSmall} />
-      <Text variant="labelLarge">Your goal</Text>
+      <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
+        Propose a superstreak
+      </Text>
+      <Divider style={styles.dividerTiny} />
+      {/* <Text variant="bodyLarge">
+        Pick a goal for you and @{user.username} to keep a streak on together.
+        If either of you breaks your goal, then the superstreak restarts.
+      </Text> */}
       <Divider style={styles.dividerTiny} />
       <InputFieldMenu
+        label={'Your goal'}
         items={thisUserMenuItems}
+        textInputStyle={modalStyles.textInput}
         onSelectedChange={item => setThisUserSelected(item)}
       />
-      <Divider style={styles.dividerMedium} />
-      <Text variant="labelLarge">@{user.username}'s goal</Text>
-      <Divider style={styles.dividerTiny} />
+      <Divider style={styles.dividerSmall} />
       <InputFieldMenu
+        label={'@' + user.username + "'s goal"}
         items={otherUserMenuItems}
+        textInputStyle={modalStyles.textInput}
         onSelectedChange={item => setOtherUserSelected(item)}
       />
+      <Divider style={styles.dividerSmall} />
+      <Button mode="contained">Request</Button>
     </Modal>
   );
 }
@@ -208,5 +209,11 @@ const localStyles = StyleSheet.create({
     fontSize: 12,
     marginHorizontal: 8,
     marginVertical: 4,
+  },
+  card: {
+    paddingHorizontal: 12,
+    paddingBottom: 16,
+    paddingTop: 8,
+    backgroundColor: 'white',
   },
 });

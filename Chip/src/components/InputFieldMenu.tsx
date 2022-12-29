@@ -55,7 +55,11 @@ function InputFieldMenu({items, onSelectedChange, ...props}) {
         value={text}
         onChangeText={text => setText(text)}
         editable={false}
-        style={{position: 'absolute', width: '100%'}}
+        mode="outlined"
+        label={props.label}
+        style={{position: 'absolute', width: '100%', ...props.textInputStyle}}
+        outlineStyle={{...props.outlineStyle}}
+        contentStyle={{...props.contentStyle}}
         right={
           <TextInput.Icon
             icon={visible ? 'caret-up-outline' : 'caret-down-outline'}

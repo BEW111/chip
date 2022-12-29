@@ -50,7 +50,7 @@ export default function Home() {
   const [flash, setFlash] = useState<'off' | 'on'>('off');
 
   const isFocused = useIsFocused();
-  const devices = useCameraDevices();
+  const devices = useCameraDevices('wide-angle-camera');
   const device = devices[cameraPosition];
 
   const supportsCameraFlipping = useMemo(
