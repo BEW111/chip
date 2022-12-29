@@ -7,7 +7,7 @@ import {useSelector} from 'react-redux';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
 import {selectUid, selectInvitesSent, selectFriends} from '../redux/authSlice';
-import {searchUsers, getUser} from '../firebase/usersPublic';
+import {searchUsers, getUser, getUsers} from '../firebase/usersPublic';
 import {useReceivedInvites} from '../firebase/friends';
 
 import {styles} from '../styles';
@@ -36,10 +36,13 @@ export default function Social() {
     }
   };
 
+  // Update local friends data
   useEffect(() => {
-    Promise.all(friends.map(f => getUser(f))).then(dataArray =>
-      setFriendsData(dataArray),
-    );
+    if (friends.length > 0) {
+      getUsers(friends).then(dataArray => {
+        setFriendsData(dataArray);
+      });
+    }
   }, [friends]);
 
   return (

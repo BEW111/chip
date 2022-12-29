@@ -42,6 +42,7 @@ export async function createNewUser(username, email, password, newGoal) {
       .collection('users')
       .doc(UID)
       .set({
+        uid: UID,
         email: email,
         username: username,
         friends: [],
@@ -53,6 +54,7 @@ export async function createNewUser(username, email, password, newGoal) {
 
     // Add user doc to firestore (public user data)
     firestoreResult = await firestore().collection('usersPublic').doc(UID).set({
+      uid: UID,
       email: email,
       username: username,
       invitesSent: [],

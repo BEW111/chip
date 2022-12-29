@@ -7,6 +7,8 @@ import {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {Dispatch} from '@reduxjs/toolkit';
 
+import {getUsers} from './usersPublic';
+
 import {
   addInviteSent,
   updateInvitesSent,
@@ -134,8 +136,11 @@ export async function acceptInvite(
       }),
     );
 
-    return result;
+    return {
+      status: 'success',
+    };
   } catch (error) {
+    console.log(error);
     return {
       status: 'error',
     };
@@ -151,25 +156,23 @@ export function useReceivedInvites(uid: string) {
   useEffect(() => {
     const query = firestore()
       .collection('friends')
-      .where('recepient', '==', uid)
+      .where('recepientId', '==', uid)
+      .where('accepted', '!=', true)
       .limit(QUERY_LIMITS);
 
     const subscriber = query.onSnapshot(
       querySnapshot => {
-        const docs = querySnapshot.docs;
-        // TODO: optimize
-        Promise.all(docs.map(doc => getUser(doc.data.senderId))).then(
-          dataArray =>
-            setReceived(
-              dataArray.map((data, i) => ({...data, id: docs[i].id})),
-            ),
-        );
+        const uids = querySnapshot.docs.map(doc => doc.data().senderId);
+
+        if (uids.length > 0) {
+          getUsers(uids).then(dataArray => setReceived(dataArray));
+        }
       },
       err => {
         console.log(`Encountered error: ${err}`);
       },
     );
-  });
+  }, [uid]);
 
   return received;
 }
@@ -181,6 +184,10 @@ export async function dispatchRefreshInvitesAndFriends(
   UID: string,
   dispatch: Dispatch,
 ) {
+  console.log(
+    '[dispatchRefreshInvitesAndFriends] Refreshing sent invites and friends locally',
+  );
+
   try {
     const sentInvitesSnapshot = await firestore()
       .collection('friends')
@@ -196,9 +203,9 @@ export async function dispatchRefreshInvitesAndFriends(
     const sentInvites = sentInvitesSnapshot.docs.map(
       doc => doc.data().recepientId,
     );
-    const friends = friendsSnapshot.docs
-      .map(doc => doc.data().users)
-      .filter(user => user !== UID);
+    const friends = friendsSnapshot.docs.map(
+      doc => doc.data().users.filter(user => user !== UID)[0],
+    );
 
     dispatch(updateInvitesSent(sentInvites));
     dispatch(updateFriends(friends));

@@ -8,14 +8,13 @@ import {
   IconButton,
   Modal,
   Portal,
-  Card,
 } from 'react-native-paper';
 import {useSelector, useDispatch} from 'react-redux';
 
 import profileDefault from '../../../assets/profile-default.png';
 
 import {selectUid, selectUserGoals} from '../../redux/authSlice';
-import {inviteUser, acceptInvite} from '../../firebase/usersPublic';
+import {inviteUser, acceptInvite} from '../../firebase/friends';
 
 import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
@@ -23,7 +22,7 @@ import {getGoalsPublic} from '../../firebase/goals';
 import InputFieldMenu from '../InputFieldMenu';
 
 interface UserContainerType {
-  user: string;
+  user: PublicUser;
   isFriend?: boolean;
   isAccepted?: boolean;
   isInvited?: boolean;
@@ -43,7 +42,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
 
   async function updateOtherUserGoals() {
     if (visible) {
-      const g = await getGoalsPublic(user.id);
+      const g = await getGoalsPublic(user.uid);
       setOtherUserGoals(g);
     }
   }
@@ -103,7 +102,8 @@ function ChallengeUserModal({visible, hideModal, user}) {
 }
 
 function UserContainer(props: UserContainerType) {
-  const {user, isFriend, isAccepted, isInvited, isReceived} = props;
+  const {user, isFriend, isAccepted, isInvited, isReceived}: UserContainerType =
+    props;
 
   const [pressed, setPressed] = useState(false);
   const [superstreakModalVisible, setSuperstreakModalVisible] = useState(false);
@@ -111,16 +111,18 @@ function UserContainer(props: UserContainerType) {
   const currentUserUid = useSelector(selectUid);
   const dispatch = useDispatch();
 
-  const isSelf = currentUserUid === user.id;
+  const isSelf = currentUserUid === user.uid;
 
   async function onSendInvite() {
     console.log('onSendInvite');
-    const result = await inviteUser(currentUserUid, user.id, dispatch);
+    const result = await inviteUser(currentUserUid, user.uid, dispatch);
+    // console.log(result);
   }
 
   async function onAcceptInvite() {
     console.log('onAcceptInvite');
-    const result = await acceptInvite(user.id, currentUserUid, dispatch);
+    const result = await acceptInvite(user.uid, currentUserUid, dispatch);
+    console.log(result);
   }
 
   async function onChallenge() {

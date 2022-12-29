@@ -1,10 +1,17 @@
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
-export interface ChipUser {
+export interface User {
   username: string;
   goals: string[];
   timeCreated: FirebaseFirestoreTypes.Timestamp;
   profilePicId?: string;
+}
+
+export interface PublicUser {
+  uid: string;
+  username: string;
+  email: string;
+  goals: string[];
 }
 
 export interface Goal {

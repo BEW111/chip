@@ -158,10 +158,34 @@ export async function searchUsers(search: string) {
 export async function getUser(uid: string) {
   try {
     const snapshot = await firestore().collection('usersPublic').doc(uid).get();
-    return {id: uid, ...snapshot.data()};
+    return snapshot.data();
   } catch (error) {
     console.log(error);
     return error;
+  }
+}
+
+export async function getUsers(uids: string[]) {
+  if (uids.length > 0) {
+    console.log('[getUsers] Getting users: ' + uids);
+    try {
+      const snapshot = await firestore()
+        .collection('usersPublic')
+        .where('uid', '==', 'UvpqqS3coSbrYGOAQDyz19bEBo83')
+        .get();
+
+      return snapshot.docs.map(doc => doc.data());
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  } else {
+    const msg = 'Empty array provided to `getUsers`';
+    console.log(msg);
+    return {
+      status: 'success',
+      message: msg,
+    };
   }
 }
 

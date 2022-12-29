@@ -45,7 +45,7 @@ import {
   checkAllStreaksReset,
   getGoals,
 } from './src/firebase/goals';
-import {dispatchRefreshInvitesAndFriends} from './src/firebase/usersPublic';
+import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
