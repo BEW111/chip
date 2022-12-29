@@ -9,6 +9,7 @@ import {
   Modal,
   Portal,
 } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
 
 import profileDefault from '../../../assets/profile-default.png';
@@ -18,6 +19,8 @@ import {inviteUser, acceptInvite} from '../../firebase/friends';
 
 import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
+
+import {PublicUser} from '../../types';
 
 import InputFieldMenu from '../InputFieldMenu';
 
@@ -40,11 +43,22 @@ function ChallengeUserModal({visible, hideModal, user}) {
   const [thisUserSelected, setThisUserSelected] = useState({});
   const [otherUserSelected, setOtherUserSelected] = useState({});
 
+  function onDismiss() {
+    setThisUserSelected({});
+    setOtherUserSelected({});
+    hideModal();
+  }
+
   async function updateOtherUserGoals() {
     if (visible) {
       const g = await getGoalsPublic(user.uid);
       setOtherUserGoals(g);
     }
+  }
+
+  async function onRequestSuperstreak() {
+    console.log(thisUserSelected);
+    console.log(otherUserSelected);
   }
 
   useEffect(() => {
@@ -62,7 +76,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
   return (
     <Modal
       visible={visible}
-      onDismiss={hideModal}
+      onDismiss={onDismiss}
       contentContainerStyle={modalStyles.container}>
       <View style={styles.row}>
         <FastImage source={profileDefault} style={{width: 48, height: 48}} />
@@ -73,9 +87,13 @@ function ChallengeUserModal({visible, hideModal, user}) {
         </View>
       </View>
       <Divider style={styles.dividerSmall} />
-      <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
-        Propose a superstreak
-      </Text>
+      <View style={styles.row}>
+        <Icon name="bonfire-outline" size={18} />
+        <Divider style={styles.dividerHTiny} />
+        <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
+          Propose a superstreak
+        </Text>
+      </View>
       <Divider style={styles.dividerTiny} />
       {/* <Text variant="bodyLarge">
         Pick a goal for you and @{user.username} to keep a streak on together.
@@ -96,7 +114,9 @@ function ChallengeUserModal({visible, hideModal, user}) {
         onSelectedChange={item => setOtherUserSelected(item)}
       />
       <Divider style={styles.dividerSmall} />
-      <Button mode="contained">Request</Button>
+      <Button mode="contained" onPress={onRequestSuperstreak}>
+        Start
+      </Button>
     </Modal>
   );
 }

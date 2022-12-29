@@ -16,9 +16,7 @@ const useComponentSize = () => {
 // type MenuItem
 
 function InputFieldMenu({items, onSelectedChange, ...props}) {
-  const [selectedItem, setSelectedItem] = useState(
-    items.length > 0 ? items[0] : null,
-  );
+  const [selectedItem, setSelectedItem] = useState(null);
   const [text, setText] = useState(selectedItem ? selectedItem.title : '');
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);

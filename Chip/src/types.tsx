@@ -1,6 +1,7 @@
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 export interface User {
+  uid: string;
   username: string;
   goals: string[];
   timeCreated: FirebaseFirestoreTypes.Timestamp;
@@ -19,15 +20,31 @@ export interface Goal {
   name: string; // display name of the goal
   timeCreated: FirebaseFirestoreTypes.Timestamp;
   description?: string;
-  type?: 'form' | 'break' | 'do' | '';
+  type?: GoalType;
   category?: string;
   streak: number;
   streakMet: boolean;
-  iterationPeriod: 'daily' | 'weekly' | '';
+  iterationPeriod: GoalIterationPeriod;
   iterationAmount: number;
   currentIterationProgress: number;
   currentIterationStart: FirebaseFirestoreTypes.Timestamp;
   visibility: GoalVisibility;
+}
+
+type UserGoalMap = {
+  [key: string]: string;
+};
+
+export interface Superstreak {
+  users: string[];
+  goalsMap: UserGoalMap;
+  goals: string[];
+  timeCreated: FirebaseFirestoreTypes.Timestamp;
+  streak: number;
+  streakPartiallyMet: boolean;
+  streakPartiallyMetBy: string;
+  streakMet: boolean;
+  iterationPeriod: GoalIterationPeriod;
 }
 
 export interface ChipObject {

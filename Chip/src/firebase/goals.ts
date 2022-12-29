@@ -17,6 +17,10 @@ import {
   addUserGoal,
 } from '../redux/authSlice';
 import {Dispatch} from '@reduxjs/toolkit';
+import {
+  checkSuperstreaksReset,
+  updateAndCheckSuperstreaksIncremented,
+} from './superstreaks';
 
 // Gets all goals for a particular user
 export async function getGoals(UID: string) {
@@ -231,6 +235,7 @@ export async function updateAndCheckStreakIncremented(
     goalData.currentIterationProgress + incrementAmount >=
     goalData.iterationAmount
   ) {
+    // Streak just met
     const result = await goalDoc.update({
       streakMet: true,
       streak: firestore.FieldValue.increment(1),
@@ -238,6 +243,7 @@ export async function updateAndCheckStreakIncremented(
     });
 
     console.log('Streak incremented');
+    updateAndCheckSuperstreaksIncremented(UID, goalID);
 
     return result;
   } else {
@@ -318,6 +324,9 @@ export async function checkStreakReset(
     const result = await goalDoc.update(goalDataUpdates);
 
     console.log(`Streak reset for "${goalData.name}"`);
+
+    // superstreaks should be updated accordingly
+    checkSuperstreaksReset(goalId);
 
     return result;
   }
