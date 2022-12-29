@@ -1,5 +1,5 @@
 /**
- * For dealing with users and friends
+ * For dealing with public user data
  */
 
 import {useEffect, useState} from 'react';
@@ -14,30 +14,30 @@ import {
   addFriend,
 } from '../redux/authSlice';
 
-export function useReceivedInvites(uid: string) {
-  const [received, setReceived] = useState([]);
+// export function useReceivedInvites(uid: string) {
+//   const [received, setReceived] = useState([]);
 
-  useEffect(() => {
-    const query = firestore()
-      .collection('usersPublic')
-      .where('invitesSent', 'array-contains', uid)
-      .limit(10);
+//   useEffect(() => {
+//     const query = firestore()
+//       .collection('usersPublic')
+//       .where('invitesSent', 'array-contains', uid)
+//       .limit(10);
 
-    const subscriber = query.onSnapshot(
-      querySnapshot => {
-        const docs = querySnapshot.docs;
-        Promise.all(docs.map(doc => getUser(doc.id))).then(dataArray =>
-          setReceived(dataArray.map((data, i) => ({...data, id: docs[i].id}))),
-        );
-      },
-      err => {
-        console.log(`Encountered error: ${err}`);
-      },
-    );
-  });
+//     const subscriber = query.onSnapshot(
+//       querySnapshot => {
+//         const docs = querySnapshot.docs;
+//         Promise.all(docs.map(doc => getUser(doc.id))).then(dataArray =>
+//           setReceived(dataArray.map((data, i) => ({...data, id: docs[i].id}))),
+//         );
+//       },
+//       err => {
+//         console.log(`Encountered error: ${err}`);
+//       },
+//     );
+//   });
 
-  return received;
-}
+//   return received;
+// }
 
 export async function checkUsernameTaken(username: String) {
   try {
@@ -67,93 +67,93 @@ export async function searchUsers(search: string) {
   }
 }
 
-export async function inviteUser(
-  senderUid: string,
-  invitedUid: string,
-  dispatch: Dispatch,
-) {
-  try {
-    console.log('Sending friend invite to user');
+// export async function inviteUser(
+//   senderUid: string,
+//   invitedUid: string,
+//   dispatch: Dispatch,
+// ) {
+//   try {
+//     console.log('Sending friend invite to user');
 
-    // check if we're sending an invite to ourselves
-    if (senderUid === invitedUid) {
-      return {
-        status: 'error',
-        message: 'Cannot send friend invite to yourself',
-      };
-    }
+//     // check if we're sending an invite to ourselves
+//     if (senderUid === invitedUid) {
+//       return {
+//         status: 'error',
+//         message: 'Cannot send friend invite to yourself',
+//       };
+//     }
 
-    const result = await firestore()
-      .collection('usersPublic')
-      .doc(senderUid)
-      .update({
-        invitesSent: firestore.FieldValue.arrayUnion(invitedUid),
-      });
+//     const result = await firestore()
+//       .collection('usersPublic')
+//       .doc(senderUid)
+//       .update({
+//         invitesSent: firestore.FieldValue.arrayUnion(invitedUid),
+//       });
 
-    dispatch(
-      addInviteSent({
-        uid: invitedUid,
-      }),
-    );
+//     dispatch(
+//       addInviteSent({
+//         uid: invitedUid,
+//       }),
+//     );
 
-    return result;
-  } catch (error) {
-    return {
-      status: 'error',
-    };
-  }
-}
+//     return result;
+//   } catch (error) {
+//     return {
+//       status: 'error',
+//     };
+//   }
+// }
 
-export async function acceptInvite(
-  senderUid: string, // should be a different user
-  invitedUid: string, // should be the current user
-  dispatch: Dispatch,
-) {
-  try {
-    console.log('Accepting friend invite');
+// export async function acceptInvite(
+//   senderUid: string, // should be a different user
+//   invitedUid: string, // should be the current user
+//   dispatch: Dispatch,
+// ) {
+//   try {
+//     console.log('Accepting friend invite');
 
-    // check if we're sending an invite to ourselves
-    if (senderUid === invitedUid) {
-      return {
-        status: 'error',
-        message: 'Cannot accept own invite',
-      };
-    }
+//     // check if we're sending an invite to ourselves
+//     if (senderUid === invitedUid) {
+//       return {
+//         status: 'error',
+//         message: 'Cannot accept own invite',
+//       };
+//     }
 
-    // check whether or not the sender actually invited us
-    const senderSnapshot = await firestore()
-      .collection('usersPublic')
-      .doc(senderUid)
-      .get();
+//     // check whether or not the sender actually invited us
+//     const senderSnapshot = await firestore()
+//       .collection('usersPublic')
+//       .doc(senderUid)
+//       .get();
 
-    if (!senderSnapshot?.data()?.invitesSent.includes(invitedUid)) {
-      return {
-        status: 'error',
-        message: 'Current user did not receive a friend invite from this user',
-      };
-    }
+//     if (!senderSnapshot?.data()?.invitesSent.includes(invitedUid)) {
+//       return {
+//         status: 'error',
+//         message: 'Current user did not receive a friend invite from this user',
+//       };
+//     }
 
-    const result = await firestore()
-      .collection('usersPublic')
-      .doc(invitedUid)
-      .update({
-        invitesAccepted: firestore.FieldValue.arrayUnion(senderUid),
-        friends: firestore.FieldValue.arrayUnion(senderUid),
-      });
+//     const result = await firestore()
+//       .collection('usersPublic')
+//       .doc(invitedUid)
+//       .update({
+//         invitesAccepted: firestore.FieldValue.arrayUnion(senderUid),
+//         friends: firestore.FieldValue.arrayUnion(senderUid),
+//       });
 
-    dispatch(
-      addFriend({
-        uid: senderUid,
-      }),
-    );
+//     dispatch(
+//       addFriend({
+//         uid: senderUid,
+//       }),
+//     );
 
-    return result;
-  } catch (error) {
-    return {
-      status: 'error',
-    };
-  }
-}
+//     return result;
+//   } catch (error) {
+//     return {
+//       status: 'error',
+//     };
+//   }
+// }
 
 export async function getUser(uid: string) {
   try {
@@ -165,21 +165,19 @@ export async function getUser(uid: string) {
   }
 }
 
-// Updates the local state for user goals
-// TODO: rename to "dispatchRefreshUserGoals"
-export async function dispatchRefreshInvitesAndFriends(
-  UID: string,
-  dispatch: Dispatch,
-) {
-  try {
-    const snapshot = await firestore().collection('usersPublic').doc(UID).get();
-    const data = snapshot.data();
+// export async function dispatchRefreshInvitesAndFriends(
+//   UID: string,
+//   dispatch: Dispatch,
+// ) {
+//   try {
+//     const snapshot = await firestore().collection('usersPublic').doc(UID).get();
+//     const data = snapshot.data();
 
-    const invitesSent = data.invitesSent; // retrive data from firestore
-    const friends = data.friends;
-    dispatch(updateInvitesSent(invitesSent));
-    dispatch(updateFriends(friends));
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     const invitesSent = data.invitesSent; // retrive data from firestore
+//     const friends = data.friends;
+//     dispatch(updateInvitesSent(invitesSent));
+//     dispatch(updateFriends(friends));
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
