@@ -61,67 +61,71 @@ export default function Settings(props) {
   }
 
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.fullPaddedHorizontal}>
-        <IconButton
-          icon={'chevron-back-outline'}
-          size={32}
-          style={{margin: -2}}
-          onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
-        />
-        <Divider style={styles.dividerMedium} />
-        <View style={styles.row}>
-          <ProfileImage self width={64} height={64} />
-          <Divider style={styles.dividerHSmall} />
-          <View>
-            <View style={styles.row}>
-              {editingUsername ? (
-                <TextInput
-                  dense
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  value={usernameText}
-                  onChangeText={text => setUsernameText(text)}
-                  contentStyle={{
-                    marginBottom: -8,
-                    marginHorizontal: -4,
-                    width: 150,
-                  }}
-                />
-              ) : (
-                <Text variant="titleMedium">@{currentUsername}</Text>
-              )}
-              {editingUsername ? (
-                <IconButton
-                  icon={'checkmark-outline'}
-                  size={20}
-                  style={{margin: -2}}
-                  onPress={onUpdateUsernamePressed}
-                />
-              ) : (
-                <IconButton
-                  icon={'create-outline'}
-                  size={20}
-                  style={{margin: -2}}
-                  onPress={() => setEditingUsername(true)}
-                />
-              )}
+    <Pressable onPress={() => setEditingUsername(false)} style={styles.expand}>
+      <DrawerContentScrollView {...props} style={styles.expand}>
+        <View style={styles.fullPaddedHorizontal}>
+          <IconButton
+            icon={'chevron-back-outline'}
+            size={32}
+            style={{margin: -2}}
+            onPress={() =>
+              props.navigation.dispatch(DrawerActions.closeDrawer())
+            }
+          />
+          <Divider style={styles.dividerMedium} />
+          <View style={styles.row}>
+            <ProfileImage self width={64} height={64} />
+            <Divider style={styles.dividerHSmall} />
+            <View>
+              <View style={styles.row}>
+                {editingUsername ? (
+                  <TextInput
+                    dense
+                    autoCorrect={false}
+                    autoCapitalize="none"
+                    value={usernameText}
+                    onChangeText={text => setUsernameText(text)}
+                    contentStyle={{
+                      marginBottom: -8,
+                      marginHorizontal: -4,
+                      width: 150,
+                    }}
+                  />
+                ) : (
+                  <Text variant="titleMedium">@{currentUsername}</Text>
+                )}
+                {editingUsername ? (
+                  <IconButton
+                    icon={'checkmark-outline'}
+                    size={20}
+                    style={{margin: -2}}
+                    onPress={onUpdateUsernamePressed}
+                  />
+                ) : (
+                  <IconButton
+                    icon={'create-outline'}
+                    size={20}
+                    style={{margin: -2}}
+                    onPress={() => setEditingUsername(true)}
+                  />
+                )}
+              </View>
+              <Text variant="titleSmall">{user.email}</Text>
             </View>
-            <Text variant="titleSmall">{user.email}</Text>
           </View>
+          <Divider style={styles.dividerTiny} />
+          <Button mode="text" onPress={onEditProfilePicturePressed}>
+            Edit profile picture
+          </Button>
+          <Divider style={styles.dividerSmall} />
+          <Button
+            icon="log-out-outline"
+            mode="outlined"
+            onPress={onLogoutPressed}>
+            Sign out
+          </Button>
         </View>
-        <Divider style={styles.dividerTiny} />
-        <Button mode="text" onPress={onEditProfilePicturePressed}>
-          Edit profile picture
-        </Button>
-        <Divider style={styles.dividerSmall} />
-        <Button
-          icon="log-out-outline"
-          mode="outlined"
-          onPress={onLogoutPressed}>
-          Sign out
-        </Button>
-      </View>
-    </DrawerContentScrollView>
+      </DrawerContentScrollView>
+    </Pressable>
   );
 }

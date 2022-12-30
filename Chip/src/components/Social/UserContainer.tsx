@@ -88,7 +88,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
       onDismiss={onDismiss}
       contentContainerStyle={modalStyles.container}>
       <View style={styles.row}>
-        <FastImage source={profileDefault} style={{width: 48, height: 48}} />
+        <ProfileImageDisplay height={48} width={48} uid={user.uid} />
         <Divider style={styles.dividerHSmall} />
         <View>
           <Text variant="titleLarge">@{user.username}</Text>
@@ -100,7 +100,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
         <Icon name="bonfire-outline" size={18} />
         <Divider style={styles.dividerHTiny} />
         <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
-          Propose a superstreak
+          Manage superstreaks
         </Text>
       </View>
       <Divider style={styles.dividerTiny} />
@@ -124,7 +124,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
       />
       <Divider style={styles.dividerSmall} />
       <Button mode="contained" onPress={onRequestSuperstreak}>
-        Start
+        Create
       </Button>
     </Modal>
   );
