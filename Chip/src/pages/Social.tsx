@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView, Pressable, Keyboard} from 'react-native';
 import {TextInput, Divider, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
@@ -49,65 +49,67 @@ export default function Social() {
   }, [friends]);
 
   return (
-    <View style={styles.fullPaddedDark}>
-      <FocusAwareStatusBar animated={true} barStyle="light-content" />
-      <SafeAreaView>
-        <ScrollView
-          alwaysBounceVertical={false}
-          keyboardShouldPersistTaps="handled">
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            label="Search for users"
-            value={search}
-            onChangeText={text => onSearch(text)}
-            style={{backgroundColor: '#222'}}
-            contentStyle={{color: 'white'}}
-            left={<TextInput.Icon icon="search-outline" />}
-            right={
-              <TextInput.Icon
-                icon="close-outline"
-                onPress={() => setSearch('')}
-              />
-            }
-          />
-          <Divider style={styles.dividerSmall} />
-          {users.map(user => (
-            <View key={user.email}>
-              <UserContainer
-                user={user}
-                isAccepted={friends.includes(user.id)}
-                isInvited={invitesSent.includes(user.id)}
-              />
-              <Divider style={styles.dividerSmall} />
-            </View>
-          ))}
-          <Divider style={styles.dividerSmall} />
-          <Text variant="labelLarge" style={{color: 'white'}}>
-            Friend requests
-          </Text>
-          {receivedInvites.map(user => (
-            <View key={user.email}>
-              <UserContainer
-                user={user}
-                isAccepted={friends.includes(user.id)}
-                isReceived={true}
-              />
-              <Divider style={styles.dividerSmall} />
-            </View>
-          ))}
-          <Divider style={styles.dividerSmall} />
-          <Text variant="labelLarge" style={{color: 'white'}}>
-            Friends
-          </Text>
-          {friendsData.map(user => (
-            <View key={user.email}>
-              <UserContainer user={user} isFriend={true} />
-              <Divider style={styles.dividerSmall} />
-            </View>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+    <Pressable style={styles.expand} onPress={() => Keyboard.dismiss()}>
+      <View style={styles.fullPaddedDark}>
+        <FocusAwareStatusBar animated={true} barStyle="light-content" />
+        <SafeAreaView>
+          <ScrollView
+            alwaysBounceVertical={false}
+            keyboardShouldPersistTaps="handled">
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              label="Search for users"
+              value={search}
+              onChangeText={text => onSearch(text)}
+              style={{backgroundColor: '#222'}}
+              contentStyle={{color: 'white'}}
+              left={<TextInput.Icon icon="search-outline" />}
+              right={
+                <TextInput.Icon
+                  icon="close-outline"
+                  onPress={() => setSearch('')}
+                />
+              }
+            />
+            <Divider style={styles.dividerSmall} />
+            {users.map(user => (
+              <View key={user.email}>
+                <UserContainer
+                  user={user}
+                  isAccepted={friends.includes(user.id)}
+                  isInvited={invitesSent.includes(user.id)}
+                />
+                <Divider style={styles.dividerSmall} />
+              </View>
+            ))}
+            <Divider style={styles.dividerSmall} />
+            <Text variant="labelLarge" style={{color: 'white'}}>
+              Friend requests
+            </Text>
+            {receivedInvites.map(user => (
+              <View key={user.email}>
+                <UserContainer
+                  user={user}
+                  isAccepted={friends.includes(user.id)}
+                  isReceived={true}
+                />
+                <Divider style={styles.dividerSmall} />
+              </View>
+            ))}
+            <Divider style={styles.dividerSmall} />
+            <Text variant="labelLarge" style={{color: 'white'}}>
+              Friends
+            </Text>
+            {friendsData.map(user => (
+              <View key={user.email}>
+                <UserContainer user={user} isFriend={true} />
+                <Divider style={styles.dividerSmall} />
+              </View>
+            ))}
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    </Pressable>
   );
 }

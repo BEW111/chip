@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Pressable, Dimensions, StyleSheet} from 'react-native';
+import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
@@ -27,96 +27,98 @@ function HabitPopup({
   const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
 
   return (
-    <BlurSurface blurType="light" style={styles.widthAlmostFull}>
-      <View style={styles.centered}>
-        <Text variant="titleLarge">Edit habit info</Text>
-      </View>
-      <Divider style={styles.dividerMedium} />
-      <View
-        pointerEvents={'box-none'}
-        style={{alignItems: 'center', height: 175}}>
-        <Picker
+    <Pressable onPress={() => Keyboard.dismiss()}>
+      <BlurSurface blurType="light" style={styles.widthAlmostFull}>
+        <View style={styles.centered}>
+          <Text variant="titleLarge">Edit habit info</Text>
+        </View>
+        <Divider style={styles.dividerMedium} />
+        <View
           pointerEvents={'box-none'}
+          style={{alignItems: 'center', height: 175}}>
+          <Picker
+            pointerEvents={'box-none'}
+            style={{
+              backgroundColor: transparentBackgroundColor,
+              width: Dimensions.get('screen').width * 0.9 - 30,
+              height: 175,
+              borderRadius: 5,
+              justifyContent: 'center',
+              overflow: 'hidden',
+            }}
+            itemStyle={{
+              fontFamily: 'Lato-Medium',
+            }}
+            selectedValue={'Exercise'}
+            pickerData={userGoals.map(g => ({
+              value: g.id,
+              label: g.name,
+            }))}
+            onValueChange={value => {
+              setSelectedGoalId(value);
+            }}
+          />
+        </View>
+        <Divider style={styles.dividerSmall} />
+        <TextInput
           style={{
+            marginTop: 0,
             backgroundColor: transparentBackgroundColor,
-            width: Dimensions.get('screen').width * 0.9 - 30,
-            height: 175,
-            borderRadius: 5,
-            justifyContent: 'center',
-            overflow: 'hidden',
           }}
-          itemStyle={{
-            fontFamily: 'Lato-Medium',
+          contentStyle={{
+            color: 'black',
           }}
-          selectedValue={'Exercise'}
-          pickerData={userGoals.map(g => ({
-            value: g.id,
-            label: g.name,
-          }))}
-          onValueChange={value => {
-            setSelectedGoalId(value);
+          outlineStyle={{
+            borderColor: '#AAF0',
+            borderWidth: 0,
+            color: 'black',
           }}
+          mode="outlined"
+          label="Target amount"
+          keyboardType="numbers-and-punctuation"
+          value={chipAmount.toString()}
+          onChangeText={text => {
+            setChipAmount(parseFloat(text));
+          }}
+          right={<TextInput.Affix text={'count'} />}
         />
-      </View>
-      <Divider style={styles.dividerSmall} />
-      <TextInput
-        style={{
-          marginTop: 0,
-          backgroundColor: transparentBackgroundColor,
-        }}
-        contentStyle={{
-          color: 'black',
-        }}
-        outlineStyle={{
-          borderColor: '#AAF0',
-          borderWidth: 0,
-          color: 'black',
-        }}
-        mode="outlined"
-        label="Target amount"
-        keyboardType="numbers-and-punctuation"
-        value={chipAmount.toString()}
-        onChangeText={text => {
-          setChipAmount(parseFloat(text));
-        }}
-        right={<TextInput.Affix text={'count'} />}
-      />
-      <Divider style={styles.dividerSmall} />
-      <TextInput
-        style={{
-          marginTop: 0,
-          backgroundColor: transparentBackgroundColor,
-        }}
-        contentStyle={{
-          color: 'black',
-        }}
-        outlineStyle={{
-          borderColor: '#AAF0',
-          borderWidth: 0,
-          color: 'black',
-        }}
-        mode="outlined"
-        label="Notes"
-        value={chipDesc}
-        onChangeText={text => setChipDesc(text)}
-      />
-      <Pressable
-        onPress={closePopup}
-        style={{
-          width: 40,
-          height: 40,
+        <Divider style={styles.dividerSmall} />
+        <TextInput
+          style={{
+            marginTop: 0,
+            backgroundColor: transparentBackgroundColor,
+          }}
+          contentStyle={{
+            color: 'black',
+          }}
+          outlineStyle={{
+            borderColor: '#AAF0',
+            borderWidth: 0,
+            color: 'black',
+          }}
+          mode="outlined"
+          label="Notes"
+          value={chipDesc}
+          onChangeText={text => setChipDesc(text)}
+        />
+        <Pressable
+          onPress={closePopup}
+          style={{
+            width: 40,
+            height: 40,
 
-          position: 'absolute',
-          top: 10,
-          right: 10,
+            position: 'absolute',
+            top: 10,
+            right: 10,
 
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Icon name="close-outline" size={30} />
-      </Pressable>
-    </BlurSurface>
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon name="close-outline" size={30} />
+        </Pressable>
+      </BlurSurface>
+    </Pressable>
   );
 }
 
