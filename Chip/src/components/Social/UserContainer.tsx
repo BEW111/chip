@@ -79,7 +79,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
         })),
       );
     }
-  }, [user.id, visible]);
+  }, [user.uid, visible]);
 
   return (
     <Modal
@@ -142,13 +142,13 @@ function UserContainer(props: UserContainerType) {
   const isSelf = currentUserUid === user.uid;
 
   async function onSendInvite() {
-    console.log('onSendInvite');
+    console.log('[onSendInvite]');
     const result = await inviteUser(currentUserUid, user.uid, dispatch);
     // console.log(result);
   }
 
   async function onAcceptInvite() {
-    console.log('onAcceptInvite');
+    console.log('[onAcceptInvite]');
     const result = await acceptInvite(user.uid, currentUserUid, dispatch);
     console.log(result);
   }

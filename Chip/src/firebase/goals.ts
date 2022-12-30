@@ -34,6 +34,17 @@ export async function getGoals(UID: string) {
   return snapshot.docs.map(doc => doc.data());
 }
 
+export async function getGoal(UID: string, goalId: string) {
+  console.log('[getGoals]: Retrieving goals for user ' + UID);
+  const snapshot = await firestore()
+    .collection('users')
+    .doc(UID)
+    .collection('goals')
+    .get();
+
+  return snapshot.docs.map(doc => doc.data());
+}
+
 // Creates a new goal to add for this user
 // generates a random unique ID, and returns it
 export async function addGoal(
@@ -206,7 +217,9 @@ export async function updateAndCheckStreakIncremented(
   goalID: string,
   incrementAmount: number,
 ) {
-  console.log('Checking if streak should be incremented');
+  console.log(
+    '[updateAndCheckStreakIncremented] Checking if streak should be incremented',
+  );
   const goalDoc = await firestore()
     .collection('users')
     .doc(UID)
@@ -225,7 +238,9 @@ export async function updateAndCheckStreakIncremented(
   }
 
   if (goalData.streakMet) {
-    console.log('Streak already met this iteration');
+    console.log(
+      '[updateAndCheckStreakIncremented] Streak already met this iteration',
+    );
     return {
       status: 'success',
     };
@@ -300,6 +315,7 @@ export async function checkStreakReset(
   );
 
   // If true, then we're past the iteration period and the streak should be reset
+
   if (today > nextIterationStart) {
     let goalDataUpdates = {};
 
@@ -323,7 +339,7 @@ export async function checkStreakReset(
     // send updates
     const result = await goalDoc.update(goalDataUpdates);
 
-    console.log(`Streak reset for "${goalData.name}"`);
+    console.log(`[checkStreakReset] Streak refreshed for "${goalData.name}"`);
 
     // superstreaks should be updated accordingly
     checkSuperstreaksReset(goalId);
@@ -338,13 +354,18 @@ export async function checkStreakReset(
 }
 
 // This is not scalable at all but I will work on changing this later, I really just want it functional for now
-export async function checkAllStreaksReset(UID: string, externalGoals = null) {
-  console.log('Checking if any streaks should be reset');
+export async function checkAllStreaksReset(
+  UID: string,
+  externalGoals: undefined | FirebaseFirestoreTypes.DocumentData[],
+) {
+  console.log('[checkAllStreaksReset] Checking if any streaks should be reset');
 
   let goals: FirebaseFirestoreTypes.DocumentData[];
 
   if (!externalGoals) {
     goals = await getGoals(UID);
+  } else {
+    goals = externalGoals;
   }
 
   let result;

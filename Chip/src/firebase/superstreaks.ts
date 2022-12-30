@@ -4,7 +4,7 @@
 
 import firestore from '@react-native-firebase/firestore';
 
-import {Goal, GoalIterationPeriod, Superstreak} from '../types';
+import {GoalIterationPeriod, Superstreak} from '../types';
 
 export async function createSuperstreak(
   senderUid: string,
@@ -44,9 +44,10 @@ export async function updateAndCheckSuperstreaksIncremented(
   goalId: string,
 ) {
   console.log('[updateAndCheckSuperstreaksIncremented]');
-  const superstreaks = await firestore()
+  const superstreaksNotCompleted = await firestore()
     .collection('superstreaks')
     .where('goals', 'array-contains', goalId)
+    .where('streakPartiallyMet', '==', false)
     .get();
 
   const superstreaksCompleted = await firestore()
@@ -57,13 +58,14 @@ export async function updateAndCheckSuperstreaksIncremented(
 
   const batch = firestore().batch();
 
-  superstreaks.docs.forEach(superstreak =>
+  superstreaksNotCompleted.docs.forEach(superstreak =>
     batch.update(superstreak.ref, {
       streakPartiallyMet: true,
       streakPartiallyMetBy: uid,
     }),
   );
   superstreaksCompleted.docs.forEach(superstreak => {
+    console.log(superstreak);
     batch.update(superstreak.ref, {
       streakMet: true,
       streak: firestore.FieldValue.increment(1),

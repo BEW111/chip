@@ -153,7 +153,7 @@ function Main() {
       dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
     } else {
       if (!newUser) {
-        console.log('Signed out');
+        console.log('[onAuthStateChanged] Signed out');
         dispatch(updateUser(null));
         dispatch(updateUid(null));
         dispatch(updateUserGoals([]));

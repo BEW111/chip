@@ -38,7 +38,7 @@ export default function Settings(props) {
     const result = updateUsername(usernameText);
 
     if (result.status === 'error') {
-      console.log('Error occurred while editing username');
+      console.log('[onLogoutPressed] Error occurred while editing username');
     } else {
       setEditingUsername(false);
       setCurrentUsername(usernameText);
