@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
-import {Dimensions, View} from 'react-native';
+import {Dimensions, View, LogBox} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -45,8 +45,12 @@ import {
   checkAllStreaksReset,
   getGoals,
 } from './src/firebase/goals';
-import {getUser} from './src/firebase/usersPublic';
 import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
+
+// temp fix
+LogBox.ignoreLogs([
+  'Sending `onAnimatedValueUpdate` with no listeners registered.',
+]);
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();

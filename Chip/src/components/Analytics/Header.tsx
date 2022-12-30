@@ -39,7 +39,7 @@ export default function Header(props, {navigation}) {
           {props.children}
         </View>
       </View>
-      <Divider style={{height: 2}} />
+      <Divider style={{height: 1}} />
     </>
   );
 }

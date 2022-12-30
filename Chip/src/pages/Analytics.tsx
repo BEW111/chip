@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView} from 'react-native';
-import FastImage from 'react-native-fast-image';
 import {ActivityIndicator, Divider, Text, IconButton} from 'react-native-paper';
 
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -11,7 +10,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
-import {selectSelectedGoal} from '../redux/analyticsSlice';
+// import {selectSelectedGoal} from '../redux/analyticsSlice';
 
 import GoalSurface from '../components/GoalWidgets/GoalSurface';
 import AddGoalSurface from '../components/GoalWidgets/AddGoalSurface';
@@ -21,10 +20,11 @@ import DayOccurrenceChart from '../components/GoalWidgets/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 import GoalPage from './GoalPage';
 
-import {ChipObject, Goal} from '../types';
+import {Goal} from '../types';
 
-import backgroundImage from '../../assets/background.png';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import BackgroundWrapper from '../components/BackgroundWrapper';
+import BlurSurface from '../components/BlurSurface';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 const Stack = createNativeStackNavigator();
@@ -43,7 +43,7 @@ function MainPage({navigation}) {
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
   const [chips, setChips] = useState([]);
-  const selectedGoal = useSelector(selectSelectedGoal);
+  // const selectedGoal = useSelector(selectSelectedGoal);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -79,15 +79,7 @@ function MainPage({navigation}) {
   return (
     <>
       <FocusAwareStatusBar animated={true} barStyle="dark-content" />
-      <View style={{flex: 1}}>
-        <FastImage
-          source={backgroundImage}
-          style={{
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-          }}
-        />
+      <BackgroundWrapper>
         <View
           style={{
             height: '100%',
@@ -108,14 +100,9 @@ function MainPage({navigation}) {
             </View>
           </Header>
           <ScrollView contentContainerStyle={{padding: 20}} style={{flex: 1}}>
-            <View
-              style={{
-                height: 224,
-                alignItems: 'center',
-                width: '100%',
-              }}>
-              <StatsView filteredChips={chips} />
-            </View>
+            <BlurSurface padding={4}>
+              <DayOccurrenceChart chips={chips} chartHeightProp={224} />
+            </BlurSurface>
             <Divider style={{marginVertical: 7, height: 0}} />
             {userGoals.map((goal: Goal) => (
               <View key={goal.id}>
@@ -126,7 +113,7 @@ function MainPage({navigation}) {
             <AddGoalSurface />
           </ScrollView>
         </View>
-      </View>
+      </BackgroundWrapper>
     </>
   );
 }

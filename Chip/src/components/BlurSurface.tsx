@@ -6,16 +6,17 @@ const BlurSurface = props => (
   <BlurView
     blurType="light"
     blurAmount={32}
-    style={StyleSheet.compose(localStyles.blurSurface, props?.style)}>
+    style={StyleSheet.compose(localStyles(props).blurSurface, props?.style)}>
     {props.children}
   </BlurView>
 );
 
 export default BlurSurface;
 
-const localStyles = StyleSheet.create({
-  blurSurface: {
-    padding: 15,
-    borderRadius: 10,
-  },
-});
+const localStyles = props =>
+  StyleSheet.create({
+    blurSurface: {
+      padding: props?.padding ? props.padding : 15,
+      borderRadius: 10,
+    },
+  });
