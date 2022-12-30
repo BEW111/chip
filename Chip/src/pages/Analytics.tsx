@@ -10,21 +10,19 @@ import firestore from '@react-native-firebase/firestore';
 
 import {useSelector} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
-// import {selectSelectedGoal} from '../redux/analyticsSlice';
-
-import GoalSurface from '../components/GoalWidgets/GoalSurface';
-import AddGoalSurface from '../components/GoalWidgets/AddGoalSurface';
-
-import Settings from '../components/Settings';
-import DayOccurrenceChart from '../components/GoalWidgets/DayOccurrenceChart';
-import Header from '../components/Analytics/Header';
-import GoalPage from './GoalPage';
-
 import {Goal} from '../types';
 
+import GoalWidget from '../components/GoalWidgets/GoalWidget';
+import AddGoalWidget from '../components/GoalWidgets/AddGoalWidget';
+import DayOccurrenceChartWidget from '../components/GoalWidgets/DayOccurrenceChartWidget';
+
+import Settings from '../components/Settings';
+import Header from '../components/Analytics/Header';
+import GoalPage from './GoalPage';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import BackgroundWrapper from '../components/BackgroundWrapper';
-import BlurSurface from '../components/BlurSurface';
+
+import {styles} from '../styles';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 const Stack = createNativeStackNavigator();
@@ -99,18 +97,16 @@ function MainPage({navigation}) {
               />
             </View>
           </Header>
-          <ScrollView contentContainerStyle={{padding: 20}} style={{flex: 1}}>
-            <BlurSurface padding={4}>
-              <DayOccurrenceChart chips={chips} chartHeightProp={224} />
-            </BlurSurface>
-            <Divider style={{marginVertical: 7, height: 0}} />
+          <ScrollView contentContainerStyle={{padding: 16}} style={{flex: 1}}>
+            <DayOccurrenceChartWidget chips={chips} />
+            <Divider style={styles.dividerSmall} />
             {userGoals.map((goal: Goal) => (
               <View key={goal.id}>
-                <GoalSurface goal={goal} navigation={navigation} />
-                <Divider style={{marginVertical: 7, height: 0}} />
+                <GoalWidget goal={goal} navigation={navigation} />
+                <Divider style={styles.dividerSmall} />
               </View>
             ))}
-            <AddGoalSurface />
+            <AddGoalWidget />
           </ScrollView>
         </View>
       </BackgroundWrapper>

@@ -67,7 +67,7 @@ function GoalBadges({goal}) {
   );
 }
 
-export default function GoalSurface({goal, navigation}) {
+export default function GoalWidget({goal, navigation}) {
   const [pressed, setPressed] = useState(false);
   const surfaceScale = useSharedValue(1);
   const surfaceAnimatedStyles = useAnimatedStyle(() => {

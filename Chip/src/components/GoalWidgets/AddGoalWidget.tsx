@@ -34,7 +34,7 @@ import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
 import {GoalVisibility} from '../../types';
 
-export default function AddGoalSurface() {
+export default function AddGoalWidget() {
   const [pressed, setPressed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 

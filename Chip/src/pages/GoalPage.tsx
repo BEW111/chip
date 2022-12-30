@@ -21,7 +21,7 @@ import firestore, {
 import {useSelector, useDispatch} from 'react-redux';
 import {selectUid, selectUserGoals} from '../redux/authSlice';
 
-import DayOccurrenceChart from '../components/GoalWidgets/DayOccurrenceChart';
+import DayOccurrenceChart from '../components/Charts/DayOccurrenceChart';
 import Header from '../components/Analytics/Header';
 
 import backgroundImage from '../../assets/background.png';
