@@ -45,6 +45,7 @@ import {
   checkAllStreaksReset,
   getGoals,
 } from './src/firebase/goals';
+import {getUser} from './src/firebase/usersPublic';
 import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
 
 const Tab = createMaterialTopTabNavigator();

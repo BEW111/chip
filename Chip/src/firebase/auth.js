@@ -118,3 +118,35 @@ export async function updateUsername(username) {
     };
   }
 }
+
+export async function uploadProfileImage(profileImage, uid: string) {
+  let localPath = null;
+  let photoNameIndex = null;
+
+  let reference: FirebaseStorageTypes.Reference | null = null;
+
+  // we may be developing on the simulator
+  // TODO: should throw an actual error in prod?
+  if (profileImage.uri) {
+    localPath = profileImage.uri;
+    photoNameIndex = localPath.lastIndexOf('/') + 1;
+
+    // Create a storage reference to the file that will be uploaded
+    const url = `user/${uid}/profile-image/profile`;
+    reference = storage().ref(url);
+  } else {
+    console.log('No photo provided');
+    return {
+      status: 'error',
+      message: 'No photo provided',
+    };
+  }
+
+  // Upload file to storage
+  if (reference) {
+    console.log('Uploading profile image');
+    await reference.putFile(localPath);
+  }
+
+  console.log('Finished uploading profile image');
+}

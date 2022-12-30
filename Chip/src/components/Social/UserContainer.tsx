@@ -24,6 +24,7 @@ import {createSuperstreak} from '../../firebase/superstreaks';
 import {PublicUser} from '../../types';
 
 import InputFieldMenu from '../InputFieldMenu';
+import ProfileImageDisplay from '../ProfileImageDisplay';
 
 interface UserContainerType {
   user: PublicUser;
@@ -176,10 +177,7 @@ function UserContainer(props: UserContainerType) {
         }}>
         <View style={styles.rowSpaceBetween}>
           <View style={styles.row}>
-            <FastImage
-              source={profileDefault}
-              style={{width: 48, height: 48}}
-            />
+            <ProfileImageDisplay height={48} width={48} uid={user.uid} />
             <Divider style={styles.dividerHSmall} />
             <View>
               <Text variant="titleMedium" style={{color: 'white'}}>

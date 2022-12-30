@@ -12,7 +12,7 @@ export async function submitChip(
   photoFile,
   goalId: string,
   desc: string,
-  UID: string,
+  uid: string,
   amount: number,
 ) {
   const currentdt = new Date();
@@ -29,7 +29,7 @@ export async function submitChip(
     photoNameIndex = localPath.lastIndexOf('/') + 1;
 
     // Create a storage reference to the file that will be uploaded
-    const url = `user/${UID}/chip-photo/${localPath.slice(photoNameIndex)}`;
+    const url = `user/${uid}/chip-photo/${localPath.slice(photoNameIndex)}`;
     reference = storage().ref(url);
   } else {
     console.log('No photo provided');
@@ -52,8 +52,8 @@ export async function submitChip(
   }
 
   // Upload the chip to firestore
-  await firestore().collection('users').doc(UID).collection('chips').add(chip);
+  await firestore().collection('users').doc(uid).collection('chips').add(chip);
 
   // Check if streak should be incremented
-  await updateAndCheckStreakIncremented(UID, goalId, amount);
+  await updateAndCheckStreakIncremented(uid, goalId, amount);
 }

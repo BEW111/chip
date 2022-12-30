@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Goal} from '../types';
+import {Goal, ProfileImage} from '../types';
 import {RootState} from './store';
 
 interface AuthState {
@@ -10,6 +10,7 @@ interface AuthState {
   userGoals: Goal[];
   friends: string[];
   invitesSent: string[];
+  // profileImage: ProfileImage | null;
 }
 
 interface AddUserGoalPayload {
@@ -39,6 +40,7 @@ const initialState: AuthState = {
   newlyCreated: false,
   user: null,
   uid: null,
+  // profileImage: null,
   userGoals: [],
   friends: [],
   invitesSent: [],
@@ -63,6 +65,9 @@ export const authSlice = createSlice({
     updateUserGoals: (state, action) => {
       state.userGoals = action.payload;
     },
+    // updateProfileImage: (state, action) => {
+    //   state.profileImage = action.payload;
+    // },
     addUserGoal: (state, action: PayloadAction<AddUserGoalPayload>) => {
       // for the creation of a new goal
       const newGoal = {
@@ -125,6 +130,7 @@ export const {
   updateUid,
   updateNewlyCreated,
   updateUserGoals,
+  // updateProfileImage,
   addUserGoal,
   updateUserGoalName,
   deleteUserGoal,
@@ -138,6 +144,7 @@ export const selectUser = (state: RootState) => state.auth.user;
 export const selectUid = (state: RootState) => state.auth.uid;
 export const selectNewlyCreated = (state: RootState) => state.auth.newlyCreated;
 export const selectUserGoals = (state: RootState) => state.auth.userGoals;
+// export const selectProfileImage = (state: RootState) => state.auth.profileImage;
 export const selectFriends = (state: RootState) => state.auth.friends;
 export const selectInvitesSent = (state: RootState) => state.auth.invitesSent;
 

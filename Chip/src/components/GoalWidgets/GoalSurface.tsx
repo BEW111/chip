@@ -135,7 +135,6 @@ const goalBadgeStyles = StyleSheet.create({
     backgroundColor: '#FFFB',
     paddingHorizontal: 4,
     paddingVertical: 2,
-    paddingLeft: 6,
     borderRadius: 50,
   },
 });

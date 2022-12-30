@@ -13,6 +13,7 @@ export interface PublicUser {
   username: string;
   email: string;
   goals: string[];
+  profileImage?: ProfileImage;
 }
 
 export interface Goal {
@@ -72,3 +73,7 @@ export interface DatabaseResponse {
 export type GoalVisibility = 'public' | 'private';
 export type GoalType = 'form' | 'break' | 'do';
 export type GoalIterationPeriod = 'daily' | 'weekly';
+
+export interface ProfileImage {
+  uri: string;
+}
