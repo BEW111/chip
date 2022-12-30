@@ -7,13 +7,13 @@ import {styles} from '../../styles';
 
 const slides = [
   {
-    headline: 'A fresh way to form habits',
+    headline: 'Capture habits in time',
   },
   {
-    headline: 'Get inspired together',
+    headline: 'Work together',
   },
   {
-    headline: 'Personalized for you',
+    headline: 'Work smarter',
   },
 ];
 

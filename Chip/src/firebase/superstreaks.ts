@@ -37,6 +37,15 @@ export async function createSuperstreak(
   await firestore().collection('superstreaks').add(superstreak);
 }
 
+// get all superstreaks for a particular goal
+export async function getSuperstreaks(goalId: string) {
+  const superstreaks = await firestore()
+    .collection('superstreaks')
+    .where('goals', 'array-contains', goalId)
+    .get();
+  return superstreaks.docs.map(doc => doc.data());
+}
+
 // Update all superstreaks to potentially increase for a particular goal
 // Should only be ran if the streak this iteration with achieved for this goal
 export async function updateAndCheckSuperstreaksIncremented(

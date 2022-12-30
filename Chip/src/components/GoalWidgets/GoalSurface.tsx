@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {Pressable, View, StyleSheet} from 'react-native';
-import {Surface, Text} from 'react-native-paper';
+import {Divider, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {BlurView} from '@react-native-community/blur';
 
 import Animated, {
   useSharedValue,
@@ -12,6 +11,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import BlurSurface from '../BlurSurface';
 import {styles} from '../../styles';
+import {getSuperstreaks} from '../../firebase/superstreaks';
+import {useSelector} from 'react-redux';
+import {selectUid} from '../../redux/authSlice';
 
 const subtitleMap = {
   streak: {
@@ -34,17 +36,31 @@ const subtitleMap = {
 };
 
 function GoalBadges({goal}) {
+  const [superstreaks, setSuperstreaks] = useState([]);
+  useEffect(() => {
+    getSuperstreaks(goal.id).then(dataArray => setSuperstreaks(dataArray));
+  }, [goal]);
+
+  const currentUser = useSelector(selectUid);
+
   return (
-    <View
-      style={{
-        alignItems: 'flex-start',
-      }}>
+    <View style={styles.row}>
       <View style={goalBadgeStyles.badge}>
-        <Text variant="labelLarge">
+        <Text variant="bodyLarge">
           {goal.streak}
           <Icon name="flame-outline" size={18} />
         </Text>
       </View>
+      <Divider style={styles.dividerHTiny} />
+      {superstreaks.map(superstreak => (
+        <View style={goalBadgeStyles.badge}>
+          <Text variant="bodyLarge">
+            {superstreak.streak}
+            <Icon name="bonfire-outline" size={18} />
+            {/* {superstreak.users.filter(user => user !== currentUser)[0]} */}
+          </Text>
+        </View>
+      ))}
     </View>
   );
 }
@@ -116,8 +132,8 @@ const goalSurfaceStyles = (pressed: boolean) =>
 const goalBadgeStyles = StyleSheet.create({
   badge: {
     backgroundColor: '#FFFB',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
     borderRadius: 50,
-    padding: 2,
-    paddingHorizontal: 6,
   },
 });
