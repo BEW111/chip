@@ -107,7 +107,7 @@ function MainPage({navigation}) {
               />
             </View>
           </Header>
-          <ScrollView style={{flex: 1, padding: 20}}>
+          <ScrollView contentContainerStyle={{padding: 20}} style={{flex: 1}}>
             <View
               style={{
                 height: 224,
