@@ -59,34 +59,28 @@ function HabitPopup({
         />
       </View>
       <Divider style={styles.dividerSmall} />
-      <View
+      <TextInput
         style={{
+          marginTop: 0,
           backgroundColor: transparentBackgroundColor,
-          padding: 10,
-          marginTop: 7,
-          paddingLeft: 15,
-          borderRadius: 5,
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <Text variant="bodyLarge">{chipAmount} minutes spent</Text>
-        <View style={styles.rowCentered}>
-          <Pressable
-            onPress={() => setChipAmount(chipAmount - 1)}
-            onLongPress={() => setChipAmount(chipAmount - 1)}
-            style={localStyles.amtIcon}>
-            <Icon name="chevron-back-outline" size={30} />
-          </Pressable>
-          <Pressable
-            onPress={() => setChipAmount(chipAmount + 1)}
-            onLongPress={() => setChipAmount(chipAmount + 1)}
-            style={localStyles.amtIcon}>
-            <Icon name="chevron-forward-outline" size={30} />
-          </Pressable>
-        </View>
-      </View>
+        }}
+        contentStyle={{
+          color: 'black',
+        }}
+        outlineStyle={{
+          borderColor: '#AAF0',
+          borderWidth: 0,
+          color: 'black',
+        }}
+        mode="outlined"
+        label="Target amount"
+        keyboardType="numbers-and-punctuation"
+        value={chipAmount}
+        onChangeText={text => {
+          setChipAmount(parseFloat(text));
+        }}
+        right={<TextInput.Affix text={'count'} />}
+      />
       <Divider style={styles.dividerSmall} />
       <TextInput
         style={{
