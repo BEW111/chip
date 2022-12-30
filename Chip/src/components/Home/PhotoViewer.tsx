@@ -75,7 +75,7 @@ function HabitPopup({
         mode="outlined"
         label="Target amount"
         keyboardType="numbers-and-punctuation"
-        value={chipAmount}
+        value={chipAmount.toString()}
         onChangeText={text => {
           setChipAmount(parseFloat(text));
         }}
