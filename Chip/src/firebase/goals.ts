@@ -108,7 +108,7 @@ export async function editGoalName(
   newName: string,
   dispatch: Dispatch,
 ) {
-  console.log('Editing goal name');
+  console.log('[editGoalName] Editing goal name');
   await firestore()
     .collection('users')
     .doc(UID)
@@ -124,6 +124,25 @@ export async function editGoalName(
       newName: newName,
     }),
   );
+
+  return goalId;
+}
+
+export async function editGoalVisibility(
+  UID: string,
+  goalId: string,
+  newVisibility: GoalVisibility,
+) {
+  console.log('[editGoalVisibility] Editing goal visibility');
+
+  await firestore()
+    .collection('users')
+    .doc(UID)
+    .collection('goals')
+    .doc(goalId)
+    .update({
+      visibility: newVisibility,
+    });
 
   return goalId;
 }

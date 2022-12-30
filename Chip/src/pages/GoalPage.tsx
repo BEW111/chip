@@ -32,7 +32,7 @@ import {ChipObject} from './Analytics';
 import TextWidget from '../components/GoalWidgets/TextWidget';
 import RemindersModal from '../components/GoalDetail/ReminderModal';
 
-import {editGoalName, deleteGoal} from '../firebase/goals';
+import {editGoalName, deleteGoal, editGoalVisibility} from '../firebase/goals';
 
 import {styles, modalStyles} from '../styles';
 
@@ -44,15 +44,32 @@ function StatsView({filteredChips}) {
   );
 }
 
-function EditGoalModal({
-  visible,
-  setGoalName,
-  hideModal,
-  uid,
-  goalId,
-  routeGoalName,
-}) {
-  const [goalNameInput, setGoalNameInput] = useState(routeGoalName);
+function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
+  const [goalNameInput, setGoalNameInput] = useState(goal.name);
+  const [goalVisibility, setGoalVisibility] = useState<GoalVisibility>(
+    goal.visibility,
+  );
+  const toggleGoalVisibility = () => {
+    if (goalVisibility === 'public') {
+      setGoalVisibility('private');
+    } else {
+      setGoalVisibility('public');
+    }
+  };
+
+  const onSubmitChanges = () => {
+    if (goal.name != goalNameInput) {
+      editGoalName(uid, goal.id, goalNameInput, dispatch);
+      setGoalName(goalNameInput);
+      setGoalNameInput('');
+    }
+
+    if (goal.visibility != goalVisibility) {
+      editGoalVisibility(uid, goal.id, goalVisibility);
+    }
+
+    hideModal();
+  };
 
   const dispatch = useDispatch();
 
@@ -62,21 +79,28 @@ function EditGoalModal({
       onDismiss={hideModal}
       contentContainerStyle={modalStyles.container}>
       <Text style={modalStyles.header}>Edit goal</Text>
-      <TextInput
-        style={modalStyles.textInput}
-        label="Edit goal name"
-        value={goalNameInput}
-        onChangeText={text => setGoalNameInput(text)}
-      />
-      <Button
-        mode="contained"
-        onPress={() => {
-          editGoalName(uid, goalId, goalNameInput, dispatch);
-          setGoalName(goalNameInput);
-          setGoalNameInput('');
-          hideModal();
-        }}>
-        Change goal name
+      <View style={styles.row}>
+        <View style={styles.expand}>
+          <TextInput
+            style={modalStyles.textInput}
+            label="Goal name"
+            value={goalNameInput}
+            onChangeText={text => setGoalNameInput(text)}
+          />
+        </View>
+        <IconButton
+          icon={
+            goalVisibility === 'public'
+              ? 'earth-outline'
+              : 'lock-closed-outline'
+          }
+          size={28}
+          onPress={toggleGoalVisibility}
+        />
+      </View>
+      <Divider style={styles.dividerSmall} />
+      <Button mode="contained" onPress={onSubmitChanges}>
+        Save changes
       </Button>
     </Modal>
   );
@@ -150,8 +174,8 @@ function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
 
 export default function GoalPage({navigation, route}) {
   // Managing goals and user data
-  const {goalId, routeGoalName} = route.params;
-  const [goalName, setGoalName] = useState(routeGoalName);
+  const {goal} = route.params;
+  const [goalName, setGoalName] = useState(goal.name);
 
   const uid = useSelector(selectUid);
 
@@ -177,6 +201,7 @@ export default function GoalPage({navigation, route}) {
       .collection('users')
       .doc(uid)
       .collection('chips')
+      .where('goalId', '==', goal.id)
       .onSnapshot(querySnapshot => {
         let newChips: ChipObject[] = [];
         querySnapshot.forEach(documentSnapshot => {
@@ -209,21 +234,20 @@ export default function GoalPage({navigation, route}) {
           setGoalName={setGoalName}
           hideModal={hideEditGoalModal}
           uid={uid}
-          goalId={goalId}
-          routeGoalName={routeGoalName}
+          goal={goal}
         />
         <RemindersModal
           visible={remindersModalVisible}
           hideModal={hideRemindersModal}
           goalName={goalName}
-          goalId={goalId}
+          goalId={goal.id}
         />
         <DeleteGoalModal
           visible={deleteGoalModalVisible}
           hideModal={hideDeleteGoalModal}
           navigation={navigation}
           uid={uid}
-          goalId={goalId}
+          goalId={goal.id}
         />
       </Portal>
       <View style={styles.expand}>
@@ -261,21 +285,18 @@ export default function GoalPage({navigation, route}) {
               }}>
               <StatsView
                 filteredChips={chips.filter(
-                  (chip: ChipObject) => chip.goalId === goalId,
+                  (chip: ChipObject) => chip.goalId === goal.id,
                 )}
               />
             </View>
             <Divider style={styles.dividerSmall} />
-            <ImageCarouselWidget
-              navigation={navigation}
-              chips={chips.filter((chip: ChipObject) => chip.goalId === goalId)}
-            />
+            <ImageCarouselWidget navigation={navigation} chips={chips} />
           </ScrollView>
         </View>
       </View>
       <ReminderFAB
         uid={uid}
-        goalId={goalId}
+        goalId={goal.id}
         navigation={navigation}
         showRemindersModal={showRemindersModal}
         showDeleteGoalModal={showDeleteGoalModal}

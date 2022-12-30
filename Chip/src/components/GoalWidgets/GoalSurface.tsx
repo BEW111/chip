@@ -53,7 +53,9 @@ function GoalBadges({goal}) {
       </View>
       <Divider style={styles.dividerHTiny} />
       {superstreaks.map(superstreak => (
-        <View style={goalBadgeStyles.badge}>
+        <View
+          key={superstreak.users.filter(user => user !== currentUser)[0]}
+          style={goalBadgeStyles.badge}>
           <Text variant="bodyLarge">
             {superstreak.streak}
             <Icon name="bonfire-outline" size={18} />
@@ -92,8 +94,7 @@ export default function GoalSurface({goal, navigation}) {
       }}
       onPress={() => {
         navigation.navigate('AnalyticsGoalPage', {
-          goalId: goal.id,
-          routeGoalName: goal.name,
+          goal: goal,
         });
       }}>
       <Animated.View style={surfaceAnimatedStyles}>
