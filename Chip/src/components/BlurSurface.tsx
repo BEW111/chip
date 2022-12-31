@@ -4,7 +4,7 @@ import {BlurView} from '@react-native-community/blur';
 
 const BlurSurface = props => (
   <BlurView
-    blurType="light"
+    blurType={props?.dark ? 'dark' : 'light'}
     blurAmount={32}
     style={StyleSheet.compose(localStyles(props).blurSurface, props?.style)}>
     {props.children}

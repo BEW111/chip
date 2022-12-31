@@ -14,6 +14,17 @@ import {ChipObject} from '../../types';
 
 import LatoRegular from '../../../assets/fonts/Lato-Regular.ttf';
 import {styles} from '../../styles';
+import {
+  COLUMN_COLOR,
+  COLUMN_WIDTH,
+  FROM_COLOR,
+  GRIDLINE_COLOR,
+  MARKER_COLOR,
+  MARKER_HEIGHT,
+  MARKER_WIDTH,
+  TEXT_COLOR,
+  TO_COLOR,
+} from '../../chartParams';
 
 const isToday = (someDate, offset) => {
   const today = new Date();
@@ -56,19 +67,6 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
     (dates.length - 1);
   const ySpacing =
     (chartHeight - paddingVertical * 2 - dateTextSpace) / (times.length - 1);
-
-  // Color params
-  const FROM_COLOR = '#ffe4f3';
-  const TO_COLOR = '#ffeaea';
-
-  const MARKER_WIDTH = 30;
-  const MARKER_HEIGHT = 3;
-  const MARKER_COLOR = '#000000';
-
-  const COLUMN_WIDTH = 30;
-  const COLUMN_COLOR = 'rgba(245, 166, 198, 0.3)';
-
-  const TEXT_COLOR = 'rgba(68, 10, 23, 0.739)';
 
   return (
     <View style={{height: chartHeightProp}}>
@@ -169,7 +167,7 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                   x2={chartWidth - paddingHorizontal}
                   y1={paddingVertical + i * ySpacing}
                   y2={paddingVertical + i * ySpacing}
-                  stroke={TEXT_COLOR}
+                  stroke={GRIDLINE_COLOR}
                   strokeLinecap="round"
                   strokeDasharray="5, 3"
                 />

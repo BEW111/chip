@@ -15,6 +15,15 @@ import {ChipObject} from '../../types';
 
 import LatoRegular from '../../../assets/fonts/Lato-Regular.ttf';
 import {styles} from '../../styles';
+import {
+  COLUMN_COLOR,
+  COLUMN_WIDTH,
+  FROM_COLOR,
+  GRIDLINE_COLOR,
+  BAR_COLOR,
+  TEXT_COLOR,
+  TO_COLOR,
+} from '../../chartParams';
 
 function linspace(start: number, stop: number, num: number, endpoint = true) {
   const div = endpoint ? num - 1 : num;
@@ -43,6 +52,17 @@ const getDailyAmount = (chips: ChipObject[], day: number) =>
 
 const getMaxDailyAmount = (chips: ChipObject[]) =>
   Math.max(...[...Array(7).keys()].map(i => getDailyAmount(chips, i)));
+
+const getNearestCleanNumber = (x: number) => {
+  if (x === 0) {
+    return 0;
+  }
+  const cleanNumbers = [1, 1.25, 2.5, 5, 7.5];
+  const amt = Math.pow(10, Math.floor(Math.log10(x)));
+  const dec = x / amt;
+  const roundedUp = cleanNumbers.filter(n => dec < n)[0];
+  return roundedUp * amt;
+};
 
 const RoundedRect = ({x, y, width, height, roundness, fill}) => {
   if (roundness > height || roundness > width || !height || !width) {
@@ -101,26 +121,17 @@ export default function BarChart({chips, chartHeightProp}) {
     (dates.length - 1);
   const ySpacing =
     (chartHeight - paddingVertical * 2 - dateTextSpace) / (numYtickers - 1);
-  const barMaxHeight = chartHeight - paddingVertical * 2 - dateTextSpace;
+  const barMaxHeight = chartHeight - paddingVertical * 2 - dateTextSpace; // height of the bar section of the chart in svg coords
 
   // Calculating bar heights and ticker values
+  //   const cleanNumbers = [0.1]
+  const ymax = getNearestCleanNumber(maxDailyAmount); // max height in "habit" coordinates
   const barHeights = dailyAmounts.map(
-    dailyAmount => (dailyAmount * barMaxHeight) / maxDailyAmount,
+    dailyAmount => (dailyAmount * barMaxHeight) / ymax,
   );
-  const ytickers = linspace(maxDailyAmount, 0, numYtickers);
+  const ytickers = linspace(ymax, 0, numYtickers);
 
   // Color params
-  const FROM_COLOR = '#ffe4f3';
-  const TO_COLOR = '#ffeaea';
-
-  //   const MARKER_WIDTH = 30;
-  //   const MARKER_HEIGHT = 3;
-  const MARKER_COLOR = '#000000ad';
-
-  const COLUMN_WIDTH = 30;
-  const COLUMN_COLOR = 'rgba(245, 166, 198, 0.3)';
-
-  const TEXT_COLOR = 'rgba(68, 10, 23, 0.739)';
 
   return (
     <View style={{height: chartHeightProp}}>
@@ -186,7 +197,7 @@ export default function BarChart({chips, chartHeightProp}) {
                   width={COLUMN_WIDTH}
                   height={barHeights[i]}
                   roundness={10}
-                  fill={MARKER_COLOR}
+                  fill={BAR_COLOR}
                 />
               </G>
             ))}
@@ -199,7 +210,7 @@ export default function BarChart({chips, chartHeightProp}) {
                   x2={chartWidth - paddingHorizontal}
                   y1={paddingVertical + i * ySpacing}
                   y2={paddingVertical + i * ySpacing}
-                  stroke={TEXT_COLOR}
+                  stroke={GRIDLINE_COLOR}
                   strokeLinecap="round"
                   strokeDasharray="5, 3"
                 />
