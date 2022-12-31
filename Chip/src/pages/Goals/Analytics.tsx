@@ -14,7 +14,7 @@ import {Goal} from '../../types';
 
 import GoalWidget from '../../components/GoalWidgets/GoalWidget';
 import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
-import DayOccurrenceChartWidget from '../../components/GoalWidgets/DayOccurrenceChartWidget';
+import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 
 import Settings from '../../components/Settings';
 import Header from '../../components/Analytics/Header';
@@ -90,7 +90,11 @@ function MainPage({navigation}) {
             </View>
           </Header>
           <ScrollView contentContainerStyle={{padding: 16}} style={{flex: 1}}>
-            <DayOccurrenceChartWidget chips={chips} />
+            <ChartWidget
+              chartType="day-occurrence"
+              title="habit occurrences"
+              chips={chips}
+            />
             <Divider style={styles.dividerSmall} />
             {userGoals.map((goal: Goal) => (
               <View key={goal.id}>

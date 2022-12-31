@@ -9,6 +9,7 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
+import pluralize from 'pluralize';
 
 import {FAB, ActivityIndicator, Divider} from 'react-native-paper';
 
@@ -21,7 +22,7 @@ import {ChipObject} from './Analytics';
 import Header from '../../components/Analytics/Header';
 import ImageCarouselWidget from '../../components/GoalWidgets/ImageCarouselWidget';
 import TextWidget from '../../components/GoalWidgets/TextWidget';
-import DayOccurrenceChartWidget from '../../components/GoalWidgets/DayOccurrenceChartWidget';
+import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 import RemindersModal from '../../components/GoalDetail/ReminderModal';
 
 import {
@@ -265,7 +266,11 @@ export default function GoalPage({navigation, route}) {
           <ScrollView style={{flex: 1, padding: 20}}>
             <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
             <Divider style={styles.dividerSmall} />
-            <DayOccurrenceChartWidget chips={chips} />
+            <ChartWidget
+              chips={chips}
+              chartType="bar"
+              title={pluralize(goal.units, 2) + ' by day'}
+            />
             <Divider style={styles.dividerSmall} />
             <ImageCarouselWidget navigation={navigation} chips={chips} />
           </ScrollView>
