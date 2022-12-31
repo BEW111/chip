@@ -3,6 +3,7 @@ import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
+import pluralize from 'pluralize';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
@@ -25,6 +26,8 @@ function HabitPopup({
   setChipAmount,
 }) {
   const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
+  const getGoalFromId = (id: string) => userGoals.filter(g => g.id === id)[0];
+  const [currentId, setCurrentId] = useState(userGoals[0].id);
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()}>
@@ -52,10 +55,11 @@ function HabitPopup({
             selectedValue={'Exercise'}
             pickerData={userGoals.map(g => ({
               value: g.id,
-              label: g.name,
+              label: g.emoji + ' ' + g.name,
             }))}
-            onValueChange={value => {
-              setSelectedGoalId(value);
+            onValueChange={id => {
+              setSelectedGoalId(id);
+              setCurrentId(id);
             }}
           />
         </View>
@@ -74,13 +78,19 @@ function HabitPopup({
             color: 'black',
           }}
           mode="outlined"
-          label="Target amount"
-          keyboardType="numbers-and-punctuation"
+          keyboardType="decimal-pad"
           value={chipAmount.toString()}
           onChangeText={text => {
-            setChipAmount(parseFloat(text));
+            setChipAmount(text);
           }}
-          right={<TextInput.Affix text={'count'} />}
+          right={
+            <TextInput.Affix
+              text={pluralize(
+                getGoalFromId(currentId).units,
+                parseFloat(chipAmount),
+              )}
+            />
+          }
         />
         <Divider style={styles.dividerSmall} />
         <TextInput
@@ -202,7 +212,7 @@ function PhotoViewer({photoSource}) {
               selectedGoalId,
               chipDescription,
               uid,
-              chipAmount,
+              parseFloat(chipAmount),
             );
             dispatchRefreshUserGoals(uid, dispatch);
           }

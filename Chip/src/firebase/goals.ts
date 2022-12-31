@@ -114,6 +114,7 @@ export async function addGoal(
       goalId: goalId,
       goalName: goalName,
       goalEmoji: goalEmoji,
+      goalUnits: goalIterationUnits,
     }),
   );
 
@@ -214,6 +215,7 @@ export async function dispatchRefreshUserGoals(
             name: g.name,
             streak: g.streak,
             emoji: g.emoji,
+            units: g.iterationUnits,
           })),
         ),
       );

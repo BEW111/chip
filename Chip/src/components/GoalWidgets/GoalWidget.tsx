@@ -14,6 +14,7 @@ import {styles} from '../../styles';
 import {getSuperstreaks} from '../../firebase/superstreaks';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
+import ProfileImageDisplay from '../ProfileImageDisplay';
 
 function GoalBadges({goal}) {
   const [superstreaks, setSuperstreaks] = useState([]);
@@ -36,10 +37,15 @@ function GoalBadges({goal}) {
         <View
           key={superstreak.users.filter(user => user !== currentUser)[0]}
           style={goalBadgeStyles.badge}>
+          <ProfileImageDisplay
+            height={20}
+            width={20}
+            uid={superstreak.users.filter(user => user !== currentUser)[0]}
+          />
+          <Divider style={styles.dividerHTiny} />
           <Text variant="bodyLarge">
             {superstreak.streak}
             <Icon name="bonfire-outline" size={18} />
-            {/* {superstreak.users.filter(user => user !== currentUser)[0]} */}
           </Text>
         </View>
       ))}
@@ -123,7 +129,7 @@ const goalSurfaceStyles = (pressed: boolean) =>
       fontWeight: 'bold',
     },
     primaryContentsWrapper: {
-      paddingLeft: 4,
+      paddingLeft: 2,
     },
     arrow: {justifyContent: 'center'},
     emojiView: {
@@ -151,9 +157,11 @@ const goalSurfaceStyles = (pressed: boolean) =>
 const goalBadgeStyles = StyleSheet.create({
   badge: {
     backgroundColor: '#ffffff8f',
-    paddingRight: 4,
-    paddingLeft: 6,
-    paddingVertical: 2,
+    paddingVertical: 1,
+    paddingLeft: 4,
+    paddingRight: 2,
     borderRadius: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
