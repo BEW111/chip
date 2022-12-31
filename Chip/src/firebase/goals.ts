@@ -113,6 +113,7 @@ export async function addGoal(
     addUserGoal({
       goalId: goalId,
       goalName: goalName,
+      goalEmoji: goalEmoji,
     }),
   );
 
@@ -191,32 +192,6 @@ export async function deleteGoal(
   return result;
 }
 
-// Updates a goal to the new provided visibility level
-// export async function updateGoalVisibility(
-//   UID: string,
-//   goalId: string,
-//   visibility: GoalVisibility,
-// ) {
-//   console.log('Updating goal visibility');
-//   if (visibility === 'private') {
-//     const result = await firestore()
-//       .collection('users')
-//       .doc(UID)
-//       .update({
-//         goalsPublic: firestore.FieldValue.arrayRemove(goalId),
-//       });
-//     return result;
-//   } else {
-//     const result = await firestore()
-//       .collection('usersP')
-//       .doc(UID)
-//       .update({
-//         goalsPublic: firestore.FieldValue.arrayUnion(goalId),
-//       });
-//     return result;
-//   }
-// }
-
 // Updates the local state for user goals
 // TODO: rename to "dispatchRefreshUserGoals"
 export async function dispatchRefreshUserGoals(
@@ -238,6 +213,7 @@ export async function dispatchRefreshUserGoals(
             id: g.id,
             name: g.name,
             streak: g.streak,
+            emoji: g.emoji,
           })),
         ),
       );

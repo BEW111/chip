@@ -16,6 +16,7 @@ interface AuthState {
 interface AddUserGoalPayload {
   goalId: string;
   goalName: string;
+  goalEmoji: string;
 }
 
 interface UpdateUserGoalNamePayload {
@@ -74,6 +75,7 @@ export const authSlice = createSlice({
         id: action.payload.goalId,
         name: action.payload.goalName,
         streak: 0,
+        emoji: action.payload.goalEmoji,
       };
 
       state.userGoals = [...state.userGoals, newGoal];

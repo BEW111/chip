@@ -15,26 +15,6 @@ import {getSuperstreaks} from '../../firebase/superstreaks';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 
-const subtitleMap = {
-  streak: {
-    icon: 'flame-outline',
-    color: '#FF6B00',
-  },
-  hint: {
-    icon: 'bulb-outline',
-  },
-  scheduled: {
-    icon: 'alarm-outline',
-  },
-  todo: {
-    icon: 'sync-circle-outline',
-  },
-  completed: {
-    icon: 'checkmark-circle-outline',
-    color: '#478E00',
-  },
-};
-
 function GoalBadges({goal}) {
   const [superstreaks, setSuperstreaks] = useState([]);
   useEffect(() => {
@@ -98,9 +78,25 @@ export default function GoalWidget({goal, navigation}) {
         });
       }}>
       <Animated.View style={surfaceAnimatedStyles}>
+        <View style={goalSurfaceStyles(pressed).emojiViewBlur}>
+          <Text variant="displayLarge">
+            {goal.emoji}
+            {goal.emoji}
+            {goal.emoji}
+            {goal.emoji}
+          </Text>
+        </View>
         <BlurSurface style={goalSurfaceStyles(pressed).blurSurface}>
+          <View style={goalSurfaceStyles(pressed).emojiView}>
+            <Text variant="displayLarge">
+              {goal.emoji}
+              {goal.emoji}
+              {goal.emoji}
+              {goal.emoji}
+            </Text>
+          </View>
           <View style={styles.rowSpaceBetween}>
-            <View>
+            <View style={goalSurfaceStyles(pressed).primaryContentsWrapper}>
               <GoalBadges goal={goal} />
               <Text style={goalSurfaceStyles(pressed).goalName}>
                 {goal.name}
@@ -123,17 +119,40 @@ const goalSurfaceStyles = (pressed: boolean) =>
       padding: 8,
     },
     goalName: {
-      fontSize: 24,
+      fontSize: 28,
       fontWeight: 'bold',
-      marginTop: -2,
+    },
+    primaryContentsWrapper: {
+      paddingLeft: 4,
     },
     arrow: {justifyContent: 'center'},
+    emojiView: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      opacity: 0.3,
+      paddingTop: 8,
+      paddingLeft: 8,
+    },
+    emojiViewBlur: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+      opacity: 0.5,
+      paddingTop: 8,
+      paddingLeft: 8,
+    },
   });
 
 const goalBadgeStyles = StyleSheet.create({
   badge: {
-    backgroundColor: '#FFFB',
-    paddingHorizontal: 4,
+    backgroundColor: '#ffffff8f',
+    paddingRight: 4,
+    paddingLeft: 6,
     paddingVertical: 2,
     borderRadius: 50,
   },
