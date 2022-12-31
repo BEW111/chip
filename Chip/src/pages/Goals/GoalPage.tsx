@@ -1,48 +1,37 @@
 import React, {useState, useEffect} from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import {
   Button,
   IconButton,
   Modal,
   Portal,
-  SegmentedButtons,
   TextInput,
   Text,
   useTheme,
 } from 'react-native-paper';
-import FastImage from 'react-native-fast-image';
 
 import {FAB, ActivityIndicator, Divider} from 'react-native-paper';
 
-import firestore, {
-  FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {selectUid, selectUserGoals} from '../redux/authSlice';
-
-import DayOccurrenceChart from '../components/Charts/DayOccurrenceChart';
-import Header from '../components/Analytics/Header';
-
-import backgroundImage from '../../assets/background.png';
-import ImageCarouselWidget from '../components/GoalWidgets/ImageCarouselWidget';
-// import chipsIcon from '../../assets/chips-icon.png';
+import {selectUid} from '../../redux/authSlice';
 
 import {ChipObject} from './Analytics';
-import TextWidget from '../components/GoalWidgets/TextWidget';
-import RemindersModal from '../components/GoalDetail/ReminderModal';
+import Header from '../../components/Analytics/Header';
+import ImageCarouselWidget from '../../components/GoalWidgets/ImageCarouselWidget';
+import TextWidget from '../../components/GoalWidgets/TextWidget';
+import DayOccurrenceChartWidget from '../../components/GoalWidgets/DayOccurrenceChartWidget';
+import RemindersModal from '../../components/GoalDetail/ReminderModal';
 
-import {editGoalName, deleteGoal, editGoalVisibility} from '../firebase/goals';
+import {
+  editGoalName,
+  deleteGoal,
+  editGoalVisibility,
+} from '../../firebase/goals';
 
-import {styles, modalStyles} from '../styles';
-
-function StatsView({filteredChips}) {
-  return (
-    <View style={styles.full}>
-      <DayOccurrenceChart chips={filteredChips} />
-    </View>
-  );
-}
+import {styles, modalStyles} from '../../styles';
+import BackgroundWrapper from '../../components/BackgroundWrapper';
 
 function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
   const [goalNameInput, setGoalNameInput] = useState(goal.name);
@@ -250,8 +239,7 @@ export default function GoalPage({navigation, route}) {
           goalId={goal.id}
         />
       </Portal>
-      <View style={styles.expand}>
-        <FastImage source={backgroundImage} style={styles.absoluteFull} />
+      <BackgroundWrapper>
         <View style={styles.full}>
           <Header navigation={navigation}>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goalName}</Text>
@@ -277,23 +265,12 @@ export default function GoalPage({navigation, route}) {
           <ScrollView style={{flex: 1, padding: 20}}>
             <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
             <Divider style={styles.dividerSmall} />
-            <View
-              style={{
-                height: 224,
-                alignItems: 'center',
-                width: '100%',
-              }}>
-              <StatsView
-                filteredChips={chips.filter(
-                  (chip: ChipObject) => chip.goalId === goal.id,
-                )}
-              />
-            </View>
+            <DayOccurrenceChartWidget chips={chips} />
             <Divider style={styles.dividerSmall} />
             <ImageCarouselWidget navigation={navigation} chips={chips} />
           </ScrollView>
         </View>
-      </View>
+      </BackgroundWrapper>
       <ReminderFAB
         uid={uid}
         goalId={goal.id}

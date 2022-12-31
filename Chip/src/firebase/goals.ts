@@ -51,14 +51,31 @@ export async function addGoal(
   UID: string,
   goalName: string,
   goalDesc: string,
-  goalType: '' | 'form' | 'break' | 'do' | undefined,
-  goalIterationPeriod: '' | 'daily' | 'weekly',
+  goalType: 'form' | 'break' | 'do',
+  goalIterationPeriod: 'daily' | 'weekly',
   goalIterationAmount: number,
+  goalIterationUnits: string,
   goalVisibility: GoalVisibility,
+  goalEmoji: string,
   dispatch: Dispatch,
 ) {
   console.log('Adding new goal');
   const goalId = uuidv4();
+
+  // validate
+  if (!goalName) {
+    return {
+      status: 'error',
+      message: 'Please enter name for this goal',
+    };
+  }
+
+  if (!goalIterationAmount) {
+    return {
+      status: 'error',
+      message: 'Please enter an amount to complete for this goal',
+    };
+  }
 
   let now = new Date();
   const currentdt = firestore.Timestamp.fromDate(now);
@@ -76,9 +93,11 @@ export async function addGoal(
     streakMet: false,
     iterationPeriod: goalIterationPeriod,
     iterationAmount: goalIterationAmount,
+    iterationUnits: goalIterationUnits,
     currentIterationProgress: 0,
     currentIterationStart: startOfToday,
     visibility: goalVisibility,
+    emoji: goalEmoji,
   };
 
   await firestore()

@@ -5,7 +5,7 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
-  ScrollView,
+  Keyboard,
 } from 'react-native';
 import {
   Portal,
@@ -17,9 +17,12 @@ import {
   Divider,
   Surface,
   IconButton,
+  useTheme,
 } from 'react-native-paper';
+import EmojiPicker from 'rn-emoji-keyboard';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
+import pluralize from 'pluralize';
 
 import Animated, {
   useSharedValue,
@@ -37,6 +40,9 @@ import {GoalVisibility} from '../../types';
 export default function AddGoalWidget() {
   const [pressed, setPressed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
+  const theme = useTheme();
 
   const surfaceScale = useSharedValue(1);
   const surfaceAnimatedStyles = useAnimatedStyle(() => {
@@ -46,18 +52,15 @@ export default function AddGoalWidget() {
   });
 
   const [goalNameInput, setGoalNameInput] = useState('');
+  const [goalEmojiInput, setGoalEmojiInput] = useState({
+    emoji: '💪',
+  });
   const [goalTypeInput, setGoalTypeInput] = useState('form');
   const [goalFreqInput, setGoalFreqInput] = useState('daily');
-  const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(0);
+  const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(1);
+  const [goalUnits, setGoalUnits] = useState('time');
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
-  const toggleGoalVisibility = () => {
-    if (goalVisibility === 'public') {
-      setGoalVisibility('private');
-    } else {
-      setGoalVisibility('public');
-    }
-  };
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
@@ -69,93 +72,138 @@ export default function AddGoalWidget() {
   return (
     <>
       <Portal>
-        <Modal
-          visible={modalVisible}
-          onDismiss={hideModal}
-          contentContainerStyle={modalStyles.wrapper}>
-          <Surface style={modalStyles.container}>
-            <ScrollView
-              contentContainerStyle={{flexGrow: 1}}
-              alwaysBounceVertical={false}
-              keyboardShouldPersistTaps="handled">
-              <Text style={modalStyles.header}>Add a new habit</Text>
-              <Text variant="titleMedium">
-                Name your habit, e.g. eat healthier:
-              </Text>
-              <Divider style={styles.dividerTiny} />
-              <TextInput
-                style={modalStyles.textInput}
-                mode="outlined"
-                label="Habit name"
-                value={goalNameInput}
-                onChangeText={text => setGoalNameInput(text)}
-              />
-              <Divider style={styles.dividerSmall} />
-              <Text variant="titleMedium">
-                Set a goal for completing this habit:
-              </Text>
-              <Divider style={styles.dividerTiny} />
-              <TextInput
-                style={modalStyles.textInput}
-                mode="outlined"
-                label="Target amount"
-                keyboardType="decimal-pad"
-                value={goalFreqAmtInput}
-                onChangeText={text => setGoalFreqAmtInput(text)}
-                right={<TextInput.Affix text={'count ' + goalFreqInput} />}
-              />
-              <Divider style={styles.dividerSmall} />
-              <View style={styles.row}>
-                <View style={styles.expand}>
+        <Modal visible={modalVisible} onDismiss={hideModal}>
+          <Pressable
+            pointerEvents="auto"
+            onPress={hideModal}
+            style={modalStyles.wrapper}>
+            <KeyboardAvoidingView>
+              <Pressable onPress={Keyboard.dismiss}>
+                <Surface style={modalStyles.container}>
+                  <Text style={modalStyles.header}>Add a new habit</Text>
+                  <View style={styles.row}>
+                    <View style={styles.expand}>
+                      <TextInput
+                        style={modalStyles.textInput}
+                        mode="outlined"
+                        label="Habit name"
+                        value={goalNameInput}
+                        onChangeText={text => setGoalNameInput(text)}
+                      />
+                    </View>
+                    <Divider style={styles.dividerHSmall} />
+                    <Pressable
+                      onPress={() => setEmojiPickerOpen(true)}
+                      style={goalModalStyles(theme).emojiButton}>
+                      <Text variant="headlineMedium">
+                        {goalEmojiInput.emoji}
+                      </Text>
+                    </Pressable>
+                  </View>
+                  <Divider style={styles.dividerSmall} />
                   <SegmentedButtons
-                    value={goalFreqInput}
-                    onValueChange={setGoalFreqInput}
+                    value={goalVisibility}
+                    onValueChange={setGoalVisibility}
                     buttons={[
                       {
-                        value: 'daily',
-                        label: 'Daily',
+                        value: 'public',
+                        label: 'Shareable',
+                        icon: 'earth-outline',
                       },
                       {
-                        value: 'weekly',
-                        label: 'Weekly',
+                        value: 'private',
+                        label: 'Private',
+                        icon: 'lock-closed-outline',
                       },
                     ]}
                   />
-                </View>
-                <IconButton
-                  icon={
-                    goalVisibility === 'public'
-                      ? 'earth-outline'
-                      : 'lock-closed-outline'
-                  }
-                  size={28}
-                  onPress={toggleGoalVisibility}
-                />
-              </View>
-              <Divider style={styles.dividerSmall} />
-              <Button
-                mode="contained"
-                onPress={() => {
-                  addGoal(
-                    uid,
-                    goalNameInput,
-                    '',
-                    goalTypeInput,
-                    goalFreqInput,
-                    goalFreqAmtInput,
-                    goalVisibility,
-                    dispatch,
-                  );
-                  setGoalNameInput('');
-                  setGoalFreqAmtInput(0);
-                  setGoalFreqInput('daily');
-                  hideModal();
-                }}>
-                Make it happen
-              </Button>
-            </ScrollView>
-          </Surface>
+                  <Divider style={styles.dividerSmall} />
+                  <Text variant="titleMedium">
+                    Set a goal for completing this habit:
+                  </Text>
+                  <Divider style={styles.dividerTiny} />
+                  <TextInput
+                    style={modalStyles.textInput}
+                    mode="outlined"
+                    label="Target amount"
+                    keyboardType="decimal-pad"
+                    value={goalFreqAmtInput.toString()}
+                    onChangeText={text => setGoalFreqAmtInput(text)}
+                    right={
+                      <TextInput.Affix
+                        text={
+                          pluralize(goalUnits, parseFloat(goalFreqAmtInput)) +
+                          ' ' +
+                          goalFreqInput
+                        }
+                      />
+                    }
+                  />
+                  <Divider style={styles.dividerTiny} />
+                  <View style={styles.row}>
+                    <View style={{flex: 2}}>
+                      <TextInput
+                        dense
+                        style={modalStyles.textInput}
+                        mode="outlined"
+                        label="Units"
+                        keyboardType="default"
+                        autoCapitalize="none"
+                        value={goalUnits}
+                        onChangeText={text => setGoalUnits(text)}
+                      />
+                    </View>
+                    <Divider style={styles.dividerHSmall} />
+                    <View style={{flex: 3, paddingTop: 6}}>
+                      <SegmentedButtons
+                        value={goalFreqInput}
+                        onValueChange={setGoalFreqInput}
+                        buttons={[
+                          {
+                            value: 'daily',
+                            label: 'Daily',
+                          },
+                          {
+                            value: 'weekly',
+                            label: 'Weekly',
+                          },
+                        ]}
+                      />
+                    </View>
+                  </View>
+                  <Divider style={styles.dividerMedium} />
+                  <Button
+                    mode="contained"
+                    onPress={() => {
+                      addGoal(
+                        uid,
+                        goalNameInput,
+                        '',
+                        goalTypeInput,
+                        goalFreqInput,
+                        parseFloat(goalFreqAmtInput),
+                        goalUnits,
+                        goalVisibility,
+                        goalEmojiInput.emoji,
+                        dispatch,
+                      );
+                      setGoalNameInput('');
+                      setGoalFreqAmtInput(0);
+                      setGoalFreqInput('daily');
+                      hideModal();
+                    }}>
+                    Make it happen
+                  </Button>
+                </Surface>
+              </Pressable>
+            </KeyboardAvoidingView>
+          </Pressable>
         </Modal>
+        <EmojiPicker
+          onEmojiSelected={emoji => setGoalEmojiInput(emoji)}
+          open={emojiPickerOpen}
+          onClose={() => setEmojiPickerOpen(false)}
+        />
       </Portal>
       <Animated.View style={surfaceAnimatedStyles}>
         <Pressable
@@ -195,6 +243,23 @@ export default function AddGoalWidget() {
   );
 }
 
+const goalModalStyles = theme =>
+  StyleSheet.create({
+    emojiButton: {
+      backgroundColor: 'white',
+      borderColor: theme.colors.outline,
+      borderWidth: 1,
+      height: 52,
+      width: 52,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 50,
+      marginTop: 6,
+      paddingTop: 2,
+      paddingLeft: 0.5,
+    },
+  });
+
 const goalSurfaceStyles = StyleSheet.create({
   surface: {
     width: '100%',
@@ -202,9 +267,6 @@ const goalSurfaceStyles = StyleSheet.create({
     paddingVertical: 8,
     elevation: 0,
     borderRadius: 10,
-
-    // backgroundColor: '#222222',
-
     display: 'flex',
     alignItems: 'center',
   },

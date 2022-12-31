@@ -18,11 +18,11 @@ import auth from '@react-native-firebase/auth';
 import {store} from './src/redux/store';
 import {useSelector, useDispatch} from 'react-redux';
 
-import Onboarding from './src/pages/Onboarding';
-import OnboardingRegister from './src/pages/OnboardingRegister';
-import SignIn from './src/pages/SignIn';
+import Onboarding from './src/pages/Launch/Onboarding';
+import OnboardingRegister from './src/pages/Launch/OnboardingRegister';
+import SignIn from './src/pages/Launch/SignIn';
 import Home from './src/pages/Home';
-import Analytics from './src/pages/Analytics';
+import Analytics from './src/pages/Goals/Analytics';
 import Social from './src/pages/Social';
 import {
   selectInitializing,

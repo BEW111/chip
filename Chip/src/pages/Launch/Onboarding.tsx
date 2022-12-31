@@ -6,15 +6,15 @@ import FastImage from 'react-native-fast-image';
 
 import {useDispatch} from 'react-redux';
 
-import {updateNewGoal} from '../redux/onboardingSlice';
+import {updateNewGoal} from '../../redux/onboardingSlice';
 
 // import GoalGalaxyView from '../components/GoalGalaxy/GoalGalaxyView';
-import {styles} from '../styles';
-import BackgroundWrapper from '../components/BackgroundWrapper';
+import {styles} from '../../styles';
+import BackgroundWrapper from '../../components/BackgroundWrapper';
 
-import OnboardingCarousel from '../components/Onboarding/OnboardingCarousel';
+import OnboardingCarousel from '../../components/Onboarding/OnboardingCarousel';
 
-import chipHeader from '../../assets/chip-header-transparent.png';
+import chipHeader from '../../../assets/chip-header-transparent.png';
 
 export default function Onboarding({navigation}) {
   const [text, setText] = useState('');

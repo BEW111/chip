@@ -27,9 +27,11 @@ export interface Goal {
   streakMet: boolean;
   iterationPeriod: GoalIterationPeriod;
   iterationAmount: number;
+  iterationUnits: string;
   currentIterationProgress: number;
   currentIterationStart: FirebaseFirestoreTypes.Timestamp;
   visibility: GoalVisibility;
+  emoji: string;
 }
 
 type UserGoalMap = {

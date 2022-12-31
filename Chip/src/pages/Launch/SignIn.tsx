@@ -10,12 +10,12 @@ import FastImage from 'react-native-fast-image';
 import {Button, TextInput, HelperText, Text, Divider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import {styles} from '../styles';
+import {styles} from '../../styles';
 import chipImage from '../assets/chips.png';
 
 import auth from '@react-native-firebase/auth';
-import BlurSurface from '../components/BlurSurface';
-import BackgroundWrapper from '../components/BackgroundWrapper';
+import BlurSurface from '../../components/BlurSurface';
+import BackgroundWrapper from '../../components/BackgroundWrapper';
 
 export default function SignIn({navigation}) {
   const [emailText, setEmailText] = useState('');

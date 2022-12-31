@@ -26,15 +26,18 @@ const isToday = (someDate, offset) => {
 };
 
 export default function DayOccurrenceChart({chips, chartHeightProp}) {
+  // Calculated width and height of the chart
   const [chartWidth, setChartWidth] = useState(0);
   const [chartHeight, setChartHeight] = useState(0);
 
-  const paddingVertical = 20;
-  const paddingHorizontal = 10;
-  const dateColumnPadding = 20;
-  const timeTextSpace = 50;
-  const dateTextSpace = 10;
+  // Spacing params
+  const paddingVertical = 20; // for the axes of the chart itself
+  const paddingHorizontal = 10; // for the axes of the chart itself
+  const dateColumnPadding = 15;
+  const timeTextSpace = 50; // padding between the y-axis text and chart
+  const dateTextSpace = 10; // padding between the x-axis text and chart
 
+  // Text items for axes
   const times = ['12am', '6am', '12pm', '6pm', '12am'];
   const dates = [...Array(7).keys()].map(k => {
     let d = new Date();
@@ -44,14 +47,17 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
     return `${mm}/${dd}`;
   });
 
+  // Calculating spacing between columns and rows
   const xSpacing =
     (chartWidth -
       paddingHorizontal * 2 -
       timeTextSpace -
       dateColumnPadding * 2) /
-    6;
-  const ySpacing = (chartHeight - paddingVertical * 2 - dateTextSpace) / 4;
+    (dates.length - 1);
+  const ySpacing =
+    (chartHeight - paddingVertical * 2 - dateTextSpace) / (times.length - 1);
 
+  // Color params
   const FROM_COLOR = '#ffe4f3';
   const TO_COLOR = '#ffeaea';
 
@@ -65,12 +71,7 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
   const TEXT_COLOR = 'rgba(68, 10, 23, 0.739)';
 
   return (
-    <View
-      style={{
-        height: chartHeightProp,
-        alignItems: 'center',
-        width: '100%',
-      }}>
+    <View style={{height: chartHeightProp}}>
       <View style={styles.full}>
         <View
           style={styles.expand}
@@ -86,10 +87,11 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                 <Stop offset="1" stopColor={TO_COLOR} />
               </LinearGradient>
             </Defs>
+            {/* X-AXIS AND DATA POINTS */}
             {dates.map((dateStr, i) => (
               <G key={i}>
                 <Rect
-                  key={i + 100}
+                  key={i + dates.length} // arbitrary key, just needs to be unique
                   x={
                     paddingHorizontal +
                     timeTextSpace +
@@ -104,7 +106,7 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                   fill={COLUMN_COLOR}
                 />
                 <Text
-                  key={i + 200}
+                  key={i + dates.length * 2} // arbitrary key, just needs to be unique
                   font={LatoRegular}
                   stroke="none"
                   fill={TEXT_COLOR}
@@ -135,7 +137,7 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                   })
                   .map((y, j) => (
                     <Rect
-                      key={j + i * 100}
+                      key={j + i * 100} // arbitrary key, just needs to be unique
                       x={
                         paddingHorizontal +
                         timeTextSpace +
@@ -158,6 +160,7 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                   ))}
               </G>
             ))}
+            {/* Y-AXIS */}
             {times.map((timeStr, i) => (
               <G key={i + 100}>
                 <Line

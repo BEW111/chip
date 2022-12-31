@@ -112,12 +112,12 @@ export const styles = StyleSheet.create({
 
 export const modalStyles = StyleSheet.create({
   wrapper: {
-    // backgroundColor: 'red',
+    height: '100%',
+    justifyContent: 'center',
+    padding: 20,
   },
   container: {
     padding: 20,
-    margin: 20,
-
     backgroundColor: '#FFECF2',
     shadowOpacity: 0,
     borderRadius: 10,

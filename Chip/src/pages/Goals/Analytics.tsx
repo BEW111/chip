@@ -9,31 +9,23 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import firestore from '@react-native-firebase/firestore';
 
 import {useSelector} from 'react-redux';
-import {selectUid, selectUserGoals} from '../redux/authSlice';
-import {Goal} from '../types';
+import {selectUid, selectUserGoals} from '../../redux/authSlice';
+import {Goal} from '../../types';
 
-import GoalWidget from '../components/GoalWidgets/GoalWidget';
-import AddGoalWidget from '../components/GoalWidgets/AddGoalWidget';
-import DayOccurrenceChartWidget from '../components/GoalWidgets/DayOccurrenceChartWidget';
+import GoalWidget from '../../components/GoalWidgets/GoalWidget';
+import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
+import DayOccurrenceChartWidget from '../../components/GoalWidgets/DayOccurrenceChartWidget';
 
-import Settings from '../components/Settings';
-import Header from '../components/Analytics/Header';
+import Settings from '../../components/Settings';
+import Header from '../../components/Analytics/Header';
 import GoalPage from './GoalPage';
-import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
-import BackgroundWrapper from '../components/BackgroundWrapper';
+import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
+import BackgroundWrapper from '../../components/BackgroundWrapper';
 
-import {styles} from '../styles';
+import {styles} from '../../styles';
 
 const SettingsDrawer = createDrawerNavigator(); // for settings
 const Stack = createNativeStackNavigator();
-
-function StatsView({filteredChips}) {
-  return (
-    <View style={{width: '100%', height: '100%'}}>
-      <DayOccurrenceChart chips={filteredChips} />
-    </View>
-  );
-}
 
 function MainPage({navigation}) {
   const uid = useSelector(selectUid);

@@ -27,6 +27,7 @@
     "d3": "^7.6.1",
     "d3-shape": "^3.1.0",
     "d3-zoom": "^3.0.0",
+    "pluralize": "^8.0.0",
     "react": "18.0.0",
     "react-native": "0.69.4",
     "react-native-fast-image": "^8.5.11",
@@ -47,6 +48,7 @@
     "react-native-vision-camera": "^2.14.1",
     "react-native-wheel-pick": "^1.2.0",
     "react-redux": "^8.0.2",
+    "rn-emoji-keyboard": "^1.1.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -56,6 +58,7 @@
     "@tsconfig/react-native": "^2.0.2",
     "@types/d3": "^7.4.0",
     "@types/jest": "^26.0.23",
+    "@types/pluralize": "^0.0.29",
     "@types/react-native": "^0.69.3",
     "@types/react-native-vector-icons": "^6.4.12",
     "@types/react-native-wheel-pick": "^1.1.2",
