@@ -5,63 +5,21 @@ import {Pressable, View} from 'react-native';
 import {Surface, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
+import BlurSurface from '../BlurSurface';
+import {styles} from '../../styles';
 
-const subtitleMap = {
-  streak: {
-    icon: 'flame-outline',
-    color: '#FF6B00',
-  },
-  hint: {
-    icon: 'bulb-outline',
-    color: '#685f0e',
-  },
-  scheduled: {
-    icon: 'alarm-outline',
-  },
-  todo: {
-    icon: 'sync-circle-outline',
-  },
-  completed: {
-    icon: 'checkmark-circle-outline',
-    color: '#478E00',
-  },
-};
-
-export default function TextWidget({subtitle, subtitleType = 'none'}) {
-  const [pressed, setPressed] = useState(false);
-
+export default function TextWidget() {
   return (
-    <Pressable
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}>
-      <BlurView
-        blurType="light"
-        blurAmount={32}
-        reducedTransparencyFallbackColor="white"
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          padding: 12,
-          elevation: 0,
-          borderRadius: 10,
-          // backgroundColor: '#FFEEF8',
-          opacity: pressed ? 0.8 : 1.0,
-        }}>
-        <Text style={{fontSize: 18, color: subtitleMap[subtitleType]?.color}}>
-          {subtitleType != 'none' && (
-            <>
-              <Icon
-                name={subtitleMap[subtitleType].icon}
-                size={18}
-                color={subtitleMap[subtitleType].color}
-              />
-              <Text> </Text>
-            </>
-          )}
-          {subtitle}
+    <BlurSurface padding={2}>
+      <Text variant="titleSmall" style={styles.widgetTitle}>
+        <Icon name={'bulb-outline'} color={'gray'} size={16} /> tip
+      </Text>
+      <View style={{padding: 10}}>
+        <Text variant="bodyMedium">
+          Focus on always completing your habits on schedule, even if it's
+          something small each time.
         </Text>
-      </BlurView>
-    </Pressable>
+      </View>
+    </BlurSurface>
   );
 }
