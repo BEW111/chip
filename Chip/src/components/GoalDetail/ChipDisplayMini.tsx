@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {Pressable, View} from 'react-native';
-import {Portal, Modal, Text, IconButton} from 'react-native-paper';
+import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
 
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
@@ -18,10 +18,12 @@ import pluralize from 'pluralize';
 import {selectUid} from '../../redux/authSlice';
 
 import storage from '@react-native-firebase/storage';
-import {styles} from '../../styles';
+import {styles, modalStyles} from '../../styles';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {deleteChip} from '../../firebase/chips';
 
 function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
+  // Animation
   const offset = useSharedValue({x: 0, y: 0});
   const start = useSharedValue({x: 0, y: 0});
   const scale = useSharedValue(1);
@@ -86,73 +88,117 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
     savedRotation.value = 0;
   }
 
+  // Deleting the chip
+  const uid = useSelector(selectUid);
+
+  function onPromptDeleteChip() {
+    console.log('delete chip');
+    setDeleteModalVisible(true);
+  }
+
+  function onDeleteChip() {
+    setDeleteModalVisible(false);
+    setVisible(false);
+    deleteChip(uid, chip.id);
+  }
+
   const insets = useSafeAreaInsets();
 
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
   return (
-    <Modal
-      style={{backgroundColor: '#000C', marginTop: 0, marginBottom: 0}}
-      visible={visible}
-      onDismiss={dismiss}>
-      <Pressable onPress={dismiss}>
-        <GestureDetector gesture={composed}>
-          <Animated.View style={[styles.full, animatedStyles]}>
-            {downloadURL ? (
-              <Pressable>
-                <FastImage source={{uri: downloadURL}} style={styles.full} />
-              </Pressable>
-            ) : (
-              <></>
-            )}
-          </Animated.View>
-        </GestureDetector>
-      </Pressable>
-      <View style={styles.absoluteFull} pointerEvents="box-none">
-        <View
-          style={{
-            backgroundColor: 'black',
-            paddingTop: insets.top,
-            alignItems: 'center',
-            paddingBottom: 10,
-          }}>
-          <Text variant="titleMedium" style={{color: 'white'}}>
-            {chip.timeSubmitted.toDate().toLocaleDateString([], {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </Text>
-          <Text variant="titleMedium" style={{color: 'white'}}>
-            {chip.timeSubmitted.toDate().toLocaleTimeString()}
-          </Text>
-          <IconButton
-            onPress={dismiss}
-            icon="chevron-back-outline"
-            iconColor="white"
-            style={{position: 'absolute', left: 12, marginTop: insets.top}}
-          />
-        </View>
-        <View
-          style={{
-            position: 'absolute',
-            width: '100%',
-            bottom: 0,
-            backgroundColor: 'black',
-            paddingBottom: insets.bottom,
-            alignItems: 'center',
-            paddingTop: 10,
-          }}>
-          <Text variant="titleMedium" style={{color: 'white'}}>
-            {goal.name} - {chip.amount} {pluralize(goal.units, chip.amount)}
-          </Text>
-          {chip.description && (
-            <Text variant="titleSmall" style={{color: 'white'}}>
-              Notes: {chip.description}
+    <>
+      <Modal
+        style={{backgroundColor: '#000C', marginTop: 0, marginBottom: 0}}
+        visible={visible}
+        onDismiss={dismiss}>
+        <Pressable onPress={dismiss}>
+          <GestureDetector gesture={composed}>
+            <Animated.View style={[styles.full, animatedStyles]}>
+              {downloadURL ? (
+                <Pressable>
+                  <FastImage source={{uri: downloadURL}} style={styles.full} />
+                </Pressable>
+              ) : (
+                <></>
+              )}
+            </Animated.View>
+          </GestureDetector>
+        </Pressable>
+        <View style={styles.absoluteFull} pointerEvents="box-none">
+          <View
+            style={{
+              backgroundColor: 'black',
+              paddingTop: insets.top,
+              alignItems: 'center',
+              paddingBottom: 10,
+            }}>
+            <Text variant="titleMedium" style={{color: 'white'}}>
+              {chip.timeSubmitted.toDate().toLocaleDateString([], {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </Text>
-          )}
+            <Text variant="titleMedium" style={{color: 'white'}}>
+              {chip.timeSubmitted.toDate().toLocaleTimeString()}
+            </Text>
+            <IconButton
+              onPress={dismiss}
+              icon="chevron-back-outline"
+              iconColor="white"
+              style={{position: 'absolute', left: 12, marginTop: insets.top}}
+            />
+          </View>
+          <View
+            style={{
+              position: 'absolute',
+              width: '100%',
+              bottom: 0,
+              backgroundColor: 'black',
+              paddingBottom: insets.bottom,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: 20,
+            }}>
+            <Text variant="titleMedium" style={{color: 'white'}}>
+              {goal.name} - {chip.amount} {pluralize(goal.units, chip.amount)}
+            </Text>
+            {chip.description && (
+              <Text variant="titleSmall" style={{color: 'white'}}>
+                Notes: {chip.description}
+              </Text>
+            )}
+            <View
+              style={{
+                position: 'absolute',
+                right: 16,
+                bottom: 0,
+                top: 0,
+                justifyContent: 'center',
+              }}>
+              <IconButton
+                onPress={onPromptDeleteChip}
+                icon="trash-outline"
+                iconColor="white"
+                size={28}
+              />
+            </View>
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+      {/* Deleting a chip */}
+      <Modal
+        visible={deleteModalVisible}
+        onDismiss={() => setDeleteModalVisible(false)}
+        contentContainerStyle={modalStyles.container}>
+        <Text style={modalStyles.header}>Delete chip</Text>
+        <Button mode="contained" onPress={onDeleteChip}>
+          Confirm
+        </Button>
+      </Modal>
+    </>
   );
 }
 

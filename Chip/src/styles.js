@@ -123,6 +123,7 @@ export const modalStyles = StyleSheet.create({
     padding: 20,
   },
   container: {
+    margin: 20,
     padding: 20,
     backgroundColor: '#FFECF2',
     shadowOpacity: 0,

@@ -73,10 +73,7 @@ export default function AddGoalWidget() {
     <>
       <Portal>
         <Modal visible={modalVisible} onDismiss={hideModal}>
-          <Pressable
-            pointerEvents="auto"
-            onPress={hideModal}
-            style={modalStyles.wrapper}>
+          <Pressable pointerEvents="auto" onPress={hideModal}>
             <KeyboardAvoidingView>
               <Pressable onPress={Keyboard.dismiss}>
                 <Surface style={modalStyles.container}>

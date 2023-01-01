@@ -57,3 +57,17 @@ export async function submitChip(
   // Check if streak should be incremented
   await updateAndCheckStreakIncremented(uid, goalId, amount);
 }
+
+// Deletes a particular chip
+export async function deleteChip(uid: string, chipId: string) {
+  console.log('[deleteChip] Deleting chip');
+
+  const result = await firestore()
+    .collection('users')
+    .doc(uid)
+    .collection('chips')
+    .doc(chipId)
+    .delete();
+
+  return result;
+}

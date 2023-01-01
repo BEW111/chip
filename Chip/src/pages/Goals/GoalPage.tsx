@@ -48,13 +48,13 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
   };
 
   const onSubmitChanges = () => {
-    if (goal.name != goalNameInput) {
+    if (goal.name !== goalNameInput) {
       editGoalName(uid, goal.id, goalNameInput, dispatch);
       setGoalName(goalNameInput);
       setGoalNameInput('');
     }
 
-    if (goal.visibility != goalVisibility) {
+    if (goal.visibility !== goalVisibility) {
       editGoalVisibility(uid, goal.id, goalVisibility);
     }
 
@@ -197,7 +197,7 @@ export default function GoalPage({navigation, route}) {
         querySnapshot.forEach(documentSnapshot => {
           return newChips.push({
             ...documentSnapshot.data(),
-            key: documentSnapshot.id,
+            id: documentSnapshot.id,
           });
         });
         newChips = newChips.sort((a, b) =>
