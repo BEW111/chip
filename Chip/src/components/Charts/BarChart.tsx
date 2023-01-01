@@ -65,7 +65,7 @@ const getNearestCleanNumber = (x: number) => {
   if (x === 0) {
     return 0;
   }
-  const cleanNumbers = [1, 1.25, 2.5, 5, 7.5];
+  const cleanNumbers = [1, 1.25, 2.5, 5, 7.5, 10];
   const amt = Math.pow(10, Math.floor(Math.log10(x)));
   const dec = x / amt;
   const roundedUp = cleanNumbers.filter(n => dec < n)[0];
@@ -155,14 +155,11 @@ export default function BarChart({chips, chartHeightProp}) {
   const barMaxHeight = chartHeight - paddingVertical * 2 - dateTextSpace; // height of the bar section of the chart in svg coords
 
   // Calculating bar heights and ticker values
-  //   const cleanNumbers = [0.1]
   const ymax = getNearestCleanNumber(maxDailyAmount); // max height in "habit" coordinates
   const barHeights = dailyAmounts.map(
     dailyAmount => (dailyAmount * barMaxHeight) / ymax,
   );
   const ytickers = linspace(ymax, 0, numYtickers);
-
-  // Color params
 
   return (
     <View style={{height: chartHeightProp}}>
