@@ -9,7 +9,7 @@ import ImageStackCarousel from '../GoalDetail/ImageStackCarousel';
 
 const ITEM_WIDTH = 144;
 
-export default function ImageCarouselWidget({navigation, chips}) {
+export default function ImageCarouselWidget({goal, chips}) {
   return (
     <BlurSurface padding={2}>
       <View>
@@ -29,7 +29,7 @@ export default function ImageCarouselWidget({navigation, chips}) {
       </View>
       <Divider style={styles.dividerSmall} />
       <View style={localStyles.container}>
-        <ImageStackCarousel chips={chips} />
+        <ImageStackCarousel goal={goal} chips={chips} />
       </View>
     </BlurSurface>
   );

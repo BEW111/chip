@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {Pressable, View} from 'react-native';
-import {Portal, Modal, Text} from 'react-native-paper';
+import {Portal, Modal, Text, IconButton} from 'react-native-paper';
 
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
@@ -9,17 +9,19 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  useAnimatedGestureHandler,
 } from 'react-native-reanimated';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+import pluralize from 'pluralize';
 
 import {selectUid} from '../../redux/authSlice';
 
 import storage from '@react-native-firebase/storage';
 import {styles} from '../../styles';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-function ChipModal({visible, setVisible, downloadURL, chip}) {
+function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
   const offset = useSharedValue({x: 0, y: 0});
   const start = useSharedValue({x: 0, y: 0});
   const scale = useSharedValue(1);
@@ -84,6 +86,8 @@ function ChipModal({visible, setVisible, downloadURL, chip}) {
     savedRotation.value = 0;
   }
 
+  const insets = useSafeAreaInsets();
+
   return (
     <Modal
       style={{backgroundColor: '#000C', marginTop: 0, marginBottom: 0}}
@@ -102,11 +106,57 @@ function ChipModal({visible, setVisible, downloadURL, chip}) {
           </Animated.View>
         </GestureDetector>
       </Pressable>
+      <View style={styles.absoluteFull} pointerEvents="box-none">
+        <View
+          style={{
+            backgroundColor: 'black',
+            paddingTop: insets.top,
+            alignItems: 'center',
+            paddingBottom: 10,
+          }}>
+          <Text variant="titleMedium" style={{color: 'white'}}>
+            {chip.timeSubmitted.toDate().toLocaleDateString([], {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </Text>
+          <Text variant="titleMedium" style={{color: 'white'}}>
+            {chip.timeSubmitted.toDate().toLocaleTimeString()}
+          </Text>
+          <IconButton
+            onPress={dismiss}
+            icon="chevron-back-outline"
+            iconColor="white"
+            style={{position: 'absolute', left: 12, marginTop: insets.top}}
+          />
+        </View>
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: 0,
+            backgroundColor: 'black',
+            paddingBottom: insets.bottom,
+            alignItems: 'center',
+            paddingTop: 10,
+          }}>
+          <Text variant="titleMedium" style={{color: 'white'}}>
+            {goal.name} - {chip.amount} {pluralize(goal.units, chip.amount)}
+          </Text>
+          {chip.description && (
+            <Text variant="titleSmall" style={{color: 'white'}}>
+              Notes: {chip.description}
+            </Text>
+          )}
+        </View>
+      </View>
     </Modal>
   );
 }
 
-export default function ChipDisplayMini({chip}) {
+export default function ChipDisplayMini({chip, goal}) {
   const uid = useSelector(selectUid);
   const path = `user/${uid}/chip-photo/${chip.photo}`;
   const [downloadURL, setDownloadURL] = useState('');
@@ -146,6 +196,7 @@ export default function ChipDisplayMini({chip}) {
           downloadURL={downloadURL}
           setVisible={setSelected}
           chip={chip}
+          goal={goal}
         />
       </Portal>
       <Animated.View style={viewAnimatedStyles}>

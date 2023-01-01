@@ -6,7 +6,7 @@ import ChipDisplayMini from './ChipDisplayMini';
 
 const WIDTH = 150;
 
-function ImageStackCarousel({chips}) {
+function ImageStackCarousel({goal, chips}) {
   const animationStyle: TAnimationStyle = useCallback((value: number) => {
     'worklet';
 
@@ -48,7 +48,7 @@ function ImageStackCarousel({chips}) {
         defaultIndex={chips.length - 1}
         scrollAnimationDuration={1000}
         renderItem={({index}) => (
-          <ChipDisplayMini index={index} chip={chips[index]} />
+          <ChipDisplayMini goal={goal} chip={chips[index]} />
         )}
       />
     </View>
