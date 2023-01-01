@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View} from 'react-native';
 import Svg, {
   Rect,
@@ -10,6 +10,12 @@ import Svg, {
   Stop,
   Path,
 } from 'react-native-svg';
+import Animated, {
+  useSharedValue,
+  useAnimatedProps,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
 
 import {ChipObject} from '../../types';
 
@@ -24,6 +30,8 @@ import {
   TEXT_COLOR,
   TO_COLOR,
 } from '../../chartParams';
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 function linspace(start: number, stop: number, num: number, endpoint = true) {
   const div = endpoint ? num - 1 : num;
@@ -64,12 +72,35 @@ const getNearestCleanNumber = (x: number) => {
   return roundedUp * amt;
 };
 
-const RoundedRect = ({x, y, width, height, roundness, fill}) => {
+const AnimatedRoundedRect = ({x, y, width, height, roundness, fill}) => {
+  const completion = useSharedValue(0.1); // animate from 0.1 to 1
+  const animatedProps = useAnimatedProps(() => {
+    const path = `M${0},${height}
+    v${roundness - height * completion.value}
+    q0,${-roundness} ${roundness},${-roundness}
+    h${width - 2 * roundness}
+    q${roundness},0 ${roundness},${roundness}
+    v${height * completion.value - roundness}
+    z
+    `;
+    return {
+      d: path,
+    };
+  });
+
+  useEffect(() => {
+    completion.value = withTiming(1, {
+      duration: 1000,
+      easing: Easing.out(Easing.exp),
+    });
+  }, []);
+
   if (roundness > height || roundness > width || !height || !width) {
     return <></>;
   } else {
     return (
-      <Path
+      <AnimatedPath
+        animatedProps={animatedProps}
         x={x}
         y={y}
         d={`M${0},${height}
@@ -185,7 +216,7 @@ export default function BarChart({chips, chartHeightProp}) {
                   textAnchor="middle">
                   {dateStr}
                 </Text>
-                <RoundedRect
+                <AnimatedRoundedRect
                   x={
                     paddingHorizontal +
                     ytickerTextSpace +

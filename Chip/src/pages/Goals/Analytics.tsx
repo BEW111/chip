@@ -92,7 +92,7 @@ function MainPage({navigation}) {
           <ScrollView contentContainerStyle={{padding: 16}} style={{flex: 1}}>
             <ChartWidget
               chartType="day-occurrence"
-              title="your recorded habits"
+              title="your activity"
               chips={chips}
             />
             <Divider style={styles.dividerSmall} />

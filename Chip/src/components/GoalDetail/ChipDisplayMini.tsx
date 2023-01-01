@@ -28,11 +28,11 @@ export default function ChipDisplayMini({chip, index}) {
   });
 
   const onLongPress = () => {
-    viewScale.value = withSpring(2, {
-      damping: 10,
-      mass: 0.1,
-      stiffness: 100,
-    });
+    // viewScale.value = withSpring(2, {
+    //   damping: 10,
+    //   mass: 0.1,
+    //   stiffness: 100,
+    // });
     console.log(index);
   };
 

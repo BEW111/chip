@@ -4,7 +4,7 @@ import {interpolate} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import ChipDisplayMini from './ChipDisplayMini';
 
-const WIDTH = 128;
+const WIDTH = 150;
 
 function ImageStackCarousel({chips}) {
   const animationStyle: TAnimationStyle = useCallback((value: number) => {
@@ -14,12 +14,14 @@ function ImageStackCarousel({chips}) {
     const translateX = interpolate(
       value,
       [-2, -1, 0, 1, 2],
-      [WIDTH * 0.5, -WIDTH * 0.5, 0, WIDTH * 0.5, -WIDTH * 0.5],
+      [WIDTH * 0.3, -WIDTH * 0.5, 0, WIDTH * 0.5, -WIDTH * 0.3],
     );
     const rotateZ = interpolate(value, [-2, -1, 0, 1, 2], [3, -7, 0, 5, -6]);
+    const opacity = interpolate(value, [-2, -1, 0, 1, 2], [0, 0.9, 1, 0.9, 0]);
 
     return {
       transform: [{translateX}, {rotateZ: `${rotateZ}deg`}],
+      opacity,
       zIndex,
     };
   }, []);
