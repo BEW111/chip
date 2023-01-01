@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {Pressable, View} from 'react-native';
-import {Portal, Modal} from 'react-native-paper';
+import {Portal, Modal, Text} from 'react-native-paper';
 
 import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
@@ -19,7 +19,7 @@ import {selectUid} from '../../redux/authSlice';
 import storage from '@react-native-firebase/storage';
 import {styles} from '../../styles';
 
-function ChipModal({visible, setVisible, downloadURL}) {
+function ChipModal({visible, setVisible, downloadURL, chip}) {
   const offset = useSharedValue({x: 0, y: 0});
   const start = useSharedValue({x: 0, y: 0});
   const scale = useSharedValue(1);
@@ -74,20 +74,34 @@ function ChipModal({visible, setVisible, downloadURL}) {
     Gesture.Simultaneous(zoomGesture, rotateGesture),
   );
 
+  function dismiss() {
+    setVisible(false);
+    offset.value = {x: 0, y: 0};
+    start.value = {x: 0, y: 0};
+    scale.value = withSpring(1);
+    savedScale.value = 1;
+    rotation.value = withSpring(0);
+    savedRotation.value = 0;
+  }
+
   return (
     <Modal
-      style={{backgroundColor: 'black'}}
+      style={{backgroundColor: '#000C', marginTop: 0, marginBottom: 0}}
       visible={visible}
-      onDismiss={() => setVisible(false)}>
-      <GestureDetector gesture={composed}>
-        <Animated.View style={[styles.full, animatedStyles]}>
-          {downloadURL ? (
-            <FastImage source={{uri: downloadURL}} style={styles.full} />
-          ) : (
-            <></>
-          )}
-        </Animated.View>
-      </GestureDetector>
+      onDismiss={dismiss}>
+      <Pressable onPress={dismiss}>
+        <GestureDetector gesture={composed}>
+          <Animated.View style={[styles.full, animatedStyles]}>
+            {downloadURL ? (
+              <Pressable>
+                <FastImage source={{uri: downloadURL}} style={styles.full} />
+              </Pressable>
+            ) : (
+              <></>
+            )}
+          </Animated.View>
+        </GestureDetector>
+      </Pressable>
     </Modal>
   );
 }
@@ -108,9 +122,9 @@ export default function ChipDisplayMini({chip}) {
 
   const onLongPress = () => {
     ReactNativeHapticFeedback.trigger('impactMedium');
-    viewScale.value = withSpring(2, {
+    viewScale.value = withSpring(4, {
       damping: 10,
-      mass: 0.1,
+      mass: 0.2,
       stiffness: 100,
     });
     setSelected(true);
@@ -131,12 +145,14 @@ export default function ChipDisplayMini({chip}) {
           visible={selected}
           downloadURL={downloadURL}
           setVisible={setSelected}
+          chip={chip}
         />
       </Portal>
       <Animated.View style={viewAnimatedStyles}>
         <Pressable
           onPressIn={() => {
-            viewScale.value = withSpring(0.95, {
+            // ReactNativeHapticFeedback.trigger('impactLight');
+            viewScale.value = withSpring(1.05, {
               damping: 10,
               mass: 0.1,
               stiffness: 100,
@@ -150,14 +166,8 @@ export default function ChipDisplayMini({chip}) {
               stiffness: 100,
             });
           }}
-          onLongPress={onLongPress}
-          // onPress={() => setSelected(true)}
-        >
-          <View
-            style={{
-              width: '100%',
-              height: '100%',
-            }}>
+          onLongPress={onLongPress}>
+          <View style={styles.full}>
             {downloadURL ? (
               <FastImage
                 source={{uri: downloadURL}}
@@ -172,6 +182,20 @@ export default function ChipDisplayMini({chip}) {
             ) : (
               <></>
             )}
+            <View style={styles.absoluteFullCentered}>
+              <Text variant="headlineSmall" style={{color: 'white'}}>
+                {chip.timeSubmitted.toDate().toLocaleDateString([], {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: '2-digit',
+                })}
+              </Text>
+              <Text variant="headlineSmall" style={{color: 'white'}}>
+                {chip.timeSubmitted
+                  .toDate()
+                  .toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+              </Text>
+            </View>
           </View>
         </Pressable>
       </Animated.View>

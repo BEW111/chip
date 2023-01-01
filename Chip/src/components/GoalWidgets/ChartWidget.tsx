@@ -1,5 +1,4 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,6 +6,7 @@ import BlurSurface from '../BlurSurface';
 import DayOccurrenceChart from '../Charts/DayOccurrenceChart';
 import BarChart from '../Charts/BarChart';
 import {ChipObject} from '../../types';
+import {styles} from '../../styles';
 
 const iconMap: {[key: string]: string} = {
   bar: 'bar-chart-outline',
@@ -21,7 +21,7 @@ interface ChartWidgetProps {
 
 const ChartWidget = ({chips, chartType, title}: ChartWidgetProps) => (
   <BlurSurface padding={4}>
-    <Text variant="titleSmall" style={localStyles.title}>
+    <Text variant="titleSmall" style={styles.widgetTitle}>
       <Icon name={iconMap[chartType]} color={'gray'} size={16} /> {title}
     </Text>
     {chartType === 'bar' ? (
@@ -31,14 +31,5 @@ const ChartWidget = ({chips, chartType, title}: ChartWidgetProps) => (
     )}
   </BlurSurface>
 );
-
-const localStyles = StyleSheet.create({
-  title: {
-    paddingLeft: 10,
-    paddingTop: 4,
-    color: 'gray',
-    textTransform: 'uppercase',
-  },
-});
 
 export default ChartWidget;

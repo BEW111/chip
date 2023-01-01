@@ -108,6 +108,12 @@ export const styles = StyleSheet.create({
   textCentered: {
     textAlign: 'center',
   },
+  widgetTitle: {
+    paddingLeft: 10,
+    paddingTop: 4,
+    color: 'gray',
+    textTransform: 'uppercase',
+  },
 });
 
 export const modalStyles = StyleSheet.create({

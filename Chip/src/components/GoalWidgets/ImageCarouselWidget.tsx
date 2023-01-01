@@ -1,8 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {Surface, Text, IconButton} from 'react-native-paper';
+import {Text, Divider} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {styles} from '../../styles';
 import BlurSurface from '../BlurSurface';
 import ImageStackCarousel from '../GoalDetail/ImageStackCarousel';
 
@@ -12,37 +13,29 @@ export default function ImageCarouselWidget({navigation, chips}) {
   return (
     <BlurSurface padding={2}>
       <View>
-        <View
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-          }}>
-          <Text
-            style={{
-              fontSize: 18,
-              paddingHorizontal: 16,
-              paddingTop: 12,
-            }}>
-            Latest chips
+        <View style={styles.rowSpaceBetween}>
+          <Text variant="titleSmall" style={styles.widgetTitle}>
+            <Icon name={'images-outline'} color={'gray'} size={16} /> Latest
+            Chips
           </Text>
-          <IconButton
+          {/* <IconButton
             icon={'search-circle-outline'}
             size={36}
             style={{margin: -6}}
             color={'black'}
             onPress={() => console.log('image carousel widget')}
-          />
+          /> */}
         </View>
       </View>
-      <View style={styles.container}>
+      <Divider style={styles.dividerSmall} />
+      <View style={localStyles.container}>
         <ImageStackCarousel chips={chips} />
       </View>
     </BlurSurface>
   );
 }
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
     width: '100%',
     overflow: 'visible',
