@@ -16,7 +16,7 @@ export default BlurSurface;
 const localStyles = props =>
   StyleSheet.create({
     blurSurface: {
-      padding: props?.padding ? props.padding : 15,
+      padding: props.padding ? props.padding : 15,
       borderRadius: 10,
     },
   });

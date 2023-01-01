@@ -3,20 +3,14 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
 import {Surface, Text, IconButton} from 'react-native-paper';
+import BlurSurface from '../BlurSurface';
 import ImageStackCarousel from '../GoalDetail/ImageStackCarousel';
 
 const ITEM_WIDTH = 144;
 
 export default function ImageCarouselWidget({navigation, chips}) {
   return (
-    <Surface
-      style={{
-        width: '100%',
-        elevation: 0,
-        borderRadius: 10,
-        backgroundColor: '#FFEEF8',
-        overflow: 'hidden',
-      }}>
+    <BlurSurface padding={2}>
       <View>
         <View
           style={{
@@ -44,13 +38,14 @@ export default function ImageCarouselWidget({navigation, chips}) {
       <View style={styles.container}>
         <ImageStackCarousel chips={chips} />
       </View>
-    </Surface>
+    </BlurSurface>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    overflow: 'visible',
   },
   box: {
     width: ITEM_WIDTH,

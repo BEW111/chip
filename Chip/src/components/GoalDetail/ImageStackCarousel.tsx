@@ -4,7 +4,7 @@ import {interpolate} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import ChipDisplayMini from './ChipDisplayMini';
 
-const WIDTH = 100;
+const WIDTH = 128;
 
 function ImageStackCarousel({chips}) {
   const animationStyle: TAnimationStyle = useCallback((value: number) => {
@@ -14,16 +14,12 @@ function ImageStackCarousel({chips}) {
     const translateX = interpolate(
       value,
       [-2, -1, 0, 1, 2],
-      [WIDTH * 1.5, -WIDTH * 0.5, 0, WIDTH * 0.5, -WIDTH * 1.5],
+      [WIDTH * 0.5, -WIDTH * 0.5, 0, WIDTH * 0.5, -WIDTH * 0.5],
     );
-    const rotateZ = interpolate(
-      value,
-      [-2, -1, 0, 1, 2],
-      [0.17, -0.2, 0, 0.1, -0.15],
-    );
+    const rotateZ = interpolate(value, [-2, -1, 0, 1, 2], [3, -7, 0, 5, -6]);
 
     return {
-      transform: [{translateX}, {rotateZ}],
+      transform: [{translateX}, {rotateZ: `${rotateZ}deg`}],
       zIndex,
     };
   }, []);
@@ -34,21 +30,23 @@ function ImageStackCarousel({chips}) {
     <View style={{flex: 1}}>
       <Carousel
         loop
-        width={128}
-        height={128}
+        width={WIDTH}
+        height={WIDTH}
         autoPlay={false}
         style={{
           width: '100%',
           height: 150,
           justifyContent: 'center',
           alignItems: 'center',
+          overflow: 'visible',
         }}
-        windowSize={5}
         customAnimation={animationStyle}
         data={chips}
         scrollAnimationDuration={1000}
         onSnapToItem={index => console.log('current index:', index)}
-        renderItem={({index}) => <ChipDisplayMini chip={chips[index]} />}
+        renderItem={({index}) => (
+          <ChipDisplayMini index={index} chip={chips[index]} />
+        )}
       />
     </View>
   );

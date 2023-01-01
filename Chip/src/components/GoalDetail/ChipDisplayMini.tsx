@@ -83,16 +83,6 @@ export default function ChipDisplayMini({chip, index}) {
           ) : (
             <></>
           )}
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text style={{color: 'white', fontSize: 24, fontWeight: '700'}}>
-              {index}
-            </Text>
-          </View>
         </View>
       </Pressable>
     </Animated.View>
