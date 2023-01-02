@@ -33,8 +33,12 @@ export default function SignIn({navigation}) {
         console.log(error.code);
         if (error.code === 'auth/wrong-password') {
           setErrorMessage('Incorrect password');
+        } else if (error.code === 'auth/user-not-found') {
+          setErrorMessage('Email not found');
         } else {
-          setErrorMessage(error.code);
+          setErrorMessage(
+            error.code + ' (this code needs a proper message, tell brian pls)',
+          );
         }
         console.error(error);
       });
