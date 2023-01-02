@@ -9,6 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 // Registers a new user from their email and password
 // generates firestore document for the user
 export async function createNewUser(username, email, password, newGoal) {
+  console.log('[createNewUser]');
   try {
     const currentdt = new Date();
 
@@ -25,6 +26,8 @@ export async function createNewUser(username, email, password, newGoal) {
       };
     }
 
+    console.log('[createNewUser] test');
+
     const authResult = await auth().createUserWithEmailAndPassword(
       email,
       password,
@@ -36,6 +39,8 @@ export async function createNewUser(username, email, password, newGoal) {
       displayName: username,
     };
     await auth().currentUser.updateProfile(extraDetails);
+
+    console.log('[createNewUser] User created!');
 
     // Add user doc to firestore (private user data)
     let firestoreResult = await firestore()
@@ -50,7 +55,7 @@ export async function createNewUser(username, email, password, newGoal) {
         goals: [newGoal],
       });
 
-    console.log('User added to firestore!');
+    console.log('[createNewUser] User added to firestore!');
 
     // Add user doc to firestore (public user data)
     firestoreResult = await firestore().collection('usersPublic').doc(UID).set({

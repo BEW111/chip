@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 
-import {Text, Divider} from 'react-native-paper';
+import {Text, Divider, Button} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from '../../styles';
 import BlurSurface from '../BlurSurface';
@@ -9,7 +9,7 @@ import ImageStackCarousel from '../GoalDetail/ImageStackCarousel';
 
 const ITEM_WIDTH = 144;
 
-export default function ImageCarouselWidget({goal, chips}) {
+export default function ImageCarouselWidget({goal, chips, navigation}) {
   return (
     <BlurSurface padding={2}>
       <View>
@@ -35,9 +35,14 @@ export default function ImageCarouselWidget({goal, chips}) {
       ) : (
         <View style={localStyles.containerNone}>
           <Text variant="bodyMedium" style={styles.textCentered}>
-            No photos to show yet. Take advantage of the fresh start and submit
-            a chip!
+            No photos to show yet.
           </Text>
+          <Button
+            onPress={() => {
+              navigation.navigate('Home');
+            }}>
+            Submit a chip to get started!
+          </Button>
         </View>
       )}
     </BlurSurface>

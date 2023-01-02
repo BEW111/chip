@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-
+import React, {useState, useEffect} from 'react';
 import {
   Pressable,
   View,
@@ -16,7 +15,6 @@ import {
   SegmentedButtons,
   Divider,
   Surface,
-  IconButton,
   useTheme,
 } from 'react-native-paper';
 import EmojiPicker from 'rn-emoji-keyboard';
@@ -28,10 +26,17 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  withRepeat,
+  withTiming,
+  Easing,
 } from 'react-native-reanimated';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
+import {
+  selectNewlyCreated,
+  selectUid,
+  updateNewlyCreated,
+} from '../../redux/authSlice';
 
 import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
@@ -68,6 +73,20 @@ export default function AddGoalWidget() {
   const dispatch = useDispatch();
 
   const uid = useSelector(selectUid);
+  const isNewUser = useSelector(selectNewlyCreated);
+
+  useEffect(() => {
+    if (isNewUser) {
+      surfaceScale.value = withRepeat(
+        withTiming(1.05, {
+          duration: 1000,
+          easing: Easing.out(Easing.exp),
+        }),
+        -1,
+        true,
+      );
+    }
+  }, []);
 
   return (
     <>
@@ -188,6 +207,7 @@ export default function AddGoalWidget() {
                       setGoalFreqAmtInput(0);
                       setGoalFreqInput('daily');
                       hideModal();
+                      dispatch(updateNewlyCreated(false));
                     }}>
                     Make it happen
                   </Button>

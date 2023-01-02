@@ -272,7 +272,11 @@ export default function GoalPage({navigation, route}) {
               title={pluralize(goal.units, 2) + ' by day'}
             />
             <Divider style={styles.dividerSmall} />
-            <ImageCarouselWidget goal={goal} chips={chips} />
+            <ImageCarouselWidget
+              goal={goal}
+              chips={chips}
+              navigation={navigation}
+            />
           </ScrollView>
         </View>
       </BackgroundWrapper>

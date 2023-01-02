@@ -24,6 +24,8 @@ export default function OnboardingRegister({navigation}) {
 
   const newGoal = useSelector(selectNewGoal);
 
+  const dispatch = useDispatch();
+
   async function onRegisterPressed() {
     // Check for more obvious errors
     if (usernameText === '') {
@@ -41,6 +43,8 @@ export default function OnboardingRegister({navigation}) {
         passText,
         newGoal,
       );
+
+      dispatch(updateNewlyCreated(true));
 
       if (result.status === 'error') {
         if (result.code === 'auth/email-already-in-use') {

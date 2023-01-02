@@ -33,6 +33,7 @@ import {
   updateUserGoals,
   updateFriends,
   updateInvitesSent,
+  selectNewlyCreated,
 } from './src/redux/authSlice';
 
 import theme from './src/theme';
@@ -58,6 +59,8 @@ const Stack = createNativeStackNavigator();
 function MainTabs() {
   const insets = useSafeAreaInsets();
 
+  const isNewUser = useSelector(selectNewlyCreated);
+
   return (
     <View style={styles.expand}>
       <FastImage source={backgroundImage} style={styles.absoluteFull} />
@@ -67,7 +70,7 @@ function MainTabs() {
           initialLayout={{
             width: Dimensions.get('window').width,
           }}
-          initialRouteName="Home"
+          initialRouteName={isNewUser ? 'Analytics' : 'Home'}
           style={{
             paddingBottom: insets.bottom,
           }}
