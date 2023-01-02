@@ -27,7 +27,6 @@ export async function createSuperstreak(
       doc.data().goals.includes(recepientGoalId),
     ).length > 0
   ) {
-    console.log('error');
     return {
       status: 'error',
       message: 'This superstreak has already been created',

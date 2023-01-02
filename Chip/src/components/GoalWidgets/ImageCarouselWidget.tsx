@@ -27,10 +27,19 @@ export default function ImageCarouselWidget({goal, chips}) {
           /> */}
         </View>
       </View>
-      <Divider style={styles.dividerSmall} />
-      <View style={localStyles.container}>
-        <ImageStackCarousel goal={goal} chips={chips} />
-      </View>
+      {chips.length > 0 ? (
+        <View style={localStyles.container}>
+          <Divider style={styles.dividerSmall} />
+          <ImageStackCarousel goal={goal} chips={chips} />
+        </View>
+      ) : (
+        <View style={localStyles.containerNone}>
+          <Text variant="bodyMedium" style={styles.textCentered}>
+            No photos to show yet. Take advantage of the fresh start and submit
+            a chip!
+          </Text>
+        </View>
+      )}
     </BlurSurface>
   );
 }
@@ -39,6 +48,14 @@ const localStyles = StyleSheet.create({
   container: {
     width: '100%',
     overflow: 'visible',
+  },
+  containerNone: {
+    width: '100%',
+    height: 80,
+    overflow: 'visible',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
   box: {
     width: ITEM_WIDTH,

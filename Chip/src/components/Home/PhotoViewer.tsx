@@ -33,7 +33,7 @@ function HabitPopup({
     <Pressable onPress={() => Keyboard.dismiss()}>
       <BlurSurface blurType="light" style={styles.widthAlmostFull}>
         <View style={styles.centered}>
-          <Text variant="titleLarge">Edit habit info</Text>
+          <Text variant="titleLarge">Edit chip info</Text>
         </View>
         <Divider style={styles.dividerMedium} />
         <View
@@ -198,7 +198,7 @@ function PhotoViewer({photoSource}) {
             left: 20,
             bottom: 30,
           }}>
-          Habit details
+          Chip details
         </Button>
       )}
       <Button

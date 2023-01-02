@@ -155,7 +155,8 @@ export default function BarChart({chips, chartHeightProp}) {
   const barMaxHeight = chartHeight - paddingVertical * 2 - dateTextSpace; // height of the bar section of the chart in svg coords
 
   // Calculating bar heights and ticker values
-  const ymax = getNearestCleanNumber(maxDailyAmount); // max height in "habit" coordinates
+  let ymax = getNearestCleanNumber(maxDailyAmount); // max height in "habit" coordinates
+  ymax = ymax || 1.25;
   const barHeights = dailyAmounts.map(
     dailyAmount => (dailyAmount * barMaxHeight) / ymax,
   );
