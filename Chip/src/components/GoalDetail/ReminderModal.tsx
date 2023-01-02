@@ -148,6 +148,8 @@ function AddReminderScreen({hideModal, goalName, goalId}) {
         </View>
       </View>
       <Divider style={styles.dividerSmall} />
+      <Text>Reminder frequency</Text>
+      <Divider style={styles.dividerTiny} />
       <SegmentedButtons
         style={modalStyles.segmentedButtons}
         value={reminderFrequency}
@@ -177,6 +179,8 @@ function AddReminderScreen({hideModal, goalName, goalId}) {
         ]}
       />
       <Divider style={styles.dividerSmall} />
+      <Text>Reminder type</Text>
+      <Divider style={styles.dividerTiny} />
       <SegmentedButtons
         style={modalStyles.segmentedButtons}
         value={reminderIntent}
@@ -191,18 +195,18 @@ function AddReminderScreen({hideModal, goalName, goalId}) {
           },
           {
             value: 'prepare',
-            label: 'Prepare',
+            label: 'Prep ahead',
             style: {
               width: '33.3%',
             },
           },
-          {
-            value: 'remind',
-            label: 'Passive',
-            style: {
-              width: '33.3%',
-            },
-          },
+          // {
+          //   value: 'remind',
+          //   label: 'Motivational',
+          //   style: {
+          //     width: '33.3%',
+          //   },
+          // },
         ]}
       />
       <Divider style={styles.dividerMedium} />
