@@ -41,7 +41,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
     title: g.name,
     value: g.id,
   }));
-  const [otherUserGoals, setOtherUserGoals] = useState([]);
+  // const [otherUserGoals, setOtherUserGoals] = useState([]);
   const [otherUserMenuItems, setOtherUserMenuItems] = useState([]);
   const [thisUserSelected, setThisUserSelected] = useState({});
   const [otherUserSelected, setOtherUserSelected] = useState({});
@@ -54,9 +54,15 @@ function ChallengeUserModal({visible, hideModal, user}) {
 
   async function updateOtherUserGoals() {
     if (visible) {
-      const g = await getGoalsPublic(user.uid);
-      setOtherUserGoals(g);
-      console.log('test');
+      const otherUserGoals = await getGoalsPublic(user.uid);
+      if (otherUserGoals.length > 0) {
+        setOtherUserMenuItems(
+          otherUserGoals.map(g => ({
+            title: g.name,
+            value: g.id,
+          })),
+        );
+      }
     }
   }
 
@@ -73,14 +79,6 @@ function ChallengeUserModal({visible, hideModal, user}) {
 
   useEffect(() => {
     updateOtherUserGoals();
-    if (otherUserGoals.length > 0) {
-      setOtherUserMenuItems(
-        otherUserGoals.map(g => ({
-          title: g.name,
-          value: g.id,
-        })),
-      );
-    }
   }, [user.uid, visible]);
 
   return (
