@@ -56,6 +56,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
     if (visible) {
       const g = await getGoalsPublic(user.uid);
       setOtherUserGoals(g);
+      console.log('test');
     }
   }
 
