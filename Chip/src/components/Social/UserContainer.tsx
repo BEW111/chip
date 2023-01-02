@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import FastImage from 'react-native-fast-image';
 import {
   Button,
   Divider,
@@ -8,18 +7,22 @@ import {
   IconButton,
   Modal,
   Portal,
+  SegmentedButtons,
+  useTheme,
+  HelperText,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
-
-import profileDefault from '../../../assets/profile-default.png';
 
 import {selectUid, selectUserGoals} from '../../redux/authSlice';
 import {inviteUser, acceptInvite} from '../../firebase/friends';
 
 import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
-import {createSuperstreak} from '../../firebase/superstreaks';
+import {
+  createSuperstreak,
+  getSuperstreaksByUser,
+} from '../../firebase/superstreaks';
 
 import {PublicUser} from '../../types';
 
@@ -35,16 +38,22 @@ interface UserContainerType {
 }
 
 function ChallengeUserModal({visible, hideModal, user}) {
+  const theme = useTheme();
+
   const currentUserUid = useSelector(selectUid);
   const thisUserGoals = useSelector(selectUserGoals);
   const thisUserMenuItems = thisUserGoals.map(g => ({
     title: g.name,
     value: g.id,
   }));
-  // const [otherUserGoals, setOtherUserGoals] = useState([]);
   const [otherUserMenuItems, setOtherUserMenuItems] = useState([]);
   const [thisUserSelected, setThisUserSelected] = useState({});
   const [otherUserSelected, setOtherUserSelected] = useState({});
+  const [existingSuperstreaks, setExistingSuperstreaks] = useState([]);
+
+  const [tab, setTab] = useState('create');
+
+  const [displayError, setDisplayError] = useState('');
 
   function onDismiss() {
     setThisUserSelected({});
@@ -52,8 +61,9 @@ function ChallengeUserModal({visible, hideModal, user}) {
     hideModal();
   }
 
-  async function updateOtherUserGoals() {
+  async function updateOtherUserInfo() {
     if (visible) {
+      // update other user goals
       const otherUserGoals = await getGoalsPublic(user.uid);
       if (otherUserGoals.length > 0) {
         setOtherUserMenuItems(
@@ -63,22 +73,60 @@ function ChallengeUserModal({visible, hideModal, user}) {
           })),
         );
       }
+
+      // update info for existing superstreaks
+      let existing = await getSuperstreaksByUser(user.uid);
+      existing = existing.filter(superstreak =>
+        superstreak.users.includes(currentUserUid),
+      );
+      if (existing.length > 0) {
+        setExistingSuperstreaks(
+          existing.map(superstreak => ({
+            goalData: superstreak.goals.map(goalId => {
+              const filteredThis = thisUserGoals.filter(
+                goal => goal.id === goalId,
+              );
+              const filteredOther = otherUserGoals.filter(
+                goal => goal.id === goalId,
+              );
+              return filteredThis.length > 0
+                ? filteredThis[0]
+                : filteredOther[0];
+            }),
+            ...superstreak,
+          })),
+        );
+      }
     }
   }
 
   async function onRequestSuperstreak() {
+    if (!thisUserSelected.value || !otherUserSelected.value) {
+      // Missing values
+      return;
+    }
     // const thisGoal = g
-    createSuperstreak(
+    const result = await createSuperstreak(
       currentUserUid,
       user.uid,
       thisUserSelected.value,
       otherUserSelected.value,
       'daily',
     );
+
+    if (result?.status === 'error') {
+      setDisplayError('This superstreak already exists');
+      return;
+    }
+
+    setThisUserSelected({});
+    setOtherUserSelected({});
+    setTab('manage');
+    setDisplayError('');
   }
 
   useEffect(() => {
-    updateOtherUserGoals();
+    updateOtherUserInfo();
   }, [user.uid, visible]);
 
   return (
@@ -96,35 +144,78 @@ function ChallengeUserModal({visible, hideModal, user}) {
       </View>
       <Divider style={styles.dividerSmall} />
       <View style={styles.row}>
-        <Icon name="bonfire-outline" size={18} />
+        <Icon name="bonfire-outline" size={22} />
         <Divider style={styles.dividerHTiny} />
-        <Text variant="titleMedium" style={{fontWeight: 'bold'}}>
-          Manage superstreaks
+        <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+          Superstreaks
         </Text>
       </View>
-      <Divider style={styles.dividerTiny} />
+      <Divider style={styles.dividerSmall} />
+      <SegmentedButtons
+        style={modalStyles.segmentedButtons}
+        value={tab}
+        onValueChange={setTab}
+        buttons={[
+          {
+            value: 'create',
+            label: 'Create',
+          },
+          {
+            value: 'manage',
+            label: 'Manage',
+          },
+        ]}
+      />
       {/* <Text variant="bodyLarge">
         Pick a goal for you and @{user.username} to keep a streak on together.
         If either of you breaks your goal, then the superstreak restarts.
       </Text> */}
       <Divider style={styles.dividerTiny} />
-      <InputFieldMenu
-        label={'Your goal'}
-        items={thisUserMenuItems}
-        textInputStyle={modalStyles.textInput}
-        onSelectedChange={item => setThisUserSelected(item)}
-      />
-      <Divider style={styles.dividerSmall} />
-      <InputFieldMenu
-        label={'@' + user.username + "'s goal"}
-        items={otherUserMenuItems}
-        textInputStyle={modalStyles.textInput}
-        onSelectedChange={item => setOtherUserSelected(item)}
-      />
-      <Divider style={styles.dividerSmall} />
-      <Button mode="contained" onPress={onRequestSuperstreak}>
-        Create
-      </Button>
+      {tab === 'create' ? (
+        <>
+          <InputFieldMenu
+            label={'Your goal'}
+            items={thisUserMenuItems}
+            textInputStyle={modalStyles.textInput}
+            onSelectedChange={item => setThisUserSelected(item)}
+          />
+          <Divider style={styles.dividerTiny} />
+          <InputFieldMenu
+            label={'@' + user.username + "'s goal"}
+            items={otherUserMenuItems}
+            textInputStyle={modalStyles.textInput}
+            onSelectedChange={item => setOtherUserSelected(item)}
+          />
+          <HelperText type="error" visible={displayError !== ''}>
+            {displayError}
+          </HelperText>
+          <Divider style={styles.dividerSmall} />
+          <Button mode="contained" onPress={onRequestSuperstreak}>
+            Create
+          </Button>
+        </>
+      ) : (
+        existingSuperstreaks.length > 0 &&
+        existingSuperstreaks.map(superstreak => (
+          <>
+            <Divider style={styles.dividerTiny} />
+            <View
+              key={superstreak.goals.join('')}
+              style={{
+                padding: 8,
+                paddingLeft: 12,
+                backgroundColor: 'white',
+                borderColor: theme.colors.outline,
+                borderWidth: 1,
+                borderRadius: 6,
+              }}>
+              <Text variant="bodyLarge">
+                {superstreak.goalData.map(goal => goal.name).join(' & ')}
+              </Text>
+            </View>
+          </>
+        ))
+      )}
     </Modal>
   );
 }
@@ -144,7 +235,6 @@ function UserContainer(props: UserContainerType) {
   async function onSendInvite() {
     console.log('[onSendInvite]');
     const result = await inviteUser(currentUserUid, user.uid, dispatch);
-    // console.log(result);
   }
 
   async function onAcceptInvite() {

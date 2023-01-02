@@ -14,6 +14,26 @@ export async function createSuperstreak(
   iterationPeriod: GoalIterationPeriod,
 ) {
   console.log('[createSuperstreak]');
+
+  // check if superstreak already exists
+  const superstreaksSender = await firestore()
+    .collection('superstreaks')
+    .where('goals', 'array-contains', senderGoalId)
+    .get();
+
+  // TODO: make scalable (firebase doesn't support multiple "where" queries with array-contains)
+  if (
+    superstreaksSender.docs.map(doc =>
+      doc.data().goals.includes(recepientGoalId),
+    ).length > 0
+  ) {
+    console.log('error');
+    return {
+      status: 'error',
+      message: 'This superstreak has already been created',
+    };
+  }
+
   let now = new Date();
   const currentdt = firestore.Timestamp.fromDate(now);
 
@@ -32,16 +52,23 @@ export async function createSuperstreak(
     iterationPeriod: iterationPeriod, // TODO: validate that this is the same for both
   };
 
-  console.log(superstreak);
-
   await firestore().collection('superstreaks').add(superstreak);
 }
 
 // get all superstreaks for a particular goal
-export async function getSuperstreaks(goalId: string) {
+export async function getSuperstreaksByGoal(goalId: string) {
   const superstreaks = await firestore()
     .collection('superstreaks')
     .where('goals', 'array-contains', goalId)
+    .get();
+  return superstreaks.docs.map(doc => doc.data());
+}
+
+// get all superstreaks shared with a particular user
+export async function getSuperstreaksByUser(uid: string) {
+  const superstreaks = await firestore()
+    .collection('superstreaks')
+    .where('users', 'array-contains', uid)
     .get();
   return superstreaks.docs.map(doc => doc.data());
 }
@@ -125,5 +152,13 @@ export async function checkSuperstreaksReset(goalId: string) {
   );
 
   const result = await batch.commit();
+  return result;
+}
+
+export async function deleteSuperstreak(id: string) {
+  console.log('Deleting superstreak');
+
+  const result = await firestore().collection('superstreaks').doc(id).delete();
+
   return result;
 }

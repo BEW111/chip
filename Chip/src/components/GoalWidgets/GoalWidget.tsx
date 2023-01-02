@@ -11,7 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import BlurSurface from '../BlurSurface';
 import {styles} from '../../styles';
-import {getSuperstreaks} from '../../firebase/superstreaks';
+import {getSuperstreaksByGoal} from '../../firebase/superstreaks';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/authSlice';
 import ProfileImageDisplay from '../ProfileImageDisplay';
@@ -19,7 +19,9 @@ import ProfileImageDisplay from '../ProfileImageDisplay';
 function GoalBadges({goal}) {
   const [superstreaks, setSuperstreaks] = useState([]);
   useEffect(() => {
-    getSuperstreaks(goal.id).then(dataArray => setSuperstreaks(dataArray));
+    getSuperstreaksByGoal(goal.id).then(dataArray =>
+      setSuperstreaks(dataArray),
+    );
   }, [goal]);
 
   const currentUser = useSelector(selectUid);
