@@ -95,7 +95,9 @@ export default function Home() {
         flash: flash,
       }),
     );
-    dispatch(toggleViewingPhoto());
+    if (flash === 'off') {
+      dispatch(toggleViewingPhoto());
+    }
   }
 
   // Take photo button

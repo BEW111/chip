@@ -36,6 +36,7 @@ export const chipSubmitterSlice = createSlice({
         isStatic: true,
         uri: action.payload,
       };
+      state.viewingPhoto = true;
     });
   },
 });
