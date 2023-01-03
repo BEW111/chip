@@ -1,3 +1,8 @@
+## Contents
+- `Chip`: main folder for the iOS app itself
+- `chip-backend`: currently unused, was considering migrating to Django but sticking to Firebase for now
+- `chip-lab`: data analysis on goal data and habit data
+
 ## Running
 
 ### iOS
