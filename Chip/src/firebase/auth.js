@@ -19,8 +19,9 @@ export async function createNewUser(username, email, password, newGoal) {
       .where('username', '==', username)
       .get();
     if (snapshot.docs.length > 0) {
+      console.log('test2');
       return {
-        status: 'success',
+        status: 'error',
         code: 'user/username-taken',
         message: 'This username is already taken',
       };
