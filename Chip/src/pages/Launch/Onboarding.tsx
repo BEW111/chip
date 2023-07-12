@@ -39,13 +39,10 @@ export default function Onboarding({navigation}) {
             <FastImage source={chipHeader} style={localStyles(0).header} />
           </View>
           <Divider style={styles.dividerMedium} />
-          <View>
-            <OnboardingCarousel />
-          </View>
         </View>
         <View
           style={{
-            bottom: insets.bottom + 40,
+            bottom: insets.bottom + 150,
           }}>
           <Button
             mode="contained"
