@@ -5,7 +5,7 @@ import FastImage from 'react-native-fast-image';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
   SafeAreaProvider,
@@ -72,23 +72,34 @@ function MainTabs() {
           }}
           initialRouteName={isNewUser ? 'Analytics' : 'Home'}
           style={{
-            paddingBottom: insets.bottom,
+            paddingBottom: insets.bottom - 15,
           }}
           screenOptions={{
             tabBarActiveTintColor: '#e91e63',
-            tabBarLabelStyle: {fontSize: 24},
             tabBarStyle: {backgroundColor: 'rgba(0, 0, 0, 0)'},
             tabBarShowLabel: false,
             tabBarIndicatorStyle: {
-              backgroundColor: 'rgba(255, 255, 255, 0.7)',
+              backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}>
           <Tab.Screen
             name="Social"
             component={Social}
             options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{color, textTransform: 'none'}}>
+                  Friend Activity
+                </Text>
+              ),
+              tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    margin: -2, // This is for centering the icon correctly
+                  }}>
                   <Icon
                     name={focused ? 'people-circle' : 'people-circle-outline'}
                     color={color}
@@ -102,7 +113,14 @@ function MainTabs() {
             name="Home"
             component={Home}
             options={{
-              tabBarShowLabel: false,
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{color, textTransform: 'none'}}>
+                  Record Goal
+                </Text>
+              ),
+              tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
                 <View style={{alignItems: 'center', margin: -3}}>
                   <Icon
@@ -118,7 +136,15 @@ function MainTabs() {
             name="Analytics"
             component={Analytics}
             options={{
-              tabBarShowLabel: false,
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{color, textTransform: 'none'}}>
+                  Progress
+                </Text>
+              ),
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
                 <View style={{alignItems: 'center', margin: -3}}>
                   <Icon
