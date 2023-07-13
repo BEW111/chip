@@ -11,6 +11,8 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import auth from '@react-native-firebase/auth';
@@ -237,13 +239,16 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <SafeAreaProvider>
-        <PaperProvider
-          theme={theme}
-          settings={{
-            icon: props => <Icon {...props} />,
-          }}>
-          <Main />
-        </PaperProvider>
+        {/* Note that Paper may have modals, so we need to have the gesture handler above that */}
+        <GestureHandlerRootView style={styles.expand}>
+          <PaperProvider
+            theme={theme}
+            settings={{
+              icon: props => <Icon {...props} />,
+            }}>
+            <Main />
+          </PaperProvider>
+        </GestureHandlerRootView>
       </SafeAreaProvider>
     </StoreProvider>
   );
