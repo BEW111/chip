@@ -5,10 +5,11 @@ import {
   fetchStoriesSuccess,
   fetchStoriesFailure,
 } from '../slices/storiesSlice';
+import {UserStoryGroup} from '../../types/stories';
 
 function* fetchStoriesSaga() {
   try {
-    const stories = yield call(fetchStoriesFromFirestore);
+    const stories: UserStoryGroup[] = yield call(fetchStoriesFromFirestore);
     yield put(fetchStoriesSuccess(stories));
   } catch (error) {
     yield put(fetchStoriesFailure(error.message));

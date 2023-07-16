@@ -282,7 +282,6 @@ const goalSurfaceStyles = StyleSheet.create({
     width: '100%',
     padding: 14,
     paddingVertical: 8,
-    elevation: 0,
     borderRadius: 10,
     display: 'flex',
     alignItems: 'center',

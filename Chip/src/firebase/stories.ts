@@ -9,9 +9,9 @@ export async function fetchStoriesFromFirestore() {
           posted: 'date here',
           image: 'cool image of bob',
           message: 'hi im bob',
+          viewed: false,
         },
       ],
-      unviewedStoriesIndices: [0],
     },
     {
       user: 'blair',
@@ -20,9 +20,9 @@ export async function fetchStoriesFromFirestore() {
           posted: 'date here',
           image: 'cool image of blair',
           message: 'blair message',
+          viewed: false,
         },
       ],
-      unviewedStoriesIndices: [0],
     },
     {
       user: 'tj strawberry',
@@ -31,14 +31,15 @@ export async function fetchStoriesFromFirestore() {
           posted: 'date here',
           image: 'cool image of tj',
           message: '🍓',
+          viewed: false,
         },
         {
           posted: 'date here',
           image: 'another cool image of tj',
           message: 'tj on that strawberry',
+          viewed: false,
         },
       ],
-      unviewedStoriesIndices: [0, 1],
     },
     {
       user: 'casey',
@@ -47,9 +48,9 @@ export async function fetchStoriesFromFirestore() {
           posted: 'date here',
           image: 'cool image of casey',
           message: 'casey message',
+          viewed: false,
         },
       ],
-      unviewedStoriesIndices: [0],
     },
   ];
 

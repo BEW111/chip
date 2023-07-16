@@ -1,36 +1,37 @@
 // Content feed and stories
 
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, ScrollView, Pressable} from 'react-native';
 import {Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import StoryView from '../components/Stories/StoryView';
 
-import {StoryData, UserStoryGroup} from '../types/stories';
+import {UserStoryGroup} from '../types/stories';
 
 import {styles} from '../styles';
 import {
+  viewStoryByUserIdx,
+  fetchStoriesRequest,
   selectAllStoryGroups,
-  selectCurrentUserViewing,
-  setCurrentUserViewing,
+  selectCurrentUserViewingIdx,
 } from '../redux/slices/storiesSlice';
 
-// StoryButton displays an icon with the user and when pressed, will open up the stories
+// StoryAvatar displays an icon with the user and when pressed, will open up the stories
 // for that user
-type StoryButtonProps = {
+type StoryAvatarProps = {
   user: string;
+  userIdx: number;
   viewed: boolean;
-  openStories: () => void;
-  closeStories: () => void;
 };
 
-const StoryButton = ({user, viewed}: StoryButtonProps) => {
+const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
   const dispatch = useAppDispatch();
 
   const openUserStories = () => {
-    dispatch(setCurrentUserViewing(user));
+    dispatch(viewStoryByUserIdx(userIdx));
   };
 
   return (
@@ -63,36 +64,35 @@ const StoryButton = ({user, viewed}: StoryButtonProps) => {
   );
 };
 
-// Component to show when the user is viewing stories currently
-type StoriesViewProps = {
-  currentStoryUser: StoryData;
-};
-function StoriesView() {
-  return (
-    <View style={styles.fullPaddedDark}>
-      <Text>Stories viewer</Text>
-    </View>
-  );
-}
-
 export default function Home() {
   // This is normally where we would pull the data from Firebase
   const userStoriesData = useAppSelector(selectAllStoryGroups);
-  const currentUserViewing = useAppSelector(selectCurrentUserViewing);
+  const currentUserViewingIdx = useAppSelector(selectCurrentUserViewingIdx);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchStoriesRequest());
+  }, [dispatch]);
 
   return (
     <View style={styles.fullDark}>
       <FocusAwareStatusBar animated={true} barStyle="light-content" />
-      {currentUserViewing && <StoriesView />}
+      {currentUserViewingIdx !== null && <StoryView />}
       <SafeAreaView>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {userStoriesData.map((userStories: UserStoryGroup) => (
-            <StoryButton
-              key={userStories.user}
-              user={userStories.user}
-              viewed={userStories.unviewedStoriesIndices.length === 0}
-            />
-          ))}
+          {userStoriesData.map(
+            (userStoryGroup: UserStoryGroup, userIdx: number) => (
+              <StoryAvatar
+                key={`${userStoryGroup.user}-${userIdx}`}
+                user={userStoryGroup.user}
+                userIdx={userIdx}
+                viewed={
+                  userStoryGroup.stories.filter(story => !story.viewed)
+                    .length === 0
+                }
+              />
+            ),
+          )}
         </ScrollView>
       </SafeAreaView>
     </View>
