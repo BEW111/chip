@@ -7,7 +7,7 @@ import {updateAndCheckStreakIncremented} from './goals';
 
 // export async function editUsername(username, UID)
 
-// Submits a chip to firestore
+// Submits a chip to firestore (uploads it locally)
 export async function submitChip(
   photoFile,
   goalId: string,

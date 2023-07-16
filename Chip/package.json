@@ -60,7 +60,6 @@
     "@types/d3": "^7.4.0",
     "@types/jest": "^26.0.23",
     "@types/pluralize": "^0.0.29",
-    "@types/react-native": "^0.69.3",
     "@types/react-native-vector-icons": "^6.4.12",
     "@types/react-native-wheel-pick": "^1.1.2",
     "@types/react-test-renderer": "^18.0.0",

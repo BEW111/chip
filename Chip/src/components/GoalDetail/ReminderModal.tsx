@@ -20,7 +20,7 @@ import {
   //   onDisplayNotification,
   //   onCreateTriggerNotification,
   //   requestNotificationsPermission,
-} from '../../reminders/reminders';
+} from '../../notifications/reminders';
 
 import {styles, modalStyles} from '../../styles';
 import {datePlainFormat, timePlainFormat} from '../../utils/utils';

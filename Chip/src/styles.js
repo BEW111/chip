@@ -21,6 +21,11 @@ export const styles = StyleSheet.create({
     height: '100%',
     paddingHorizontal: 20,
   },
+  fullDark: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#0E1011',
+  },
   absoluteFull: {
     position: 'absolute',
     width: '100%',

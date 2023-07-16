@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import {Dimensions, View, LogBox} from 'react-native';
+import {Dimensions, View, LogBox, ColorValue, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
@@ -23,9 +23,14 @@ import {useSelector, useDispatch} from 'react-redux';
 import Onboarding from './src/pages/Launch/Onboarding';
 import OnboardingRegister from './src/pages/Launch/OnboardingRegister';
 import SignIn from './src/pages/Launch/SignIn';
+
+// Main pages
 import Home from './src/pages/Home';
-import Analytics from './src/pages/Goals/Analytics';
 import Social from './src/pages/Social';
+import Track from './src/pages/Track';
+import Analytics from './src/pages/Goals/Analytics';
+import Settings from './src/pages/Settings';
+
 import {
   selectInitializing,
   selectUser,
@@ -49,8 +54,9 @@ import {
   getGoals,
 } from './src/firebase/goals';
 import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
+import {requestNotificationsPermission} from './src/notifications/reminders';
 
-// temp fix
+// TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
 ]);
@@ -58,10 +64,29 @@ LogBox.ignoreLogs([
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
+type VariableIconProps = {
+  focused: boolean;
+  iconName: string;
+  color?: number | ColorValue | undefined;
+};
+const VariableIcon = ({focused, iconName, color}: VariableIconProps) => (
+  <View style={localStyles({color}).tabIcon}>
+    <Icon
+      name={focused ? iconName : `${iconName}-outline`}
+      color={color}
+      size={28}
+    />
+  </View>
+);
+
 function MainTabs() {
   const insets = useSafeAreaInsets();
-
   const isNewUser = useSelector(selectNewlyCreated);
+
+  // Only want to get the message token and check for permissions when we're logged in
+  useEffect(() => {
+    requestNotificationsPermission();
+  }, []);
 
   return (
     <View style={styles.expand}>
@@ -72,45 +97,20 @@ function MainTabs() {
           initialLayout={{
             width: Dimensions.get('window').width,
           }}
-          initialRouteName={isNewUser ? 'Analytics' : 'Home'}
+          initialRouteName={isNewUser ? 'Analytics' : 'Track'}
           style={{
-            paddingBottom: insets.bottom - 15,
+            paddingBottom: insets.bottom,
           }}
           screenOptions={{
             tabBarActiveTintColor: '#e91e63',
-            tabBarStyle: {backgroundColor: 'rgba(0, 0, 0, 0)'},
-            tabBarShowLabel: false,
+            tabBarStyle: {
+              backgroundColor: 'rgba(0, 0, 0, 0)',
+              paddingBottom: 0,
+            },
             tabBarIndicatorStyle: {
               backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}>
-          <Tab.Screen
-            name="Social"
-            component={Social}
-            options={{
-              tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={{color, textTransform: 'none'}}>
-                  Friend Activity
-                </Text>
-              ),
-              tabBarShowLabel: true,
-              tabBarIcon: ({focused, color}) => (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    margin: -2, // This is for centering the icon correctly
-                  }}>
-                  <Icon
-                    name={focused ? 'people-circle' : 'people-circle-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
-              ),
-            }}
-          />
           <Tab.Screen
             name="Home"
             component={Home}
@@ -118,19 +118,67 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{color, textTransform: 'none'}}>
-                  Record Goal
+                  style={{
+                    color,
+                    textTransform: 'none',
+                    marginBottom: -10,
+                  }}>
+                  Home
                 </Text>
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
-                  <Icon
-                    name={focused ? 'camera' : 'camera-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
+                <VariableIcon iconName="home" focused={focused} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Social"
+            component={Social}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{
+                    color,
+                    textTransform: 'none',
+                    marginBottom: -10,
+                  }}>
+                  Friends
+                </Text>
+              ),
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="people-circle"
+                  focused={focused}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Track"
+            component={Track}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{
+                    color,
+                    textTransform: 'none',
+                    marginBottom: -10,
+                  }}>
+                  Track goal
+                </Text>
+              ),
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="camera"
+                  focused={focused}
+                  color={color}
+                />
               ),
             }}
           />
@@ -141,20 +189,48 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{color, textTransform: 'none'}}>
-                  Progress
+                  style={{
+                    color,
+                    textTransform: 'none',
+                    marginBottom: -10,
+                  }}>
+                  Goals
                 </Text>
               ),
               tabBarLabelStyle: {fontSize: 12},
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
-                  <Icon
-                    name={focused ? 'stats-chart' : 'stats-chart-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
+                <VariableIcon
+                  iconName="stats-chart"
+                  focused={focused}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="You"
+            component={Settings}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={{
+                    color,
+                    textTransform: 'none',
+                    marginBottom: -10,
+                  }}>
+                  You
+                </Text>
+              ),
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="person"
+                  focused={focused}
+                  color={color}
+                />
               ),
             }}
           />
@@ -253,3 +329,19 @@ export default function App() {
     </StoreProvider>
   );
 }
+
+type LocalStylesGeneratorType = {
+  color: ColorValue | number | undefined;
+};
+const localStyles = (props: LocalStylesGeneratorType) =>
+  StyleSheet.create({
+    tabLabel: {
+      color: props.color,
+      textTransform: 'none',
+      marginBottom: -10,
+    },
+    tabIcon: {
+      alignItems: 'center',
+      margin: -2, // This is for centering the icon correctly
+    },
+  });

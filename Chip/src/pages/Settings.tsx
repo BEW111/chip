@@ -23,7 +23,7 @@ import {styles} from '../styles';
 
 import profileDefault from '../../assets/profile-default.png';
 import {uploadProfileImage, updateUsername} from '../firebase/auth';
-import ProfileImage from './ProfileImageDisplay';
+import ProfileImage from '../components/ProfileImageDisplay';
 
 export default function Settings(props) {
   const user = useSelector(selectUser);
@@ -64,15 +64,6 @@ export default function Settings(props) {
     <Pressable onPress={() => setEditingUsername(false)} style={styles.expand}>
       <DrawerContentScrollView {...props} style={styles.expand}>
         <View style={styles.fullPaddedHorizontal}>
-          <IconButton
-            icon={'chevron-back-outline'}
-            size={32}
-            style={{margin: -2}}
-            onPress={() =>
-              props.navigation.dispatch(DrawerActions.closeDrawer())
-            }
-          />
-          <Divider style={styles.dividerMedium} />
           <View style={styles.row}>
             <ProfileImage self width={64} height={64} />
             <Divider style={styles.dividerHSmall} />

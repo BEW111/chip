@@ -16,7 +16,6 @@ import GoalWidget from '../../components/GoalWidgets/GoalWidget';
 import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 
-import Settings from '../../components/Settings';
 import Header from '../../components/Analytics/Header';
 import GoalPage from './GoalPage';
 import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
@@ -76,18 +75,6 @@ function MainPage({navigation}) {
           }}>
           <Header navigation={navigation}>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Goals</Text>
-            <View style={{position: 'absolute', display: 'flex', right: 4}}>
-              <IconButton
-                icon="person-circle-outline"
-                size={36}
-                style={{
-                  marginVertical: -5,
-                }}
-                onPress={() => {
-                  navigation.toggleDrawer();
-                }}
-              />
-            </View>
           </Header>
           <ScrollView contentContainerStyle={{padding: 16}} style={{flex: 1}}>
             <ChartWidget
@@ -110,34 +97,12 @@ function MainPage({navigation}) {
   );
 }
 
-function AnalyticsLandingPage() {
-  return (
-    <SettingsDrawer.Navigator
-      initialRouteName="AnalyticsMain"
-      drawerContent={props => <Settings {...props} />}>
-      <SettingsDrawer.Screen
-        name="AnalyticsMain"
-        component={MainPage}
-        options={{
-          headerShown: false,
-          drawerPosition: 'right',
-          drawerType: 'front',
-          drawerStyle: {
-            width: '100%',
-            height: '100%',
-          },
-        }}
-      />
-    </SettingsDrawer.Navigator>
-  );
-}
-
 export default function AnalyticsPage() {
   return (
     <Stack.Navigator initialRouteName="AnalyticsLandingPage">
       <Stack.Screen
         name="AnalyticsLandingPage"
-        component={AnalyticsLandingPage}
+        component={MainPage}
         options={{headerShown: false}}
       />
       <Stack.Screen

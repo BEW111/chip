@@ -50,6 +50,7 @@ export async function scheduleNotification(
   console.log('notification scheduled');
 }
 
+// Unused currently
 export async function onCreateTriggerNotification(date) {
   const date1 = new Date();
   date1.setHours(10);
@@ -94,7 +95,7 @@ export async function onDisplayNotification() {
     body: 'Main body content of the notification',
     android: {
       channelId,
-      smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+      smallIcon: 'ic_launcher', // optional, defaults to 'ic_launcher'.
       // pressAction is needed if you want the notification to open the app when pressed
       pressAction: {
         id: 'default',

@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Goal, ProfileImage} from '../types';
+import {Goal} from '../types';
 import {RootState} from './store';
 
 interface AuthState {
@@ -10,7 +10,6 @@ interface AuthState {
   userGoals: Goal[];
   friends: string[];
   invitesSent: string[];
-  // profileImage: ProfileImage | null;
 }
 
 interface AddUserGoalPayload {
@@ -37,11 +36,22 @@ interface DeleteUserGoalPayload {
   goalId: string;
 }
 
+// const initialState: AuthState = {
+//   initializing: true,
+//   newlyCreated: false,
+//   user: null,
+//   uid: null,
+//   // profileImage: null,
+//   userGoals: [],
+//   friends: [],
+//   invitesSent: [],
+// };
+
 const initialState: AuthState = {
-  initializing: true,
+  initializing: false,
   newlyCreated: false,
-  user: null,
-  uid: null,
+  user: {displayName: 'bob'},
+  uid: '123',
   // profileImage: null,
   userGoals: [],
   friends: [],

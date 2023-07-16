@@ -4,6 +4,7 @@ import authReducer from './authSlice';
 import chipSubmitterReducer from './chipSubmitterSlice';
 import onboardingReducer from './onboardingSlice';
 import analyticsReducer from './analyticsSlice';
+import storiesReducer from './storiesSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     chipSubmitter: chipSubmitterReducer,
     onboarding: onboardingReducer,
     analytics: analyticsReducer,
+    stories: storiesReducer,
   },
 });
 
