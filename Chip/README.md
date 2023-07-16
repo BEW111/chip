@@ -1,9 +1,5 @@
 # Chip
 
-Share and upgrade your lifestyle
-
-<br/>
-
 ## Dependencies
 
 I've listed all dependencies below, but you should be able to do `npm install` to install all packages in `package.json`.
