@@ -14,7 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useSelector, useDispatch} from 'react-redux';
 
-import {selectUid, selectUserGoals} from '../../redux/authSlice';
+import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
 import {inviteUser, acceptInvite} from '../../firebase/friends';
 
 import {styles, modalStyles} from '../../styles';

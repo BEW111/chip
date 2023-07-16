@@ -25,7 +25,7 @@ import {
   takePhoto,
   toggleViewingPhoto,
   selectPhotoSource,
-} from '../redux/chipSubmitterSlice';
+} from '../redux/slices/chipSubmitterSlice';
 
 import pictureButtonOutside from '../../assets/picture-button-outside.png';
 import pictureButtonInside from '../../assets/picture-button-inside.png';

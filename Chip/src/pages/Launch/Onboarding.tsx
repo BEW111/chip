@@ -6,7 +6,7 @@ import FastImage from 'react-native-fast-image';
 
 import {useDispatch} from 'react-redux';
 
-import {updateNewGoal} from '../../redux/onboardingSlice';
+import {updateNewGoal} from '../../redux/slices/onboardingSlice';
 
 // import GoalGalaxyView from '../components/GoalGalaxy/GoalGalaxyView';
 import {styles} from '../../styles';

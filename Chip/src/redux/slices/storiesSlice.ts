@@ -1,72 +1,27 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from './store';
+import {RootState} from '../store';
 
-import {UserStoryGroup} from '../types/stories';
+import {UserStoryGroup} from '../../types/stories';
 
 // We assume that based on the way we have implemented the functionality
 // for adding the stories, that the users are sorted in reverse order
 // of the last story added
 type StoriesState = {
   userStoryGroups: UserStoryGroup[];
+  storiesLoading: boolean;
+  storiesError: string | null;
   currentUserViewing: string | null;
 };
 
-const storiesDemoData: UserStoryGroup[] = [
-  {
-    user: 'bob',
-    stories: [
-      {
-        posted: 'date here',
-        image: 'cool image of bob',
-        message: 'hi im bob',
-      },
-    ],
-    unviewedStoriesIndices: [0],
-  },
-  {
-    user: 'blair',
-    stories: [
-      {
-        posted: 'date here',
-        image: 'cool image of blair',
-        message: 'blair message',
-      },
-    ],
-    unviewedStoriesIndices: [0],
-  },
-  {
-    user: 'tj strawberry',
-    stories: [
-      {
-        posted: 'date here',
-        image: 'cool image of tj',
-        message: '🍓',
-      },
-      {
-        posted: 'date here',
-        image: 'another cool image of tj',
-        message: 'tj on that strawberry',
-      },
-    ],
-    unviewedStoriesIndices: [0, 1],
-  },
-  {
-    user: 'casey',
-    stories: [
-      {
-        posted: 'date here',
-        image: 'cool image of casey',
-        message: 'casey message',
-      },
-    ],
-    unviewedStoriesIndices: [0],
-  },
-];
-
 const initialState: StoriesState = {
-  userStoryGroups: storiesDemoData,
+  userStoryGroups: [],
+  storiesLoading: false,
+  storiesError: null,
   currentUserViewing: null, // the current user for the stories we're viewing right now
 };
+
+// Payloads
+type FetchStoriesSuccessPayload = UserStoryGroup[];
 
 export const storiesSlice = createSlice({
   name: 'stories',
@@ -86,10 +41,31 @@ export const storiesSlice = createSlice({
     setCurrentUserViewing: (state, action: PayloadAction<string>) => {
       state.currentUserViewing = action.payload;
     },
+    fetchStoriesRequest: state => {
+      state.storiesLoading = true;
+    },
+    fetchStoriesSuccess: (
+      state,
+      action: PayloadAction<FetchStoriesSuccessPayload>,
+    ) => {
+      state.userStoryGroups = action.payload;
+      state.storiesError = null;
+      state.storiesLoading = false;
+    },
+    fetchStoriesFailure: (state, action: PayloadAction<string>) => {
+      state.storiesError = action.payload;
+      state.storiesLoading = false;
+    },
   },
 });
 
-export const {markAsViewed, setCurrentUserViewing} = storiesSlice.actions;
+export const {
+  markAsViewed,
+  setCurrentUserViewing,
+  fetchStoriesRequest,
+  fetchStoriesSuccess,
+  fetchStoriesFailure,
+} = storiesSlice.actions;
 export const selectAllStoryGroups = (state: RootState) =>
   state.stories.userStoryGroups;
 export const selectCurrentUserViewing = (state: RootState) =>

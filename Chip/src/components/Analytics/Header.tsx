@@ -15,8 +15,8 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
-import {updateSelectedGoal} from '../../redux/analyticsSlice';
+import {selectUid} from '../../redux/slices/authSlice';
+import {updateSelectedGoal} from '../../redux/slices/analyticsSlice';
 
 export default function Header(props, {navigation}) {
   const insets = useSafeAreaInsets();

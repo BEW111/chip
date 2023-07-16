@@ -6,8 +6,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 import {useSelector, useDispatch} from 'react-redux';
 
-import {updateNewlyCreated} from '../../redux/authSlice';
-import {selectNewGoal} from '../../redux/onboardingSlice';
+import {updateNewlyCreated} from '../../redux/slices/authSlice';
+import {selectNewGoal} from '../../redux/slices/onboardingSlice';
 
 import {createNewUser} from '../../firebase/auth';
 

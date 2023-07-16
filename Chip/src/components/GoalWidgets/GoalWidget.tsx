@@ -13,7 +13,7 @@ import BlurSurface from '../BlurSurface';
 import {styles} from '../../styles';
 import {getSuperstreaksByGoal} from '../../firebase/superstreaks';
 import {useSelector} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
+import {selectUid} from '../../redux/slices/authSlice';
 import ProfileImageDisplay from '../ProfileImageDisplay';
 
 function GoalBadges({goal}) {

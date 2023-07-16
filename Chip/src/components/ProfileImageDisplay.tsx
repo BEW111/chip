@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 import storage from '@react-native-firebase/storage';
 
 import {getUser} from '../firebase/usersPublic';
-import {selectUid} from '../redux/authSlice';
+import {selectUid} from '../redux/slices/authSlice';
 import profileDefault from '../../assets/profile-default.png';
 import {ProfileImage} from '../types';
 

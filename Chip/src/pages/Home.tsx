@@ -4,18 +4,18 @@ import React, {useState} from 'react';
 import {View, ScrollView, Pressable} from 'react-native';
 import {Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch, useSelector} from 'react-redux';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
-import {StoryData, UserStoryGroup} from '../types';
+import {StoryData, UserStoryGroup} from '../types/stories';
 
 import {styles} from '../styles';
 import {
   selectAllStoryGroups,
   selectCurrentUserViewing,
   setCurrentUserViewing,
-} from '../redux/storiesSlice';
+} from '../redux/slices/storiesSlice';
 
 // StoryButton displays an icon with the user and when pressed, will open up the stories
 // for that user
@@ -27,7 +27,7 @@ type StoryButtonProps = {
 };
 
 const StoryButton = ({user, viewed}: StoryButtonProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const openUserStories = () => {
     dispatch(setCurrentUserViewing(user));
@@ -77,8 +77,8 @@ function StoriesView() {
 
 export default function Home() {
   // This is normally where we would pull the data from Firebase
-  const userStoriesData = useSelector(selectAllStoryGroups);
-  const currentUserViewing = useSelector(selectCurrentUserViewing);
+  const userStoriesData = useAppSelector(selectAllStoryGroups);
+  const currentUserViewing = useAppSelector(selectCurrentUserViewing);
 
   return (
     <View style={styles.fullDark}>

@@ -16,7 +16,7 @@ import {FAB, ActivityIndicator, Divider} from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
+import {selectUid} from '../../redux/slices/authSlice';
 
 import {ChipObject} from './Analytics';
 import Header from '../../components/Analytics/Header';

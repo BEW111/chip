@@ -36,7 +36,7 @@ import {
   selectNewlyCreated,
   selectUid,
   updateNewlyCreated,
-} from '../../redux/authSlice';
+} from '../../redux/slices/authSlice';
 
 import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';

@@ -41,7 +41,7 @@ import {
   updateFriends,
   updateInvitesSent,
   selectNewlyCreated,
-} from './src/redux/authSlice';
+} from './src/redux/slices/authSlice';
 
 import theme from './src/theme';
 import {styles} from './src/styles';

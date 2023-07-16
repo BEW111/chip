@@ -15,7 +15,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 import pluralize from 'pluralize';
 
-import {selectUid} from '../../redux/authSlice';
+import {selectUid} from '../../redux/slices/authSlice';
 
 import storage from '@react-native-firebase/storage';
 import {styles, modalStyles} from '../../styles';

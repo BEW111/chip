@@ -9,7 +9,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import firestore from '@react-native-firebase/firestore';
 
 import {useSelector} from 'react-redux';
-import {selectUid, selectUserGoals} from '../../redux/authSlice';
+import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
 import {Goal} from '../../types';
 
 import GoalWidget from '../../components/GoalWidgets/GoalWidget';

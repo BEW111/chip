@@ -12,7 +12,7 @@ import {
   updateInvitesSent,
   updateFriends,
   addFriend,
-} from '../redux/authSlice';
+} from '../redux/slices/authSlice';
 
 // export function useReceivedInvites(uid: string) {
 //   const [received, setReceived] = useState([]);

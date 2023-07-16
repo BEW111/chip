@@ -14,7 +14,7 @@ import {
   updateInvitesSent,
   updateFriends,
   addFriend,
-} from '../redux/authSlice';
+} from '../redux/slices/authSlice';
 
 const QUERY_LIMITS = 10;
 

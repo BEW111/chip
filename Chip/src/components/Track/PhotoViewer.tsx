@@ -9,9 +9,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
 import BlurSurface from '../BlurSurface';
 
-import {toggleViewingPhoto} from '../../redux/chipSubmitterSlice';
+import {toggleViewingPhoto} from '../../redux/slices/chipSubmitterSlice';
 import {submitChip} from '../../firebase/chips';
-import {selectUid, selectUserGoals} from '../../redux/authSlice';
+import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
 import {Goal} from '../../types';
 import {styles} from '../../styles';
 import {dispatchRefreshUserGoals} from '../../firebase/goals';

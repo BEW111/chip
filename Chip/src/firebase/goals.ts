@@ -15,7 +15,7 @@ import {
   updateUserGoalName,
   deleteUserGoal,
   addUserGoal,
-} from '../redux/authSlice';
+} from '../redux/slices/authSlice';
 import {Dispatch} from '@reduxjs/toolkit';
 import {
   checkSuperstreaksReset,

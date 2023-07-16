@@ -6,7 +6,11 @@ import {useSelector} from 'react-redux';
 
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
-import {selectUid, selectInvitesSent, selectFriends} from '../redux/authSlice';
+import {
+  selectUid,
+  selectInvitesSent,
+  selectFriends,
+} from '../redux/slices/authSlice';
 import {searchUsers, getUser, getUsers} from '../firebase/usersPublic';
 import {useReceivedInvites} from '../firebase/friends';
 

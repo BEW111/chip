@@ -12,7 +12,7 @@ import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {useSelector} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
+import {selectUid} from '../../redux/slices/authSlice';
 
 import {
   requestNotificationsPermission,

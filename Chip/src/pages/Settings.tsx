@@ -18,7 +18,7 @@ import FastImage from 'react-native-fast-image';
 
 import auth from '@react-native-firebase/auth';
 import {useSelector} from 'react-redux';
-import {selectUid, selectUser} from '../redux/authSlice';
+import {selectUid, selectUser} from '../redux/slices/authSlice';
 import {styles} from '../styles';
 
 import profileDefault from '../../assets/profile-default.png';

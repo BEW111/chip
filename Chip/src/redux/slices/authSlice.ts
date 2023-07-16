@@ -1,4 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {Goal} from '../types';
 import {RootState} from './store';
 
@@ -36,27 +37,41 @@ interface DeleteUserGoalPayload {
   goalId: string;
 }
 
-// const initialState: AuthState = {
-//   initializing: true,
-//   newlyCreated: false,
-//   user: null,
-//   uid: null,
-//   // profileImage: null,
-//   userGoals: [],
-//   friends: [],
-//   invitesSent: [],
-// };
-
 const initialState: AuthState = {
-  initializing: false,
+  initializing: true,
   newlyCreated: false,
-  user: {displayName: 'bob'},
-  uid: '123',
+  user: null,
+  uid: null,
   // profileImage: null,
   userGoals: [],
   friends: [],
   invitesSent: [],
 };
+
+export const initializeAuth = createAsyncThunk(
+  'auth/initialize',
+  async (arg, {dispatch, getState}) => {
+    const subscriber = auth().onAuthStateChanged(async newUser => {
+      if (newUser) {
+        dispatch(updateUser(newUser.toJSON()));
+        dispatch(updateUid(newUser.uid));
+
+        const goals = await dispatch(fetchGoals(newUser.uid));
+        dispatch(checkAllStreaksReset({uid: newUser.uid, goals: goals}));
+        dispatch(refreshInvitesAndFriends(newUser.uid));
+      } else {
+        dispatch(logout());
+      }
+
+      if (getState().auth.initializing) {
+        dispatch(updateInitializing(false));
+      }
+    });
+
+    // Return the subscriber so that you can unsubscribe when this thunk is cancelled or fails
+    return subscriber;
+  },
+);
 
 export const authSlice = createSlice({
   name: 'auth',
