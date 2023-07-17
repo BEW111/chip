@@ -5,7 +5,7 @@ import authReducer from './slices/authSlice';
 import chipSubmitterReducer from './slices/chipSubmitterSlice';
 import onboardingReducer from './slices/onboardingSlice';
 import analyticsReducer from './slices/analyticsSlice';
-import storiesReducer from './slices/storiesSlice';
+import storyFeedReducer from './slices/storyFeedSlice';
 import rootSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -16,7 +16,7 @@ export const store = configureStore({
     chipSubmitter: chipSubmitterReducer,
     onboarding: onboardingReducer,
     analytics: analyticsReducer,
-    stories: storiesReducer,
+    storyFeed: storyFeedReducer,
   },
   middleware: getDefaultMiddleware => [
     ...getDefaultMiddleware(),

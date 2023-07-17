@@ -1,61 +1,74 @@
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import {FirebaseStorageTypes} from '@react-native-firebase/storage';
+
 import {ChipObject} from '../types';
+import {PhotoSource} from '../types/camera';
 
-import {updateAndCheckStreakIncremented} from './goals';
+// Creates a storage reference (synchronously) for a photo
+// We expect PhotoSource to be valid
+export function createPhotoStorageReference(
+  photoSource: PhotoSource,
+  uid: string,
+) {
+  // Throw a proper error here if there is no photo
+  if (photoSource.uri) {
+    let localPath = photoSource.uri;
+    let photoNameIndex = localPath.lastIndexOf('/') + 1;
+    let photoName = localPath.slice(photoNameIndex);
 
-// export async function editUsername(username, UID)
+    // Create a storage reference to the file that will be uploaded
+    const url = `user/${uid}/chip-photo/${photoName}`;
+    let reference: FirebaseStorageTypes.Reference = storage().ref(url);
 
-// Submits a chip to firestore (uploads it locally)
-export async function submitChip(
-  photoFile,
+    return {
+      localPath: photoSource.uri,
+      photoName,
+      reference,
+    };
+  } else {
+    throw Error('No photoSource.uri provided');
+  }
+}
+
+// Uploads a local photo to cloud storage, given a reference and local path
+export async function uploadChipPhoto(
+  reference: FirebaseStorageTypes.Reference,
+  localPath: string,
+) {
+  try {
+    await reference.putFile(localPath);
+  } catch {
+    throw Error('Uploading photo to cloud storage failed');
+  }
+}
+
+// Uploads chip info to Firestore, given a photo name and chip data
+export async function uploadChip(
   goalId: string,
   desc: string,
   uid: string,
   amount: number,
+  photoName: string,
 ) {
   const currentdt = new Date();
-
-  let localPath = null;
-  let photoNameIndex = null;
-
-  let reference: FirebaseStorageTypes.Reference | null = null;
-
-  // we may be developing on the simulator
-  // TODO: should throw an actual error in prod?
-  if (photoFile.uri) {
-    localPath = photoFile.uri;
-    photoNameIndex = localPath.lastIndexOf('/') + 1;
-
-    // Create a storage reference to the file that will be uploaded
-    const url = `user/${uid}/chip-photo/${localPath.slice(photoNameIndex)}`;
-    reference = storage().ref(url);
-  } else {
-    console.log('No photo provided');
-  }
-
   const chip: ChipObject = {
     goalId: goalId,
     description: desc,
     timeSubmitted: firestore.Timestamp.fromDate(currentdt),
-    photo: localPath ? localPath.slice(photoNameIndex) : null,
+    photo: photoName,
     amount: amount,
   };
 
-  console.log('Chip being submitted: ' + chip);
-
-  // Upload file to storage
-  if (reference) {
-    console.log('Uploading image');
-    await reference.putFile(localPath);
+  try {
+    await firestore()
+      .collection('users')
+      .doc(uid)
+      .collection('chips')
+      .add(chip);
+  } catch {
+    throw Error('Uploading chip to Firestore failed');
   }
-
-  // Upload the chip to firestore
-  await firestore().collection('users').doc(uid).collection('chips').add(chip);
-
-  // Check if streak should be incremented
-  await updateAndCheckStreakIncremented(uid, goalId, amount);
 }
 
 // Deletes a particular chip

@@ -4,12 +4,16 @@ import {
   fetchStoriesRequest,
   fetchStoriesSuccess,
   fetchStoriesFailure,
-} from '../slices/storiesSlice';
-import {UserStoryGroup} from '../../types/stories';
+} from '../slices/storyFeedSlice';
+import {FeedUserStoryGroup} from '../../types/stories';
+import {PayloadAction} from '@reduxjs/toolkit';
 
-function* fetchStoriesSaga() {
+function* fetchStoriesSaga(action: PayloadAction<string>) {
   try {
-    const stories: UserStoryGroup[] = yield call(fetchStoriesFromFirestore);
+    const stories: FeedUserStoryGroup[] = yield call(
+      fetchStoriesFromFirestore,
+      action.payload,
+    );
     yield put(fetchStoriesSuccess(stories));
   } catch (error) {
     yield put(fetchStoriesFailure(error.message));

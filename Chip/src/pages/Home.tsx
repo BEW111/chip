@@ -9,7 +9,7 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import StoryView from '../components/Stories/StoryView';
 
-import {UserStoryGroup} from '../types/stories';
+import {FeedUserStoryGroup} from '../types/stories';
 
 import {styles} from '../styles';
 import {
@@ -17,17 +17,20 @@ import {
   fetchStoriesRequest,
   selectAllStoryGroups,
   selectCurrentUserViewingIdx,
-} from '../redux/slices/storiesSlice';
+  selectCurrentStoryUser,
+} from '../redux/slices/storyFeedSlice';
+import {selectUid} from '../redux/slices/authSlice';
+import ProfileImageDisplay from '../components/ProfileImageDisplay';
 
 // StoryAvatar displays an icon with the user and when pressed, will open up the stories
 // for that user
 type StoryAvatarProps = {
-  user: string;
+  uid: string;
   userIdx: number;
   viewed: boolean;
 };
 
-const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
+const StoryAvatar = ({uid, userIdx, viewed}: StoryAvatarProps) => {
   const dispatch = useAppDispatch();
 
   const openUserStories = () => {
@@ -48,17 +51,7 @@ const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
           alignItems: 'center',
           margin: 8,
         }}>
-        <View
-          style={{
-            borderRadius: 100,
-            backgroundColor: 'pink',
-            height: 96,
-            width: 96,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text>{user}</Text>
-        </View>
+        <ProfileImageDisplay height={96} width={96} uid={uid} />
       </View>
     </Pressable>
   );
@@ -69,10 +62,11 @@ export default function Home() {
   const userStoriesData = useAppSelector(selectAllStoryGroups);
   const currentUserViewingIdx = useAppSelector(selectCurrentUserViewingIdx);
   const dispatch = useAppDispatch();
+  const currentUid = useAppSelector(selectUid);
 
   useEffect(() => {
-    dispatch(fetchStoriesRequest());
-  }, [dispatch]);
+    dispatch(fetchStoriesRequest(currentUid));
+  }, [dispatch, currentUid]);
 
   return (
     <View style={styles.fullDark}>
@@ -80,19 +74,17 @@ export default function Home() {
       {currentUserViewingIdx !== null && <StoryView />}
       <SafeAreaView>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {userStoriesData.map(
-            (userStoryGroup: UserStoryGroup, userIdx: number) => (
-              <StoryAvatar
-                key={`${userStoryGroup.user}-${userIdx}`}
-                user={userStoryGroup.user}
-                userIdx={userIdx}
-                viewed={
-                  userStoryGroup.stories.filter(story => !story.viewed)
-                    .length === 0
-                }
-              />
-            ),
-          )}
+          {userStoriesData.map((userStoryGroup, userIdx: number) => (
+            <StoryAvatar
+              key={`${userStoryGroup.uid}-${userIdx}`}
+              uid={userStoryGroup.uid}
+              userIdx={userIdx}
+              viewed={
+                userStoryGroup.stories.filter(story => !story.viewed).length ===
+                0
+              }
+            />
+          ))}
         </ScrollView>
       </SafeAreaView>
     </View>

@@ -5,13 +5,13 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../store';
 
-import {UserStoryGroup} from '../../types/stories';
+import {FeedUserStoryGroup} from '../../types/stories';
 
 // We assume that based on the way we have implemented the functionality
 // for adding the stories, that the users are sorted in reverse order
 // of the last story added
 type StoriesState = {
-  userStoryGroups: UserStoryGroup[];
+  userStoryGroups: FeedUserStoryGroup[];
   storiesLoading: boolean;
   storiesError: string | null;
   currentUserViewingIdx: number | null;
@@ -30,10 +30,10 @@ const initialState: StoriesState = {
 
 // Payloads
 type ViewStoryByUserIdxPayload = number;
-type FetchStoriesSuccessPayload = UserStoryGroup[];
+type FetchStoriesSuccessPayload = FeedUserStoryGroup[];
 
-export const storiesSlice = createSlice({
-  name: 'stories',
+export const storyFeedSlice = createSlice({
+  name: 'storyFeed',
   initialState,
   reducers: {
     // We want to find the first story of this user that hasn't been viewed,
@@ -166,7 +166,7 @@ export const storiesSlice = createSlice({
       state.justViewedNewStory = false;
     },
     // Saga actions
-    fetchStoriesRequest: state => {
+    fetchStoriesRequest: (state, _action: PayloadAction<string>) => {
       state.storiesLoading = true;
     },
     fetchStoriesSuccess: (
@@ -191,23 +191,33 @@ export const {
   fetchStoriesRequest,
   fetchStoriesSuccess,
   fetchStoriesFailure,
-} = storiesSlice.actions;
+} = storyFeedSlice.actions;
 export const selectAllStoryGroups = (state: RootState) =>
-  state.stories.userStoryGroups;
+  state.storyFeed.userStoryGroups;
 export const selectCurrentUserViewingIdx = (state: RootState) =>
-  state.stories.currentUserViewingIdx;
+  state.storyFeed.currentUserViewingIdx;
 export const selectCurrentStoryViewingIdx = (state: RootState) =>
-  state.stories.currentStoryViewingIdx;
+  state.storyFeed.currentStoryViewingIdx;
+export const selectCurrentStoryUser = (state: RootState) => {
+  if (state.storyFeed.currentUserViewingIdx !== null) {
+    return state.storyFeed.userStoryGroups[
+      state.storyFeed.currentUserViewingIdx
+    ].uid;
+  } else {
+    return null;
+  }
+};
 export const selectCurrentStoryData = (state: RootState) => {
   if (
-    state.stories.currentUserViewingIdx !== null &&
-    state.stories.currentStoryViewingIdx !== null
+    state.storyFeed.currentUserViewingIdx !== null &&
+    state.storyFeed.currentStoryViewingIdx !== null
   ) {
-    return state.stories.userStoryGroups[state.stories.currentUserViewingIdx]
-      .stories[state.stories.currentStoryViewingIdx];
+    return state.storyFeed.userStoryGroups[
+      state.storyFeed.currentUserViewingIdx
+    ].stories[state.storyFeed.currentStoryViewingIdx];
   } else {
     return null;
   }
 };
 
-export default storiesSlice.reducer;
+export default storyFeedSlice.reducer;

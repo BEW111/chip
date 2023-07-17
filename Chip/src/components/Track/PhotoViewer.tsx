@@ -3,13 +3,18 @@ import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector, useDispatch} from 'react-redux';
+import {useAppDispatch} from '../../redux/hooks';
+
 import pluralize from 'pluralize';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
 import BlurSurface from '../BlurSurface';
 
-import {toggleViewingPhoto} from '../../redux/slices/chipSubmitterSlice';
+import {
+  chipSubmissionStart,
+  toggleViewingPhoto,
+} from '../../redux/slices/chipSubmitterSlice';
 import {submitChip} from '../../firebase/chips';
 import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
 import {Goal} from '../../types';
@@ -86,7 +91,7 @@ function HabitPopup({
           right={
             <TextInput.Affix
               text={pluralize(
-                getGoalFromId(currentId).units,
+                getGoalFromId(currentId).units || 'units',
                 parseFloat(chipAmount),
               )}
             />
@@ -135,7 +140,7 @@ function HabitPopup({
 function PhotoViewer({photoSource}) {
   const insets = useSafeAreaInsets();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const uid = useSelector(selectUid);
 
   const userGoals: Goal[] = useSelector(selectUserGoals);
@@ -206,16 +211,25 @@ function PhotoViewer({photoSource}) {
         mode="contained"
         onPress={() => {
           dispatch(toggleViewingPhoto());
-          if (uid) {
-            submitChip(
-              photoSource,
-              selectedGoalId,
-              chipDescription,
+          dispatch(
+            chipSubmissionStart({
+              photoSource: photoSource,
+              goalId: selectedGoalId,
+              desc: chipDescription,
               uid,
-              parseFloat(chipAmount),
-            );
-            dispatchRefreshUserGoals(uid, dispatch);
-          }
+              amount: parseFloat(chipAmount),
+            }),
+          );
+          // if (uid) {
+          //   submitChip(
+          //     photoSource,
+          //     selectedGoalId,
+          //     chipDescription,
+          //     uid,
+          //     parseFloat(chipAmount),
+          //   );
+          //   dispatchRefreshUserGoals(uid, dispatch);
+          // }
         }}
         contentStyle={{flexDirection: 'row-reverse', alignItems: 'center'}}
         style={{

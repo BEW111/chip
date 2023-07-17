@@ -231,7 +231,11 @@ export default function ChipDisplayMini({chip, goal}) {
       const newURL = await storage().ref(path).getDownloadURL();
       setDownloadURL(newURL);
     }
-    grabURL();
+    try {
+      grabURL();
+    } catch {
+      console.error('Could not find download URL for chip image');
+    }
   }, [path]);
 
   return (

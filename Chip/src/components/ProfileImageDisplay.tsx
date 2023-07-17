@@ -4,7 +4,6 @@ import FastImage from 'react-native-fast-image';
 import {useSelector} from 'react-redux';
 import storage from '@react-native-firebase/storage';
 
-import {getUser} from '../firebase/usersPublic';
 import {selectUid} from '../redux/slices/authSlice';
 import profileDefault from '../../assets/profile-default.png';
 import {ProfileImage} from '../types';
@@ -18,25 +17,30 @@ interface ProfileImageProps {
 }
 
 const ProfileImageDisplay = (props: ProfileImageProps) => {
-  const [publicProfileImage, setPublicProfileImage] = useState(null);
+  const [publicProfileImage, setPublicProfileImage] = useState<{
+    uri: string;
+  } | null>(null);
   const uid = useSelector(selectUid);
 
-  async function setUserProfileImage() {
-    if (props?.uid || props?.self) {
-      const path = `user/${
-        props?.self ? uid : props.uid
-      }/profile-image/profile`;
-      const newURL = await storage().ref(path).getDownloadURL();
-
-      setPublicProfileImage({
-        uri: newURL,
-      });
-    }
-  }
-
   useEffect(() => {
+    async function setUserProfileImage() {
+      if (props?.uid || props?.self) {
+        const path = `user/${
+          props?.self ? uid : props.uid
+        }/profile-image/profile`;
+        try {
+          const newURL = await storage().ref(path).getDownloadURL();
+          setPublicProfileImage({
+            uri: newURL,
+          });
+        } catch {
+          console.error(`No profile image found for user ${props.uid}`);
+        }
+      }
+    }
+
     setUserProfileImage();
-  }, []);
+  }, [props?.uid, props?.self, uid]);
 
   const img = () => {
     if (publicProfileImage) {
