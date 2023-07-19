@@ -31,35 +31,35 @@ function MainPage({navigation}) {
   const userGoals = useSelector(selectUserGoals);
 
   const [loading, setLoading] = useState(false); // Set loading to true on component mount
-  const [chips, setChips] = useState([]);
+  // const [chips, setChips] = useState([]);
   // const selectedGoal = useSelector(selectSelectedGoal);
 
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(uid)
-      .collection('chips')
-      .onSnapshot(querySnapshot => {
-        if (querySnapshot) {
-          let newChips = [];
-          querySnapshot.forEach(documentSnapshot => {
-            newChips.push({
-              ...documentSnapshot.data(),
-              key: documentSnapshot.id,
-            });
-          });
-          newChips = newChips.sort((a, b) =>
-            a.timeSubmitted < b.timeSubmitted ? 1 : -1,
-          );
-          setChips(newChips);
-        }
+  // useEffect(() => {
+  //   const subscriber = firestore()
+  //     .collection('users')
+  //     .doc(uid)
+  //     .collection('chips')
+  //     .onSnapshot(querySnapshot => {
+  //       if (querySnapshot) {
+  //         let newChips = [];
+  //         querySnapshot.forEach(documentSnapshot => {
+  //           newChips.push({
+  //             ...documentSnapshot.data(),
+  //             key: documentSnapshot.id,
+  //           });
+  //         });
+  //         newChips = newChips.sort((a, b) =>
+  //           a.timeSubmitted < b.timeSubmitted ? 1 : -1,
+  //         );
+  //         setChips(newChips);
+  //       }
 
-        setLoading(false);
-      });
+  //       setLoading(false);
+  //     });
 
-    // Unsubscribe from events when no longer in use
-    return () => subscriber();
-  }, []);
+  //   // Unsubscribe from events when no longer in use
+  //   return () => subscriber();
+  // }, []);
 
   if (loading) {
     return <ActivityIndicator />;
@@ -77,11 +77,11 @@ function MainPage({navigation}) {
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>Goals</Text>
           </Header>
           <ScrollView contentContainerStyle={{padding: 16}} style={{flex: 1}}>
-            <ChartWidget
+            {/* <ChartWidget
               chartType="day-occurrence"
               title="your activity"
               chips={chips}
-            />
+            /> */}
             <Divider style={styles.dividerSmall} />
             {userGoals.map((goal: Goal) => (
               <View key={goal.id}>

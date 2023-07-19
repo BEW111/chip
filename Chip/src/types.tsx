@@ -16,24 +16,6 @@ export interface PublicUser {
   profileImage?: ProfileImage;
 }
 
-export interface Goal {
-  id: string; // actual identifier of the goal
-  name: string; // display name of the goal
-  timeCreated: FirebaseFirestoreTypes.Timestamp;
-  description?: string;
-  type?: GoalType;
-  category?: string;
-  streak: number;
-  streakMet: boolean;
-  iterationPeriod: GoalIterationPeriod;
-  iterationAmount: number;
-  iterationUnits: string;
-  currentIterationProgress: number;
-  currentIterationStart: FirebaseFirestoreTypes.Timestamp;
-  visibility: GoalVisibility;
-  emoji: string;
-}
-
 type UserGoalMap = {
   [key: string]: string;
 };
@@ -71,10 +53,6 @@ export interface DatabaseResponse {
   code: string;
   message: string;
 }
-
-export type GoalVisibility = 'public' | 'private';
-export type GoalType = 'form' | 'break' | 'do';
-export type GoalIterationPeriod = 'daily' | 'weekly';
 
 export interface ProfileImage {
   uri: string;

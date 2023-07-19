@@ -1,12 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DefaultProfileImage from '../../assets/profile-default.png';
 
-import {
-  useGetCurrentProfileQuery,
-  useGetProfilesQuery,
-} from '../redux/supabaseApi';
+import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 
 interface ProfileImageProps {
   height: number;
@@ -17,11 +14,7 @@ interface ProfileImageProps {
 }
 
 const AvatarDisplay = (props: ProfileImageProps) => {
-  const {
-    data: profile,
-    error: profileError,
-    isLoading: profileIsLoading,
-  } = useGetCurrentProfileQuery();
+  const {data: profile} = useGetCurrentProfileQuery();
 
   let image = {
     uri: '',

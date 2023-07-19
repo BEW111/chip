@@ -184,7 +184,7 @@ function MainTabs() {
               ),
             }}
           />
-          {/* <Tab.Screen
+          <Tab.Screen
             name="Analytics"
             component={Analytics}
             options={{
@@ -209,7 +209,7 @@ function MainTabs() {
                 />
               ),
             }}
-          /> */}
+          />
           <Tab.Screen
             name="You"
             component={Settings}
@@ -250,7 +250,7 @@ function Main() {
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
-      dispatch(updateUid(newSession?.user));
+      dispatch(updateUid(newSession?.user.id));
     });
 
     const {

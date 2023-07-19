@@ -1,18 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
 
 // Components
-import {
-  Button,
-  Divider,
-  Drawer,
-  IconButton,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import {Button, Divider, IconButton, Text, TextInput} from 'react-native-paper';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {launchImageLibrary} from 'react-native-image-picker';
-import FastImage from 'react-native-fast-image';
 import AvatarDisplay from '../components/AvatarDisplay';
 
 import {styles} from '../styles';
@@ -22,14 +14,9 @@ import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/storage';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profile';
-import {ProfileImage} from '../types/profiles';
 
 export default function Settings(props) {
-  const {
-    data: profile,
-    error: profileError,
-    isLoading: profileIsLoading,
-  } = useGetCurrentProfileQuery();
+  const {data: profile} = useGetCurrentProfileQuery();
 
   // Username editor
   const [usernameEditorOpen, setUsernameEditorOpen] = useState(false);

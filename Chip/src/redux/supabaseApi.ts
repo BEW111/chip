@@ -35,7 +35,26 @@ export const supabaseApi = createApi({
         return {data: data, error: error};
       },
     }),
+    getGoals: builder.query({
+      queryFn: async () => {
+        const {data, error} = await supabase.from('goals').select();
+
+        return {data: data, error: error};
+      },
+    }),
+    getChips: builder.query({
+      queryFn: async () => {
+        const {data, error} = await supabase.from('chips').select();
+
+        return {data: data, error: error};
+      },
+    }),
   }),
 });
 
-export const {useGetProfilesQuery, useGetCurrentProfileQuery} = supabaseApi;
+export const {
+  useGetProfilesQuery,
+  useGetCurrentProfileQuery,
+  useGetGoalsQuery,
+  useGetChipsQuery,
+} = supabaseApi;

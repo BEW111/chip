@@ -31,24 +31,26 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-import {useSelector, useDispatch} from 'react-redux';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import {
   selectNewlyCreated,
   selectUid,
   updateNewlyCreated,
 } from '../../redux/slices/authSlice';
 
-import {addGoal} from '../../firebase/goals';
+// Database interactions
+import {addGoal} from '../../supabase/goals';
+
+// import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
-import {GoalVisibility} from '../../types';
+import {GoalIterationPeriod, GoalType, GoalVisibility} from '../../types/goals';
+import {GoalSubmission} from '../../types/goals';
 
 export default function AddGoalWidget() {
-  const [pressed, setPressed] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
-
   const theme = useTheme();
 
+  // Animations
+  const [pressed, setPressed] = useState(false);
   const surfaceScale = useSharedValue(1);
   const surfaceAnimatedStyles = useAnimatedStyle(() => {
     return {
@@ -56,24 +58,30 @@ export default function AddGoalWidget() {
     };
   });
 
+  // Current state
+  const [modalVisible, setModalVisible] = useState(false);
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+
+  // Inputs
   const [goalNameInput, setGoalNameInput] = useState('');
   const [goalEmojiInput, setGoalEmojiInput] = useState({
     emoji: '💪',
   });
-  const [goalTypeInput, setGoalTypeInput] = useState('form');
-  const [goalFreqInput, setGoalFreqInput] = useState('daily');
+  const [goalTypeInput, setGoalTypeInput] = useState<GoalType>('form');
+  const [goalFreqInput, setGoalFreqInput] =
+    useState<GoalIterationPeriod>('daily');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(1);
   const [goalUnits, setGoalUnits] = useState('time');
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
-  const showModal = () => setModalVisible(true);
-  const hideModal = () => setModalVisible(false);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
-
-  const uid = useSelector(selectUid);
-  const isNewUser = useSelector(selectNewlyCreated);
+  // Get current user
+  const uid = useAppSelector(selectUid);
+  const isNewUser = useAppSelector(selectNewlyCreated);
 
   useEffect(() => {
     if (isNewUser) {
@@ -88,6 +96,36 @@ export default function AddGoalWidget() {
     }
   }, []);
 
+  console.log(uid);
+
+  const onCreateGoal = () => {
+    console.log(uid);
+    if (uid) {
+      const goal: GoalSubmission = {
+        uid: uid,
+        name: goalNameInput,
+        description: '',
+        type: goalTypeInput,
+        is_public: goalVisibility === 'public',
+        emoji: goalEmojiInput.emoji,
+        streak_count: 0,
+        streak_met: false,
+        iteration_period: goalFreqInput,
+        iteration_amount: goalFreqAmtInput,
+        iteration_units: goalUnits,
+        current_iteration_progress: 0,
+      };
+
+      addGoal(goal);
+    }
+
+    setGoalNameInput('');
+    setGoalFreqAmtInput(0);
+    setGoalFreqInput('daily');
+    hideModal();
+    dispatch(updateNewlyCreated(false));
+  };
+
   return (
     <>
       <Portal>
@@ -96,13 +134,13 @@ export default function AddGoalWidget() {
             <KeyboardAvoidingView>
               <Pressable onPress={Keyboard.dismiss}>
                 <Surface style={modalStyles.container}>
-                  <Text style={modalStyles.header}>Add a new habit</Text>
+                  <Text style={modalStyles.header}>Create a new goal</Text>
                   <View style={styles.row}>
                     <View style={styles.expand}>
                       <TextInput
                         style={modalStyles.textInput}
                         mode="outlined"
-                        label="Habit name"
+                        label="Goal name"
                         value={goalNameInput}
                         onChangeText={text => setGoalNameInput(text)}
                       />
@@ -135,7 +173,7 @@ export default function AddGoalWidget() {
                   />
                   <Divider style={styles.dividerSmall} />
                   <Text variant="titleMedium">
-                    Set a goal for completing this habit:
+                    Set a goal for completing this goal:
                   </Text>
                   <Divider style={styles.dividerTiny} />
                   <TextInput
@@ -188,27 +226,7 @@ export default function AddGoalWidget() {
                     </View>
                   </View>
                   <Divider style={styles.dividerMedium} />
-                  <Button
-                    mode="contained"
-                    onPress={() => {
-                      addGoal(
-                        uid,
-                        goalNameInput,
-                        '',
-                        goalTypeInput,
-                        goalFreqInput,
-                        parseFloat(goalFreqAmtInput),
-                        goalUnits,
-                        goalVisibility,
-                        goalEmojiInput.emoji,
-                        dispatch,
-                      );
-                      setGoalNameInput('');
-                      setGoalFreqAmtInput(0);
-                      setGoalFreqInput('daily');
-                      hideModal();
-                      dispatch(updateNewlyCreated(false));
-                    }}>
+                  <Button mode="contained" onPress={onCreateGoal}>
                     Make it happen
                   </Button>
                 </Surface>
@@ -250,7 +268,7 @@ export default function AddGoalWidget() {
               opacity: pressed ? 0.8 : 1.0,
             }}>
             <View style={goalSurfaceStyles.contentWrapper}>
-              <Text style={goalSurfaceStyles.addGoal}>Add a new habit</Text>
+              <Text style={goalSurfaceStyles.addGoal}>Create a new goal</Text>
               <Icon name="add-circle-outline" size={21} color={'#ecdce5'} />
             </View>
           </BlurView>

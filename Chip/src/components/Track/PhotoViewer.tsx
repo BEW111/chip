@@ -15,11 +15,10 @@ import {
   chipSubmissionStart,
   toggleViewingPhoto,
 } from '../../redux/slices/chipSubmitterSlice';
-import {submitChip} from '../../firebase/chips';
 import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
 import {Goal} from '../../types';
 import {styles} from '../../styles';
-import {dispatchRefreshUserGoals} from '../../firebase/goals';
+import {useGetGoalsQuery} from '../../redux/supabaseApi';
 
 function HabitPopup({
   userGoals,
@@ -143,29 +142,29 @@ function PhotoViewer({photoSource}) {
   const dispatch = useAppDispatch();
   const uid = useSelector(selectUid);
 
-  const userGoals: Goal[] = useSelector(selectUserGoals);
+  const {data: userGoals} = useGetGoalsQuery();
 
   const [popupShowing, setPopupShowing] = useState(true);
-  const [selectedGoalId, setSelectedGoalId] = useState(userGoals[0].id);
+  // const [selectedGoalId, setSelectedGoalId] = useState(userGoals[0].id);
 
   const [chipDescription, setChipDescription] = useState('');
   const [chipAmount, setChipAmount] = useState(1);
 
   return (
     <View style={styles.absoluteFullCentered}>
-      {popupShowing ? (
+      {/* {popupShowing ? (
         <HabitPopup
-          userGoals={userGoals}
+          // userGoals={userGoals}
           chipDesc={chipDescription}
           setChipDesc={setChipDescription}
           closePopup={() => setPopupShowing(!popupShowing)}
-          setSelectedGoalId={setSelectedGoalId}
+          // setSelectedGoalId={setSelectedGoalId}
           chipAmount={chipAmount}
           setChipAmount={setChipAmount}
         />
       ) : (
         <></>
-      )}
+      )} */}
       <Pressable
         onPress={() => dispatch(toggleViewingPhoto())}
         style={{
