@@ -20,7 +20,7 @@ import {
   selectCurrentStoryUser,
 } from '../redux/slices/storyFeedSlice';
 import {selectUid} from '../redux/slices/authSlice';
-import ProfileImageDisplay from '../components/ProfileImageDisplay';
+import ProfileImageDisplay from '../components/AvatarDisplay';
 
 // StoryAvatar displays an icon with the user and when pressed, will open up the stories
 // for that user

@@ -6,12 +6,12 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import {Button, TextInput, HelperText, Text, Divider} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {styles} from '../../styles';
-import chipImage from '../assets/chips.png';
+
+import {signInWithEmail} from '../../supabase/auth';
 
 import auth from '@react-native-firebase/auth';
 import BlurSurface from '../../components/BlurSurface';
@@ -21,28 +21,36 @@ export default function SignIn({navigation}) {
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
 
-  const [errorMessage, setErrorMessage] = useState('');
+  const [displayError, setDisplayError] = useState('');
 
-  function onRegisterPressed() {
-    auth()
-      .signInWithEmailAndPassword(emailText, passText)
-      .then(() => {
-        console.log('Existing user account signed in!');
-      })
-      .catch(error => {
-        console.log(error.code);
-        if (error.code === 'auth/wrong-password') {
-          setErrorMessage('Incorrect password');
-        } else if (error.code === 'auth/user-not-found') {
-          setErrorMessage('Email not found');
-        } else {
-          setErrorMessage(
-            error.code + ' (this code needs a proper message, tell brian pls)',
-          );
-        }
-        console.error(error);
-      });
-  }
+  const onSignInPressed = async () => {
+    const result = await signInWithEmail(emailText, passText);
+
+    if (!result.ok) {
+      setDisplayError(result?.message || 'Failed to sign in');
+    }
+  };
+
+  // function onRegisterPressed() {
+  //   auth()
+  //     .signInWithEmailAndPassword(emailText, passText)
+  //     .then(() => {
+  //       console.log('Existing user account signed in!');
+  //     })
+  //     .catch(error => {
+  //       console.log(error.code);
+  //       if (error.code === 'auth/wrong-password') {
+  //         setErrorMessage('Incorrect password');
+  //       } else if (error.code === 'auth/user-not-found') {
+  //         setErrorMessage('Email not found');
+  //       } else {
+  //         setErrorMessage(
+  //           error.code + ' (this code needs a proper message, tell brian pls)',
+  //         );
+  //       }
+  //       console.error(error);
+  //     });
+  // }
 
   return (
     <BackgroundWrapper>
@@ -62,7 +70,6 @@ export default function SignIn({navigation}) {
                   alignSelf: 'center',
                   marginBottom: 20,
                   marginTop: 10,
-                  fontWeight: 'bold',
                 }}>
                 Welcome back.
               </Text>
@@ -91,9 +98,9 @@ export default function SignIn({navigation}) {
                 activeUnderlineColor="white"
               />
               <Divider style={styles.dividerSmall} />
-              <HelperText type="error">{errorMessage}</HelperText>
-              <Divider style={styles.dividerMedium} />
-              <Button mode="contained" onPress={onRegisterPressed}>
+              <HelperText type="error">{displayError}</HelperText>
+              <Divider style={styles.dividerSmall} />
+              <Button mode="contained" onPress={onSignInPressed}>
                 Sign in
               </Button>
             </BlurSurface>

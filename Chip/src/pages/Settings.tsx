@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-
+import React, {useState, useEffect} from 'react';
 import {Pressable, View} from 'react-native';
 
+// Components
 import {
   Button,
   Divider,
@@ -11,71 +11,91 @@ import {
   TextInput,
 } from 'react-native-paper';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
-import {DrawerActions} from '@react-navigation/native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-
+import {launchImageLibrary} from 'react-native-image-picker';
 import FastImage from 'react-native-fast-image';
+import AvatarDisplay from '../components/AvatarDisplay';
 
-import auth from '@react-native-firebase/auth';
-import {useSelector} from 'react-redux';
-import {selectUid, selectUser} from '../redux/slices/authSlice';
 import {styles} from '../styles';
 
-import profileDefault from '../../assets/profile-default.png';
-import {uploadProfileImage, updateUsername} from '../firebase/auth';
-import ProfileImage from '../components/ProfileImageDisplay';
+// Api
+import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
+import {uploadAvatar} from '../supabase/storage';
 
 export default function Settings(props) {
-  const user = useSelector(selectUser);
-  const uid = useSelector(selectUid);
+  const {
+    data: profile,
+    error: profileError,
+    isLoading: profileIsLoading,
+  } = useGetCurrentProfileQuery();
 
-  const [editingUsername, setEditingUsername] = useState(false);
-  const [usernameText, setUsernameText] = useState(user.displayName);
-  const [currentUsername, setCurrentUsername] = useState(user.displayName);
-  const [profileImage, setProfileImage] = useState(profileDefault);
+  const [usernameEditorOpen, setUsernameEditorOpen] = useState(false);
+  const [usernameFieldText, setUsernameFieldText] = useState('');
 
-  function onLogoutPressed() {
-    auth().signOut();
-  }
+  const onLogoutPressed = () => {
+    // auth().signOut();
+  };
 
-  function onUpdateUsernamePressed() {
-    const result = updateUsername(usernameText);
+  const onOpenUsernameEditor = () => {
+    setUsernameFieldText(profile?.username);
+    setUsernameEditorOpen(true);
+  };
 
-    if (result.status === 'error') {
-      console.log('[onLogoutPressed] Error occurred while editing username');
-    } else {
-      setEditingUsername(false);
-      setCurrentUsername(profileDefault);
-    }
-  }
+  const onCloseUsernameEditor = () => {
+    setUsernameEditorOpen(false);
+  };
 
-  async function onEditProfilePicturePressed() {
+  const onUpdateUsernamePressed = () => {
+    // Update username here
+    // if (result.status === 'error') {
+    //   console.log('[onLogoutPressed] Error occurred while editing username');
+    // } else {
+    //   setEditingUsername(false);
+    //   setCurrentUsername(profileDefault);
+    // }
+  };
+
+  // Launches the profile picture library
+  const onEditProfilePicturePressed = async () => {
+    // Waits until we select or cancel
     const result = await launchImageLibrary({
       mediaType: 'photo',
     });
-    if (!result.didCancel && result.assets.length > 0) {
-      const source = {uri: result.assets[0].uri};
-      await uploadProfileImage(source, uid);
-      setProfileImage(source);
+
+    if (result.didCancel) {
+      return;
     }
-  }
+
+    if (result.errorMessage) {
+      throw result.errorMessage;
+    }
+
+    const assets = result.assets;
+
+    if (assets) {
+      const image = assets[0];
+
+      if (image.uri && image.type && profile?.id && image.fileName) {
+        await uploadAvatar(image.uri, image.type, profile?.id, image.fileName);
+      }
+    }
+  };
 
   return (
-    <Pressable onPress={() => setEditingUsername(false)} style={styles.expand}>
+    <Pressable onPress={onCloseUsernameEditor} style={styles.expand}>
       <DrawerContentScrollView {...props} style={styles.expand}>
         <View style={styles.fullPaddedHorizontal}>
           <View style={styles.row}>
-            <ProfileImage self width={64} height={64} />
+            <AvatarDisplay self width={64} height={64} />
             <Divider style={styles.dividerHSmall} />
             <View>
               <View style={styles.row}>
-                {editingUsername ? (
+                {usernameEditorOpen ? (
                   <TextInput
                     dense
                     autoCorrect={false}
                     autoCapitalize="none"
-                    value={usernameText}
-                    onChangeText={text => setUsernameText(text)}
+                    value={usernameFieldText}
+                    onChangeText={text => setUsernameFieldText(text)}
                     contentStyle={{
                       marginBottom: -8,
                       marginHorizontal: -4,
@@ -83,9 +103,9 @@ export default function Settings(props) {
                     }}
                   />
                 ) : (
-                  <Text variant="titleMedium">@{currentUsername}</Text>
+                  <Text variant="titleMedium">@{profile?.username}</Text>
                 )}
-                {editingUsername ? (
+                {usernameEditorOpen ? (
                   <IconButton
                     icon={'checkmark-outline'}
                     size={20}
@@ -97,11 +117,11 @@ export default function Settings(props) {
                     icon={'create-outline'}
                     size={20}
                     style={{margin: -2}}
-                    onPress={() => setEditingUsername(true)}
+                    onPress={onOpenUsernameEditor}
                   />
                 )}
               </View>
-              <Text variant="titleSmall">{user.email}</Text>
+              {/* <Text variant="titleSmall">{user.email}</Text> */}
             </View>
           </View>
           <Divider style={styles.dividerTiny} />

@@ -1,13 +1,15 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {Goal} from '../types';
-import {RootState} from './store';
+import {Goal} from '../../types';
+import {RootState} from '../store';
 
 interface AuthState {
+  uid: string | null;
+  email: string | null;
+
   initializing: boolean;
   newlyCreated: boolean;
   user: {} | null;
-  uid: string | null;
   userGoals: Goal[];
   friends: string[];
   invitesSent: string[];
@@ -38,53 +40,30 @@ interface DeleteUserGoalPayload {
 }
 
 const initialState: AuthState = {
+  uid: null,
+  email: null,
+
   initializing: true,
   newlyCreated: false,
   user: null,
-  uid: null,
   // profileImage: null,
   userGoals: [],
   friends: [],
   invitesSent: [],
 };
 
-export const initializeAuth = createAsyncThunk(
-  'auth/initialize',
-  async (arg, {dispatch, getState}) => {
-    const subscriber = auth().onAuthStateChanged(async newUser => {
-      if (newUser) {
-        dispatch(updateUser(newUser.toJSON()));
-        dispatch(updateUid(newUser.uid));
-
-        const goals = await dispatch(fetchGoals(newUser.uid));
-        dispatch(checkAllStreaksReset({uid: newUser.uid, goals: goals}));
-        dispatch(refreshInvitesAndFriends(newUser.uid));
-      } else {
-        dispatch(logout());
-      }
-
-      if (getState().auth.initializing) {
-        dispatch(updateInitializing(false));
-      }
-    });
-
-    // Return the subscriber so that you can unsubscribe when this thunk is cancelled or fails
-    return subscriber;
-  },
-);
-
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    updateUid: (state, action) => {
+      state.uid = action.payload;
+    },
     updateInitializing: (state, action) => {
       state.initializing = action.payload;
     },
     updateUser: (state, action) => {
       state.user = action.payload;
-    },
-    updateUid: (state, action) => {
-      state.uid = action.payload;
     },
     updateNewlyCreated: (state, action) => {
       state.newlyCreated = action.payload;

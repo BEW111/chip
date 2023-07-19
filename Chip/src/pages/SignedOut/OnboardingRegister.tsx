@@ -3,17 +3,16 @@ import {KeyboardAvoidingView, ScrollView, View, Platform} from 'react-native';
 import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import auth from '@react-native-firebase/auth';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {updateNewlyCreated} from '../../redux/slices/authSlice';
-import {selectNewGoal} from '../../redux/slices/onboardingSlice';
 
-import {createNewUser} from '../../firebase/auth';
+// import {createNewUser} from '../../firebase/auth';
+import {signUpWithEmail} from '../../supabase/auth';
 
 import BlurSurface from '../../components/BlurSurface';
-import {styles} from '../../styles';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
+import {styles} from '../../styles';
 
 export default function OnboardingRegister({navigation}) {
   const [usernameText, setUsernameText] = useState('');
@@ -22,11 +21,9 @@ export default function OnboardingRegister({navigation}) {
   const [secureTextEntry, setSecuryTextEntry] = useState(true);
   const [displayError, setDisplayError] = useState('');
 
-  const newGoal = useSelector(selectNewGoal);
-
   const dispatch = useDispatch();
 
-  async function onRegisterPressed() {
+  const onSignUpPressed = async () => {
     // Check for more obvious errors
     if (usernameText === '') {
       setDisplayError('Username cannot be empty');
@@ -35,28 +32,16 @@ export default function OnboardingRegister({navigation}) {
     } else if (passText === '') {
       setDisplayError('Password cannot be empty');
     } else {
-      const result = await createNewUser(
-        usernameText,
-        emailText,
-        passText,
-        newGoal,
-      );
+      const result = await signUpWithEmail(emailText, usernameText, passText);
+      console.log(result);
 
       dispatch(updateNewlyCreated(true));
 
-      if (result.status === 'error') {
-        if (result.code === 'auth/email-already-in-use') {
-          setDisplayError('Email already in use');
-        } else if (result.code === 'auth/invalid-email') {
-          setDisplayError('Please enter a valid email');
-        } else if (result.code === 'auth/weak-password') {
-          setDisplayError('Please enter a stronger password');
-        } else if (result.code === 'user/username-taken') {
-          setDisplayError('This username is already taken');
-        }
+      if (!result.ok) {
+        setDisplayError(result?.message || 'Failed to sign up');
       }
     }
-  }
+  };
 
   async function onToggleSecureTextEntry() {
     setSecuryTextEntry(!secureTextEntry);
@@ -85,23 +70,23 @@ export default function OnboardingRegister({navigation}) {
               <Divider style={styles.dividerSmall} />
               <TextInput
                 mode="outlined"
-                placeholder="Username"
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={newText => setUsernameText(newText)}
-                defaultValue={usernameText}
-                underlineColor="gray"
-                activeUnderlineColor="white"
-              />
-              <Divider style={styles.dividerSmall} />
-              <TextInput
-                mode="outlined"
                 placeholder="Email"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
                 onChangeText={newText => setEmailText(newText)}
                 defaultValue={emailText}
+                underlineColor="gray"
+                activeUnderlineColor="white"
+              />
+              <Divider style={styles.dividerSmall} />
+              <TextInput
+                mode="outlined"
+                placeholder="Username"
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={newText => setUsernameText(newText)}
+                defaultValue={usernameText}
                 underlineColor="gray"
                 activeUnderlineColor="white"
               />
@@ -137,7 +122,7 @@ export default function OnboardingRegister({navigation}) {
                   </Button>
                 </View>
                 <View style={styles.expand}>
-                  <Button mode="contained" onPress={onRegisterPressed}>
+                  <Button mode="contained" onPress={onSignUpPressed}>
                     Register
                   </Button>
                 </View>

@@ -1,5 +1,9 @@
 /**
  * For dealing with friends
+ * Friendship requests should include the following:
+ * - Sender/receiver UID
+ * - Sender/receiver username
+ * - Sender/receiver profile image URL
  */
 
 import {useEffect, useState} from 'react';

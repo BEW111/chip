@@ -14,7 +14,7 @@ import {styles} from '../../styles';
 import {getSuperstreaksByGoal} from '../../firebase/superstreaks';
 import {useSelector} from 'react-redux';
 import {selectUid} from '../../redux/slices/authSlice';
-import ProfileImageDisplay from '../ProfileImageDisplay';
+import ProfileImageDisplay from '../AvatarDisplay';
 
 function GoalBadges({goal}) {
   const [superstreaks, setSuperstreaks] = useState([]);

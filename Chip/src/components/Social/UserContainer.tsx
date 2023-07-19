@@ -27,7 +27,7 @@ import {
 import {PublicUser} from '../../types';
 
 import InputFieldMenu from '../InputFieldMenu';
-import ProfileImageDisplay from '../ProfileImageDisplay';
+import ProfileImageDisplay from '../AvatarDisplay';
 
 interface UserContainerType {
   user: PublicUser;

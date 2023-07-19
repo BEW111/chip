@@ -1,10 +1,17 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
+// Components
 import {Dimensions, View, LogBox, ColorValue, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/Ionicons';
+import backgroundImage from './assets/background.png';
+
+// Navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
+// Providers
 import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
@@ -13,24 +20,13 @@ import {
 } from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+// Auth
+import {supabase} from './src/supabase/supabase';
+import {Session} from '@supabase/supabase-js';
 
-import auth from '@react-native-firebase/auth';
+import {useAppDispatch, useAppSelector} from './src/redux/hooks';
 
 import {store} from './src/redux/store';
-import {useSelector, useDispatch} from 'react-redux';
-
-import Onboarding from './src/pages/Launch/Onboarding';
-import OnboardingRegister from './src/pages/Launch/OnboardingRegister';
-import SignIn from './src/pages/Launch/SignIn';
-
-// Main pages
-import Home from './src/pages/Home';
-import Social from './src/pages/Social';
-import Track from './src/pages/Track';
-import Analytics from './src/pages/Goals/Analytics';
-import Settings from './src/pages/Settings';
-
 import {
   selectInitializing,
   selectUser,
@@ -43,18 +39,24 @@ import {
   selectNewlyCreated,
 } from './src/redux/slices/authSlice';
 
+import {requestNotificationsPermission} from './src/notifications/reminders';
+
+// Onboarding pages
+import Onboarding from './src/pages/SignedOut/Onboarding';
+import OnboardingRegister from './src/pages/SignedOut/OnboardingRegister';
+import SignIn from './src/pages/SignedOut/SignIn';
+
+// Main pages
+import Home from './src/pages/Home';
+import Social from './src/pages/Social';
+import Track from './src/pages/Track';
+import Analytics from './src/pages/Goals/Analytics';
+import Settings from './src/pages/Settings';
+
+// Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
-
-import backgroundImage from './assets/background.png';
-
-import {
-  dispatchRefreshUserGoals,
-  checkAllStreaksReset,
-  getGoals,
-} from './src/firebase/goals';
-import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
-import {requestNotificationsPermission} from './src/notifications/reminders';
+import {useGetCurrentProfileQuery} from './src/redux/supabaseApi';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -81,7 +83,7 @@ const VariableIcon = ({focused, iconName, color}: VariableIconProps) => (
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
-  const isNewUser = useSelector(selectNewlyCreated);
+  // const isNewUser = useSelector(selectNewlyCreated);
 
   // Only want to get the message token and check for permissions when we're logged in
   useEffect(() => {
@@ -97,7 +99,7 @@ function MainTabs() {
           initialLayout={{
             width: Dimensions.get('window').width,
           }}
-          initialRouteName={isNewUser ? 'Analytics' : 'Track'}
+          initialRouteName={'Track'}
           style={{
             paddingBottom: insets.bottom,
           }}
@@ -111,7 +113,7 @@ function MainTabs() {
               backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}>
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Home"
             component={Home}
             options={{
@@ -156,7 +158,7 @@ function MainTabs() {
                 />
               ),
             }}
-          />
+          /> */}
           <Tab.Screen
             name="Track"
             component={Track}
@@ -182,7 +184,7 @@ function MainTabs() {
               ),
             }}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             name="Analytics"
             component={Analytics}
             options={{
@@ -207,7 +209,7 @@ function MainTabs() {
                 />
               ),
             }}
-          />
+          /> */}
           <Tab.Screen
             name="You"
             component={Settings}
@@ -240,52 +242,33 @@ function MainTabs() {
   );
 }
 
+// Main app component
 function Main() {
-  const dispatch = useDispatch();
-  const initializing = useSelector(selectInitializing);
-  const user = useSelector(selectUser);
-
-  // Handle user state changes
-  var authFlag = true; // hacky, but prevents contents from being called twice inside
-  async function onAuthStateChanged(newUser) {
-    // TODO: put into separate function
-    if (newUser && authFlag) {
-      authFlag = false;
-
-      dispatch(updateUser(newUser.toJSON()));
-      dispatch(updateUid(newUser.uid));
-
-      const goals = await getGoals(newUser.uid); // retrive user data from firestore
-
-      if (goals.length) {
-        dispatchRefreshUserGoals(newUser.uid, dispatch, goals);
-        checkAllStreaksReset(newUser.uid, goals);
-      }
-
-      dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
-    } else {
-      if (!newUser) {
-        console.log('[onAuthStateChanged] Signed out');
-        dispatch(updateUser(null));
-        dispatch(updateUid(null));
-        dispatch(updateUserGoals([]));
-        dispatch(updateInvitesSent([]));
-        dispatch(updateFriends([]));
-        authFlag = true;
-      }
-    }
-
-    if (initializing) {
-      dispatch(updateInitializing(false));
-    }
-  }
+  const dispatch = useAppDispatch();
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
+    supabase.auth.getSession().then(({data: {session: newSession}}) => {
+      setSession(newSession);
+      dispatch(updateUid(newSession?.user));
+    });
 
-  if (!user) {
+    const {
+      data: {subscription},
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [dispatch]);
+
+  if (session && session.user) {
+    return (
+      <NavigationContainer>
+        <MainTabs />
+      </NavigationContainer>
+    );
+  } else {
     return (
       <NavigationContainer>
         <Stack.Navigator
@@ -303,14 +286,9 @@ function Main() {
       </NavigationContainer>
     );
   }
-
-  return (
-    <NavigationContainer>
-      <MainTabs />
-    </NavigationContainer>
-  );
 }
 
+// Wrappers around main component
 export default function App() {
   return (
     <StoreProvider store={store}>
@@ -330,6 +308,7 @@ export default function App() {
   );
 }
 
+// Local styles
 type LocalStylesGeneratorType = {
   color: ColorValue | number | undefined;
 };
