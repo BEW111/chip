@@ -19,9 +19,10 @@ import {styles} from '../styles';
 
 // Api
 import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
-import {uploadAvatar} from '../supabase/storage';
+import {getUserAvatarUrl, uploadAvatar} from '../supabase/storage';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profile';
+import {ProfileImage} from '../types/profiles';
 
 export default function Settings(props) {
   const {
@@ -37,7 +38,9 @@ export default function Settings(props) {
   // If we change the username live, then we'll update this so the user sees
   // the change right away
   const [visibleUsername, setVisibleUsername] = useState<string | null>(null);
+  const [visibleAvatarUrl, setVisibleAvatarUrl] = useState<string | null>(null);
 
+  // Actions
   const onLogoutPressed = () => {
     signOut();
   };
@@ -55,14 +58,6 @@ export default function Settings(props) {
     updateUsername(usernameFieldText);
     setVisibleUsername(usernameFieldText);
     setUsernameEditorOpen(false);
-
-    // Update username here
-    // if (result.status === 'error') {
-    //   console.log('[onLogoutPressed] Error occurred while editing username');
-    // } else {
-    //   setEditingUsername(false);
-    //   setCurrentUsername(profileDefault);
-    // }
   };
 
   // Launches the profile picture library
@@ -86,7 +81,11 @@ export default function Settings(props) {
       const image = assets[0];
 
       if (image.uri && image.type && profile?.id && image.fileName) {
+        // Actually upload the image
         await uploadAvatar(image.uri, image.type, profile?.id, image.fileName);
+
+        // If we were successful, update the local image as well so we can see the change right away
+        setVisibleAvatarUrl(getUserAvatarUrl(profile.id, image.fileName));
       }
     }
   };
@@ -96,7 +95,7 @@ export default function Settings(props) {
       <DrawerContentScrollView {...props} style={styles.expand}>
         <View style={styles.fullPaddedHorizontal}>
           <View style={styles.row}>
-            <AvatarDisplay self width={64} height={64} />
+            <AvatarDisplay url={visibleAvatarUrl} self width={64} height={64} />
             <Divider style={styles.dividerHSmall} />
             <View>
               <View style={styles.row}>

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import DefaultProfileImage from '../../assets/profile-default.png';
 
 import {
   useGetCurrentProfileQuery,
@@ -12,7 +13,7 @@ interface ProfileImageProps {
   width: number;
   uid?: string;
   self?: boolean;
-  url?: string;
+  url?: string | null;
 }
 
 const AvatarDisplay = (props: ProfileImageProps) => {
@@ -26,17 +27,16 @@ const AvatarDisplay = (props: ProfileImageProps) => {
     uri: '',
   };
 
-  if (props.self) {
-    if (!profile?.avatar_url) {
-      // throw Error('Current profile does not have avatar_url');
+  // Specifying a specific url takes precedence over specifying that
+  // you want this to be for the user's own profile
+  if (props.url) {
+    image.uri = props.url;
+  } else if (props.self) {
+    if (profile?.avatar_url) {
+      image.uri = profile?.avatar_url;
     }
-    image.uri = profile?.avatar_url;
-  } else if (props.url) {
-    //
   } else {
-    throw Error(
-      'AvatarDisplay must have at least one of "uid", "self", or "url" props',
-    );
+    image = DefaultProfileImage;
   }
 
   return (

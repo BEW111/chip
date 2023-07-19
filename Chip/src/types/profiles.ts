@@ -5,3 +5,7 @@ export type Profile = {
   full_name: string;
   avatar_url: string;
 };
+
+export type ProfileImage = {
+  uri: string;
+};
