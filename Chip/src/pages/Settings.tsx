@@ -20,6 +20,8 @@ import {styles} from '../styles';
 // Api
 import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {uploadAvatar} from '../supabase/storage';
+import {signOut} from '../supabase/auth';
+import {updateUsername} from '../supabase/profile';
 
 export default function Settings(props) {
   const {
@@ -28,15 +30,20 @@ export default function Settings(props) {
     isLoading: profileIsLoading,
   } = useGetCurrentProfileQuery();
 
+  // Username editor
   const [usernameEditorOpen, setUsernameEditorOpen] = useState(false);
   const [usernameFieldText, setUsernameFieldText] = useState('');
 
+  // If we change the username live, then we'll update this so the user sees
+  // the change right away
+  const [visibleUsername, setVisibleUsername] = useState<string | null>(null);
+
   const onLogoutPressed = () => {
-    // auth().signOut();
+    signOut();
   };
 
   const onOpenUsernameEditor = () => {
-    setUsernameFieldText(profile?.username);
+    setUsernameFieldText(visibleUsername || profile?.username || '');
     setUsernameEditorOpen(true);
   };
 
@@ -45,6 +52,10 @@ export default function Settings(props) {
   };
 
   const onUpdateUsernamePressed = () => {
+    updateUsername(usernameFieldText);
+    setVisibleUsername(usernameFieldText);
+    setUsernameEditorOpen(false);
+
     // Update username here
     // if (result.status === 'error') {
     //   console.log('[onLogoutPressed] Error occurred while editing username');
@@ -103,7 +114,9 @@ export default function Settings(props) {
                     }}
                   />
                 ) : (
-                  <Text variant="titleMedium">@{profile?.username}</Text>
+                  <Text variant="titleMedium">
+                    @{visibleUsername || profile?.username}
+                  </Text>
                 )}
                 {usernameEditorOpen ? (
                   <IconButton

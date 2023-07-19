@@ -61,3 +61,8 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signOut() {
   supabase.auth.signOut();
 }
+
+export async function getCurrentUid() {
+  const userDetails = await supabase.auth.getUser();
+  return userDetails.data.user?.id;
+}
