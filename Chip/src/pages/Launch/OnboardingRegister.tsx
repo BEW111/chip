@@ -19,7 +19,7 @@ export default function OnboardingRegister({navigation}) {
   const [usernameText, setUsernameText] = useState('');
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
-  const [confirmPassText, setConfirmPassText] = useState('');
+  const [secureTextEntry, setSecuryTextEntry] = useState(true);
   const [displayError, setDisplayError] = useState('');
 
   const newGoal = useSelector(selectNewGoal);
@@ -34,8 +34,6 @@ export default function OnboardingRegister({navigation}) {
       setDisplayError('Email cannot be empty');
     } else if (passText === '') {
       setDisplayError('Password cannot be empty');
-    } else if (passText !== confirmPassText) {
-      setDisplayError('Passwords must match');
     } else {
       const result = await createNewUser(
         usernameText,
@@ -58,6 +56,10 @@ export default function OnboardingRegister({navigation}) {
         }
       }
     }
+  }
+
+  async function onToggleSecureTextEntry() {
+    setSecuryTextEntry(!secureTextEntry);
   }
 
   return (
@@ -105,7 +107,7 @@ export default function OnboardingRegister({navigation}) {
               />
               <Divider style={styles.dividerSmall} />
               <TextInput
-                secureTextEntry={true}
+                secureTextEntry={secureTextEntry}
                 autoCapitalize="none"
                 autoCorrect={false}
                 mode="outlined"
@@ -114,18 +116,12 @@ export default function OnboardingRegister({navigation}) {
                 defaultValue={passText}
                 underlineColor="#FFEEF8"
                 activeUnderlineColor="white"
-              />
-              <Divider style={styles.dividerSmall} />
-              <TextInput
-                secureTextEntry={true}
-                autoCapitalize="none"
-                autoCorrect={false}
-                mode="outlined"
-                placeholder="Confirm password"
-                onChangeText={newText => setConfirmPassText(newText)}
-                defaultValue={confirmPassText}
-                underlineColor="gray"
-                activeUnderlineColor="white"
+                right={
+                  <TextInput.Icon
+                    icon={secureTextEntry ? 'eye-off' : 'eye'}
+                    onPress={onToggleSecureTextEntry}
+                  />
+                }
               />
               <HelperText type="error" visible={displayError !== ''}>
                 {displayError}
