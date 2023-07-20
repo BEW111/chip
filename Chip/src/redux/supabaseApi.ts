@@ -41,6 +41,7 @@ export const supabaseApi = createApi({
 
         return {data: data, error: error};
       },
+      staleTime: 3600000,
     }),
     getChips: builder.query({
       queryFn: async () => {
@@ -57,4 +58,5 @@ export const {
   useGetCurrentProfileQuery,
   useGetGoalsQuery,
   useGetChipsQuery,
+  usePrefetch,
 } = supabaseApi;

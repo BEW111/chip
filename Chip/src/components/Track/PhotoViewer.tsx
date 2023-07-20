@@ -1,37 +1,60 @@
 import React, {useState} from 'react';
 import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSelector, useDispatch} from 'react-redux';
-import {useAppDispatch} from '../../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../../redux/hooks';
+import {styles} from '../../styles';
 
+// Misc
 import pluralize from 'pluralize';
 
+// Components
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from 'react-native-wheel-pick';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BlurSurface from '../BlurSurface';
 
+// Camera state
 import {
-  chipSubmissionStart,
-  toggleViewingPhoto,
-} from '../../redux/slices/chipSubmitterSlice';
-import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
-import {Goal} from '../../types';
-import {styles} from '../../styles';
+  selectPhotoPath,
+  selectViewingPhoto,
+  viewingPhotoStop,
+  testReducer,
+} from '../../redux/slices/cameraSlice';
+
+// State and supabase
+import {selectUid} from '../../redux/slices/authSlice';
+import {chipSubmissionStart} from '../../redux/slices/chipSubmitterSlice';
 import {useGetGoalsQuery} from '../../redux/supabaseApi';
+import {ChipSubmission} from '../../types/chips';
+
+// TODO: move this to another file
+const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
+
+type HabitPopupProps = {
+  chipDesc: string;
+  setChipDesc: React.Dispatch<React.SetStateAction<string>>;
+  closePopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedGoalId: React.Dispatch<React.SetStateAction<number>>;
+  chipAmount: number;
+  setChipAmount: React.Dispatch<React.SetStateAction<number>>;
+};
 
 function HabitPopup({
-  userGoals,
   chipDesc,
   setChipDesc,
   closePopup,
   setSelectedGoalId,
   chipAmount,
   setChipAmount,
-}) {
-  const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
-  const getGoalFromId = (id: string) => userGoals.filter(g => g.id === id)[0];
-  const [currentId, setCurrentId] = useState(userGoals[0].id);
+}: HabitPopupProps) {
+  // Function to get all the goal data by a certain goal id
+  const {data: userGoals, isFetching} = useGetGoalsQuery([]);
+  const getGoalFromId = (id: number, goals: Goal[]) =>
+    goals.filter((g: Goal) => g.id === id)[0];
+  console.log(userGoals);
+
+  // Id of current goal selected
+  const [currentId, setCurrentId] = useState(-1);
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()}>
@@ -43,29 +66,31 @@ function HabitPopup({
         <View
           pointerEvents={'box-none'}
           style={{alignItems: 'center', height: 175}}>
-          <Picker
-            pointerEvents={'box-none'}
-            style={{
-              backgroundColor: transparentBackgroundColor,
-              width: Dimensions.get('screen').width * 0.9 - 30,
-              height: 175,
-              borderRadius: 5,
-              justifyContent: 'center',
-              overflow: 'hidden',
-            }}
-            itemStyle={{
-              fontFamily: 'Lato-Medium',
-            }}
-            selectedValue={'Exercise'}
-            pickerData={userGoals.map(g => ({
-              value: g.id,
-              label: g.emoji + ' ' + g.name,
-            }))}
-            onValueChange={id => {
-              setSelectedGoalId(id);
-              setCurrentId(id);
-            }}
-          />
+          {userGoals && (
+            <Picker
+              pointerEvents={'box-none'}
+              style={{
+                backgroundColor: transparentBackgroundColor,
+                width: Dimensions.get('screen').width * 0.9 - 30,
+                height: 175,
+                borderRadius: 5,
+                justifyContent: 'center',
+                overflow: 'hidden',
+              }}
+              itemStyle={{
+                fontFamily: 'Lato-Medium',
+              }}
+              selectedValue={'Exercise'}
+              pickerData={userGoals.map((g: Goal) => ({
+                value: g.id,
+                label: g.emoji + ' ' + g.name,
+              }))}
+              onValueChange={(id: number) => {
+                setSelectedGoalId(id);
+                setCurrentId(id);
+              }}
+            />
+          )}
         </View>
         <Divider style={styles.dividerSmall} />
         <TextInput
@@ -89,10 +114,14 @@ function HabitPopup({
           }}
           right={
             <TextInput.Affix
-              text={pluralize(
-                getGoalFromId(currentId).units || 'units',
-                parseFloat(chipAmount),
-              )}
+              text={
+                userGoals && currentId >= 0
+                  ? pluralize(
+                      getGoalFromId(currentId, userGoals).units || 'units',
+                      parseFloat(chipAmount),
+                    )
+                  : ''
+              }
             />
           }
         />
@@ -136,56 +165,67 @@ function HabitPopup({
   );
 }
 
-function PhotoViewer({photoSource}) {
+function PhotoViewer() {
   const insets = useSafeAreaInsets();
 
   const dispatch = useAppDispatch();
-  const uid = useSelector(selectUid);
+  const uid = useAppSelector(selectUid);
+  const photoPath = useAppSelector(selectPhotoPath);
 
-  const {data: userGoals} = useGetGoalsQuery();
-
+  // Current popup state
   const [popupShowing, setPopupShowing] = useState(true);
-  // const [selectedGoalId, setSelectedGoalId] = useState(userGoals[0].id);
-
+  const [selectedGoalId, setSelectedGoalId] = useState(0);
   const [chipDescription, setChipDescription] = useState('');
-  const [chipAmount, setChipAmount] = useState(1);
+  const [chipAmount, setChipAmount] = useState<string>('1');
+
+  const viewingPhoto = useAppSelector(selectViewingPhoto);
+
+  // When this is called, we'll actually submit the chip
+  const onSubmitChip = () => {
+    console.log('[onSubmitChip]');
+    dispatch(viewingPhotoStop());
+
+    if (uid && photoPath) {
+      const chipSubmission: ChipSubmission = {
+        goalId: selectedGoalId,
+        photoUri: photoPath,
+        description: chipDescription,
+        amount: parseFloat(chipAmount),
+        uid,
+      };
+
+      dispatch(chipSubmissionStart(chipSubmission));
+    }
+  };
+
+  // When this is called, we'll discard the current photo
+  const onDeleteChip = () => {
+    dispatch(viewingPhotoStop());
+  };
 
   return (
     <View style={styles.absoluteFullCentered}>
-      {/* {popupShowing ? (
+      {popupShowing && (
         <HabitPopup
-          // userGoals={userGoals}
           chipDesc={chipDescription}
           setChipDesc={setChipDescription}
           closePopup={() => setPopupShowing(!popupShowing)}
-          // setSelectedGoalId={setSelectedGoalId}
+          setSelectedGoalId={setSelectedGoalId}
           chipAmount={chipAmount}
           setChipAmount={setChipAmount}
         />
-      ) : (
-        <></>
-      )} */}
+      )}
       <Pressable
-        onPress={() => dispatch(toggleViewingPhoto())}
-        style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          height: 40,
-          width: 40,
-          borderRadius: 100,
-
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-
-          position: 'absolute',
-          left: 20,
-          top: 20 + insets.top,
-        }}>
-        <Icon name="trash" size={24} color="white" style={{marginLeft: 2}} />
+        onPress={onDeleteChip}
+        style={localStyles(insets.top).trashButtonContainer}>
+        <Icon
+          name="trash"
+          size={24}
+          color="white"
+          style={localStyles().iconShifted}
+        />
       </Pressable>
-      {popupShowing ? (
-        <></>
-      ) : (
+      {!popupShowing && (
         <Button
           hitSlop={{
             bottom: 0,
@@ -196,46 +236,17 @@ function PhotoViewer({photoSource}) {
           icon="create-outline"
           mode="contained-tonal"
           onPress={() => setPopupShowing(true)}
-          contentStyle={{flexDirection: 'row-reverse', alignItems: 'center'}}
-          style={{
-            position: 'absolute',
-            left: 20,
-            bottom: 30,
-          }}>
+          contentStyle={localStyles().buttonContent}
+          style={localStyles().detailsButton}>
           Chip details
         </Button>
       )}
       <Button
         icon="send-outline"
         mode="contained"
-        onPress={() => {
-          dispatch(toggleViewingPhoto());
-          dispatch(
-            chipSubmissionStart({
-              photoSource: photoSource,
-              goalId: selectedGoalId,
-              desc: chipDescription,
-              uid,
-              amount: parseFloat(chipAmount),
-            }),
-          );
-          // if (uid) {
-          //   submitChip(
-          //     photoSource,
-          //     selectedGoalId,
-          //     chipDescription,
-          //     uid,
-          //     parseFloat(chipAmount),
-          //   );
-          //   dispatchRefreshUserGoals(uid, dispatch);
-          // }
-        }}
-        contentStyle={{flexDirection: 'row-reverse', alignItems: 'center'}}
-        style={{
-          position: 'absolute',
-          right: 20,
-          bottom: 30,
-        }}>
+        onPress={onSubmitChip}
+        contentStyle={localStyles().buttonContent}
+        style={localStyles(insets.top).saveButton}>
         Save
       </Button>
     </View>
@@ -244,19 +255,32 @@ function PhotoViewer({photoSource}) {
 
 export default PhotoViewer;
 
-const localStyles = StyleSheet.create({
-  amtIcon: {
-    width: 36,
-    height: 36,
+const localStyles = (insetsTop?: number) =>
+  StyleSheet.create({
+    iconShifted: {marginLeft: 2},
+    detailsButton: {
+      position: 'absolute',
+      left: 20,
+      bottom: 30,
+    },
+    buttonContent: {flexDirection: 'row-reverse', alignItems: 'center'},
+    trashButtonContainer: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      height: 40,
+      width: 40,
+      borderRadius: 100,
 
-    paddingTop: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
 
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    marginLeft: 10,
-
-    borderRadius: 20,
-  },
-});
+      position: 'absolute',
+      left: 20,
+      top: 20 + (insetsTop !== undefined ? insetsTop : 0),
+    },
+    saveButton: {
+      position: 'absolute',
+      right: 20,
+      bottom: 30,
+    },
+  });

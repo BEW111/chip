@@ -1,15 +1,32 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-
 import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
 import {StyleSheet, View, Linking, Pressable} from 'react-native';
+
+// Components
 import FastImage from 'react-native-fast-image';
 import {IconButton, Text} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BlurView} from '@react-native-community/blur';
 
-import {useCameraDevices, Camera} from 'react-native-vision-camera';
+// Camera
+import {
+  useCameraDevices,
+  Camera,
+  PhotoFile,
+  TakePhotoOptions,
+} from 'react-native-vision-camera';
 import {useIsFocused} from '@react-navigation/native';
+import {CameraPositionMode, CameraFlashMode} from '../types/camera';
+
+// Camera button components
+import PhotoViewer from '../components/Track/PhotoViewer';
+import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import pictureButtonOutside from '../../assets/picture-button-outside.png';
+import pictureButtonInside from '../../assets/picture-button-inside.png';
+import videoButtonOutside from '../../assets/video-button-outside.png';
+
+// Animation
 import Animated, {
   Easing,
   useSharedValue,
@@ -20,61 +37,31 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 
-import {useSelector, useDispatch} from 'react-redux';
+// Taking photo actions
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {
-  takePhoto,
-  toggleViewingPhoto,
-  selectPhotoSource,
-} from '../redux/slices/chipSubmitterSlice';
+  selectViewingPhoto,
+  takePhotoSuccess,
+  takePhotoFailure,
+  viewingPhotoStart,
+} from '../redux/slices/cameraSlice';
 
-import pictureButtonOutside from '../../assets/picture-button-outside.png';
-import pictureButtonInside from '../../assets/picture-button-inside.png';
-import videoButtonOutside from '../../assets/video-button-outside.png';
+// Loading goals data
+import {useGetGoalsQuery, usePrefetch} from '../redux/supabaseApi';
 
-import PhotoViewer from '../components/Track/PhotoViewer';
-import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
-
-export default function Home() {
+export default function Track() {
   const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
 
   // Camera
   const camera = useRef<Camera>(null);
-  const [isCameraInitialized, setIsCameraInitialized] = useState(false);
+  // const [isCameraInitialized, setIsCameraInitialized] = useState(false);
   // const zoom = useSharedValue(0);
   // const isPressingButton = useSharedValue(false);
-
-  // Camera settings
-  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>(
-    'front',
-  );
-  const [flash, setFlash] = useState<'off' | 'on'>('off');
-
-  const isFocused = useIsFocused();
-  const devices = useCameraDevices('wide-angle-camera');
-  const device = devices[cameraPosition];
-
-  const supportsCameraFlipping = useMemo(
-    () => devices.back != null && devices.front != null,
-    [devices.back, devices.front],
-  );
-  const supportsFlash = device?.hasFlash ?? false;
-
-  // Animated zoom
-  // const minZoom = device?.minZoom ?? 1;
-  // const MAX_ZOOM_FACTOR = 20;
-  // const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
-
-  const onFlipDevicePressed = useCallback(() => {
-    setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
-  }, []);
-  const onFlashPressed = useCallback(() => {
-    setFlash(f => (f === 'on' ? 'off' : 'on'));
-  }, []);
 
   // Camera permissions
   const requestCameraPermission = useCallback(async () => {
     const permission = await Camera.requestCameraPermission();
-
     if (permission === 'denied') {
       await Linking.openSettings();
     }
@@ -84,21 +71,71 @@ export default function Home() {
     requestCameraPermission();
   }, [requestCameraPermission]);
 
-  // Taking a photo
-  const photoSource = useSelector(selectPhotoSource);
-  const dispatch = useDispatch();
+  // Camera settings
+  const [cameraPosition, setCameraPosition] =
+    useState<CameraPositionMode>('front');
+  const [flash, setFlash] = useState<CameraFlashMode>('off');
 
-  function onPhotoButtonPress() {
-    dispatch(
-      takePhoto({
-        camera: camera,
+  // const supportsCameraFlipping = useMemo(
+  //   () => devices.back != null && devices.front != null,
+  //   [devices.back, devices.front],
+  // );
+  // const supportsFlash = device?.hasFlash ?? false;
+
+  const onFlipDevicePressed = useCallback(() => {
+    setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
+  }, []);
+  const onFlashPressed = useCallback(() => {
+    setFlash(f => (f === 'on' ? 'off' : 'on'));
+  }, []);
+
+  const isFocused = useIsFocused();
+  const devices = useCameraDevices('wide-angle-camera');
+  const device = devices[cameraPosition];
+
+  // Prefetch goals
+  const prefetchGoals = usePrefetch('getGoals');
+  useEffect(() => {
+    prefetchGoals([]);
+  }, [prefetchGoals]);
+
+  // Animated zoom
+  // const minZoom = device?.minZoom ?? 1;
+  // const MAX_ZOOM_FACTOR = 20;
+  // const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
+
+  // Takes the photo
+  const onPhotoButtonPress = async () => {
+    console.log('[onPhotoButtonPress]');
+
+    // Take the actual photo, this will also toggle the photo viewer when complete
+    if (camera.current) {
+      const options: TakePhotoOptions = {
         flash: flash,
-      }),
-    );
-    if (flash === 'off') {
-      dispatch(toggleViewingPhoto());
+        qualityPrioritization: 'speed',
+      };
+
+      try {
+        const photo: PhotoFile = await camera.current.takePhoto(options);
+        const photoPath = photo.path;
+
+        dispatch(takePhotoSuccess(photoPath));
+        dispatch(viewingPhotoStart());
+      } catch (e: unknown) {
+        if (typeof e === 'string') {
+          dispatch(takePhotoFailure(e));
+        } else if (e instanceof Error) {
+          dispatch(takePhotoFailure(e.message));
+        }
+      }
+    } else {
+      dispatch(
+        takePhotoFailure(
+          'Failed to find current camera reference while taking photo',
+        ),
+      );
     }
-  }
+  };
 
   // Take photo button
   const photoButtonScale = useSharedValue(1);
@@ -142,7 +179,7 @@ export default function Home() {
   }
 
   // Viewing/editing a photo
-  const viewingPhoto = useSelector(state => state.chipSubmitter.viewingPhoto);
+  const viewingPhoto = useAppSelector(selectViewingPhoto);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
@@ -163,32 +200,30 @@ export default function Home() {
         </View>
       )}
       {viewingPhoto ? (
-        <PhotoViewer photoSource={photoSource} />
+        <PhotoViewer />
       ) : (
-        <>
-          <View
-            style={{
-              position: 'absolute',
-              alignItems: 'center',
-              top: 70,
-              right: 10,
-            }}>
-            <IconButton
-              icon="camera-reverse-outline"
-              size={24}
-              iconColor="white"
-              containerColor={'rgba(0, 0, 0, 0.3)'}
-              onPress={onFlipDevicePressed}
-            />
-            <IconButton
-              icon={flash === 'on' ? 'flash' : 'flash-off'}
-              size={24}
-              iconColor="white"
-              containerColor={'rgba(0, 0, 0, 0.3)'}
-              onPress={onFlashPressed}
-            />
-          </View>
-        </>
+        <View
+          style={{
+            position: 'absolute',
+            alignItems: 'center',
+            top: 70,
+            right: 10,
+          }}>
+          <IconButton
+            icon="camera-reverse-outline"
+            size={24}
+            iconColor="white"
+            containerColor={'rgba(0, 0, 0, 0.3)'}
+            onPress={onFlipDevicePressed}
+          />
+          <IconButton
+            icon={flash === 'on' ? 'flash' : 'flash-off'}
+            size={24}
+            iconColor="white"
+            containerColor={'rgba(0, 0, 0, 0.3)'}
+            onPress={onFlashPressed}
+          />
+        </View>
       )}
       <View
         pointerEvents={'box-none'}

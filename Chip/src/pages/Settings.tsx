@@ -11,7 +11,7 @@ import {styles} from '../styles';
 
 // Api
 import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
-import {getUserAvatarUrl, uploadAvatar} from '../supabase/storage';
+import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profile';
 

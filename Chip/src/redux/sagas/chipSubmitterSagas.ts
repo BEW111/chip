@@ -7,69 +7,92 @@ import {
   chipSubmissionFailure,
   ChipSubmissionStartPayload,
 } from '../slices/chipSubmitterSlice';
+
+// Supabase
 import {
-  createPhotoStorageReference,
-  uploadChipPhoto,
-  uploadChip,
-} from '../../firebase/chips';
-import {postStory} from '../../firebase/stories';
+  insertChipInDatabase,
+  uploadChipImageToStorage,
+} from '../../supabase/chips';
 
 import {RootState} from '../store';
-import {StorySubmission} from '../../types/stories';
-import {PhotoSource} from '../../types/camera';
-import {FirebaseStorageTypes} from '@react-native-firebase/storage';
-
-function* uploadPhotoAndStorySaga(
-  photoReference: FirebaseStorageTypes.Reference,
-  photoLocalPath: string,
-  story: StorySubmission,
-  uid: string,
-  friendUids: string[],
-) {
-  yield call(uploadChipPhoto, photoReference, photoLocalPath);
-  yield call(postStory, story, uid, friendUids);
-}
+import {ChipSubmission, SupabaseChip} from '../../types/chips';
 
 function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
-  // First, we need to create the storage reference for when we upload the photo
-  const uid: string = action.payload.uid;
-  const photoSource: PhotoSource = action.payload.photoSource;
-  const photoReferenceInfo = createPhotoStorageReference(photoSource, uid);
+  const chipSubmissionInfo: ChipSubmission = action.payload;
 
-  // Let's get all of the relevant info we need
-  const goalId: string = action.payload.goalId;
-  const desc: string = action.payload.desc;
-  const amount: number = action.payload.amount;
+  const fileName = chipSubmissionInfo.photoUri.split('/').pop();
 
-  // And the info we'll need for posting the story
-  const friendUids: string[] = yield select(
-    (state: RootState) => state.auth.friends,
-  );
-  const story: StorySubmission = {
-    image: photoReferenceInfo.photoName,
-    message: desc,
+  if (fileName === undefined) {
+    yield put(
+      chipSubmissionFailure(
+        `Failed to extract file name from file path ${chipSubmissionInfo.photoUri}`,
+      ),
+    );
+    return;
+  }
+
+  const supabaseChip: SupabaseChip = {
+    goal_id: chipSubmissionInfo.goalId,
+    photo_path: `${chipSubmissionInfo.goalId}/${fileName}`,
+    amount: chipSubmissionInfo.amount,
+    description: chipSubmissionInfo.description,
+    uid: chipSubmissionInfo.uid,
   };
 
+  console.log(supabaseChip);
+
+  // TODO: better error handling here--if one fails, we should undo the other
   try {
     yield all([
-      // Upload the photo to storage, and post story after
+      call(insertChipInDatabase, supabaseChip),
       call(
-        uploadPhotoAndStorySaga,
-        photoReferenceInfo.reference,
-        photoReferenceInfo.localPath,
-        story,
-        uid,
-        friendUids,
+        uploadChipImageToStorage,
+        chipSubmissionInfo.goalId,
+        chipSubmissionInfo.photoUri,
+        chipSubmissionInfo.uid,
+        fileName,
       ),
-
-      // Upload the chip data
-      call(uploadChip, goalId, desc, uid, amount, photoReferenceInfo.photoName),
     ]);
-
     yield put(chipSubmissionSuccess());
-  } catch (error) {
-    yield put(chipSubmissionFailure(error.message));
+  } catch {
+    yield put(chipSubmissionFailure('Failed to insert or upload chip'));
   }
+
+  // // First, we need to create the storage reference for when we upload the photo
+  // const uid: string = action.payload.uid;
+  // const goalId: string = action.payload.goalId;
+  // const desc: string = action.payload.desc;
+  // const amount: number = action.payload.amount;
+
+  // // And the info we'll need for posting the story
+  // const friendUids: string[] = yield select(
+  //   (state: RootState) => state.auth.friends,
+  // );
+  // const story: StorySubmission = {
+  //   image: photoReferenceInfo.photoName,
+  //   message: desc,
+  // };
+
+  // try {
+  //   yield all([
+  //     // Upload the photo to storage, and post story after
+  //     call(
+  //       uploadPhotoAndStorySaga,
+  //       photoReferenceInfo.reference,
+  //       photoReferenceInfo.localPath,
+  //       story,
+  //       uid,
+  //       friendUids,
+  //     ),
+
+  //     // Upload the chip data
+  //     call(addChip, chip),
+  //   ]);
+
+  //   yield put(chipSubmissionSuccess());
+  // } catch (error) {
+  //   yield put(chipSubmissionFailure(error.message));
+  // }
 }
 
 export function* watchSubmitChip() {

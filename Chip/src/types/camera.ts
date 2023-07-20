@@ -1,6 +1,2 @@
-export type PhotoSource = {
-  isStatic: boolean;
-  uri: string;
-};
-
-export type FlashMode = 'on' | 'off';
+export type CameraPositionMode = 'front' | 'back';
+export type CameraFlashMode = 'on' | 'off';

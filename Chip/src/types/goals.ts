@@ -1,3 +1,4 @@
+// Local form of a goal
 export interface Goal {
   id: string; // actual identifier of the goal
   uid: string; // user that this goal belongs to
@@ -19,7 +20,7 @@ export interface Goal {
 }
 
 // The type for the goal we upload without the id (which is generated automatically)
-export interface GoalSubmission {
+export interface SupabaseGoal {
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal
 

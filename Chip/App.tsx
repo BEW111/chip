@@ -113,18 +113,14 @@ function MainTabs() {
               backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}>
-          {/* <Tab.Screen
+          <Tab.Screen
             name="Home"
             component={Home}
             options={{
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{
-                    color,
-                    textTransform: 'none',
-                    marginBottom: -10,
-                  }}>
+                  style={localStyles({color}).tabLabel}>
                   Home
                 </Text>
               ),
@@ -141,11 +137,7 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{
-                    color,
-                    textTransform: 'none',
-                    marginBottom: -10,
-                  }}>
+                  style={localStyles({color}).tabLabel}>
                   Friends
                 </Text>
               ),
@@ -158,7 +150,7 @@ function MainTabs() {
                 />
               ),
             }}
-          /> */}
+          />
           <Tab.Screen
             name="Track"
             component={Track}
@@ -166,11 +158,7 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{
-                    color,
-                    textTransform: 'none',
-                    marginBottom: -10,
-                  }}>
+                  style={localStyles({color}).tabLabel}>
                   Track goal
                 </Text>
               ),
@@ -191,11 +179,7 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{
-                    color,
-                    textTransform: 'none',
-                    marginBottom: -10,
-                  }}>
+                  style={localStyles({color}).tabLabel}>
                   Goals
                 </Text>
               ),
@@ -217,11 +201,7 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={{
-                    color,
-                    textTransform: 'none',
-                    marginBottom: -10,
-                  }}>
+                  style={localStyles({color}).tabLabel}>
                   You
                 </Text>
               ),
@@ -250,6 +230,7 @@ function Main() {
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
+
       dispatch(updateUid(newSession?.user.id));
     });
 
@@ -310,7 +291,7 @@ export default function App() {
 
 // Local styles
 type LocalStylesGeneratorType = {
-  color: ColorValue | number | undefined;
+  color: ColorValue | number | string | undefined;
 };
 const localStyles = (props: LocalStylesGeneratorType) =>
   StyleSheet.create({

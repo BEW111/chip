@@ -1,7 +1,5 @@
 import {supabase, supabaseUrl} from './supabase';
 
-/* Avatars */
-
 // Given file details and a username, uploads an avatar
 // we store it in the user's folder for the "avatars" bucket
 // and keep the original filename

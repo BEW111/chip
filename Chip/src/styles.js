@@ -92,6 +92,10 @@ export const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
+  dividerLarge: {
+    marginVertical: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
   dividerHTiny: {
     marginHorizontal: 2,
     backgroundColor: 'rgba(0, 0, 0, 0)',

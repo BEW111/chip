@@ -3,6 +3,7 @@ import {setupListeners} from '@reduxjs/toolkit/query';
 import createSagaMiddleware from 'redux-saga';
 
 import authReducer from './slices/authSlice';
+import cameraReducer from './slices/cameraSlice';
 import chipSubmitterReducer from './slices/chipSubmitterSlice';
 import onboardingReducer from './slices/onboardingSlice';
 import analyticsReducer from './slices/analyticsSlice';
@@ -15,6 +16,7 @@ const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    camera: cameraReducer,
     chipSubmitter: chipSubmitterReducer,
     onboarding: onboardingReducer,
     analytics: analyticsReducer,

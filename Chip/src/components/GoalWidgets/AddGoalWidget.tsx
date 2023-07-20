@@ -44,7 +44,10 @@ import {addGoal} from '../../supabase/goals';
 // import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
 import {GoalIterationPeriod, GoalType, GoalVisibility} from '../../types/goals';
-import {GoalSubmission} from '../../types/goals';
+import {SupabaseGoal} from '../../types/goals';
+
+// Updating local state
+import {usePrefetch} from '../../redux/supabaseApi';
 
 export default function AddGoalWidget() {
   const theme = useTheme();
@@ -83,6 +86,10 @@ export default function AddGoalWidget() {
   const uid = useAppSelector(selectUid);
   const isNewUser = useAppSelector(selectNewlyCreated);
 
+  // Will need this to update the goals locally
+  const prefetchGoals = usePrefetch('getGoals');
+
+  // Animation for tutorial
   useEffect(() => {
     if (isNewUser) {
       surfaceScale.value = withRepeat(
@@ -96,12 +103,9 @@ export default function AddGoalWidget() {
     }
   }, []);
 
-  console.log(uid);
-
   const onCreateGoal = () => {
-    console.log(uid);
     if (uid) {
-      const goal: GoalSubmission = {
+      const goal: SupabaseGoal = {
         uid: uid,
         name: goalNameInput,
         description: '',
@@ -117,6 +121,9 @@ export default function AddGoalWidget() {
       };
 
       addGoal(goal);
+
+      // We'll also need to update the local cache
+      prefetchGoals([], {force: true});
     }
 
     setGoalNameInput('');
@@ -148,10 +155,19 @@ export default function AddGoalWidget() {
                     <Divider style={styles.dividerHSmall} />
                     <Pressable
                       onPress={() => setEmojiPickerOpen(true)}
-                      style={goalModalStyles(theme).emojiButton}>
+                      style={
+                        goalModalStyles(theme, emojiPickerOpen).emojiButton
+                      }>
                       <Text variant="headlineMedium">
                         {goalEmojiInput.emoji}
                       </Text>
+                      <Icon
+                        style={
+                          goalModalStyles(theme, emojiPickerOpen).emojiIcon
+                        }
+                        name={'pencil-outline'}
+                        size={24}
+                      />
                     </Pressable>
                   </View>
                   <Divider style={styles.dividerSmall} />
@@ -171,61 +187,65 @@ export default function AddGoalWidget() {
                       },
                     ]}
                   />
-                  <Divider style={styles.dividerSmall} />
+                  <Divider style={styles.dividerMedium} />
                   <Text variant="titleMedium">
-                    Set a goal for completing this goal:
+                    How will you track your progress?
                   </Text>
-                  <Divider style={styles.dividerTiny} />
                   <TextInput
+                    dense
                     style={modalStyles.textInput}
                     mode="outlined"
-                    label="Target amount"
-                    keyboardType="decimal-pad"
-                    value={goalFreqAmtInput.toString()}
-                    onChangeText={text => setGoalFreqAmtInput(text)}
-                    right={
-                      <TextInput.Affix
-                        text={
-                          pluralize(goalUnits, parseFloat(goalFreqAmtInput)) +
-                          ' ' +
-                          goalFreqInput
-                        }
-                      />
-                    }
+                    label="Units, e.g. minutes spent, reps, ..."
+                    keyboardType="default"
+                    autoCapitalize="none"
+                    value={goalUnits}
+                    onChangeText={text => setGoalUnits(text)}
                   />
-                  <Divider style={styles.dividerTiny} />
+                  <Divider style={styles.dividerSmall} />
+                  <Text variant="titleMedium">
+                    Set a target to complete regularly:
+                  </Text>
                   <View style={styles.row}>
-                    <View style={{flex: 2}}>
+                    <View style={{flex: 3}}>
                       <TextInput
                         dense
                         style={modalStyles.textInput}
                         mode="outlined"
-                        label="Units"
-                        keyboardType="default"
-                        autoCapitalize="none"
-                        value={goalUnits}
-                        onChangeText={text => setGoalUnits(text)}
-                      />
-                    </View>
-                    <Divider style={styles.dividerHSmall} />
-                    <View style={{flex: 3, paddingTop: 6}}>
-                      <SegmentedButtons
-                        value={goalFreqInput}
-                        onValueChange={setGoalFreqInput}
-                        buttons={[
-                          {
-                            value: 'daily',
-                            label: 'Daily',
-                          },
-                          {
-                            value: 'weekly',
-                            label: 'Weekly',
-                          },
-                        ]}
+                        label="Target amount"
+                        keyboardType="decimal-pad"
+                        value={goalFreqAmtInput.toString()}
+                        onChangeText={text => setGoalFreqAmtInput(text)}
+                        right={
+                          <TextInput.Affix
+                            text={
+                              pluralize(
+                                goalUnits,
+                                parseFloat(goalFreqAmtInput),
+                              ) +
+                              ' ' +
+                              goalFreqInput
+                            }
+                          />
+                        }
                       />
                     </View>
                   </View>
-                  <Divider style={styles.dividerMedium} />
+                  <Divider style={styles.dividerSmall} />
+                  <SegmentedButtons
+                    value={goalFreqInput}
+                    onValueChange={setGoalFreqInput}
+                    buttons={[
+                      {
+                        value: 'daily',
+                        label: 'Daily',
+                      },
+                      {
+                        value: 'weekly',
+                        label: 'Weekly',
+                      },
+                    ]}
+                  />
+                  <Divider style={styles.dividerLarge} />
                   <Button mode="contained" onPress={onCreateGoal}>
                     Make it happen
                   </Button>
@@ -278,12 +298,11 @@ export default function AddGoalWidget() {
   );
 }
 
-const goalModalStyles = theme =>
+const goalModalStyles = (theme, selected) =>
   StyleSheet.create({
     emojiButton: {
       backgroundColor: 'white',
-      borderColor: theme.colors.outline,
-      borderWidth: 1,
+      borderColor: selected ? theme.colors.primary : theme.colors.outline,
       height: 52,
       width: 52,
       justifyContent: 'center',
@@ -292,6 +311,14 @@ const goalModalStyles = theme =>
       marginTop: 6,
       paddingTop: 2,
       paddingLeft: 0.5,
+      borderWidth: selected ? 2 : 1,
+    },
+    emojiIcon: {
+      position: 'absolute',
+      color: theme.colors.outline,
+      paddingLeft: 2,
+      paddingBottom: 2,
+      opacity: selected ? 0.3 : 0.6,
     },
   });
 
