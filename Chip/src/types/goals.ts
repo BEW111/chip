@@ -21,6 +21,8 @@ export interface Goal {
 
 // The type for the goal we upload without the id (which is generated automatically)
 export interface SupabaseGoal {
+  id?: number;
+
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal
 

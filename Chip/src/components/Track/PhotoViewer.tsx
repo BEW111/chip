@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useAppSelector, useAppDispatch} from '../../redux/hooks';
@@ -16,9 +16,7 @@ import BlurSurface from '../BlurSurface';
 // Camera state
 import {
   selectPhotoPath,
-  selectViewingPhoto,
   viewingPhotoStop,
-  testReducer,
 } from '../../redux/slices/cameraSlice';
 
 // State and supabase
@@ -26,17 +24,15 @@ import {selectUid} from '../../redux/slices/authSlice';
 import {chipSubmissionStart} from '../../redux/slices/chipSubmitterSlice';
 import {useGetGoalsQuery} from '../../redux/supabaseApi';
 import {ChipSubmission} from '../../types/chips';
-
-// TODO: move this to another file
-const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
+import {SupabaseGoal} from '../../types/goals';
 
 type HabitPopupProps = {
   chipDesc: string;
   setChipDesc: React.Dispatch<React.SetStateAction<string>>;
-  closePopup: React.Dispatch<React.SetStateAction<boolean>>;
+  closePopup: () => void;
   setSelectedGoalId: React.Dispatch<React.SetStateAction<number>>;
-  chipAmount: number;
-  setChipAmount: React.Dispatch<React.SetStateAction<number>>;
+  chipAmount: string;
+  setChipAmount: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function HabitPopup({
@@ -48,13 +44,13 @@ function HabitPopup({
   setChipAmount,
 }: HabitPopupProps) {
   // Function to get all the goal data by a certain goal id
-  const {data: userGoals, isFetching} = useGetGoalsQuery([]);
-  const getGoalFromId = (id: number, goals: Goal[]) =>
-    goals.filter((g: Goal) => g.id === id)[0];
-  console.log(userGoals);
+  const {data: userGoals, isFetching} = useGetGoalsQuery();
+  const getGoalFromId = (id: number, goals: SupabaseGoal[]) =>
+    goals.filter(g => g.id === id)[0];
 
   // Id of current goal selected
-  const [currentId, setCurrentId] = useState(-1);
+  const startingId = userGoals ? userGoals[0].id : -1;
+  const [currentId, setCurrentId] = useState(startingId || -1);
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()}>
@@ -63,49 +59,33 @@ function HabitPopup({
           <Text variant="titleLarge">Edit chip info</Text>
         </View>
         <Divider style={styles.dividerMedium} />
-        <View
-          pointerEvents={'box-none'}
-          style={{alignItems: 'center', height: 175}}>
-          {userGoals && (
-            <Picker
-              pointerEvents={'box-none'}
-              style={{
-                backgroundColor: transparentBackgroundColor,
-                width: Dimensions.get('screen').width * 0.9 - 30,
-                height: 175,
-                borderRadius: 5,
-                justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-              itemStyle={{
-                fontFamily: 'Lato-Medium',
-              }}
-              selectedValue={'Exercise'}
-              pickerData={userGoals.map((g: Goal) => ({
-                value: g.id,
-                label: g.emoji + ' ' + g.name,
-              }))}
-              onValueChange={(id: number) => {
-                setSelectedGoalId(id);
-                setCurrentId(id);
-              }}
-            />
-          )}
-        </View>
+        {isFetching ? (
+          <View style={popupStyles.tempView} />
+        ) : (
+          <View pointerEvents={'box-none'} style={popupStyles.wrapper}>
+            {userGoals && (
+              <Picker
+                pointerEvents={'box-none'}
+                style={popupStyles.picker}
+                itemStyle={popupStyles.pickerItem}
+                selectedValue={'Exercise'}
+                pickerData={userGoals.map((g: SupabaseGoal) => ({
+                  value: g.id,
+                  label: g.emoji + ' ' + g.name,
+                }))}
+                onValueChange={(id: number) => {
+                  setSelectedGoalId(id);
+                  setCurrentId(id);
+                }}
+              />
+            )}
+          </View>
+        )}
         <Divider style={styles.dividerSmall} />
         <TextInput
-          style={{
-            marginTop: 0,
-            backgroundColor: transparentBackgroundColor,
-          }}
-          contentStyle={{
-            color: 'black',
-          }}
-          outlineStyle={{
-            borderColor: '#AAF0',
-            borderWidth: 0,
-            color: 'black',
-          }}
+          style={popupStyles.textInput}
+          contentStyle={popupStyles.textInputContent}
+          outlineStyle={popupStyles.textInputOutline}
           mode="outlined"
           keyboardType="decimal-pad"
           value={chipAmount.toString()}
@@ -117,7 +97,8 @@ function HabitPopup({
               text={
                 userGoals && currentId >= 0
                   ? pluralize(
-                      getGoalFromId(currentId, userGoals).units || 'units',
+                      getGoalFromId(currentId, userGoals).iteration_units ||
+                        'units',
                       parseFloat(chipAmount),
                     )
                   : ''
@@ -127,37 +108,15 @@ function HabitPopup({
         />
         <Divider style={styles.dividerSmall} />
         <TextInput
-          style={{
-            marginTop: 0,
-            backgroundColor: transparentBackgroundColor,
-          }}
-          contentStyle={{
-            color: 'black',
-          }}
-          outlineStyle={{
-            borderColor: '#AAF0',
-            borderWidth: 0,
-            color: 'black',
-          }}
+          style={popupStyles.textInput}
+          contentStyle={popupStyles.textInputContent}
+          outlineStyle={popupStyles.textInputOutline}
           mode="outlined"
           label="Notes"
           value={chipDesc}
           onChangeText={text => setChipDesc(text)}
         />
-        <Pressable
-          onPress={closePopup}
-          style={{
-            width: 40,
-            height: 40,
-
-            position: 'absolute',
-            top: 10,
-            right: 10,
-
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <Pressable onPress={closePopup} style={popupStyles.closeButton}>
           <Icon name="close-outline" size={30} />
         </Pressable>
       </BlurSurface>
@@ -174,20 +133,32 @@ function PhotoViewer() {
 
   // Current popup state
   const [popupShowing, setPopupShowing] = useState(true);
-  const [selectedGoalId, setSelectedGoalId] = useState(0);
+  const [selectedGoalId, setSelectedGoalId] = useState(-1);
   const [chipDescription, setChipDescription] = useState('');
   const [chipAmount, setChipAmount] = useState<string>('1');
 
-  const viewingPhoto = useAppSelector(selectViewingPhoto);
+  const {data: userGoals} = useGetGoalsQuery();
 
   // When this is called, we'll actually submit the chip
   const onSubmitChip = () => {
     console.log('[onSubmitChip]');
     dispatch(viewingPhotoStop());
 
+    let goalId = selectedGoalId;
+
+    // TODO: I'd like to find a cleaner solution, but sometimes
+    if (selectedGoalId === -1) {
+      if (userGoals && userGoals.length > 0 && userGoals[0].id) {
+        goalId = userGoals[0].id;
+      } else {
+        console.log('Invalid selected goal ID');
+        return;
+      }
+    }
+
     if (uid && photoPath) {
       const chipSubmission: ChipSubmission = {
-        goalId: selectedGoalId,
+        goalId: goalId,
         photoUri: photoPath,
         description: chipDescription,
         amount: parseFloat(chipAmount),
@@ -254,6 +225,57 @@ function PhotoViewer() {
 }
 
 export default PhotoViewer;
+
+// TODO: move these to another file
+const transparentBackgroundColor = 'rgba(223, 246, 255, 0.171)';
+const screenWidth = Dimensions.get('screen').width;
+
+const popupStyles = StyleSheet.create({
+  wrapper: {alignItems: 'center', height: 175},
+  picker: {
+    backgroundColor: transparentBackgroundColor,
+    width: screenWidth * 0.9 - 30,
+    height: 175,
+    borderRadius: 5,
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  pickerItem: {
+    fontFamily: 'Lato-Medium',
+  },
+  textInput: {
+    marginTop: 0,
+    backgroundColor: transparentBackgroundColor,
+  },
+  textInputContent: {
+    color: 'black',
+  },
+  textInputOutline: {
+    borderColor: '#0000',
+    borderWidth: 0,
+    color: 'black',
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+
+    position: 'absolute',
+    top: 10,
+    right: 10,
+
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tempView: {
+    backgroundColor: transparentBackgroundColor,
+    width: screenWidth * 0.9 - 30,
+    height: 175,
+    borderRadius: 5,
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+});
 
 const localStyles = (insetsTop?: number) =>
   StyleSheet.create({

@@ -76,7 +76,7 @@ export default function AddGoalWidget() {
   const [goalFreqInput, setGoalFreqInput] =
     useState<GoalIterationPeriod>('daily');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(1);
-  const [goalUnits, setGoalUnits] = useState('time');
+  const [goalUnits, setGoalUnits] = useState('minute');
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
@@ -126,10 +126,10 @@ export default function AddGoalWidget() {
       prefetchGoals([], {force: true});
     }
 
+    hideModal();
     setGoalNameInput('');
     setGoalFreqAmtInput(0);
     setGoalFreqInput('daily');
-    hideModal();
     dispatch(updateNewlyCreated(false));
   };
 

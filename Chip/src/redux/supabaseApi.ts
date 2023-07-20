@@ -2,6 +2,7 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import {supabase} from '../supabase/supabase';
 
 import {Profile} from '../types/profiles';
+import {SupabaseGoal} from '../types/goals';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
@@ -28,14 +29,14 @@ export const supabaseApi = createApi({
         }
       },
     }),
-    getProfiles: builder.query({
+    getProfiles: builder.query<Profile[] | null, void>({
       queryFn: async () => {
         const {data, error} = await supabase.from('profiles').select();
 
         return {data: data, error: error};
       },
     }),
-    getGoals: builder.query({
+    getGoals: builder.query<SupabaseGoal[] | null, void>({
       queryFn: async () => {
         const {data, error} = await supabase.from('goals').select();
 
