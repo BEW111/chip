@@ -1,8 +1,8 @@
-import {SupabaseChip} from '../types/chips';
+import {SupabaseChipUpload} from '../types/chips';
 import {supabase} from './supabase';
 
 // Pushes chip to the database
-export async function insertChipInDatabase(chip: SupabaseChip) {
+export async function insertChipInDatabase(chip: SupabaseChipUpload) {
   const {error} = await supabase.from('chips').insert(chip);
 
   if (error) {

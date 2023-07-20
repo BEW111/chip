@@ -10,8 +10,6 @@ import Svg, {
   Stop,
 } from 'react-native-svg';
 
-import {ChipObject} from '../../types';
-
 import LatoRegular from '../../../assets/fonts/Lato-Regular.ttf';
 import {styles} from '../../styles';
 import {
@@ -25,6 +23,7 @@ import {
   TEXT_COLOR,
   TO_COLOR,
 } from '../../chartParams';
+import {SupabaseChip} from '../../types/chips';
 
 const isToday = (someDate, offset) => {
   const today = new Date();
@@ -121,11 +120,11 @@ export default function DayOccurrenceChart({chips, chartHeightProp}) {
                   {dateStr}
                 </Text>
                 {chips
-                  .filter((chip: ChipObject) =>
-                    isToday(chip.timeSubmitted.toDate(), 6 - i),
+                  .filter((chip: SupabaseChip) =>
+                    isToday(new Date(chip.created_at), 6 - i),
                   )
-                  .map((chip: ChipObject) => {
-                    let d = chip.timeSubmitted.toDate();
+                  .map((chip: SupabaseChip) => {
+                    let d = new Date(chip.created_at);
                     return (
                       (d.getHours() +
                         d.getMinutes() / 60 +

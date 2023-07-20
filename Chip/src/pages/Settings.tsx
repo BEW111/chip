@@ -6,6 +6,7 @@ import {Button, Divider, IconButton, Text, TextInput} from 'react-native-paper';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AvatarDisplay from '../components/AvatarDisplay';
+import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
 import {styles} from '../styles';
 
@@ -79,6 +80,7 @@ export default function Settings(props) {
 
   return (
     <Pressable onPress={onCloseUsernameEditor} style={styles.expand}>
+      <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       <DrawerContentScrollView {...props} style={styles.expand}>
         <View style={styles.fullPaddedHorizontal}>
           <View style={styles.row}>

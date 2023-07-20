@@ -1,7 +1,7 @@
-import {SupabaseGoal} from '../types/goals';
+import {SupabaseGoalUpload} from '../types/goals';
 import {supabase} from './supabase';
 
-export async function addGoal(goal: SupabaseGoal) {
+export async function addGoal(goal: SupabaseGoalUpload) {
   console.log(goal);
   const {error} = await supabase.from('goals').insert(goal);
 

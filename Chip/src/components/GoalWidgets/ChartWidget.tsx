@@ -1,12 +1,13 @@
 import React from 'react';
 import {Text} from 'react-native-paper';
+import {styles} from '../../styles';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import BlurSurface from '../BlurSurface';
 import DayOccurrenceChart from '../Charts/DayOccurrenceChart';
 import BarChart from '../Charts/BarChart';
-import {ChipObject} from '../../types';
-import {styles} from '../../styles';
+
+import {SupabaseChip} from '../../types/chips';
 
 const iconMap: {[key: string]: string} = {
   bar: 'bar-chart-outline',
@@ -14,7 +15,7 @@ const iconMap: {[key: string]: string} = {
 };
 
 interface ChartWidgetProps {
-  chips: ChipObject[];
+  chips: SupabaseChip[];
   chartType: string;
   title: string;
 }

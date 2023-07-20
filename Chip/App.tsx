@@ -50,7 +50,7 @@ import SignIn from './src/pages/SignedOut/SignIn';
 import Home from './src/pages/Home';
 import Social from './src/pages/Social';
 import Track from './src/pages/Track';
-import Analytics from './src/pages/Goals/Analytics';
+import Analytics from './src/pages/Goals/GoalsPage';
 import Settings from './src/pages/Settings';
 
 // Styling
@@ -61,6 +61,7 @@ import {useGetCurrentProfileQuery} from './src/redux/supabaseApi';
 // TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
+  '@supabase/gotrue-js: Stack guards not supported in this environment.',
 ]);
 
 const Tab = createMaterialTopTabNavigator();

@@ -20,8 +20,27 @@ export interface Goal {
 }
 
 // The type for the goal we upload without the id (which is generated automatically)
+export interface SupabaseGoalUpload {
+  uid: string; // user that this goal belongs to
+  name: string; // display name of the goal
+
+  description?: string;
+  type?: GoalType;
+  is_public: boolean;
+  emoji: string;
+
+  streak_count: number;
+  streak_met: boolean;
+  iteration_period: GoalIterationPeriod;
+  iteration_amount: number;
+  iteration_units: string;
+  current_iteration_progress: number;
+}
+
+// The type for the goal we'll get from the database
 export interface SupabaseGoal {
-  id?: number;
+  id: number;
+  created_at: string;
 
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal

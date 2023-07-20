@@ -15,7 +15,7 @@ import {
 } from '../../supabase/chips';
 
 import {RootState} from '../store';
-import {ChipSubmission, SupabaseChip} from '../../types/chips';
+import {ChipSubmission, SupabaseChipUpload} from '../../types/chips';
 
 function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
   const chipSubmissionInfo: ChipSubmission = action.payload;
@@ -31,15 +31,13 @@ function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
     return;
   }
 
-  const supabaseChip: SupabaseChip = {
+  const supabaseChip: SupabaseChipUpload = {
     goal_id: chipSubmissionInfo.goalId,
     photo_path: `${chipSubmissionInfo.goalId}/${fileName}`,
     amount: chipSubmissionInfo.amount,
     description: chipSubmissionInfo.description,
     uid: chipSubmissionInfo.uid,
   };
-
-  console.log(supabaseChip);
 
   // TODO: better error handling here--if one fails, we should undo the other
   try {

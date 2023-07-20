@@ -6,10 +6,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {styles} from '../../styles';
 import BlurSurface from '../BlurSurface';
 import ImageStackCarousel from '../GoalDetail/ImageStackCarousel';
+import {SupabaseGoal} from '../../types/goals';
+import {SupabaseChip} from '../../types/chips';
 
 const ITEM_WIDTH = 144;
 
-export default function ImageCarouselWidget({goal, chips, navigation}) {
+type ImageCarouselWidgetProps = {
+  goal: SupabaseGoal;
+  chips: SupabaseChip[];
+  navigation: any;
+};
+
+export default function ImageCarouselWidget({
+  goal,
+  chips,
+  navigation,
+}: ImageCarouselWidgetProps) {
   return (
     <BlurSurface padding={2}>
       <View>

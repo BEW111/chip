@@ -3,11 +3,12 @@ import {supabase} from '../supabase/supabase';
 
 import {Profile} from '../types/profiles';
 import {SupabaseGoal} from '../types/goals';
+import {SupabaseChip} from '../types/chips';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
   endpoints: builder => ({
-    getCurrentProfile: builder.query<Profile | null, string>({
+    getCurrentProfile: builder.query<Profile | null, void>({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
 
@@ -44,9 +45,19 @@ export const supabaseApi = createApi({
       },
       staleTime: 3600000,
     }),
-    getChips: builder.query({
+    getChips: builder.query<SupabaseChip[] | null, void>({
       queryFn: async () => {
         const {data, error} = await supabase.from('chips').select();
+
+        return {data: data, error: error};
+      },
+    }),
+    getChipsByGoalId: builder.query<SupabaseChip[] | null, number>({
+      queryFn: async (id: number) => {
+        const {data, error} = await supabase
+          .from('chips')
+          .select()
+          .eq('goal_id', id);
 
         return {data: data, error: error};
       },
@@ -59,5 +70,6 @@ export const {
   useGetCurrentProfileQuery,
   useGetGoalsQuery,
   useGetChipsQuery,
+  useGetChipsByGoalIdQuery,
   usePrefetch,
 } = supabaseApi;
