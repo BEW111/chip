@@ -4,9 +4,6 @@ import {Divider, Text} from 'react-native-paper';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {useSelector} from 'react-redux';
-import {selectUid} from '../../redux/slices/authSlice';
-
 import GoalWidget from '../../components/GoalWidgets/GoalWidget';
 import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
@@ -22,13 +19,8 @@ import {useGetChipsQuery, useGetGoalsQuery} from '../../redux/supabaseApi';
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
-  const uid = useSelector(selectUid);
-  const {
-    data: goals,
-    isFetching: isFetchingGoals,
-    isSuccess: isSuccessGoals,
-  } = useGetGoalsQuery();
-  const {data: chips, isFetching: isFetchingChips} = useGetChipsQuery();
+  const {data: goals} = useGetGoalsQuery();
+  const {data: chips} = useGetChipsQuery();
 
   return (
     <>

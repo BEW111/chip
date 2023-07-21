@@ -46,7 +46,7 @@ const initialState: AuthState = {
   initializing: true,
   newlyCreated: false,
   user: null,
-  // profileImage: null,
+
   userGoals: [],
   friends: [],
   invitesSent: [],

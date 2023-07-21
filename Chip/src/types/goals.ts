@@ -45,8 +45,8 @@ export interface SupabaseGoal {
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal
 
-  description?: string;
-  type?: GoalType;
+  description: string;
+  type: GoalType;
   is_public: boolean;
   emoji: string;
 

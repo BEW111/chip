@@ -24,7 +24,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {supabase} from './src/supabase/supabase';
 import {Session} from '@supabase/supabase-js';
 
-import {useAppDispatch, useAppSelector} from './src/redux/hooks';
+import {useAppDispatch} from './src/redux/hooks';
 
 import {store} from './src/redux/store';
 import {
@@ -48,7 +48,7 @@ import SignIn from './src/pages/SignedOut/SignIn';
 
 // Main pages
 import Home from './src/pages/Home';
-import Social from './src/pages/Social';
+import Friends from './src/pages/Friends';
 import Track from './src/pages/Track';
 import Analytics from './src/pages/Goals/GoalsPage';
 import Settings from './src/pages/Settings';
@@ -56,7 +56,6 @@ import Settings from './src/pages/Settings';
 // Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
-import {useGetCurrentProfileQuery} from './src/redux/supabaseApi';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -132,8 +131,8 @@ function MainTabs() {
             }}
           />
           <Tab.Screen
-            name="Social"
-            component={Social}
+            name="Friends"
+            component={Friends}
             options={{
               tabBarLabel: ({color}) => (
                 <Text
@@ -231,6 +230,7 @@ function Main() {
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
+      console.log(newSession?.user);
 
       dispatch(updateUid(newSession?.user.id));
     });

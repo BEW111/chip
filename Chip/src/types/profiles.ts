@@ -1,4 +1,4 @@
-export type Profile = {
+export type SupabaseProfile = {
   id: string;
   updated_at: string;
   username: string;

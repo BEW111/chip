@@ -1,5 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {styles, modalStyles} from '../../styles';
+
+// Components
 import {
   Button,
   Divider,
@@ -12,29 +16,29 @@ import {
   HelperText,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {useSelector, useDispatch} from 'react-redux';
+import InputFieldMenu from '../InputFieldMenu';
+import AvatarDisplay from '../AvatarDisplay';
 
-import {selectUid, selectUserGoals} from '../../redux/slices/authSlice';
-import {inviteUser, acceptInvite} from '../../firebase/friends';
+// stuff to delete
+import {selectUid} from '../../redux/slices/authSlice';
 
-import {styles, modalStyles} from '../../styles';
 import {getGoalsPublic} from '../../firebase/goals';
 import {
   createSuperstreak,
   getSuperstreaksByUser,
 } from '../../firebase/superstreaks';
 
-import {PublicUser} from '../../types';
-
-import InputFieldMenu from '../InputFieldMenu';
-import ProfileImageDisplay from '../AvatarDisplay';
+// Friends
+import {inviteUser, acceptInvite} from '../../supabase/friends';
+import {SupabaseProfileWithStatus} from '../../types/friends';
+import {
+  useGetFriendsQuery,
+  useGetReceivedFriendRequestsQuery,
+  useGetSentFriendRequestsQuery,
+} from '../../redux/supabaseApi';
 
 interface UserContainerType {
-  user: PublicUser;
-  isFriend?: boolean;
-  isAccepted?: boolean;
-  isInvited?: boolean;
-  isReceived?: boolean;
+  user: SupabaseProfileWithStatus;
 }
 
 function ChallengeUserModal({visible, hideModal, user}) {
@@ -135,7 +139,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
       onDismiss={onDismiss}
       contentContainerStyle={modalStyles.container}>
       <View style={styles.row}>
-        <ProfileImageDisplay height={48} width={48} uid={user.uid} />
+        <AvatarDisplay height={48} width={48} uid={user.uid} />
         <Divider style={styles.dividerHSmall} />
         <View>
           <Text variant="titleLarge">@{user.username}</Text>
@@ -220,86 +224,77 @@ function ChallengeUserModal({visible, hideModal, user}) {
   );
 }
 
-function UserContainer(props: UserContainerType) {
-  const {user, isFriend, isAccepted, isInvited, isReceived}: UserContainerType =
-    props;
+function UserContainer({user}: UserContainerType) {
+  const currentUid = useAppSelector(selectUid);
+  const isSelf = currentUid === user.id;
 
+  // Popup modal
   const [pressed, setPressed] = useState(false);
   const [superstreakModalVisible, setSuperstreakModalVisible] = useState(false);
-
-  const currentUserUid = useSelector(selectUid);
-  const dispatch = useDispatch();
-
-  const isSelf = currentUserUid === user.uid;
-
-  async function onSendInvite() {
-    console.log('[onSendInvite]');
-    const result = await inviteUser(currentUserUid, user.uid, dispatch);
-  }
-
-  async function onAcceptInvite() {
-    console.log('[onAcceptInvite]');
-    const result = await acceptInvite(user.uid, currentUserUid, dispatch);
-    console.log(result);
-  }
-
   async function onChallenge() {
     setSuperstreakModalVisible(true);
   }
 
+  // Invites
+  const dispatch = useAppDispatch();
+  async function onSendInvite() {
+    if (currentUid) {
+      await inviteUser(currentUid, user.id);
+      sentRefetch();
+    }
+  }
+  async function onAcceptInvite() {
+    if (currentUid) {
+      await acceptInvite(user.id, currentUid);
+    }
+  }
+
+  const {refetch: receivedRefetch} = useGetReceivedFriendRequestsQuery();
+  const {refetch: sentRefetch} = useGetSentFriendRequestsQuery();
+  const {refetch: friendsRefetch} = useGetFriendsQuery();
+
   return (
     <>
-      <Portal>
+      {/* <Portal>
         <ChallengeUserModal
           visible={superstreakModalVisible}
           hideModal={() => setSuperstreakModalVisible(false)}
           user={user}
         />
-      </Portal>
-      <View
-        // onPressIn={() => setPressed(true)}
-        // onPressOut={() => setPressed(false)}
-        style={{
-          backgroundColor: pressed ? '#DDD4' : '#0000',
-          padding: 10,
-          borderRadius: 10,
-        }}>
+      </Portal> */}
+      <Pressable
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
+        style={buttonStyles(pressed).button}>
         <View style={styles.rowSpaceBetween}>
           <View style={styles.row}>
-            <ProfileImageDisplay height={48} width={48} uid={user.uid} />
+            <AvatarDisplay height={48} width={48} url={user.avatar_url} />
             <Divider style={styles.dividerHSmall} />
             <View>
-              <Text variant="titleMedium" style={{color: 'white'}}>
+              <Text variant="titleMedium" style={localStyles.whiteText}>
                 @{user.username}
               </Text>
-              <Text variant="bodySmall" style={{color: 'gray'}}>
-                {user.email}
+              <Text variant="bodySmall" style={localStyles.grayText}>
+                {user.full_name}
               </Text>
             </View>
           </View>
           {!isSelf &&
-            (isFriend ? (
+            (user.status === 'accepted' ? (
               <IconButton
                 onPress={onChallenge}
                 iconColor="white"
                 icon="ellipsis-horizontal-outline"
                 size={24}
               />
-            ) : isAccepted ? (
-              <Button
-                disabled
-                mode="contained"
-                labelStyle={localStyles.userButtonLabel}>
-                Added
-              </Button>
-            ) : isReceived ? (
+            ) : user.status === 'received' ? (
               <Button
                 mode="contained"
                 onPress={onAcceptInvite}
                 labelStyle={localStyles.userButtonLabel}>
                 Add back
               </Button>
-            ) : isInvited ? (
+            ) : user.status === 'sent' ? (
               <Button
                 mode="contained"
                 disabled
@@ -315,12 +310,21 @@ function UserContainer(props: UserContainerType) {
               </Button>
             ))}
         </View>
-      </View>
+      </Pressable>
     </>
   );
 }
 
 export default UserContainer;
+
+const buttonStyles = (pressed: boolean) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: pressed ? '#4444' : '#0000',
+      padding: 10,
+      borderRadius: 10,
+    },
+  });
 
 const localStyles = StyleSheet.create({
   userButtonLabel: {
@@ -334,4 +338,6 @@ const localStyles = StyleSheet.create({
     paddingTop: 8,
     backgroundColor: 'white',
   },
+  whiteText: {color: 'white'},
+  grayText: {color: 'gray'},
 });
