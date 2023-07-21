@@ -5,6 +5,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from '../store';
 import {StoryGroup} from '../../types/stories';
+import {findNextUnviewedStory, findNextStory} from '../../utils/stories';
 
 // We assume that based on the way we have implemented the functionality
 // for adding the stories, that the users are sorted in reverse order
@@ -67,72 +68,6 @@ export const storyFeedSlice = createSlice({
         return;
       }
 
-      // Helper function to find the next story, even if it has already
-      // been viewed
-      const findNextStory = (userIdx: number, storyIdx: number) => {
-        const currentStories = action.payload.storyGroups[userIdx].stories;
-
-        // Last user, last story
-        if (
-          userIdx === action.payload.storyGroups.length - 1 &&
-          storyIdx === currentStories.length - 1
-        ) {
-          return {nextUserIdx: null, nextStoryIdx: null};
-        }
-
-        // Last user, but not last story
-        if (
-          userIdx === action.payload.storyGroups.length - 1 &&
-          storyIdx < currentStories.length - 1
-        ) {
-          return {nextUserIdx: userIdx, nextStoryIdx: storyIdx + 1};
-        }
-
-        // Not last user, but last story
-        if (
-          userIdx < action.payload.storyGroups.length - 1 &&
-          storyIdx === currentStories.length - 1
-        ) {
-          return {nextUserIdx: userIdx + 1, nextStoryIdx: 0};
-        }
-
-        // Not last user, not last story either
-        return {nextUserIdx: userIdx, nextStoryIdx: storyIdx + 1};
-      };
-
-      // Helper function to find the next unviewed story, starting from the
-      // indexes for a current user and story. Note that this helper function does
-      // not mutate state.
-      const findNextUnviewedStory = (userIdx: number, storyIdx: number) => {
-        let nextUserIdx = userIdx;
-        let nextStoryIdx = storyIdx + 1;
-
-        while (nextUserIdx <= action.payload.storyGroups.length - 1) {
-          // Check if there is another story for this user
-          while (
-            nextStoryIdx <=
-            action.payload.storyGroups[nextUserIdx].stories.length - 1
-          ) {
-            // If the story isn't viewed, then we can return it
-            if (
-              !action.payload.storyGroups[nextUserIdx].stories[nextStoryIdx]
-                .viewed
-            ) {
-              return {nextUserIdx, nextStoryIdx};
-            }
-
-            // Otherwise, try going to the next story
-            nextStoryIdx += 1;
-          }
-
-          // If this user does not have any, then we need to move to the next one
-          nextUserIdx += 1;
-          nextStoryIdx = 0;
-        }
-
-        return {nextUserIdx: null, nextStoryIdx: null};
-      };
-
       // Update state (will automatically update to null if nothing is left)
       // If we just viewed a new (unviewed) story, then we should get the next unviewed story
       const findNextStoryFunction = state.justViewedNewStory
@@ -142,6 +77,7 @@ export const storyFeedSlice = createSlice({
       const {nextUserIdx, nextStoryIdx} = findNextStoryFunction(
         state.currentUserViewingIdx,
         state.currentStoryViewingIdx,
+        action.payload,
       );
 
       state.currentUserViewingIdx = nextUserIdx;

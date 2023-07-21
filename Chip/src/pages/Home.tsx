@@ -15,7 +15,10 @@ import {
   selectCurrentUserViewingIdx,
 } from '../redux/slices/storyFeedSlice';
 import {useGetStoryGroupsQuery} from '../redux/supabaseApi';
+import {insertStoryView} from '../supabase/stories';
 import {SupabaseProfile} from '../types/profiles';
+import {SupabaseStoryViewUpload} from '../types/stories';
+import {selectUid} from '../redux/slices/authSlice';
 
 // StoryAvatar displays an icon with the user and when pressed, will open up the stories
 // for that user
@@ -27,11 +30,27 @@ type StoryAvatarProps = {
 
 const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
   const dispatch = useAppDispatch();
+  const uid = useAppSelector(selectUid);
   const {data: storyGroups} = useGetStoryGroupsQuery();
 
   const openUserStories = () => {
-    if (storyGroups && storyGroups.length > 0) {
+    if (storyGroups && storyGroups.length > 0 && uid !== null) {
+      // Navigate to the first story
       dispatch(viewStoryByUserIdx({newIdx: userIdx, storyGroups}));
+
+      // Mark the story we're opening as viewed
+      const nextStoryIdx = storyGroups[userIdx].stories.findIndex(
+        story => !story.viewed,
+      );
+
+      if (nextStoryIdx !== -1) {
+        const viewRecord: SupabaseStoryViewUpload = {
+          story_id: storyGroups[userIdx].stories[nextStoryIdx].id,
+          poster_id: storyGroups[nextStoryIdx].creator.id,
+          viewer_id: uid,
+        };
+        insertStoryView(viewRecord);
+      }
     }
   };
 

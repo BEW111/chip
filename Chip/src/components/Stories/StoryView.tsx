@@ -7,7 +7,7 @@ import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {ActivityIndicator, Text} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 
-// Story view control
+// Story navigation control
 import {
   selectCurrentUserViewingIdx,
   selectCurrentStoryViewingIdx,
@@ -17,33 +17,68 @@ import {
 import {useGetStoryGroupsQuery} from '../../redux/supabaseApi';
 import {supabase} from '../../supabase/supabase';
 
+// Marking stories as viewed
+import {findNextUnviewedStory} from '../../utils/stories';
+import {insertStoryView} from '../../supabase/stories';
+import {SupabaseStoryViewUpload} from '../../types/stories';
+import {selectUid} from '../../redux/slices/authSlice';
+
 // Component to show when the user is viewing stories currently
 const StoryView = () => {
+  const uid = useAppSelector(selectUid);
+
   // Stories
-  const {data: storyGroups} = useGetStoryGroupsQuery();
+  const {data: storyGroups, refetch: refetchStoryGroups} =
+    useGetStoryGroupsQuery();
 
   // Current state
   const currentUserIdx = useAppSelector(selectCurrentUserViewingIdx);
   const currentStoryIdx = useAppSelector(selectCurrentStoryViewingIdx);
 
-  // Updating state
+  // Updating state and marking as viewed
   const dispatch = useAppDispatch();
   const nextStory = () => {
-    if (storyGroups) {
+    if (
+      storyGroups &&
+      currentUserIdx !== null &&
+      currentStoryIdx !== null &&
+      uid !== null
+    ) {
       dispatch(viewNextStory(storyGroups));
+
+      // Mark the story we're moving to as viewed
+      const {nextUserIdx, nextStoryIdx} = findNextUnviewedStory(
+        currentUserIdx,
+        currentStoryIdx,
+        storyGroups,
+      );
+
+      if (nextUserIdx !== null && nextStoryIdx !== null) {
+        const viewRecord: SupabaseStoryViewUpload = {
+          story_id: storyGroups[nextUserIdx].stories[nextStoryIdx].id,
+          poster_id: storyGroups[nextUserIdx].creator.id,
+          viewer_id: uid,
+        };
+        insertStoryView(viewRecord);
+      } else {
+        // If we couldn't find another story, then we're gonna close, and so
+        // we should refetch all of the stories data
+        refetchStoryGroups();
+      }
     }
   };
+
+  // When we close, we should refetch stories
   const close = () => {
     dispatch(stopViewingStory());
+    refetchStoryGroups();
   };
 
   // Image
   const [isLoading, setIsLoading] = useState(true);
   const [storyImageUri, setStoryImageUri] = useState<string | null>(null);
   useEffect(() => {
-    console.log('USE EFFECT');
     const updateStoryPhoto = async () => {
-      console.log('loading image...');
       setIsLoading(true);
       try {
         if (
@@ -56,8 +91,6 @@ const StoryView = () => {
           const {data, error} = await supabase.storage
             .from('chips')
             .download(currentStory.photo_path);
-
-          console.log(data);
 
           if (error) {
             throw error;
@@ -92,11 +125,10 @@ const StoryView = () => {
   }
 
   const currentStory = storyGroups[currentUserIdx].stories[currentStoryIdx];
-  console.log(currentStory);
 
   return (
     <View style={styles.fullDark}>
-      {storyImageUri ? (
+      {storyImageUri && !isLoading ? (
         <FastImage source={{uri: storyImageUri}} style={styles.absoluteFull} />
       ) : (
         <View style={styles.absoluteFullCentered}>
