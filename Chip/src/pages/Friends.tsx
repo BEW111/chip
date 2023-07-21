@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {View, ScrollView, Pressable, Keyboard, StyleSheet} from 'react-native';
 import {styles} from '../styles';
-import {useAppSelector, useAppDispatch} from '../redux/hooks';
+import {useAppSelector} from '../redux/hooks';
 
 // Components
 import {TextInput, Divider, Text} from 'react-native-paper';
@@ -31,16 +31,16 @@ export default function Friends() {
   const uid = useAppSelector(selectUid);
 
   // Friends
-  const {data: received, refetch: receivedRefetch} =
-    useGetReceivedFriendRequestsQuery();
-  const {data: sent, refetch: sentRefetch} = useGetSentFriendRequestsQuery();
-  const {data: friends, refetch: friendsRefetch} = useGetFriendsQuery();
+  const {data: received} = useGetReceivedFriendRequestsQuery();
+  const {data: sent} = useGetSentFriendRequestsQuery();
+  const {data: friends} = useGetFriendsQuery();
 
   const onSearch = async (searchQuery: string) => {
     if (searchQuery) {
       setCurrentSearchQuery(searchQuery);
       if (uid) {
-        const profileResults = await getProfilesBySearchQuery(searchQuery, uid);
+        const profileResults = await getProfilesBySearchQuery(searchQuery);
+        console.log(profileResults);
         setSearchResultProfiles(profileResults);
       }
     } else {
@@ -84,8 +84,16 @@ export default function Friends() {
             <Text variant="labelLarge" style={localStyles.whiteText}>
               Friend requests
             </Text>
+            <Divider style={styles.dividerTiny} />
             {received &&
               received.map(user => (
+                <View key={user.id}>
+                  <UserContainer user={user} />
+                  <Divider style={styles.dividerSmall} />
+                </View>
+              ))}
+            {sent &&
+              sent.map(user => (
                 <View key={user.id}>
                   <UserContainer user={user} />
                   <Divider style={styles.dividerSmall} />
@@ -95,6 +103,7 @@ export default function Friends() {
             <Text variant="labelLarge" style={localStyles.whiteText}>
               Friends
             </Text>
+            <Divider style={styles.dividerTiny} />
             {friends &&
               friends.map(user => (
                 <View key={user.id}>

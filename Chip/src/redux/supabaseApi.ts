@@ -111,7 +111,7 @@ export const supabaseApi = createApi({
         }: {data: SupabaseSentInviteResult[]; error: PostgrestError | null} =
           await supabase
             .from('friends')
-            .select('recipient:sender_id(*)')
+            .select('recipient:recipient_id(*)')
             .eq('sender_id', uid)
             .eq('status', 'pending');
 

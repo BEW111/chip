@@ -79,9 +79,11 @@ export async function rejectInvite(senderId: string, recipientId: string) {
  * @returns All profiles along with friendship statuses
  */
 export async function getProfilesBySearchQuery(searchQuery: string) {
-  // Query where we are the sender
-  // Note that we don't need to filter by our involvement, as RLS will
-  // take care of this for us
+  // Note that we don't need to filter by our involvement, as RLS will take care of this.
+  // We're getting all profiles, and then joining those profiles with friends data on
+  // whether or not the user matches a sender_id or a recipient_id.
+  // Thus, if there is a "received" entry, then this user is involved in a friendship
+  // where THEY are the recipient.
   const {
     data,
     error,
@@ -99,7 +101,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
   // Here's we're converting from the form of the result data to
   // a much nicer form. The result data may contain either a "received" or "sent"
   // array with an object containing a "status" item. The terms "received" or "sent"
-  // refer to whether or not we (the current user) received or sent these friendships.
+  // refer to which foreign key the OTHER user matched with. Therefore, if the OTHER user
+  // has a "recieved" entry, we are the sender, so we want to flip these terms so they're more intuitive.
   // We want to just have one resulting field, which describes the status of the friendship
   // relative to us, so either "accepted", "rejected", "received", "sent", or "none".
   const queryResult = data.map(
@@ -109,11 +112,11 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
         status:
           searchResult.sent.length > 0
             ? searchResult.sent[0].status === 'pending'
-              ? 'sent'
+              ? 'received'
               : searchResult.sent[0].status
             : searchResult.received.length > 0
             ? searchResult.received[0].status === 'pending'
-              ? 'received'
+              ? 'sent'
               : searchResult.received[0].status
             : 'none',
       } as SupabaseProfileWithStatus),

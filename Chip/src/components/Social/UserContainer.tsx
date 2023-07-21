@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {useAppSelector} from '../../redux/hooks';
 import {styles, modalStyles} from '../../styles';
 
 // Components
@@ -236,7 +236,10 @@ function UserContainer({user}: UserContainerType) {
   }
 
   // Invites
-  const dispatch = useAppDispatch();
+  const {refetch: receivedRefetch} = useGetReceivedFriendRequestsQuery();
+  const {refetch: sentRefetch} = useGetSentFriendRequestsQuery();
+  const {refetch: friendsRefetch} = useGetFriendsQuery();
+
   async function onSendInvite() {
     if (currentUid) {
       await inviteUser(currentUid, user.id);
@@ -246,12 +249,10 @@ function UserContainer({user}: UserContainerType) {
   async function onAcceptInvite() {
     if (currentUid) {
       await acceptInvite(user.id, currentUid);
+      receivedRefetch();
+      friendsRefetch();
     }
   }
-
-  const {refetch: receivedRefetch} = useGetReceivedFriendRequestsQuery();
-  const {refetch: sentRefetch} = useGetSentFriendRequestsQuery();
-  const {refetch: friendsRefetch} = useGetFriendsQuery();
 
   return (
     <>

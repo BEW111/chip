@@ -141,7 +141,6 @@ function PhotoViewer() {
 
   // When this is called, we'll actually submit the chip
   const onSubmitChip = () => {
-    console.log('[onSubmitChip]');
     dispatch(viewingPhotoStop());
 
     let goalId = selectedGoalId;
@@ -151,7 +150,7 @@ function PhotoViewer() {
       if (userGoals && userGoals.length > 0 && userGoals[0].id) {
         goalId = userGoals[0].id;
       } else {
-        console.log('Invalid selected goal ID');
+        console.error('Invalid selected goal ID');
         return;
       }
     }

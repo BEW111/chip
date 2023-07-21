@@ -113,7 +113,6 @@ function ChipModal({
 
   // Deleting the chip
   function onPromptDeleteChip() {
-    console.log('delete chip');
     setDeleteModalVisible(true);
   }
 
@@ -274,7 +273,7 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
         };
       } catch (error) {
         if (error instanceof Error) {
-          console.log('Error downloading image: ', error.message);
+          console.error('Error downloading image: ', error.message);
         }
       }
     };
