@@ -1,5 +1,6 @@
 import {supabase} from './supabase';
 import {AuthResult} from '../types/supabase';
+import {clearMessagingToken} from '../notifications/tokens';
 
 export async function signUpWithEmail(
   email: string,
@@ -52,8 +53,6 @@ export async function signInWithEmail(email: string, password: string) {
       message: null,
     };
   }
-
-  console.log(result);
 
   return result;
 }

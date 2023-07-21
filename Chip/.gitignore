@@ -68,4 +68,4 @@ package-lock.json
 yarn.lock
 
 # Env files
-.env
+.env.local

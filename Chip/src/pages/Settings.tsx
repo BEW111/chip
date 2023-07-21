@@ -15,6 +15,7 @@ import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profile';
+import {clearMessagingToken} from '../notifications/tokens';
 
 export default function Settings(props) {
   const {data: profile} = useGetCurrentProfileQuery();
@@ -29,8 +30,11 @@ export default function Settings(props) {
   const [visibleAvatarUrl, setVisibleAvatarUrl] = useState<string | null>(null);
 
   // Actions
-  const onLogoutPressed = () => {
-    signOut();
+  const onLogoutPressed = async () => {
+    if (profile?.id) {
+      await clearMessagingToken(profile?.id);
+      signOut();
+    }
   };
 
   const onOpenUsernameEditor = () => {

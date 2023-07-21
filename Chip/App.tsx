@@ -30,6 +30,7 @@ import {store} from './src/redux/store';
 import {updateUid} from './src/redux/slices/authSlice';
 
 import {requestNotificationsPermission} from './src/notifications/reminders';
+import {upsertMessagingToken} from './src/notifications/tokens';
 
 // Onboarding pages
 import Onboarding from './src/pages/SignedOut/Onboarding';
@@ -220,9 +221,11 @@ function Main() {
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
-      console.log(newSession?.user);
-
       dispatch(updateUid(newSession?.user.id));
+
+      if (newSession?.user.id) {
+        upsertMessagingToken(newSession?.user.id);
+      }
     });
 
     const {
