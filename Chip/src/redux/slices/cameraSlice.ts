@@ -53,7 +53,6 @@ export const {
   takePhotoStart,
   takePhotoSuccess,
   takePhotoFailure,
-  testReducer,
 } = cameraSlice.actions;
 export const selectPhotoPath = (state: RootState) => state.camera.photoPath;
 export const selectViewingPhoto = (state: RootState) =>
