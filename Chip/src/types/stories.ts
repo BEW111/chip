@@ -1,37 +1,74 @@
-import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+import {SupabaseProfile} from './profiles';
 
 // The data for an ordinary story posted by a user
-export type StorySubmission = {
-  image: string;
+export type SupabaseStoryUpload = {
+  creator_id: string;
+  photo_path: string;
   message: string;
 };
 
-// The below data types are used for the stories that are on people's feeds, so
-// we need to keep track of data like "viewed" and who originally posted it
-
-// Each user has a group of stories (because they may have posted multiple)
-// We also need to keep track of when it was last updated
-export type FeedUserStoryGroupFB = {
-  uid: string;
-  stories: FeedStoryDataFB[];
-  dateLastUpdated: FirebaseFirestoreTypes.Timestamp;
-};
-export type FeedUserStoryGroup = {
-  uid: string;
-  stories: FeedStoryData[];
-  dateLastUpdated: string;
+export type SupabaseStory = {
+  id: string;
+  created_at: string;
+  creator_id: string;
+  photo_path: string;
+  message: string;
 };
 
-// Note that this data is particular to a certain user's feed
-export type FeedStoryDataFB = {
-  datePosted: FirebaseFirestoreTypes.Timestamp;
-  imageUrl: string; // Actual URL to the image
+// We have a trigger to automatically add a "story view" row to the story views table
+// every time a story is added. If this row exists, it means that story {story_id} was
+// viewed by viewer {viewer_id}.
+export type SupabaseStoryViewUpload = {
+  story_id: string;
+  poster_id: string;
+  viewer_id: string;
+};
+
+export type SupabaseStoryView = {
+  id: string;
+  created_at: string;
+  story_id: string;
+  poster_id: string;
+  viewer_id: string;
+};
+
+// These are the actual objects we want to be dealing with, containing a creator
+// and an array of their stories
+export type Story = {
+  id: string;
+  created_at: string;
+  creator_id: string;
+  photo_path: string;
   message: string;
   viewed: boolean;
 };
-export type FeedStoryData = {
-  datePosted: string;
-  imageUrl: string; // Actual URL to the image
+
+export type StoryGroup = {
+  creator: SupabaseProfile;
+  stories: Story[];
+};
+
+// These are temporary response types that we should convert to a better form when possible
+export type SupabaseStoryWithViewAndCreatorResponse = {
+  id: string;
+  created_at: string;
+  creator_id: string;
+  creator: SupabaseProfile;
+  photo_path: string;
+  message: string;
+  viewed: boolean[];
+};
+
+export type SupabaseStoryInfo = {
+  id: string;
+  created_at: string;
+  creator: SupabaseProfile;
+  creator_id: string;
+  photo_path: string;
   message: string;
   viewed: boolean;
+};
+
+export type StoryGroupsObject = {
+  [poster_id: string]: SupabaseStoryInfo[];
 };

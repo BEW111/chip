@@ -32,11 +32,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import {useAppSelector, useAppDispatch} from '../../redux/hooks';
-import {
-  selectNewlyCreated,
-  selectUid,
-  updateNewlyCreated,
-} from '../../redux/slices/authSlice';
+import {selectNewlyCreated, selectUid} from '../../redux/slices/authSlice';
 
 // Database interactions
 import {addGoal} from '../../supabase/goals';
@@ -130,7 +126,6 @@ export default function AddGoalWidget() {
     setGoalNameInput('');
     setGoalFreqAmtInput(0);
     setGoalFreqInput('daily');
-    dispatch(updateNewlyCreated(false));
   };
 
   return (

@@ -1,17 +1,22 @@
 import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import {supabase} from '../supabase/supabase';
 
+import {PostgrestError} from '@supabase/supabase-js';
 import {SupabaseProfile} from '../types/profiles';
 import {SupabaseGoal} from '../types/goals';
 import {SupabaseChip} from '../types/chips';
 import {
-  SupabaseFriendship,
   SupabaseFriendshipResult,
   SupabaseProfileWithStatus,
   SupabaseReceivedInviteResult,
   SupabaseSentInviteResult,
 } from '../types/friends';
-import {PostgrestError} from '@supabase/supabase-js';
+import {
+  SupabaseStoryWithViewAndCreatorResponse,
+  StoryGroupsObject,
+  SupabaseStoryInfo,
+  StoryGroup,
+} from '../types/stories';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
@@ -151,6 +156,64 @@ export const supabaseApi = createApi({
         return {data: friends, error: error};
       },
     }),
+    // Retrieves all stories, but grouped by users
+    getStoryGroups: builder.query<StoryGroup[] | null, void>({
+      queryFn: async () => {
+        const userDetails = await supabase.auth.getUser();
+        if (userDetails.error) {
+          return {error: userDetails.error};
+        }
+        const uid = userDetails.data.user.id;
+
+        // Query the database
+        // Order by latest entry
+        const {
+          data,
+          error,
+        }: {
+          data: SupabaseStoryWithViewAndCreatorResponse[];
+          error: PostgrestError | null;
+        } = await supabase
+          .from('stories')
+          .select('*, viewed:story_views!left(viewed), creator:creator_id(*)')
+          .neq('creator_id', uid)
+          .order('created_at', {ascending: false});
+
+        if (error) {
+          console.log(error);
+          return {data: [], error: error};
+        }
+
+        // First, we want to group the stories by their creators
+        const allStories = data.map(
+          storyResult =>
+            ({
+              ...storyResult,
+              viewed:
+                storyResult.viewed.length === 0 ? false : storyResult.viewed[0],
+            } as SupabaseStoryInfo),
+        );
+
+        const initStoryGroup: StoryGroupsObject = {};
+        const storyGroupsObject: StoryGroupsObject = allStories.reduce(
+          (groups, story) => ({
+            ...groups,
+            [story.creator_id]: [...(groups[story.creator_id] || []), story],
+          }),
+          initStoryGroup,
+        );
+
+        // Next, we want to convert to a more normalized form
+        const storyGroups: StoryGroup[] = Object.entries(storyGroupsObject).map(
+          ([_, stories]) => ({
+            creator: stories[0].creator,
+            stories: stories,
+          }),
+        );
+
+        return {data: storyGroups};
+      },
+    }),
   }),
 });
 
@@ -162,5 +225,6 @@ export const {
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
   useGetFriendsQuery,
+  useGetStoryGroupsQuery,
   usePrefetch,
 } = supabaseApi;

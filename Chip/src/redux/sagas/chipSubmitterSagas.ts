@@ -1,4 +1,4 @@
-import {takeEvery, call, put, all, select} from 'redux-saga/effects';
+import {takeEvery, call, put, all} from 'redux-saga/effects';
 import {PayloadAction} from '@reduxjs/toolkit';
 
 import {
@@ -13,9 +13,9 @@ import {
   insertChipInDatabase,
   uploadChipImageToStorage,
 } from '../../supabase/chips';
-
-import {RootState} from '../store';
+import {insertStoryInDatabase} from '../../supabase/stories';
 import {ChipSubmission, SupabaseChipUpload} from '../../types/chips';
+import {SupabaseStoryUpload} from '../../types/stories';
 
 function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
   const chipSubmissionInfo: ChipSubmission = action.payload;
@@ -39,10 +39,17 @@ function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
     uid: chipSubmissionInfo.uid,
   };
 
+  const supabaseStory: SupabaseStoryUpload = {
+    creator_id: chipSubmissionInfo.uid,
+    photo_path: `${chipSubmissionInfo.uid}/${chipSubmissionInfo.goalId}/${fileName}`,
+    message: chipSubmissionInfo.description, // <-- TODO: change this later to a custom message
+  };
+
   // TODO: better error handling here--if one fails, we should undo the other
   try {
     yield all([
       call(insertChipInDatabase, supabaseChip),
+      call(insertStoryInDatabase, supabaseStory),
       call(
         uploadChipImageToStorage,
         chipSubmissionInfo.goalId,
@@ -55,42 +62,6 @@ function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
   } catch {
     yield put(chipSubmissionFailure('Failed to insert or upload chip'));
   }
-
-  // // First, we need to create the storage reference for when we upload the photo
-  // const uid: string = action.payload.uid;
-  // const goalId: string = action.payload.goalId;
-  // const desc: string = action.payload.desc;
-  // const amount: number = action.payload.amount;
-
-  // // And the info we'll need for posting the story
-  // const friendUids: string[] = yield select(
-  //   (state: RootState) => state.auth.friends,
-  // );
-  // const story: StorySubmission = {
-  //   image: photoReferenceInfo.photoName,
-  //   message: desc,
-  // };
-
-  // try {
-  //   yield all([
-  //     // Upload the photo to storage, and post story after
-  //     call(
-  //       uploadPhotoAndStorySaga,
-  //       photoReferenceInfo.reference,
-  //       photoReferenceInfo.localPath,
-  //       story,
-  //       uid,
-  //       friendUids,
-  //     ),
-
-  //     // Upload the chip data
-  //     call(addChip, chip),
-  //   ]);
-
-  //   yield put(chipSubmissionSuccess());
-  // } catch (error) {
-  //   yield put(chipSubmissionFailure(error.message));
-  // }
 }
 
 export function* watchSubmitChip() {

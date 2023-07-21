@@ -27,17 +27,7 @@ import {Session} from '@supabase/supabase-js';
 import {useAppDispatch} from './src/redux/hooks';
 
 import {store} from './src/redux/store';
-import {
-  selectInitializing,
-  selectUser,
-  updateInitializing,
-  updateUid,
-  updateUser,
-  updateUserGoals,
-  updateFriends,
-  updateInvitesSent,
-  selectNewlyCreated,
-} from './src/redux/slices/authSlice';
+import {updateUid} from './src/redux/slices/authSlice';
 
 import {requestNotificationsPermission} from './src/notifications/reminders';
 
@@ -60,7 +50,7 @@ import {styles} from './src/styles';
 // TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
-  '@supabase/gotrue-js: Stack guards not supported in this environment.',
+  '@supabase/gotrue-js: Stack guards not supported in this environment. Generally not an issue but may point to a very conservative transpilation environment (use ES2017 or above) that implements async/await with generators, or this is a JavaScript engine that does not support async/await stack traces.',
 ]);
 
 const Tab = createMaterialTopTabNavigator();

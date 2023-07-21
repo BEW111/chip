@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
 import {Button, Divider, Text, TextInput} from 'react-native-paper';
 import {useAppSelector, useAppDispatch} from '../../redux/hooks';
@@ -44,12 +44,12 @@ function HabitPopup({
   setChipAmount,
 }: HabitPopupProps) {
   // Function to get all the goal data by a certain goal id
-  const {data: userGoals, isFetching} = useGetGoalsQuery();
+  const {data: userGoals, isLoading} = useGetGoalsQuery();
   const getGoalFromId = (id: number, goals: SupabaseGoal[]) =>
     goals.filter(g => g.id === id)[0];
 
   // Id of current goal selected
-  const startingId = userGoals ? userGoals[0].id : -1;
+  const startingId = userGoals && userGoals.length > 0 ? userGoals[0].id : -1;
   const [currentId, setCurrentId] = useState(startingId || -1);
 
   return (
@@ -59,11 +59,11 @@ function HabitPopup({
           <Text variant="titleLarge">Edit chip info</Text>
         </View>
         <Divider style={styles.dividerMedium} />
-        {isFetching ? (
+        {isLoading ? (
           <View style={popupStyles.tempView} />
         ) : (
           <View pointerEvents={'box-none'} style={popupStyles.wrapper}>
-            {userGoals && (
+            {userGoals && userGoals.length > 0 ? (
               <Picker
                 pointerEvents={'box-none'}
                 style={popupStyles.picker}
@@ -78,6 +78,12 @@ function HabitPopup({
                   setCurrentId(id);
                 }}
               />
+            ) : (
+              <View style={popupStyles.tempView}>
+                <Text style={styles.textCentered} variant="bodyLarge">
+                  You need to create a goal before you can submit a chip!
+                </Text>
+              </View>
             )}
           </View>
         )}
@@ -87,15 +93,17 @@ function HabitPopup({
           contentStyle={popupStyles.textInputContent}
           outlineStyle={popupStyles.textInputOutline}
           mode="outlined"
+          label="Amount"
           keyboardType="decimal-pad"
           value={chipAmount.toString()}
           onChangeText={text => {
             setChipAmount(text);
           }}
+          disabled={!userGoals || userGoals.length === 0}
           right={
             <TextInput.Affix
               text={
-                userGoals && currentId >= 0
+                userGoals && userGoals.length > 0 && currentId >= 0
                   ? pluralize(
                       getGoalFromId(currentId, userGoals).iteration_units ||
                         'units',
@@ -115,6 +123,7 @@ function HabitPopup({
           label="Notes"
           value={chipDesc}
           onChangeText={text => setChipDesc(text)}
+          disabled={!userGoals || userGoals.length === 0}
         />
         <Pressable onPress={closePopup} style={popupStyles.closeButton}>
           <Icon name="close-outline" size={30} />
@@ -135,7 +144,7 @@ function PhotoViewer() {
   const [popupShowing, setPopupShowing] = useState(true);
   const [selectedGoalId, setSelectedGoalId] = useState(-1);
   const [chipDescription, setChipDescription] = useState('');
-  const [chipAmount, setChipAmount] = useState<string>('1');
+  const [chipAmount, setChipAmount] = useState<string>('');
 
   const {data: userGoals} = useGetGoalsQuery();
 
@@ -214,6 +223,7 @@ function PhotoViewer() {
       <Button
         icon="send-outline"
         mode="contained"
+        disabled={!userGoals || userGoals.length === 0}
         onPress={onSubmitChip}
         contentStyle={localStyles().buttonContent}
         style={localStyles(insets.top).saveButton}>

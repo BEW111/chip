@@ -7,7 +7,7 @@ import {useAppSelector} from '../redux/hooks';
 import {TextInput, Divider, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
-import UserContainer from '../components/Social/UserContainer';
+import UserContainer from '../components/Friends/UserContainer';
 
 // Friends
 import {
