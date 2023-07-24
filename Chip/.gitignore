@@ -69,3 +69,4 @@ yarn.lock
 
 # Env files
 .env.local
+/supabase/.env

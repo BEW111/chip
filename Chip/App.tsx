@@ -29,8 +29,12 @@ import {useAppDispatch} from './src/redux/hooks';
 import {store} from './src/redux/store';
 import {updateUid} from './src/redux/slices/authSlice';
 
+// Notifications
 import {requestNotificationsPermission} from './src/notifications/reminders';
-import {upsertMessagingToken} from './src/notifications/tokens';
+import {
+  onLogInOneSignal,
+  onLogOutOneSignal,
+} from './src/notifications/onesignal';
 
 // Onboarding pages
 import Onboarding from './src/pages/SignedOut/Onboarding';
@@ -223,8 +227,11 @@ function Main() {
       setSession(newSession);
       dispatch(updateUid(newSession?.user.id));
 
+      // If we've logged in
       if (newSession?.user.id) {
-        upsertMessagingToken(newSession?.user.id);
+        onLogInOneSignal(newSession?.user.id);
+      } else {
+        onLogOutOneSignal();
       }
     });
 
