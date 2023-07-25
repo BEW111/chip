@@ -54,7 +54,6 @@ serve(async req => {
       .select()
       .eq('id', creator_id);
     username = creators[0].username;
-    console.log(username);
     if (creatorError) {
       throw creatorError;
     }
@@ -73,7 +72,6 @@ serve(async req => {
     if (friendshipsError) {
       throw friendshipsError;
     }
-    console.log(friend_ids);
   } catch (error) {
     return new Response(JSON.stringify({error: error.message}), {
       headers: {'Content-Type': 'application/json'},

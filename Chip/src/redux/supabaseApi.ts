@@ -3,7 +3,7 @@ import {supabase} from '../supabase/supabase';
 
 import {PostgrestError} from '@supabase/supabase-js';
 import {SupabaseProfile} from '../types/profiles';
-import {SupabaseGoal} from '../types/goals';
+import {SupabaseGoal, SupabaseGoalUpload} from '../types/goals';
 import {SupabaseChip} from '../types/chips';
 import {
   SupabaseFriendshipResult,
@@ -20,6 +20,7 @@ import {
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
+  tagTypes: ['Goal'],
   endpoints: builder => ({
     getCurrentProfile: builder.query<SupabaseProfile | null, void>({
       queryFn: async () => {
@@ -44,12 +45,27 @@ export const supabaseApi = createApi({
       },
     }),
     getGoals: builder.query<SupabaseGoal[] | null, void>({
+      providesTags: ['Goal'],
       queryFn: async () => {
         const {data, error} = await supabase.from('goals').select();
 
         return {data: data, error: error};
       },
-      staleTime: 3600000,
+    }),
+    addGoal: builder.mutation<SupabaseGoal, SupabaseGoalUpload>({
+      invalidatesTags: ['Goal'],
+      queryFn: async (goal: SupabaseGoalUpload) => {
+        const {data, error} = await supabase
+          .from('goals')
+          .insert(goal)
+          .select();
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {data: data, error: error};
+      },
     }),
     getChips: builder.query<SupabaseChip[] | null, void>({
       queryFn: async () => {
@@ -220,6 +236,7 @@ export const supabaseApi = createApi({
 export const {
   useGetCurrentProfileQuery,
   useGetGoalsQuery,
+  useAddGoalMutation,
   useGetChipsQuery,
   useGetChipsByGoalIdQuery,
   useGetReceivedFriendRequestsQuery,

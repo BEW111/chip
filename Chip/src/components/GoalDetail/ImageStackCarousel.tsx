@@ -35,7 +35,6 @@ function ImageStackCarousel({goal, chips}) {
         width={WIDTH}
         height={WIDTH}
         autoPlay={false}
-        loop={false}
         style={{
           width: '100%',
           height: 150,
@@ -44,7 +43,7 @@ function ImageStackCarousel({goal, chips}) {
           overflow: 'visible',
         }}
         customAnimation={animationStyle}
-        data={chips.reverse()}
+        data={[...chips].reverse()}
         defaultIndex={chips.length - 1}
         scrollAnimationDuration={1000}
         renderItem={({index}) => (

@@ -31,19 +31,23 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-import {useAppSelector, useAppDispatch} from '../../redux/hooks';
+import {useAppSelector} from '../../redux/hooks';
 import {selectNewlyCreated, selectUid} from '../../redux/slices/authSlice';
 
 // Database interactions
-import {addGoal} from '../../supabase/goals';
+// import {addGoal} from '../../supabase/goals';
 
 // import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
-import {GoalIterationPeriod, GoalType, GoalVisibility} from '../../types/goals';
-import {SupabaseGoal} from '../../types/goals';
+import {
+  GoalIterationPeriod,
+  GoalType,
+  GoalVisibility,
+  SupabaseGoalUpload,
+} from '../../types/goals';
 
 // Updating local state
-import {usePrefetch} from '../../redux/supabaseApi';
+import {useGetGoalsQuery, useAddGoalMutation} from '../../redux/supabaseApi';
 
 export default function AddGoalWidget() {
   const theme = useTheme();
@@ -76,14 +80,15 @@ export default function AddGoalWidget() {
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
-  const dispatch = useAppDispatch();
+  // Refreshing goals
 
   // Get current user
   const uid = useAppSelector(selectUid);
   const isNewUser = useAppSelector(selectNewlyCreated);
 
   // Will need this to update the goals locally
-  const prefetchGoals = usePrefetch('getGoals');
+  const [addGoal] = useAddGoalMutation();
+  const {refetch: refetchGoals} = useGetGoalsQuery();
 
   // Animation for tutorial
   useEffect(() => {
@@ -99,9 +104,9 @@ export default function AddGoalWidget() {
     }
   }, []);
 
-  const onCreateGoal = () => {
+  const onCreateGoal = async () => {
     if (uid) {
-      const goal: SupabaseGoal = {
+      const goal: SupabaseGoalUpload = {
         uid: uid,
         name: goalNameInput,
         description: '',
@@ -116,10 +121,10 @@ export default function AddGoalWidget() {
         current_iteration_progress: 0,
       };
 
-      addGoal(goal);
+      await addGoal(goal);
 
       // We'll also need to update the local cache
-      prefetchGoals([], {force: true});
+      refetchGoals();
     }
 
     hideModal();
@@ -144,7 +149,8 @@ export default function AddGoalWidget() {
                         mode="outlined"
                         label="Goal name"
                         value={goalNameInput}
-                        onChangeText={text => setGoalNameInput(text)}
+                        onChangeText={setGoalNameInput}
+                        autoCorrect={false}
                       />
                     </View>
                     <Divider style={styles.dividerHSmall} />
@@ -190,7 +196,7 @@ export default function AddGoalWidget() {
                     dense
                     style={modalStyles.textInput}
                     mode="outlined"
-                    label="Units, e.g. minutes spent, reps, ..."
+                    label="Units, e.g. minutes, reps, ..."
                     keyboardType="default"
                     autoCapitalize="none"
                     value={goalUnits}
