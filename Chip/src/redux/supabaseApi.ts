@@ -3,7 +3,11 @@ import {supabase} from '../supabase/supabase';
 
 import {PostgrestError} from '@supabase/supabase-js';
 import {SupabaseProfile} from '../types/profiles';
-import {SupabaseGoal, SupabaseGoalUpload} from '../types/goals';
+import {
+  SupabaseGoal,
+  SupabaseGoalUpload,
+  SupabaseGoalModification,
+} from '../types/goals';
 import {SupabaseChip} from '../types/chips';
 import {
   SupabaseFriendshipResult,
@@ -65,6 +69,34 @@ export const supabaseApi = createApi({
         }
 
         return {data: data, error: error};
+      },
+    }),
+    editGoal: builder.mutation<SupabaseGoal, SupabaseGoalModification>({
+      invalidatesTags: ['Goal'],
+      queryFn: async (goalModification: SupabaseGoalModification) => {
+        const {id, ...modification} = goalModification;
+        const {error} = await supabase
+          .from('goals')
+          .update(modification)
+          .eq('id', id);
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {error: error};
+      },
+    }),
+    deleteGoal: builder.mutation<void, string>({
+      invalidatesTags: ['Goal'],
+      queryFn: async (goalId: string) => {
+        const {error} = await supabase.from('goals').delete().eq('id', goalId);
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {error: error};
       },
     }),
     getChips: builder.query<SupabaseChip[] | null, void>({
@@ -237,6 +269,8 @@ export const {
   useGetCurrentProfileQuery,
   useGetGoalsQuery,
   useAddGoalMutation,
+  useEditGoalMutation,
+  useDeleteGoalMutation,
   useGetChipsQuery,
   useGetChipsByGoalIdQuery,
   useGetReceivedFriendRequestsQuery,

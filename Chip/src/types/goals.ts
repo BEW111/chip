@@ -1,5 +1,5 @@
 // Local form of a goal
-export interface Goal {
+export type Goal = {
   id: string; // actual identifier of the goal
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal
@@ -17,10 +17,10 @@ export interface Goal {
   iterationAmount: number;
   iterationUnits: string;
   currentIterationProgress: number;
-}
+};
 
 // The type for the goal we upload without the id (which is generated automatically)
-export interface SupabaseGoalUpload {
+export type SupabaseGoalUpload = {
   uid: string; // user that this goal belongs to
   name: string; // display name of the goal
 
@@ -35,11 +35,11 @@ export interface SupabaseGoalUpload {
   iteration_amount: number;
   iteration_units: string;
   current_iteration_progress: number;
-}
+};
 
 // The type for the goal we'll get from the database
-export interface SupabaseGoal {
-  id: number;
+export type SupabaseGoal = {
+  id: string;
   created_at: string;
 
   uid: string; // user that this goal belongs to
@@ -56,7 +56,9 @@ export interface SupabaseGoal {
   iteration_amount: number;
   iteration_units: string;
   current_iteration_progress: number;
-}
+};
+export type SupabaseGoalModification = Partial<SupabaseGoal> &
+  Pick<SupabaseGoal, 'id'>;
 
 export type GoalVisibility = 'public' | 'private';
 export type GoalType = 'form' | 'break' | 'do';

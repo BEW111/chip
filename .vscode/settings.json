@@ -30,6 +30,10 @@
   ],
   "prettier.eslintIntegration": true,
   "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
+    "source.fixAll.eslint": true
   },
+  "deno.enable": true,
+  "deno.unstable": true,
+  "deno.enablePaths": ["./Chip/supabase/functions"],
+  "deno.importMap": "./Chip/supabase/functions/import_map.json"
 }

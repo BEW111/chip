@@ -30,13 +30,6 @@ export default function ImageCarouselWidget({
             <Icon name={'images-outline'} color={'gray'} size={16} /> Latest
             Chips
           </Text>
-          {/* <IconButton
-            icon={'search-circle-outline'}
-            size={36}
-            style={{margin: -6}}
-            color={'black'}
-            onPress={() => console.log('image carousel widget')}
-          /> */}
         </View>
       </View>
       {chips.length > 0 ? (
@@ -51,7 +44,7 @@ export default function ImageCarouselWidget({
           </Text>
           <Button
             onPress={() => {
-              navigation.navigate('Home');
+              navigation.navigate('Track');
             }}>
             Submit a chip to get started!
           </Button>

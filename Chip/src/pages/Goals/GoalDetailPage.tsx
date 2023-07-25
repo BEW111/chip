@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
 import {styles, modalStyles} from '../../styles';
-import {useAppSelector, useAppDispatch} from '../../redux/hooks';
+import {useAppSelector} from '../../redux/hooks';
 
 // Misc
 import pluralize from 'pluralize';
@@ -25,45 +25,49 @@ import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 import RemindersModal from '../../components/GoalDetail/ReminderModal';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
+// Supabase
 import {
-  editGoalName,
-  deleteGoal,
-  editGoalVisibility,
-} from '../../firebase/goals';
+  useEditGoalMutation,
+  useDeleteGoalMutation,
+} from '../../redux/supabaseApi';
 
 // Data
 import {selectUid} from '../../redux/slices/authSlice';
-import {SupabaseGoal} from '../../types/goals';
+import {SupabaseGoal, SupabaseGoalModification} from '../../types/goals';
 import {useGetChipsByGoalIdQuery} from '../../redux/supabaseApi';
 
 function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
+  const [editGoal] = useEditGoalMutation();
+
+  // Input fields
   const [goalNameInput, setGoalNameInput] = useState(goal.name);
-  const [goalVisibility, setGoalVisibility] = useState<GoalVisibility>(
-    goal.visibility,
+  const [goalIsPublicInput, setGoalIsPublicInput] = useState<boolean>(
+    goal.isPublic,
   );
   const toggleGoalVisibility = () => {
-    if (goalVisibility === 'public') {
-      setGoalVisibility('private');
-    } else {
-      setGoalVisibility('public');
-    }
+    setGoalIsPublicInput(!goalIsPublicInput);
   };
 
-  const onSubmitChanges = () => {
-    if (goal.name !== goalNameInput) {
-      editGoalName(uid, goal.id, goalNameInput, dispatch);
-      setGoalName(goalNameInput);
-      setGoalNameInput('');
-    }
+  // Submitting changes
+  const onSubmitChanges = async () => {
+    // Editing the goal
+    if (goal.name !== goalNameInput || goal.isPublic !== goalIsPublicInput) {
+      const goalChanges: SupabaseGoalModification = {
+        id: goal.id,
+      };
+      if (goal.name !== goalNameInput) {
+        goalChanges.name = goalNameInput;
+      }
+      if (goal.visibility !== goalIsPublicInput) {
+        goalChanges.is_public = goalIsPublicInput;
+      }
 
-    if (goal.visibility !== goalVisibility) {
-      editGoalVisibility(uid, goal.id, goalVisibility);
+      await editGoal(goalChanges);
+      setGoalName(goalNameInput);
     }
 
     hideModal();
   };
-
-  const dispatch = useAppDispatch();
 
   return (
     <Modal
@@ -81,11 +85,7 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
           />
         </View>
         <IconButton
-          icon={
-            goalVisibility === 'public'
-              ? 'earth-outline'
-              : 'lock-closed-outline'
-          }
+          icon={goalIsPublicInput ? 'earth-outline' : 'lock-closed-outline'}
           size={28}
           onPress={toggleGoalVisibility}
         />
@@ -99,7 +99,12 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
 }
 
 function DeleteGoalModal({visible, hideModal, uid, goalId, navigation}) {
-  const dispatch = useAppDispatch();
+  const [deleteGoal] = useDeleteGoalMutation();
+
+  const onDeleteGoal = async () => {
+    await deleteGoal(goalId);
+    navigation.navigate('AnalyticsLandingPage');
+  };
 
   return (
     <Modal
@@ -109,12 +114,7 @@ function DeleteGoalModal({visible, hideModal, uid, goalId, navigation}) {
       <Text style={modalStyles.header}>
         Are you sure you'd like to delete this goal?
       </Text>
-      <Button
-        mode="contained"
-        onPress={() => {
-          deleteGoal(uid, goalId, dispatch);
-          navigation.navigate('AnalyticsLandingPage');
-        }}>
+      <Button mode="contained" onPress={onDeleteGoal}>
         Delete
       </Button>
     </Modal>
@@ -171,7 +171,7 @@ export default function GoalPage({navigation, route}) {
 
   const uid = useAppSelector(selectUid);
 
-  // Get all chips (we'll filter later
+  // Get all chips
   const {data: chips} = useGetChipsByGoalIdQuery(goal.id);
 
   // Modals
