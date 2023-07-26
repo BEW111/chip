@@ -16,6 +16,7 @@ import {
   Divider,
   Surface,
   useTheme,
+  IconButton,
 } from 'react-native-paper';
 import EmojiPicker from 'rn-emoji-keyboard';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -35,9 +36,6 @@ import {useAppSelector} from '../../redux/hooks';
 import {selectNewlyCreated, selectUid} from '../../redux/slices/authSlice';
 
 // Database interactions
-// import {addGoal} from '../../supabase/goals';
-
-// import {addGoal} from '../../firebase/goals';
 import {modalStyles, styles} from '../../styles';
 import {
   GoalIterationPeriod,
@@ -72,7 +70,7 @@ export default function AddGoalWidget() {
   const [goalEmojiInput, setGoalEmojiInput] = useState({
     emoji: '💪',
   });
-  const [goalTypeInput, setGoalTypeInput] = useState<GoalType>('form');
+  const [goalTypeInput, setGoalTypeInput] = useState<GoalType>('build');
   const [goalFreqInput, setGoalFreqInput] =
     useState<GoalIterationPeriod>('daily');
   const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(1);
@@ -80,7 +78,39 @@ export default function AddGoalWidget() {
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
-  // Refreshing goals
+  // Goal days input
+  const defaultGoalDays = {
+    monday: true,
+    tuesday: true,
+    wednesday: true,
+    thursday: true,
+    friday: true,
+    saturday: true,
+    sunday: true,
+  };
+  const [goalOnDaysInput, setGoalOnDaysInput] = useState(defaultGoalDays);
+  type Day =
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday'
+    | 'sunday';
+  const days: Day[] = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
+
+  // Editing the goal "on days"
+  const toggleOnDay = (day: Day) => {
+    setGoalOnDaysInput({...goalOnDaysInput, [day]: !goalOnDaysInput[day]});
+  };
 
   // Get current user
   const uid = useAppSelector(selectUid);
@@ -105,6 +135,10 @@ export default function AddGoalWidget() {
   }, []);
 
   const onCreateGoal = async () => {
+    if (goalNameInput === '') {
+      return;
+    }
+
     if (uid) {
       const goal: SupabaseGoalUpload = {
         uid: uid,
@@ -188,9 +222,28 @@ export default function AddGoalWidget() {
                       },
                     ]}
                   />
-                  <Divider style={styles.dividerMedium} />
+                  {/* <Divider style={styles.dividerSmall} />
                   <Text variant="titleMedium">
-                    How will you track your progress?
+                    Will you build up a goal or break a habit?
+                  </Text>
+                  <Divider style={styles.dividerTiny} />
+                  <SegmentedButtons
+                    value={goalTypeInput}
+                    onValueChange={setGoalTypeInput}
+                    buttons={[
+                      {
+                        value: 'build',
+                        label: 'Build',
+                      },
+                      {
+                        value: 'break',
+                        label: 'Break',
+                      },
+                    ]}
+                  /> */}
+                  <Divider style={styles.dividerSmall} />
+                  <Text variant="titleMedium">
+                    How will you measure your progress?
                   </Text>
                   <TextInput
                     dense
@@ -246,6 +299,21 @@ export default function AddGoalWidget() {
                       },
                     ]}
                   />
+                  <Divider style={styles.dividerSmall} />
+                  <View style={styles.rowCenteredSpaceBetween}>
+                    {days.map((day: Day) => (
+                      <IconButton
+                        mode="contained-tonal"
+                        disabled={goalFreqInput === 'weekly'}
+                        icon={({color: color}) => (
+                          <Text style={{color: color}}>{day.slice(0, 3)}</Text>
+                        )}
+                        selected={goalOnDaysInput[day]}
+                        onPress={() => toggleOnDay(day)}
+                        style={goalModalStyles(theme, false).dayIcon}
+                      />
+                    ))}
+                  </View>
                   <Divider style={styles.dividerLarge} />
                   <Button mode="contained" onPress={onCreateGoal}>
                     Make it happen
@@ -320,6 +388,11 @@ const goalModalStyles = (theme, selected) =>
       paddingLeft: 2,
       paddingBottom: 2,
       opacity: selected ? 0.3 : 0.6,
+    },
+    dayIcon: {
+      margin: 0,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
     },
   });
 

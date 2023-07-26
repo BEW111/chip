@@ -1,6 +1,6 @@
 // Contains all info needed to fully submit a chip
 export type ChipSubmission = {
-  goalId: number;
+  goalId: string;
   photoUri: string;
   amount: number;
   description: string;
@@ -9,7 +9,7 @@ export type ChipSubmission = {
 
 // Type for the chips we upload
 export type SupabaseChipUpload = {
-  goal_id: number;
+  goal_id: string;
   photo_path: string;
   amount: number;
   description: string;
@@ -18,9 +18,9 @@ export type SupabaseChipUpload = {
 
 // Type for the chips we pull from the database
 export type SupabaseChip = {
-  id: number;
+  id: string;
   created_at: string;
-  goal_id: number;
+  goal_id: string;
   photo_path: string;
   amount: number;
   description: string;

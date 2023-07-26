@@ -61,5 +61,5 @@ export type SupabaseGoalModification = Partial<SupabaseGoal> &
   Pick<SupabaseGoal, 'id'>;
 
 export type GoalVisibility = 'public' | 'private';
-export type GoalType = 'form' | 'break' | 'do';
+export type GoalType = 'build' | 'break';
 export type GoalIterationPeriod = 'daily' | 'weekly';

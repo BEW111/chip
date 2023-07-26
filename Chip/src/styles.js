@@ -123,6 +123,9 @@ export const styles = StyleSheet.create({
     color: 'gray',
     textTransform: 'uppercase',
   },
+  noMargin: {
+    margin: 0,
+  },
 });
 
 export const modalStyles = StyleSheet.create({
