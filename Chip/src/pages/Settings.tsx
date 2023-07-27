@@ -15,7 +15,6 @@ import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profiles';
-import {clearMessagingToken} from '../notifications/tokens';
 
 export default function Settings(props) {
   const {data: profile} = useGetCurrentProfileQuery();
@@ -32,7 +31,6 @@ export default function Settings(props) {
   // Actions
   const onLogoutPressed = async () => {
     if (profile?.id) {
-      await clearMessagingToken(profile?.id);
       signOut();
     }
   };

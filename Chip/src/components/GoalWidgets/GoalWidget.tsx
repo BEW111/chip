@@ -19,16 +19,15 @@ import Animated, {
 
 // Data
 import {SupabaseGoal} from '../../types/goals';
-import {getSuperstreaksByGoal} from '../../firebase/superstreaks';
 import {selectUid} from '../../redux/slices/authSlice';
 
 function GoalBadges({goal}: {goal: SupabaseGoal}) {
-  const [superstreaks, setSuperstreaks] = useState([]);
-  useEffect(() => {
-    getSuperstreaksByGoal(goal.id).then(dataArray =>
-      setSuperstreaks(dataArray),
-    );
-  }, [goal]);
+  // const [superstreaks, setSuperstreaks] = useState([]);
+  // useEffect(() => {
+  //   getSuperstreaksByGoal(goal.id).then(dataArray =>
+  //     setSuperstreaks(dataArray),
+  //   );
+  // }, [goal]);
 
   const currentUser = useAppSelector(selectUid);
 
@@ -41,7 +40,7 @@ function GoalBadges({goal}: {goal: SupabaseGoal}) {
         </Text>
       </View>
       <Divider style={styles.dividerHTiny} />
-      {superstreaks.map(superstreak => (
+      {/* {superstreaks.map(superstreak => (
         <View
           key={superstreak.users.filter(user => user !== currentUser)[0]}
           style={goalBadgeStyles.badge}>
@@ -56,7 +55,7 @@ function GoalBadges({goal}: {goal: SupabaseGoal}) {
             <Icon name="bonfire-outline" size={18} />
           </Text>
         </View>
-      ))}
+      ))} */}
     </View>
   );
 }

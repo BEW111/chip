@@ -24,7 +24,6 @@ import {
 
 import {styles, modalStyles} from '../../styles';
 import {datePlainFormat, timePlainFormat} from '../../utils/utils';
-import {addReminderFirebase} from '../../firebase/reminders';
 
 function AddReminderScreen({hideModal, goalName, goalId}) {
   const uid = useSelector(selectUid);
@@ -83,7 +82,7 @@ function AddReminderScreen({hideModal, goalName, goalId}) {
       `Reminder: ${goalName}`,
       reminderIntent,
     );
-    await addReminderFirebase(uid, goalId, reminderIntent, reminderDatetime);
+    // await addReminderFirebase(uid, goalId, reminderIntent, reminderDatetime);
 
     hideModal();
   };

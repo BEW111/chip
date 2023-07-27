@@ -8,13 +8,7 @@ General
 
 - TypeScript
 - eslint
-- Firebase
-  ```
-  npm install --save @react-native-firebase/app
-  npm install --save @react-native-firebase/auth
-  npm install --save @react-native-firebase/firestore
-  npm install --save @react-native-firebase/storage
-  ```
+- Supabase
 - Redux
   ```
   npm install --save @reduxjs/toolkit react-redux

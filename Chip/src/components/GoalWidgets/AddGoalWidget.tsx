@@ -313,6 +313,7 @@ export default function AddGoalWidget() {
                   <View style={styles.rowCenteredSpaceBetween}>
                     {dows.map((day: Dow) => (
                       <IconButton
+                        key={day}
                         mode="contained-tonal"
                         disabled={goalFreqInput === 'weekly'}
                         icon={({color: color}) => (

@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 import {KeyboardAvoidingView, ScrollView, View, Platform} from 'react-native';
 import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-
-import {useSelector, useDispatch} from 'react-redux';
+import {useAppDispatch} from '../../redux/hooks';
 
 import {updateNewlyCreated} from '../../redux/slices/authSlice';
 
-// import {createNewUser} from '../../firebase/auth';
 import {signUpWithEmail} from '../../supabase/auth';
 
 import BlurSurface from '../../components/BlurSurface';
@@ -21,7 +19,7 @@ export default function OnboardingRegister({navigation}) {
   const [secureTextEntry, setSecuryTextEntry] = useState(true);
   const [displayError, setDisplayError] = useState('');
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const onSignUpPressed = async () => {
     // Check for more obvious errors

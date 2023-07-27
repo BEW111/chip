@@ -18,9 +18,9 @@ export async function onLogInOneSignal(uid: string) {
         notificationReceivedEvent,
       );
       let notification = notificationReceivedEvent.getNotification();
-      console.log('notification: ', notification);
+      // console.log('notification: ', notification);
       const data = notification.additionalData;
-      console.log('additionalData: ', data);
+      // console.log('additionalData: ', data);
       // Complete with null means don't show a notification.
       notificationReceivedEvent.complete(notification);
     },
@@ -35,14 +35,14 @@ export async function onLogInOneSignal(uid: string) {
   // Setting External User Id with Callback Available in SDK Version 3.9.3+
   OneSignal.setExternalUserId(uid, results => {
     // The results will contain push and email success statuses
-    console.log('Results of setting external user id');
-    console.log(results);
+    // console.log('Results of setting external user id');
+    // console.log(results);
 
     // Push can be expected in almost every situation with a success status, but
     // as a pre-caution its good to verify it exists
     if (results.push && results.push.success) {
-      console.log('Results of setting external user id push status:');
-      console.log(results.push.success);
+      // console.log('Results of setting external user id push status:');
+      // console.log(results.push.success);
     }
   });
 }

@@ -13,7 +13,6 @@ import {styles} from '../../styles';
 
 import {signInWithEmail} from '../../supabase/auth';
 
-import auth from '@react-native-firebase/auth';
 import BlurSurface from '../../components/BlurSurface';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
