@@ -24,50 +24,99 @@ import {selectUid} from '../../redux/slices/authSlice';
 
 // Friends
 import {inviteUser, acceptInvite} from '../../supabase/friends';
-import {SupabaseProfileWithStatus} from '../../types/friends';
+import {SupabaseProfileWithFriendship} from '../../types/friends';
 import {
   useGetFriendGoalsQuery,
   useGetFriendsQuery,
+  useGetGoalsQuery,
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
 } from '../../redux/supabaseApi';
 
+// Costreaks
+import {createCostreak} from '../../supabase/costreaks';
+import {SupabaseCostreakUpload} from '../../types/costreaks';
+
 type UserContainerType = {
-  user: SupabaseProfileWithStatus;
+  user: SupabaseProfileWithFriendship;
 };
 
 type FriendModalType = {
   visible: boolean;
   hideModal: () => void;
-  friend: SupabaseProfileWithStatus;
+  friend: SupabaseProfileWithFriendship;
 };
 
 function FriendModal({visible, hideModal, friend}: FriendModalType) {
   const theme = useTheme();
+  const uid = useAppSelector(selectUid);
 
-  const currentUid = useAppSelector(selectUid);
+  // Get goals
+  const {data: myGoals} = useGetGoalsQuery();
   const {data: friendGoals} = useGetFriendGoalsQuery(friend.id);
 
-  console.log(friendGoals);
+  // Get menu items
+  type MenuItem = {
+    title: string;
+    value: string;
+  };
+  const myGoalMenuItems =
+    myGoals &&
+    myGoals.map(
+      g =>
+        ({
+          title: g.name,
+          value: g.id,
+        } as MenuItem),
+    );
+  const friendGoalMenuItems =
+    friendGoals &&
+    friendGoals.map(
+      g =>
+        ({
+          title: g.name,
+          value: g.id,
+        } as MenuItem),
+    );
 
-  // const thisUserMenuItems = thisUserGoals.map(g => ({
-  //   title: g.name,
-  //   value: g.id,
-  // }));
-  // const [otherUserMenuItems, setOtherUserMenuItems] = useState([]);
-  // const [thisUserSelected, setThisUserSelected] = useState({});
-  // const [otherUserSelected, setOtherUserSelected] = useState({});
-  // const [existingSuperstreaks, setExistingSuperstreaks] = useState([]);
-
+  // Current state
   const [tab, setTab] = useState('create');
+  const [myGoalSelected, setMyGoalSelected] = useState<MenuItem | null>(
+    myGoalMenuItems ? myGoalMenuItems[0] : null,
+  );
+  const [friendGoalSelected, setFriendGoalSelected] = useState<MenuItem | null>(
+    friendGoalMenuItems ? friendGoalMenuItems[0] : null,
+  );
+  const [displayError, setDisplayError] = useState('');
 
-  // const [displayError, setDisplayError] = useState('');
-
-  function onDismiss() {
+  const onDismiss = () => {
     // setThisUserSelected({});
     // setOtherUserSelected({});
     hideModal();
-  }
+  };
+
+  // Submitting a costreak
+  const onCreateCostreak = async () => {
+    if (
+      uid &&
+      friend.friendship_id &&
+      myGoalSelected?.value &&
+      friendGoalSelected?.value
+    ) {
+      const costreak: SupabaseCostreakUpload = {
+        sender_id: uid,
+        recipient_id: friend.id,
+        friendship_id: friend.friendship_id,
+        sender_goal_id: myGoalSelected.value,
+        recipient_goal_id: friendGoalSelected.value,
+      };
+      await createCostreak(costreak);
+    } else {
+      setDisplayError('Please select a goal for both you and your friend.');
+    }
+
+    hideModal();
+  };
 
   return (
     <Modal
@@ -105,59 +154,63 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
           },
         ]}
       />
-      {/* <Text variant="bodyLarge">
-        Pick a goal for you and @{user.username} to keep a streak on together.
-        If either of you breaks your goal, then the superstreak restarts.
-      </Text> */}
       <Divider style={styles.dividerTiny} />
-      {/* {tab === 'create' ? (
+      {tab === 'create' ? (
         <>
-          <InputFieldMenu
-            label={'Your goal'}
-            items={thisUserMenuItems}
-            textInputStyle={modalStyles.textInput}
-            onSelectedChange={item => setThisUserSelected(item)}
-          />
-          <Divider style={styles.dividerTiny} />
-          <InputFieldMenu
-            label={'@' + user.username + "'s goal"}
-            items={otherUserMenuItems}
-            textInputStyle={modalStyles.textInput}
-            onSelectedChange={item => setOtherUserSelected(item)}
-          />
+          {myGoalMenuItems && (
+            <InputFieldMenu
+              label={'Your goal'}
+              items={myGoalMenuItems}
+              textInputStyle={modalStyles.textInput}
+              onSelectedChange={(item: MenuItem) => setMyGoalSelected(item)}
+            />
+          )}
+          <Divider style={styles.dividerSmall} />
+          {friendGoalMenuItems && (
+            <InputFieldMenu
+              label={'@' + friend.username + "'s goal"}
+              items={friendGoalMenuItems}
+              textInputStyle={modalStyles.textInput}
+              onSelectedChange={(item: MenuItem) => setFriendGoalSelected(item)}
+            />
+          )}
           <HelperText type="error" visible={displayError !== ''}>
             {displayError}
           </HelperText>
           <Divider style={styles.dividerSmall} />
-          <Button mode="contained" onPress={onRequestSuperstreak}>
+          <Button mode="contained" onPress={onCreateCostreak}>
             Create
           </Button>
         </>
       ) : (
-        existingSuperstreaks.length > 0 &&
-        existingSuperstreaks.map(superstreak => (
-          <>
-            <Divider style={styles.dividerTiny} />
-            <View
-              key={superstreak.goals.join('')}
-              style={{
-                padding: 8,
-                paddingLeft: 12,
-                backgroundColor: 'white',
-                borderColor: theme.colors.outline,
-                borderWidth: 1,
-                borderRadius: 6,
-              }}>
-              <Text variant="bodyLarge">
-                {superstreak.goalData.map(goal => goal.name).join(' & ')}
-              </Text>
-            </View>
-          </>
-        ))
-      )} */}
+        <></>
+      )}
     </Modal>
   );
 }
+
+// ) : (
+//   existingSuperstreaks.length > 0 &&
+//   existingSuperstreaks.map(superstreak => (
+//     <>
+//       <Divider style={styles.dividerTiny} />
+//       <View
+//         key={superstreak.goals.join('')}
+//         style={{
+//           padding: 8,
+//           paddingLeft: 12,
+//           backgroundColor: 'white',
+//           borderColor: theme.colors.outline,
+//           borderWidth: 1,
+//           borderRadius: 6,
+//         }}>
+//         <Text variant="bodyLarge">
+//           {superstreak.goalData.map(goal => goal.name).join(' & ')}
+//         </Text>
+//       </View>
+//     </>
+//   ))
+// )}
 
 function UserContainer({user}: UserContainerType) {
   const currentUid = useAppSelector(selectUid);

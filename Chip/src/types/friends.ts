@@ -18,12 +18,9 @@ export type SupabaseFriendship = {
 // The status is relative to the current user. So if we have another
 // profile with the "received" status, that means that we have received
 // an invite from them.
-export type SupabaseProfileWithStatus = SupabaseProfile & {
-  status: RelativeFriendshipStatus;
-};
-
 export type SupabaseProfileWithFriendship = SupabaseProfile & {
-  friend: SupabaseFriendship;
+  friendship_id: string | null;
+  status: RelativeFriendshipStatus;
 };
 
 // These types are just used for the initial results of queries,
@@ -34,19 +31,22 @@ export type SupabaseProfileWithFriendship = SupabaseProfile & {
 // friendship results ("sent" and "received"). There should really only
 // be one item in each list based on our rules.
 export type SupabaseProfilesSearchResult = SupabaseProfile & {
-  sent: {status: FriendshipStatus}[];
-  received: {status: FriendshipStatus}[];
+  sent: {status: FriendshipStatus; id: string}[];
+  received: {status: FriendshipStatus; id: string}[];
 };
 
 export type SupabaseReceivedInviteResult = {
   sender: SupabaseProfile;
+  id: string;
 };
 
 export type SupabaseSentInviteResult = {
   recipient: SupabaseProfile;
+  id: string;
 };
 
 export type SupabaseFriendshipResult = {
   sender: SupabaseProfile;
   recipient: SupabaseProfile;
+  id: string;
 };

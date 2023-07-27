@@ -241,6 +241,7 @@ function Main() {
           'Goal',
           'Profile',
           'Story',
+          'Costreak',
         ]),
       );
 

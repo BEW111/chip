@@ -1,7 +1,7 @@
 import {supabase} from './supabase';
 import {
   FriendshipStatus,
-  SupabaseProfileWithStatus,
+  SupabaseProfileWithFriendship,
   SupabaseProfilesSearchResult,
 } from '../types/friends';
 import {PostgrestError} from '@supabase/supabase-js';
@@ -93,8 +93,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
       .select(
         `
       *, 
-      received:friends!friends_sender_id_fkey!left(status), 
-      sent:friends!friends_recipient_id_fkey!left(status)`,
+      received:friends!friends_sender_id_fkey!left(status, id), 
+      sent:friends!friends_recipient_id_fkey!left(status, id)`,
       )
       .textSearch('username', searchQuery);
 
@@ -119,7 +119,13 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
               ? 'sent'
               : searchResult.received[0].status
             : 'none',
-      } as SupabaseProfileWithStatus),
+        friendship_id:
+          searchResult.sent.length > 0
+            ? searchResult.sent[0].id
+            : searchResult.received.length > 0
+            ? searchResult.received[0].id
+            : null,
+      } as SupabaseProfileWithFriendship),
   );
 
   if (error) {

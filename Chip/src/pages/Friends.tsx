@@ -23,7 +23,7 @@ import {
   useGetReceivedFriendRequestsQuery,
 } from '../redux/supabaseApi';
 import {getProfilesBySearchQuery} from '../supabase/friends';
-import {SupabaseProfileWithStatus} from '../types/friends';
+import {SupabaseProfileWithFriendship} from '../types/friends';
 
 // Profiles
 import {selectUid} from '../redux/slices/authSlice';
@@ -34,7 +34,7 @@ export default function Friends() {
   // Search bar
   const [currentSearchQuery, setCurrentSearchQuery] = useState('');
   const [searchResultProfiles, setSearchResultProfiles] = useState<
-    SupabaseProfileWithStatus[]
+    SupabaseProfileWithFriendship[]
   >([]);
 
   const uid = useAppSelector(selectUid);

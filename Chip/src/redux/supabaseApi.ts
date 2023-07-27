@@ -11,7 +11,7 @@ import {
 import {SupabaseChip} from '../types/chips';
 import {
   SupabaseFriendshipResult,
-  SupabaseProfileWithStatus,
+  SupabaseProfileWithFriendship,
   SupabaseReceivedInviteResult,
   SupabaseSentInviteResult,
 } from '../types/friends';
@@ -21,10 +21,11 @@ import {
   SupabaseStoryInfo,
   StoryGroup,
 } from '../types/stories';
+import {SupabaseCostreak, SupabaseCostreakUpload} from '../types/costreaks';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Profile', 'Goal', 'Chip', 'Friendship', 'Story'],
+  tagTypes: ['Profile', 'Goal', 'Chip', 'Friendship', 'Story', 'Costreak'],
   endpoints: builder => ({
     getCurrentProfile: builder.query<SupabaseProfile | null, void>({
       providesTags: ['Profile'],
@@ -152,7 +153,7 @@ export const supabaseApi = createApi({
       },
     }),
     getReceivedFriendRequests: builder.query<
-      SupabaseProfileWithStatus[] | null,
+      SupabaseProfileWithFriendship[] | null,
       void
     >({
       providesTags: ['Friendship'],
@@ -171,12 +172,13 @@ export const supabaseApi = createApi({
           error: PostgrestError | null;
         } = await supabase
           .from('friends')
-          .select('sender:sender_id(*)')
+          .select('sender:sender_id(*), id')
           .eq('recipient_id', uid)
           .eq('status', 'pending');
 
-        const users: SupabaseProfileWithStatus[] = data.map(result => ({
+        const users: SupabaseProfileWithFriendship[] = data.map(result => ({
           ...result.sender,
+          friendship_id: result.id,
           status: 'received',
         }));
 
@@ -184,7 +186,7 @@ export const supabaseApi = createApi({
       },
     }),
     getSentFriendRequests: builder.query<
-      SupabaseProfileWithStatus[] | null,
+      SupabaseProfileWithFriendship[] | null,
       void
     >({
       providesTags: ['Friendship'],
@@ -201,19 +203,20 @@ export const supabaseApi = createApi({
         }: {data: SupabaseSentInviteResult[]; error: PostgrestError | null} =
           await supabase
             .from('friends')
-            .select('recipient:recipient_id(*)')
+            .select('recipient:recipient_id(*), id')
             .eq('sender_id', uid)
             .eq('status', 'pending');
 
-        const users: SupabaseProfileWithStatus[] = data.map(result => ({
+        const users: SupabaseProfileWithFriendship[] = data.map(result => ({
           ...result.recipient,
+          friendship_id: result.id,
           status: 'sent',
         }));
 
         return {data: users, error: error};
       },
     }),
-    getFriends: builder.query<SupabaseProfileWithStatus[] | null, void>({
+    getFriends: builder.query<SupabaseProfileWithFriendship[] | null, void>({
       providesTags: ['Friendship'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
@@ -228,15 +231,23 @@ export const supabaseApi = createApi({
         }: {data: SupabaseFriendshipResult[]; error: PostgrestError | null} =
           await supabase
             .from('friends')
-            .select('sender:sender_id(*), recipient:recipient_id(*)')
+            .select('sender:sender_id(*), recipient:recipient_id(*), id')
             .eq('status', 'accepted');
 
         // We want to convert the data to just a list of friends (with statuses)
         // We want to get either the sender or recipient, depending on which one isn't us
-        const friends: SupabaseProfileWithStatus[] = data.map(friendship =>
+        const friends: SupabaseProfileWithFriendship[] = data.map(friendship =>
           friendship.recipient.id !== uid
-            ? {...friendship.recipient, status: 'accepted'}
-            : {...friendship.sender, status: 'accepted'},
+            ? {
+                ...friendship.recipient,
+                friendship_id: friendship.id,
+                status: 'accepted',
+              }
+            : {
+                ...friendship.sender,
+                friendship_id: friendship.id,
+                status: 'accepted',
+              },
         );
 
         return {data: friends, error: error};
@@ -299,6 +310,32 @@ export const supabaseApi = createApi({
         );
 
         return {data: storyGroups};
+      },
+    }),
+    getFriendCostreaks: builder.query<SupabaseCostreak[] | null, string>({
+      providesTags: ['Costreak'],
+      queryFn: async (friend_uid: string) => {
+        const {data, error} = await supabase
+          .from('costreaks')
+          .select()
+          .eq('uid', friend_uid);
+
+        return {data: data, error: error};
+      },
+    }),
+    addCostreak: builder.mutation<SupabaseCostreak, SupabaseCostreakUpload>({
+      invalidatesTags: ['Costreak'],
+      queryFn: async (costreakInvite: SupabaseCostreakUpload) => {
+        const {data, error} = await supabase
+          .from('costreaks')
+          .insert(costreakInvite)
+          .select();
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {data: data, error: error};
       },
     }),
   }),

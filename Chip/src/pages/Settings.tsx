@@ -41,6 +41,7 @@ export default function Settings(props) {
           'Goal',
           'Profile',
           'Story',
+          'Costreak',
         ]),
       );
       signOut();
