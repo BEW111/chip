@@ -50,7 +50,6 @@ export default function Friends() {
       setCurrentSearchQuery(searchQuery);
       if (uid) {
         const profileResults = await getProfilesBySearchQuery(searchQuery);
-        console.log(profileResults);
         setSearchResultProfiles(profileResults);
       }
     } else {

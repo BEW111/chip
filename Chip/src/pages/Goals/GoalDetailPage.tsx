@@ -143,11 +143,6 @@ function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
             },
           },
           {
-            icon: 'share',
-            label: 'Share (to be implemented)',
-            onPress: () => console.log('Pressed star'),
-          },
-          {
             icon: 'trash',
             label: 'Delete',
             onPress: () => {

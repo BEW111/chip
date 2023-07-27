@@ -1,12 +1,5 @@
 import notifee from '@notifee/react-native';
 
-// Note that an async function or a function that returns a Promise
-// is required for both subscribers.
-async function onMessageReceived(message) {
-  // Do something
-  console.log('Received message: ' + message);
-}
-
 export async function onDisplayNotification() {
   // Request permissions (required for iOS)
   await notifee.requestPermission();

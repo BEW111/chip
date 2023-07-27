@@ -24,9 +24,10 @@ import {
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Goal', 'Chip'],
+  tagTypes: ['Profile', 'Goal', 'Chip', 'Friendship', 'Story'],
   endpoints: builder => ({
     getCurrentProfile: builder.query<SupabaseProfile | null, void>({
+      providesTags: ['Profile'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
@@ -154,6 +155,7 @@ export const supabaseApi = createApi({
       SupabaseProfileWithStatus[] | null,
       void
     >({
+      providesTags: ['Friendship'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
@@ -185,6 +187,7 @@ export const supabaseApi = createApi({
       SupabaseProfileWithStatus[] | null,
       void
     >({
+      providesTags: ['Friendship'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
@@ -211,6 +214,7 @@ export const supabaseApi = createApi({
       },
     }),
     getFriends: builder.query<SupabaseProfileWithStatus[] | null, void>({
+      providesTags: ['Friendship'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
@@ -240,6 +244,7 @@ export const supabaseApi = createApi({
     }),
     // Retrieves all stories, but grouped by users
     getStoryGroups: builder.query<StoryGroup[] | null, void>({
+      providesTags: ['Story'],
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
@@ -315,3 +320,4 @@ export const {
   useGetStoryGroupsQuery,
   usePrefetch,
 } = supabaseApi;
+export default supabaseApi;

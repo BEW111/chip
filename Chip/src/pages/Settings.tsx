@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
+import {useAppDispatch} from '../redux/hooks';
 
 // Components
 import {Button, Divider, IconButton, Text, TextInput} from 'react-native-paper';
@@ -11,13 +12,14 @@ import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import {styles} from '../styles';
 
 // Api
-import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
+import supabaseApi, {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profiles';
 
 export default function Settings(props) {
   const {data: profile} = useGetCurrentProfileQuery();
+  const dispatch = useAppDispatch();
 
   // Username editor
   const [usernameEditorOpen, setUsernameEditorOpen] = useState(false);
@@ -31,6 +33,16 @@ export default function Settings(props) {
   // Actions
   const onLogoutPressed = async () => {
     if (profile?.id) {
+      console.log('Signing out...');
+      dispatch(
+        supabaseApi.util.invalidateTags([
+          'Chip',
+          'Friendship',
+          'Goal',
+          'Profile',
+          'Story',
+        ]),
+      );
       signOut();
     }
   };

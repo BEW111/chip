@@ -46,7 +46,9 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
   const theme = useTheme();
 
   const currentUid = useAppSelector(selectUid);
-  const friendGoals = useGetFriendGoalsQuery(friend.id);
+  const {data: friendGoals} = useGetFriendGoalsQuery(friend.id);
+
+  console.log(friendGoals);
 
   // const thisUserMenuItems = thisUserGoals.map(g => ({
   //   title: g.name,
@@ -164,9 +166,15 @@ function UserContainer({user}: UserContainerType) {
   // Popup modal
   const [pressed, setPressed] = useState(false);
   const [superstreakModalVisible, setSuperstreakModalVisible] = useState(false);
-  async function onChallenge() {
+  const onChallenge = () => {
     setSuperstreakModalVisible(true);
-  }
+  };
+
+  // Pressing the whole container
+  const onPressContainer = () => {
+    setPressed(true);
+    setSuperstreakModalVisible(true);
+  };
 
   // Invites
   const {refetch: receivedRefetch} = useGetReceivedFriendRequestsQuery();
@@ -197,7 +205,7 @@ function UserContainer({user}: UserContainerType) {
         />
       </Portal>
       <Pressable
-        onPressIn={() => setPressed(true)}
+        onPressIn={onPressContainer}
         onPressOut={() => setPressed(false)}
         style={buttonStyles(pressed).button}>
         <View style={styles.rowSpaceBetween}>

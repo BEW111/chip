@@ -23,6 +23,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // Auth
 import {supabase} from './src/supabase/supabase';
 import {Session} from '@supabase/supabase-js';
+import supabaseApi from './src/redux/supabaseApi';
 
 import {useAppDispatch} from './src/redux/hooks';
 
@@ -225,7 +226,23 @@ function Main() {
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
+    });
+
+    const {
+      data: {subscription},
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
       dispatch(updateUid(newSession?.user.id));
+      console.log(`Updated UID to ${newSession?.user.id}`);
+      dispatch(
+        supabaseApi.util.invalidateTags([
+          'Chip',
+          'Friendship',
+          'Goal',
+          'Profile',
+          'Story',
+        ]),
+      );
 
       // If we've logged in
       if (newSession?.user.id) {
@@ -233,12 +250,6 @@ function Main() {
       } else {
         onLogOutOneSignal();
       }
-    });
-
-    const {
-      data: {subscription},
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
     });
 
     return () => subscription.unsubscribe();
