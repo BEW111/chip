@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
-import {Divider, Text} from 'react-native-paper';
+import {View, ScrollView, StyleSheet, RefreshControl} from 'react-native';
+import {Divider, Text, useTheme} from 'react-native-paper';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -19,8 +19,20 @@ import {useGetChipsQuery, useGetGoalsQuery} from '../../redux/supabaseApi';
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
-  const {data: goals} = useGetGoalsQuery();
+  const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
   const {data: chips} = useGetChipsQuery();
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const theme = useTheme();
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetchGoals();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 300);
+  }, [refetchGoals]);
 
   return (
     <>
@@ -32,7 +44,15 @@ function MainPage({navigation}) {
           </Header>
           <ScrollView
             contentContainerStyle={localStyles.scrollViewPadded}
-            style={styles.expand}>
+            style={styles.expand}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor={theme.colors.secondaryContainer}
+                colors={[theme.colors.secondaryContainer]}
+              />
+            }>
             {chips && (
               <ChartWidget
                 chartType="day-occurrence"

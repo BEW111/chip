@@ -1,4 +1,4 @@
-// Local form of a goal
+// Local form of a goal (not sure if this is used?)
 export type Goal = {
   id: string; // actual identifier of the goal
   uid: string; // user that this goal belongs to
@@ -20,22 +20,15 @@ export type Goal = {
 };
 
 // The type for the goal we upload without the id (which is generated automatically)
-export type SupabaseGoalUpload = {
-  uid: string; // user that this goal belongs to
-  name: string; // display name of the goal
-
-  description?: string;
-  type?: GoalType;
-  is_public: boolean;
-  emoji: string;
-
-  streak_count: number;
-  streak_met: boolean;
-  iteration_period: GoalIterationPeriod;
-  iteration_amount: number;
-  iteration_units: string;
-  current_iteration_progress: number;
-};
+export type SupabaseGoalUpload = Omit<
+  SupabaseGoal,
+  | 'id'
+  | 'created_at'
+  | 'streak_count'
+  | 'current_iteration_start'
+  | 'current_iteration_progress'
+  | 'current_iteration_streak_met'
+>;
 
 // The type for the goal we'll get from the database
 export type SupabaseGoal = {
@@ -51,11 +44,13 @@ export type SupabaseGoal = {
   emoji: string;
 
   streak_count: number;
-  streak_met: boolean;
   iteration_period: GoalIterationPeriod;
-  iteration_amount: number;
+  iteration_target: number;
   iteration_units: string;
+  iteration_dows: number;
+  current_iteration_start: string;
   current_iteration_progress: number;
+  current_iteration_streak_met: boolean;
 };
 export type SupabaseGoalModification = Partial<SupabaseGoal> &
   Pick<SupabaseGoal, 'id'>;

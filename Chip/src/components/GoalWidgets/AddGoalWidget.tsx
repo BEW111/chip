@@ -6,6 +6,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
+
+// Components
 import {
   Portal,
   Modal,
@@ -23,6 +25,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
 import pluralize from 'pluralize';
 
+// Animations
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -43,6 +46,13 @@ import {
   GoalVisibility,
   SupabaseGoalUpload,
 } from '../../types/goals';
+import {
+  Dow,
+  DowObject,
+  allDays,
+  dows,
+  weekdaysObjectToBitField,
+} from '../../utils/dow';
 
 // Updating local state
 import {useGetGoalsQuery, useAddGoalMutation} from '../../redux/supabaseApi';
@@ -73,13 +83,13 @@ export default function AddGoalWidget() {
   const [goalTypeInput, setGoalTypeInput] = useState<GoalType>('build');
   const [goalFreqInput, setGoalFreqInput] =
     useState<GoalIterationPeriod>('daily');
-  const [goalFreqAmtInput, setGoalFreqAmtInput] = useState(1);
+  const [goalTargetInput, setGoalTargetInput] = useState(1);
   const [goalUnits, setGoalUnits] = useState('minute');
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
   // Goal days input
-  const defaultGoalDays = {
+  const defaultGoalDays: DowObject = {
     monday: true,
     tuesday: true,
     wednesday: true,
@@ -88,27 +98,11 @@ export default function AddGoalWidget() {
     saturday: true,
     sunday: true,
   };
-  const [goalOnDaysInput, setGoalOnDaysInput] = useState(defaultGoalDays);
-  type Day =
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday'
-    | 'sunday';
-  const days: Day[] = [
-    'sunday',
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-  ];
+  const [goalOnDaysInput, setGoalOnDaysInput] =
+    useState<DowObject>(defaultGoalDays);
 
   // Editing the goal "on days"
-  const toggleOnDay = (day: Day) => {
+  const toggleOnDay = (day: Dow) => {
     setGoalOnDaysInput({...goalOnDaysInput, [day]: !goalOnDaysInput[day]});
   };
 
@@ -134,25 +128,37 @@ export default function AddGoalWidget() {
     }
   }, []);
 
+  // Called when we try to create the goal
   const onCreateGoal = async () => {
+    // TODO: need error messages
     if (goalNameInput === '') {
       return;
+    }
+
+    let dowBitField = 0;
+    if (goalFreqInput === 'weekly') {
+      dowBitField = allDays;
+    } else {
+      dowBitField = weekdaysObjectToBitField(goalOnDaysInput);
+      if (dowBitField === 0) {
+        return;
+      }
     }
 
     if (uid) {
       const goal: SupabaseGoalUpload = {
         uid: uid,
         name: goalNameInput,
+
         description: '',
         type: goalTypeInput,
         is_public: goalVisibility === 'public',
         emoji: goalEmojiInput.emoji,
-        streak_count: 0,
-        streak_met: false,
+
         iteration_period: goalFreqInput,
-        iteration_amount: goalFreqAmtInput,
+        iteration_target: goalTargetInput,
         iteration_units: goalUnits,
-        current_iteration_progress: 0,
+        iteration_dows: dowBitField,
       };
 
       await addGoal(goal);
@@ -163,7 +169,7 @@ export default function AddGoalWidget() {
 
     hideModal();
     setGoalNameInput('');
-    setGoalFreqAmtInput(0);
+    setGoalTargetInput(0);
     setGoalFreqInput('daily');
   };
 
@@ -267,14 +273,14 @@ export default function AddGoalWidget() {
                         mode="outlined"
                         label="Target amount"
                         keyboardType="decimal-pad"
-                        value={goalFreqAmtInput.toString()}
-                        onChangeText={text => setGoalFreqAmtInput(text)}
+                        value={goalTargetInput.toString()}
+                        onChangeText={text => setGoalTargetInput(text)}
                         right={
                           <TextInput.Affix
                             text={
                               pluralize(
                                 goalUnits,
-                                parseFloat(goalFreqAmtInput),
+                                parseFloat(goalTargetInput),
                               ) +
                               ' ' +
                               goalFreqInput
@@ -301,7 +307,7 @@ export default function AddGoalWidget() {
                   />
                   <Divider style={styles.dividerSmall} />
                   <View style={styles.rowCenteredSpaceBetween}>
-                    {days.map((day: Day) => (
+                    {dows.map((day: Dow) => (
                       <IconButton
                         mode="contained-tonal"
                         disabled={goalFreqInput === 'weekly'}
