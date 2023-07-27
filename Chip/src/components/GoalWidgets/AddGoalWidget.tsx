@@ -73,7 +73,11 @@ export default function AddGoalWidget() {
   const [modalVisible, setModalVisible] = useState(false);
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const showModal = () => setModalVisible(true);
-  const hideModal = () => setModalVisible(false);
+  const hideModal = () => {
+    setGoalFreqInput('daily');
+    setGoalOnDaysInput(defaultGoalDays);
+    setModalVisible(false);
+  };
 
   // Inputs
   const [goalNameInput, setGoalNameInput] = useState('');

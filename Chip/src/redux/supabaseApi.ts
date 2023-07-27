@@ -24,7 +24,7 @@ import {
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Goal'],
+  tagTypes: ['Goal', 'Chip'],
   endpoints: builder => ({
     getCurrentProfile: builder.query<SupabaseProfile | null, void>({
       queryFn: async () => {
@@ -51,7 +51,27 @@ export const supabaseApi = createApi({
     getGoals: builder.query<SupabaseGoal[] | null, void>({
       providesTags: ['Goal'],
       queryFn: async () => {
-        const {data, error} = await supabase.from('goals').select();
+        const userDetails = await supabase.auth.getUser();
+        if (userDetails.error) {
+          return {error: userDetails.error};
+        }
+        const uid = userDetails.data.user.id;
+
+        const {data, error} = await supabase
+          .from('goals')
+          .select()
+          .eq('uid', uid);
+
+        return {data: data, error: error};
+      },
+    }),
+    getFriendGoals: builder.query<SupabaseGoal[] | null, string>({
+      providesTags: ['Goal'],
+      queryFn: async (friend_uid: string) => {
+        const {data, error} = await supabase
+          .from('goals')
+          .select()
+          .eq('uid', friend_uid);
 
         return {data: data, error: error};
       },
@@ -100,6 +120,7 @@ export const supabaseApi = createApi({
       },
     }),
     getChips: builder.query<SupabaseChip[] | null, void>({
+      providesTags: ['Chip'],
       queryFn: async () => {
         const {data, error} = await supabase.from('chips').select();
 
@@ -107,6 +128,7 @@ export const supabaseApi = createApi({
       },
     }),
     getChipsByGoalId: builder.query<SupabaseChip[] | null, number>({
+      providesTags: ['Chip'],
       queryFn: async (id: number) => {
         const {data, error} = await supabase
           .from('chips')
@@ -114,6 +136,18 @@ export const supabaseApi = createApi({
           .eq('goal_id', id);
 
         return {data: data, error: error};
+      },
+    }),
+    deleteChip: builder.mutation<void, string>({
+      invalidatesTags: ['Chip'],
+      queryFn: async (chipId: string) => {
+        const {error} = await supabase.from('chips').delete().eq('id', chipId);
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {error: error};
       },
     }),
     getReceivedFriendRequests: builder.query<
@@ -273,9 +307,11 @@ export const {
   useDeleteGoalMutation,
   useGetChipsQuery,
   useGetChipsByGoalIdQuery,
+  useDeleteChipMutation,
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
   useGetFriendsQuery,
+  useGetFriendGoalsQuery,
   useGetStoryGroupsQuery,
   usePrefetch,
 } = supabaseApi;

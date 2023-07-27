@@ -96,13 +96,12 @@ export default function Friends() {
             <ScrollView
               alwaysBounceVertical={false}
               keyboardShouldPersistTaps="handled"
-              // style={{backgroundColor: 'red'}}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={onRefresh}
                   tintColor={theme.colors.onPrimary}
-                  colors={[theme.colors.onBackground]}
+                  colors={[theme.colors.onPrimary]}
                 />
               }>
               <Divider style={styles.dividerSmall} />

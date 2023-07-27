@@ -22,116 +22,50 @@ import AvatarDisplay from '../AvatarDisplay';
 // stuff to delete
 import {selectUid} from '../../redux/slices/authSlice';
 
-import {getGoalsPublic} from '../../firebase/goals';
-import {
-  createSuperstreak,
-  getSuperstreaksByUser,
-} from '../../firebase/superstreaks';
-
 // Friends
 import {inviteUser, acceptInvite} from '../../supabase/friends';
 import {SupabaseProfileWithStatus} from '../../types/friends';
 import {
+  useGetFriendGoalsQuery,
   useGetFriendsQuery,
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
 } from '../../redux/supabaseApi';
 
-interface UserContainerType {
+type UserContainerType = {
   user: SupabaseProfileWithStatus;
-}
+};
 
-function ChallengeUserModal({visible, hideModal, user}) {
+type FriendModalType = {
+  visible: boolean;
+  hideModal: () => void;
+  friend: SupabaseProfileWithStatus;
+};
+
+function FriendModal({visible, hideModal, friend}: FriendModalType) {
   const theme = useTheme();
 
-  const currentUserUid = useSelector(selectUid);
-  const thisUserGoals = useSelector(selectUserGoals);
-  const thisUserMenuItems = thisUserGoals.map(g => ({
-    title: g.name,
-    value: g.id,
-  }));
-  const [otherUserMenuItems, setOtherUserMenuItems] = useState([]);
-  const [thisUserSelected, setThisUserSelected] = useState({});
-  const [otherUserSelected, setOtherUserSelected] = useState({});
-  const [existingSuperstreaks, setExistingSuperstreaks] = useState([]);
+  const currentUid = useAppSelector(selectUid);
+  const friendGoals = useGetFriendGoalsQuery(friend.id);
+
+  // const thisUserMenuItems = thisUserGoals.map(g => ({
+  //   title: g.name,
+  //   value: g.id,
+  // }));
+  // const [otherUserMenuItems, setOtherUserMenuItems] = useState([]);
+  // const [thisUserSelected, setThisUserSelected] = useState({});
+  // const [otherUserSelected, setOtherUserSelected] = useState({});
+  // const [existingSuperstreaks, setExistingSuperstreaks] = useState([]);
 
   const [tab, setTab] = useState('create');
 
-  const [displayError, setDisplayError] = useState('');
+  // const [displayError, setDisplayError] = useState('');
 
   function onDismiss() {
-    setThisUserSelected({});
-    setOtherUserSelected({});
+    // setThisUserSelected({});
+    // setOtherUserSelected({});
     hideModal();
   }
-
-  async function updateOtherUserInfo() {
-    if (visible) {
-      // update other user goals
-      const otherUserGoals = await getGoalsPublic(user.uid);
-      if (otherUserGoals.length > 0) {
-        setOtherUserMenuItems(
-          otherUserGoals.map(g => ({
-            title: g.name,
-            value: g.id,
-          })),
-        );
-      }
-
-      // update info for existing superstreaks
-      let existing = await getSuperstreaksByUser(user.uid);
-      existing = existing.filter(superstreak =>
-        superstreak.users.includes(currentUserUid),
-      );
-      if (existing.length > 0) {
-        setExistingSuperstreaks(
-          existing.map(superstreak => ({
-            goalData: superstreak.goals.map(goalId => {
-              const filteredThis = thisUserGoals.filter(
-                goal => goal.id === goalId,
-              );
-              const filteredOther = otherUserGoals.filter(
-                goal => goal.id === goalId,
-              );
-              return filteredThis.length > 0
-                ? filteredThis[0]
-                : filteredOther[0];
-            }),
-            ...superstreak,
-          })),
-        );
-      }
-    }
-  }
-
-  async function onRequestSuperstreak() {
-    if (!thisUserSelected.value || !otherUserSelected.value) {
-      // Missing values
-      return;
-    }
-    // const thisGoal = g
-    const result = await createSuperstreak(
-      currentUserUid,
-      user.uid,
-      thisUserSelected.value,
-      otherUserSelected.value,
-      'daily',
-    );
-
-    if (result?.status === 'error') {
-      setDisplayError('This superstreak already exists');
-      return;
-    }
-
-    setThisUserSelected({});
-    setOtherUserSelected({});
-    setTab('manage');
-    setDisplayError('');
-  }
-
-  useEffect(() => {
-    updateOtherUserInfo();
-  }, [user.uid, visible]);
 
   return (
     <Modal
@@ -139,11 +73,11 @@ function ChallengeUserModal({visible, hideModal, user}) {
       onDismiss={onDismiss}
       contentContainerStyle={modalStyles.container}>
       <View style={styles.row}>
-        <AvatarDisplay height={48} width={48} uid={user.uid} />
+        <AvatarDisplay height={48} width={48} url={friend.avatar_url} />
         <Divider style={styles.dividerHSmall} />
         <View>
-          <Text variant="titleLarge">@{user.username}</Text>
-          <Text variant="titleSmall">{user.email}</Text>
+          <Text variant="titleLarge">@{friend.username}</Text>
+          <Text variant="titleSmall">{friend.full_name}</Text>
         </View>
       </View>
       <Divider style={styles.dividerSmall} />
@@ -156,7 +90,6 @@ function ChallengeUserModal({visible, hideModal, user}) {
       </View>
       <Divider style={styles.dividerSmall} />
       <SegmentedButtons
-        style={modalStyles.segmentedButtons}
         value={tab}
         onValueChange={setTab}
         buttons={[
@@ -175,7 +108,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
         If either of you breaks your goal, then the superstreak restarts.
       </Text> */}
       <Divider style={styles.dividerTiny} />
-      {tab === 'create' ? (
+      {/* {tab === 'create' ? (
         <>
           <InputFieldMenu
             label={'Your goal'}
@@ -219,7 +152,7 @@ function ChallengeUserModal({visible, hideModal, user}) {
             </View>
           </>
         ))
-      )}
+      )} */}
     </Modal>
   );
 }
@@ -256,13 +189,13 @@ function UserContainer({user}: UserContainerType) {
 
   return (
     <>
-      {/* <Portal>
-        <ChallengeUserModal
+      <Portal>
+        <FriendModal
           visible={superstreakModalVisible}
           hideModal={() => setSuperstreakModalVisible(false)}
-          user={user}
+          friend={user}
         />
-      </Portal> */}
+      </Portal>
       <Pressable
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}

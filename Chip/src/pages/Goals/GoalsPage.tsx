@@ -22,10 +22,10 @@ function MainPage({navigation}) {
   const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
   const {data: chips} = useGetChipsQuery();
 
-  const [refreshing, setRefreshing] = React.useState(false);
-
   const theme = useTheme();
 
+  // Refresh controls
+  const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetchGoals();

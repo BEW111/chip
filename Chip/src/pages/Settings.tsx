@@ -14,7 +14,7 @@ import {styles} from '../styles';
 import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
-import {updateUsername} from '../supabase/profile';
+import {updateUsername} from '../supabase/profiles';
 import {clearMessagingToken} from '../notifications/tokens';
 
 export default function Settings(props) {

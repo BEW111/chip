@@ -1,9 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
+import {styles, modalStyles} from '../../styles';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useAppSelector} from '../../redux/hooks';
 
+// Components
+import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
-import {useSelector} from 'react-redux';
+import pluralize from 'pluralize';
+
+// Animations and gestures
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -12,22 +18,14 @@ import Animated, {
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
-import pluralize from 'pluralize';
-
-import {selectUid} from '../../redux/slices/authSlice';
-
-import storage from '@react-native-firebase/storage';
-import {styles, modalStyles} from '../../styles';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {deleteChip} from '../../firebase/chips';
-
 // Data
 import {SupabaseChip} from '../../types/chips';
 import {SupabaseGoal} from '../../types/goals';
 
-// Supabase storage
+// Supabase and state
+import {selectUid} from '../../redux/slices/authSlice';
 import {supabase} from '../../supabase/supabase';
-import {useAppSelector} from '../../redux/hooks';
+import {useDeleteChipMutation} from '../../redux/supabaseApi';
 
 type ChipModalProps = {
   visible: boolean;
@@ -44,8 +42,6 @@ function ChipModal({
   chipImageUri,
   goal,
 }: ChipModalProps) {
-  const uid = useAppSelector(selectUid);
-
   // Animation
   const offset = useSharedValue({x: 0, y: 0});
   const start = useSharedValue({x: 0, y: 0});
@@ -60,7 +56,6 @@ function ChipModal({
         {translateX: offset.value.x},
         {translateY: offset.value.y},
         {scale: scale.value},
-        // {rotateZ: `${rotation.value}rad`},
       ],
     };
   });
@@ -112,6 +107,8 @@ function ChipModal({
   }
 
   // Deleting the chip
+  const [deleteChip] = useDeleteChipMutation();
+
   function onPromptDeleteChip() {
     setDeleteModalVisible(true);
   }
@@ -119,7 +116,7 @@ function ChipModal({
   function onDeleteChip() {
     setDeleteModalVisible(false);
     setVisible(false);
-    deleteChip(uid, chip.id);
+    deleteChip(chip.id);
   }
 
   const insets = useSafeAreaInsets();
@@ -229,7 +226,7 @@ type ChipDisplayMiniProps = {
 };
 
 export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
-  const uid = useSelector(selectUid);
+  const uid = useAppSelector(selectUid);
 
   // Animations
   const viewScale = useSharedValue(1);
