@@ -346,6 +346,21 @@ export const supabaseApi = createApi({
         return {data: data, error: error};
       },
     }),
+    getGoalCostreaks: builder.query<SupabaseCostreakWithUsers[] | null, string>(
+      {
+        providesTags: ['Goal', 'Costreak'],
+        queryFn: async (goal_id: string) => {
+          const {data, error} = await supabase
+            .from('costreaks')
+            .select('*, sender:sender_id(*), recipient:recipient_id(*)')
+            .or(
+              `sender_goal_id.eq.${goal_id}, recipient_goal_id.eq.${goal_id}`,
+            );
+
+          return {data: data, error: error};
+        },
+      },
+    ),
     addCostreak: builder.mutation<SupabaseCostreak, SupabaseCostreakUpload>({
       invalidatesTags: ['Costreak'],
       queryFn: async (costreakInvite: SupabaseCostreakUpload) => {
@@ -394,6 +409,7 @@ export const {
   useGetFriendGoalsQuery,
   useGetStoryGroupsQuery,
   useGetFriendCostreaksQuery,
+  useGetGoalCostreaksQuery,
   useAddCostreakMutation,
   useAcceptCostreakMutation,
   usePrefetch,

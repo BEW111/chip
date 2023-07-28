@@ -238,7 +238,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
             {costreaks
               .filter(costreak => costreak.status === 'accepted')
               .map(costreak => (
-                <CostreakDisplay costreak={costreak} />
+                <CostreakDisplay key={costreak.id} costreak={costreak} />
               ))}
             <Text variant="titleMedium">Received requests</Text>
             <Divider style={styles.dividerSmall} />
@@ -249,7 +249,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
                   costreak.recipient_id === uid,
               )
               .map(costreak => (
-                <CostreakDisplay costreak={costreak} />
+                <CostreakDisplay key={costreak.id} costreak={costreak} />
               ))}
             <Text variant="titleMedium">Sent requests</Text>
             <Divider style={styles.dividerSmall} />
@@ -259,7 +259,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
                   costreak.status === 'pending' && costreak.sender_id === uid,
               )
               .map(costreak => (
-                <CostreakDisplay costreak={costreak} />
+                <CostreakDisplay key={costreak.id} costreak={costreak} />
               ))}
           </>
         )

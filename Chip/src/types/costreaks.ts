@@ -1,3 +1,5 @@
+import {SupabaseProfile} from './profiles';
+
 export type SupabaseCostreak = {
   id: string;
   created_at: string;
@@ -26,6 +28,11 @@ export type SupabaseCostreakUpload = Omit<
 export type SupabaseCostreakDetailed = SupabaseCostreak & {
   sender_goal_name: string;
   recipient_goal_name: string;
+};
+
+export type SupabaseCostreakWithUsers = SupabaseCostreak & {
+  sender: SupabaseProfile;
+  recipient: SupabaseProfile;
 };
 
 export type CostreakStatus = 'pending' | 'accepted' | 'rejected';
