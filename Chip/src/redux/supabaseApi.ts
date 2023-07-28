@@ -21,7 +21,11 @@ import {
   SupabaseStoryInfo,
   StoryGroup,
 } from '../types/stories';
-import {SupabaseCostreak, SupabaseCostreakUpload} from '../types/costreaks';
+import {
+  SupabaseCostreak,
+  SupabaseCostreakDetailed,
+  SupabaseCostreakUpload,
+} from '../types/costreaks';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
@@ -225,6 +229,10 @@ export const supabaseApi = createApi({
         }
         const uid = userDetails.data.user.id;
 
+        if (!uid) {
+          return {data: null, error: null};
+        }
+
         const {
           data,
           error,
@@ -312,13 +320,28 @@ export const supabaseApi = createApi({
         return {data: storyGroups};
       },
     }),
-    getFriendCostreaks: builder.query<SupabaseCostreak[] | null, string>({
+    getFriendCostreaks: builder.query<
+      SupabaseCostreakDetailed[] | null,
+      string
+    >({
       providesTags: ['Costreak'],
       queryFn: async (friend_uid: string) => {
         const {data, error} = await supabase
           .from('costreaks')
-          .select()
-          .eq('uid', friend_uid);
+          .select(
+            '*, sender_goal_name:sender_goal_id(name), recipient_goal_name:recipient_goal_id(name)',
+          )
+          .or(`sender_id.eq.${friend_uid}, recipient_id.eq.${friend_uid}`);
+
+        if (data) {
+          const costreaksFormatted = data.map(costreak => ({
+            ...costreak,
+            sender_goal_name: costreak.sender_goal_name.name,
+            recipient_goal_name: costreak.recipient_goal_name.name,
+          }));
+
+          return {data: costreaksFormatted, error: error};
+        }
 
         return {data: data, error: error};
       },
@@ -330,6 +353,21 @@ export const supabaseApi = createApi({
           .from('costreaks')
           .insert(costreakInvite)
           .select();
+
+        if (error) {
+          console.error(error);
+        }
+
+        return {data: data, error: error};
+      },
+    }),
+    acceptCostreak: builder.mutation<SupabaseCostreak, string>({
+      invalidatesTags: ['Costreak'],
+      queryFn: async (id: string) => {
+        const {data, error} = await supabase
+          .from('costreaks')
+          .update({status: 'accepted'})
+          .eq('id', id);
 
         if (error) {
           console.error(error);
@@ -355,6 +393,9 @@ export const {
   useGetFriendsQuery,
   useGetFriendGoalsQuery,
   useGetStoryGroupsQuery,
+  useGetFriendCostreaksQuery,
+  useAddCostreakMutation,
+  useAcceptCostreakMutation,
   usePrefetch,
 } = supabaseApi;
 export default supabaseApi;

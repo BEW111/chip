@@ -5,7 +5,7 @@ export type SupabaseCostreak = {
   friendship_id: string;
   sender_id: string;
   recipient_id: string;
-  status: string;
+  status: CostreakStatus;
 
   sender_goal_id: string;
   recipient_goal_id: string;
@@ -22,3 +22,10 @@ export type SupabaseCostreakUpload = Omit<
   | 'streak_count'
   | 'current_iteration_streak_met'
 >;
+
+export type SupabaseCostreakDetailed = SupabaseCostreak & {
+  sender_goal_name: string;
+  recipient_goal_name: string;
+};
+
+export type CostreakStatus = 'pending' | 'accepted' | 'rejected';

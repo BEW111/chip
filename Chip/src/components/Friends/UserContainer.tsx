@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 import {useAppSelector} from '../../redux/hooks';
 import {styles, modalStyles} from '../../styles';
@@ -12,7 +12,7 @@ import {
   Modal,
   Portal,
   SegmentedButtons,
-  useTheme,
+  Surface,
   HelperText,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +26,9 @@ import {selectUid} from '../../redux/slices/authSlice';
 import {inviteUser, acceptInvite} from '../../supabase/friends';
 import {SupabaseProfileWithFriendship} from '../../types/friends';
 import {
+  useAcceptCostreakMutation,
+  useAddCostreakMutation,
+  useGetFriendCostreaksQuery,
   useGetFriendGoalsQuery,
   useGetFriendsQuery,
   useGetGoalsQuery,
@@ -34,8 +37,10 @@ import {
 } from '../../redux/supabaseApi';
 
 // Costreaks
-import {createCostreak} from '../../supabase/costreaks';
-import {SupabaseCostreakUpload} from '../../types/costreaks';
+import {
+  SupabaseCostreakDetailed,
+  SupabaseCostreakUpload,
+} from '../../types/costreaks';
 
 type UserContainerType = {
   user: SupabaseProfileWithFriendship;
@@ -47,8 +52,46 @@ type FriendModalType = {
   friend: SupabaseProfileWithFriendship;
 };
 
+type CostreakDisplayType = {
+  costreak: SupabaseCostreakDetailed;
+};
+
+function CostreakDisplay({costreak}: CostreakDisplayType) {
+  const uid = useAppSelector(selectUid);
+
+  const [acceptCostreak] = useAcceptCostreakMutation();
+  const onAcceptCostreak = () => {
+    acceptCostreak(costreak.id);
+  };
+
+  if (!uid) {
+    return <></>;
+  }
+
+  const [myGoal, theirGoal] =
+    uid === costreak.sender_id
+      ? [costreak.sender_goal_name, costreak.recipient_goal_name]
+      : [costreak.recipient_goal_name, costreak.sender_goal_name];
+
+  return (
+    <Surface style={localStyles.costreakDisplaySurface}>
+      <Text variant="labelLarge">
+        You: {myGoal} {'\n'}
+        Them: {theirGoal}
+      </Text>
+      {costreak.status === 'pending' && costreak.recipient_id === uid && (
+        <Button
+          mode="contained"
+          labelStyle={localStyles.userButtonLabel}
+          onPress={onAcceptCostreak}>
+          Accept
+        </Button>
+      )}
+    </Surface>
+  );
+}
+
 function FriendModal({visible, hideModal, friend}: FriendModalType) {
-  const theme = useTheme();
   const uid = useAppSelector(selectUid);
 
   // Get goals
@@ -90,10 +133,15 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
   const [displayError, setDisplayError] = useState('');
 
   const onDismiss = () => {
-    // setThisUserSelected({});
-    // setOtherUserSelected({});
+    setMyGoalSelected(null);
+    setFriendGoalSelected(null);
+    setDisplayError('');
     hideModal();
   };
+
+  // Costreaks
+  const [addCostreak] = useAddCostreakMutation();
+  const {data: costreaks} = useGetFriendCostreaksQuery(friend.id);
 
   // Submitting a costreak
   const onCreateCostreak = async () => {
@@ -110,7 +158,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
         sender_goal_id: myGoalSelected.value,
         recipient_goal_id: friendGoalSelected.value,
       };
-      await createCostreak(costreak);
+      await addCostreak(costreak);
     } else {
       setDisplayError('Please select a goal for both you and your friend.');
     }
@@ -136,7 +184,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
         <Icon name="bonfire-outline" size={22} />
         <Divider style={styles.dividerHTiny} />
         <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-          Superstreaks
+          Costreaks
         </Text>
       </View>
       <Divider style={styles.dividerSmall} />
@@ -183,34 +231,42 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
           </Button>
         </>
       ) : (
-        <></>
+        costreaks && (
+          <>
+            <Text variant="titleMedium">Active</Text>
+            <Divider style={styles.dividerSmall} />
+            {costreaks
+              .filter(costreak => costreak.status === 'accepted')
+              .map(costreak => (
+                <CostreakDisplay costreak={costreak} />
+              ))}
+            <Text variant="titleMedium">Received requests</Text>
+            <Divider style={styles.dividerSmall} />
+            {costreaks
+              .filter(
+                costreak =>
+                  costreak.status === 'pending' &&
+                  costreak.recipient_id === uid,
+              )
+              .map(costreak => (
+                <CostreakDisplay costreak={costreak} />
+              ))}
+            <Text variant="titleMedium">Sent requests</Text>
+            <Divider style={styles.dividerSmall} />
+            {costreaks
+              .filter(
+                costreak =>
+                  costreak.status === 'pending' && costreak.sender_id === uid,
+              )
+              .map(costreak => (
+                <CostreakDisplay costreak={costreak} />
+              ))}
+          </>
+        )
       )}
     </Modal>
   );
 }
-
-// ) : (
-//   existingSuperstreaks.length > 0 &&
-//   existingSuperstreaks.map(superstreak => (
-//     <>
-//       <Divider style={styles.dividerTiny} />
-//       <View
-//         key={superstreak.goals.join('')}
-//         style={{
-//           padding: 8,
-//           paddingLeft: 12,
-//           backgroundColor: 'white',
-//           borderColor: theme.colors.outline,
-//           borderWidth: 1,
-//           borderRadius: 6,
-//         }}>
-//         <Text variant="bodyLarge">
-//           {superstreak.goalData.map(goal => goal.name).join(' & ')}
-//         </Text>
-//       </View>
-//     </>
-//   ))
-// )}
 
 function UserContainer({user}: UserContainerType) {
   const currentUid = useAppSelector(selectUid);
@@ -335,4 +391,12 @@ const localStyles = StyleSheet.create({
   },
   whiteText: {color: 'white'},
   grayText: {color: 'gray'},
+  costreakDisplaySurface: {
+    padding: 12,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
 });
