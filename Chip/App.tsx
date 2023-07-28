@@ -1,65 +1,90 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
-import {Dimensions, View, LogBox} from 'react-native';
+// Components
+import {Dimensions, View, LogBox, ColorValue, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import Icon from 'react-native-vector-icons/Ionicons';
+import backgroundImage from './assets/background.png';
+
+// Navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Provider as PaperProvider} from 'react-native-paper';
+
+// Providers
+import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
-import auth from '@react-native-firebase/auth';
+// Auth
+import {supabase} from './src/supabase/supabase';
+import {Session} from '@supabase/supabase-js';
+import supabaseApi from './src/redux/supabaseApi';
+
+import {useAppDispatch} from './src/redux/hooks';
 
 import {store} from './src/redux/store';
-import {useSelector, useDispatch} from 'react-redux';
+import {updateUid} from './src/redux/slices/authSlice';
 
-import Onboarding from './src/pages/Launch/Onboarding';
-import OnboardingRegister from './src/pages/Launch/OnboardingRegister';
-import SignIn from './src/pages/Launch/SignIn';
-import Home from './src/pages/Home';
-import Analytics from './src/pages/Goals/Analytics';
-import Social from './src/pages/Social';
+// Notifications
+import {requestNotificationsPermission} from './src/notifications/reminders';
 import {
-  selectInitializing,
-  selectUser,
-  updateInitializing,
-  updateUid,
-  updateUser,
-  updateUserGoals,
-  updateFriends,
-  updateInvitesSent,
-  selectNewlyCreated,
-} from './src/redux/authSlice';
+  onLogInOneSignal,
+  onLogOutOneSignal,
+} from './src/notifications/onesignal';
 
+// Onboarding pages
+import Onboarding from './src/pages/SignedOut/Onboarding';
+import OnboardingRegister from './src/pages/SignedOut/OnboardingRegister';
+import SignIn from './src/pages/SignedOut/SignIn';
+
+// Main pages
+import Home from './src/pages/Home';
+import Friends from './src/pages/Friends';
+import Track from './src/pages/Track';
+import Analytics from './src/pages/Goals/GoalsPage';
+import Settings from './src/pages/Settings';
+
+// Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
 
-import backgroundImage from './assets/background.png';
-
-import {
-  dispatchRefreshUserGoals,
-  checkAllStreaksReset,
-  getGoals,
-} from './src/firebase/goals';
-import {dispatchRefreshInvitesAndFriends} from './src/firebase/friends';
-
-// temp fix
+// TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
+  '@supabase/gotrue-js: Stack guards not supported in this environment. Generally not an issue but may point to a very conservative transpilation environment (use ES2017 or above) that implements async/await with generators, or this is a JavaScript engine that does not support async/await stack traces.',
 ]);
 
 const Tab = createMaterialTopTabNavigator();
 const Stack = createNativeStackNavigator();
 
+type VariableIconProps = {
+  focused: boolean;
+  iconName: string;
+  color?: number | ColorValue | undefined;
+};
+const VariableIcon = ({focused, iconName, color}: VariableIconProps) => (
+  <View style={localStyles({color}).tabIcon}>
+    <Icon
+      name={focused ? iconName : `${iconName}-outline`}
+      color={color}
+      size={28}
+    />
+  </View>
+);
+
 function MainTabs() {
   const insets = useSafeAreaInsets();
+  // const isNewUser = useSelector(selectNewlyCreated);
 
-  const isNewUser = useSelector(selectNewlyCreated);
+  // Only want to get the message token and check for permissions when we're logged in
+  useEffect(() => {
+    requestNotificationsPermission();
+  }, []);
 
   return (
     <View style={styles.expand}>
@@ -70,47 +95,76 @@ function MainTabs() {
           initialLayout={{
             width: Dimensions.get('window').width,
           }}
-          initialRouteName={isNewUser ? 'Analytics' : 'Home'}
+          initialRouteName={'Track'}
           style={{
             paddingBottom: insets.bottom,
           }}
           screenOptions={{
             tabBarActiveTintColor: '#e91e63',
-            tabBarLabelStyle: {fontSize: 24},
-            tabBarStyle: {backgroundColor: 'rgba(0, 0, 0, 0)'},
-            tabBarShowLabel: false,
+            tabBarStyle: {
+              backgroundColor: 'rgba(0, 0, 0, 0)',
+              paddingBottom: 0,
+            },
             tabBarIndicatorStyle: {
-              backgroundColor: 'rgba(255, 255, 255, 0.7)',
+              backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
           }}>
-          <Tab.Screen
-            name="Social"
-            component={Social}
-            options={{
-              tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
-                  <Icon
-                    name={focused ? 'people-circle' : 'people-circle-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
-              ),
-            }}
-          />
           <Tab.Screen
             name="Home"
             component={Home}
             options={{
-              tabBarShowLabel: false,
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={localStyles({color}).tabLabel}>
+                  Home
+                </Text>
+              ),
+              tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
-                  <Icon
-                    name={focused ? 'camera' : 'camera-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
+                <VariableIcon iconName="home" focused={focused} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Friends"
+            component={Friends}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={localStyles({color}).tabLabel}>
+                  Friends
+                </Text>
+              ),
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="people-circle"
+                  focused={focused}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Track"
+            component={Track}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={localStyles({color}).tabLabel}>
+                  Track goal
+                </Text>
+              ),
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="camera"
+                  focused={focused}
+                  color={color}
+                />
               ),
             }}
           />
@@ -118,15 +172,43 @@ function MainTabs() {
             name="Analytics"
             component={Analytics}
             options={{
-              tabBarShowLabel: false,
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={localStyles({color}).tabLabel}>
+                  Goals
+                </Text>
+              ),
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <View style={{alignItems: 'center', margin: -3}}>
-                  <Icon
-                    name={focused ? 'stats-chart' : 'stats-chart-outline'}
-                    color={color}
-                    size={28}
-                  />
-                </View>
+                <VariableIcon
+                  iconName="stats-chart"
+                  focused={focused}
+                  color={color}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="You"
+            component={Settings}
+            options={{
+              tabBarLabel: ({color}) => (
+                <Text
+                  variant="labelSmall"
+                  style={localStyles({color}).tabLabel}>
+                  You
+                </Text>
+              ),
+              tabBarLabelStyle: {fontSize: 12},
+              tabBarShowLabel: true,
+              tabBarIcon: ({focused, color}) => (
+                <VariableIcon
+                  iconName="person"
+                  focused={focused}
+                  color={color}
+                />
               ),
             }}
           />
@@ -136,52 +218,51 @@ function MainTabs() {
   );
 }
 
+// Main app component
 function Main() {
-  const dispatch = useDispatch();
-  const initializing = useSelector(selectInitializing);
-  const user = useSelector(selectUser);
-
-  // Handle user state changes
-  var authFlag = true; // hacky, but prevents contents from being called twice inside
-  async function onAuthStateChanged(newUser) {
-    // TODO: put into separate function
-    if (newUser && authFlag) {
-      authFlag = false;
-
-      dispatch(updateUser(newUser.toJSON()));
-      dispatch(updateUid(newUser.uid));
-
-      const goals = await getGoals(newUser.uid); // retrive user data from firestore
-
-      if (goals.length) {
-        dispatchRefreshUserGoals(newUser.uid, dispatch, goals);
-        checkAllStreaksReset(newUser.uid, goals);
-      }
-
-      dispatchRefreshInvitesAndFriends(newUser.uid, dispatch);
-    } else {
-      if (!newUser) {
-        console.log('[onAuthStateChanged] Signed out');
-        dispatch(updateUser(null));
-        dispatch(updateUid(null));
-        dispatch(updateUserGoals([]));
-        dispatch(updateInvitesSent([]));
-        dispatch(updateFriends([]));
-        authFlag = true;
-      }
-    }
-
-    if (initializing) {
-      dispatch(updateInitializing(false));
-    }
-  }
+  const dispatch = useAppDispatch();
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
+    supabase.auth.getSession().then(({data: {session: newSession}}) => {
+      setSession(newSession);
+    });
 
-  if (!user) {
+    const {
+      data: {subscription},
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      dispatch(updateUid(newSession?.user.id));
+      console.log(`Updated UID to ${newSession?.user.id}`);
+      dispatch(
+        supabaseApi.util.invalidateTags([
+          'Chip',
+          'Friendship',
+          'Goal',
+          'Profile',
+          'Story',
+          'Costreak',
+        ]),
+      );
+
+      // If we've logged in
+      if (newSession?.user.id) {
+        onLogInOneSignal(newSession?.user.id);
+      } else {
+        onLogOutOneSignal();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [dispatch]);
+
+  if (session && session.user) {
+    return (
+      <NavigationContainer>
+        <MainTabs />
+      </NavigationContainer>
+    );
+  } else {
     return (
       <NavigationContainer>
         <Stack.Navigator
@@ -199,26 +280,41 @@ function Main() {
       </NavigationContainer>
     );
   }
-
-  return (
-    <NavigationContainer>
-      <MainTabs />
-    </NavigationContainer>
-  );
 }
 
+// Wrappers around main component
 export default function App() {
   return (
     <StoreProvider store={store}>
       <SafeAreaProvider>
-        <PaperProvider
-          theme={theme}
-          settings={{
-            icon: props => <Icon {...props} />,
-          }}>
-          <Main />
-        </PaperProvider>
+        {/* Note that Paper may have modals, so we need to have the gesture handler above that */}
+        <GestureHandlerRootView style={styles.expand}>
+          <PaperProvider
+            theme={theme}
+            settings={{
+              icon: props => <Icon {...props} />,
+            }}>
+            <Main />
+          </PaperProvider>
+        </GestureHandlerRootView>
       </SafeAreaProvider>
     </StoreProvider>
   );
 }
+
+// Local styles
+type LocalStylesGeneratorType = {
+  color: ColorValue | number | string | undefined;
+};
+const localStyles = (props: LocalStylesGeneratorType) =>
+  StyleSheet.create({
+    tabLabel: {
+      color: props.color,
+      textTransform: 'none',
+      marginBottom: -10,
+    },
+    tabIcon: {
+      alignItems: 'center',
+      margin: -2, // This is for centering the icon correctly
+    },
+  });

@@ -1,277 +1,108 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
+import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
+import {styles} from '../styles';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 
-import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Pressable} from 'react-native';
-import FastImage from 'react-native-fast-image';
-import {IconButton, Text} from 'react-native-paper';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {BlurView} from '@react-native-community/blur';
-
-import {useCameraDevices, Camera} from 'react-native-vision-camera';
-import {useIsFocused} from '@react-navigation/native';
-import Animated, {
-  Easing,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withRepeat,
-  withTiming,
-  cancelAnimation,
-} from 'react-native-reanimated';
-
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  takePhoto,
-  toggleViewingPhoto,
-  selectPhotoSource,
-} from '../redux/chipSubmitterSlice';
-
-import pictureButtonOutside from '../../assets/picture-button-outside.png';
-import pictureButtonInside from '../../assets/picture-button-inside.png';
-import videoButtonOutside from '../../assets/video-button-outside.png';
-
-import PhotoViewer from '../components/Home/PhotoViewer';
+// Components
+import {SafeAreaView} from 'react-native-safe-area-context';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import StoryView from '../components/Stories/StoryView';
+import AvatarDisplay from '../components/AvatarDisplay';
 
-export default function Home() {
-  const insets = useSafeAreaInsets();
+// Current state for story viewing
+import {
+  viewStoryByUserIdx,
+  selectCurrentUserViewingIdx,
+} from '../redux/slices/storyFeedSlice';
+import {useGetStoryGroupsQuery} from '../redux/supabaseApi';
+import {insertStoryView} from '../supabase/stories';
+import {SupabaseProfile} from '../types/profiles';
+import {SupabaseStoryViewUpload} from '../types/stories';
+import {selectUid} from '../redux/slices/authSlice';
 
-  // Camera
-  const camera = useRef<Camera>(null);
-  const [isCameraInitialized, setIsCameraInitialized] = useState(false);
-  // const zoom = useSharedValue(0);
-  // const isPressingButton = useSharedValue(false);
+// StoryAvatar displays an icon with the user and when pressed, will open up the stories
+// for that user
+type StoryAvatarProps = {
+  user: SupabaseProfile;
+  userIdx: number;
+  viewed: boolean;
+};
 
-  // Camera settings
-  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>(
-    'front',
-  );
-  const [flash, setFlash] = useState<'off' | 'on'>('off');
+const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
+  const dispatch = useAppDispatch();
+  const uid = useAppSelector(selectUid);
+  const {data: storyGroups} = useGetStoryGroupsQuery();
 
-  const isFocused = useIsFocused();
-  const devices = useCameraDevices('wide-angle-camera');
-  const device = devices[cameraPosition];
+  const openUserStories = () => {
+    if (storyGroups && storyGroups.length > 0 && uid !== null) {
+      // Navigate to the first story
+      dispatch(viewStoryByUserIdx({newIdx: userIdx, storyGroups}));
 
-  const supportsCameraFlipping = useMemo(
-    () => devices.back != null && devices.front != null,
-    [devices.back, devices.front],
-  );
-  const supportsFlash = device?.hasFlash ?? false;
+      // Mark the story we're opening as viewed
+      const nextStoryIdx = storyGroups[userIdx].stories.findIndex(
+        story => !story.viewed,
+      );
 
-  // Animated zoom
-  // const minZoom = device?.minZoom ?? 1;
-  // const MAX_ZOOM_FACTOR = 20;
-  // const maxZoom = Math.min(device?.maxZoom ?? 1, MAX_ZOOM_FACTOR);
-
-  const onFlipDevicePressed = useCallback(() => {
-    setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
-  }, []);
-  const onFlashPressed = useCallback(() => {
-    setFlash(f => (f === 'on' ? 'off' : 'on'));
-  }, []);
-
-  // Camera permissions
-  const requestCameraPermission = useCallback(async () => {
-    const permission = await Camera.requestCameraPermission();
-
-    if (permission === 'denied') {
-      await Linking.openSettings();
+      if (nextStoryIdx !== -1) {
+        const viewRecord: SupabaseStoryViewUpload = {
+          story_id: storyGroups[userIdx].stories[nextStoryIdx].id,
+          poster_id: storyGroups[nextStoryIdx].creator.id,
+          viewer_id: uid,
+        };
+        insertStoryView(viewRecord);
+      }
     }
-  }, []);
-
-  useEffect(() => {
-    requestCameraPermission();
-  }, [requestCameraPermission]);
-
-  // Taking a photo
-  const photoSource = useSelector(selectPhotoSource);
-  const dispatch = useDispatch();
-
-  function onPhotoButtonPress() {
-    dispatch(
-      takePhoto({
-        camera: camera,
-        flash: flash,
-      }),
-    );
-    if (flash === 'off') {
-      dispatch(toggleViewingPhoto());
-    }
-  }
-
-  // Take photo button
-  const photoButtonScale = useSharedValue(1);
-  const photoButtonAnimatedStyles = useAnimatedStyle(() => {
-    return {
-      width: 68 * photoButtonScale.value,
-      height: 68 * photoButtonScale.value,
-    };
-  });
-
-  // Taking a video
-  const [takingVideo, setTakingVideo] = useState(false);
-  const videoButtonRotation = useSharedValue(0);
-  const videoButtonAnimatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          rotateZ: `${videoButtonRotation.value}deg`,
-        },
-      ],
-    };
-  }, [videoButtonRotation.value]);
-
-  useEffect(() => {
-    videoButtonRotation.value = withRepeat(
-      withTiming(360, {
-        duration: 2500,
-        easing: Easing.linear,
-      }),
-      -1,
-    );
-    return () => cancelAnimation(videoButtonRotation);
-  }, [videoButtonRotation]);
-
-  function startTakingVideo() {
-    setTakingVideo(true);
-  }
-
-  function stopTakingVideo() {
-    setTakingVideo(false);
-  }
-
-  // Viewing/editing a photo
-  const viewingPhoto = useSelector(state => state.chipSubmitter.viewingPhoto);
+  };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
-      <FocusAwareStatusBar animated={true} barStyle="dark-content" />
-      {device != null ? (
-        <Camera
-          zoom={device.neutralZoom}
-          ref={camera}
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={isFocused && !viewingPhoto}
-          photo={true}
-          enableZoomGesture
-        />
-      ) : (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text>No camera found (likely running on simulator)</Text>
-        </View>
-      )}
-      {viewingPhoto ? (
-        <PhotoViewer photoSource={photoSource} />
-      ) : (
-        <>
-          <View
-            style={{
-              position: 'absolute',
-              alignItems: 'center',
-              top: 70,
-              right: 10,
-            }}>
-            <IconButton
-              icon="camera-reverse-outline"
-              size={24}
-              iconColor="white"
-              containerColor={'rgba(0, 0, 0, 0.3)'}
-              onPress={onFlipDevicePressed}
-            />
-            <IconButton
-              icon={flash === 'on' ? 'flash' : 'flash-off'}
-              size={24}
-              iconColor="white"
-              containerColor={'rgba(0, 0, 0, 0.3)'}
-              onPress={onFlashPressed}
-            />
-          </View>
-        </>
-      )}
-      <View
-        pointerEvents={'box-none'}
-        style={{
-          position: 'absolute',
-          alignItems: 'center',
-          bottom: 20,
-          left: 0,
-          right: 0,
-
-          height: 100,
-          justifyContent: 'center',
-        }}>
-        <Animated.View
-          style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
-          <FastImage
-            source={takingVideo ? videoButtonOutside : pictureButtonOutside}
-            style={{
-              width: '100%',
-              height: '100%',
-              opacity: !viewingPhoto,
-            }}
-          />
-        </Animated.View>
+    <Pressable onPress={openUserStories}>
+      <View style={localStyles(viewed).storyAvatarWrapper}>
+        <AvatarDisplay height={96} width={96} url={user.avatar_url} />
       </View>
-      <View
-        pointerEvents={'box-none'}
-        style={{
-          position: 'absolute',
-          alignItems: 'center',
-          bottom: 20,
-          left: 0,
-          right: 0,
+    </Pressable>
+  );
+};
 
-          height: viewingPhoto ? 0 : 100,
+export default function Home() {
+  // Keep track of the current user of the stories we're viewing
+  const currentUserViewingIdx = useAppSelector(selectCurrentUserViewingIdx);
+  const {data: storyGroups} = useGetStoryGroupsQuery();
 
-          justifyContent: 'center',
-        }}>
-        <Pressable
-          pointerEvents={viewingPhoto ? 'none' : 'auto'}
-          disabled={viewingPhoto}
-          onPressIn={() => {
-            photoButtonScale.value = withSpring(0.2, {
-              damping: 10,
-              stiffness: 200,
-            });
-          }}
-          onPressOut={() => {
-            photoButtonScale.value = withSpring(1, {
-              damping: 10,
-              stiffness: 200,
-            });
-            if (takingVideo) {
-              stopTakingVideo();
-            }
-          }}
-          onPress={onPhotoButtonPress}
-          onLongPress={() => {
-            startTakingVideo();
-          }}>
-          <Animated.View style={photoButtonAnimatedStyles}>
-            <FastImage
-              style={{
-                width: '100%',
-                height: '100%',
-                opacity: !viewingPhoto,
-              }}
-              source={pictureButtonInside}
-            />
-          </Animated.View>
-        </Pressable>
-      </View>
-      {/* Safe zone blur */}
-      <BlurView
-        blurType="light"
-        blurAmount={8}
-        style={{
-          position: 'absolute',
-          top: 0,
-          width: '100%',
-          height: insets.top,
-        }}
-      />
+  return (
+    <View style={styles.fullDark}>
+      <FocusAwareStatusBar animated={true} barStyle="light-content" />
+      {currentUserViewingIdx !== null && <StoryView />}
+      <SafeAreaView>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {storyGroups &&
+            storyGroups.length > 0 &&
+            storyGroups.map((storyGroup, userIdx: number) => (
+              <StoryAvatar
+                key={`${storyGroup.creator.id}-${userIdx}`}
+                user={storyGroup.creator}
+                userIdx={userIdx}
+                viewed={
+                  storyGroup.stories.filter(story => !story.viewed).length === 0
+                }
+              />
+            ))}
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
+
+const localStyles = (viewed: boolean) =>
+  StyleSheet.create({
+    storyAvatarWrapper: {
+      backgroundColor: 'rgba(0, 0, 0, 0)',
+      borderColor: viewed ? 'gray' : 'white',
+      borderWidth: 4,
+      borderRadius: 108,
+      height: 108,
+      width: 108,
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 8,
+    },
+  });

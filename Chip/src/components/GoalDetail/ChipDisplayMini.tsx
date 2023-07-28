@@ -1,10 +1,15 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {Pressable, View} from 'react-native';
-import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
+import {Pressable, StyleSheet, View} from 'react-native';
+import {styles, modalStyles} from '../../styles';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useAppSelector} from '../../redux/hooks';
 
+// Components
+import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
-import {useSelector} from 'react-redux';
+import pluralize from 'pluralize';
+
+// Animations and gestures
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -13,16 +18,30 @@ import Animated, {
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
-import pluralize from 'pluralize';
+// Data
+import {SupabaseChip} from '../../types/chips';
+import {SupabaseGoal} from '../../types/goals';
 
-import {selectUid} from '../../redux/authSlice';
+// Supabase and state
+import {selectUid} from '../../redux/slices/authSlice';
+import {supabase} from '../../supabase/supabase';
+import {useDeleteChipMutation} from '../../redux/supabaseApi';
 
-import storage from '@react-native-firebase/storage';
-import {styles, modalStyles} from '../../styles';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {deleteChip} from '../../firebase/chips';
+type ChipModalProps = {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  chip: SupabaseChip;
+  chipImageUri: string | null;
+  goal: SupabaseGoal;
+};
 
-function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
+function ChipModal({
+  visible,
+  setVisible,
+  chip,
+  chipImageUri,
+  goal,
+}: ChipModalProps) {
   // Animation
   const offset = useSharedValue({x: 0, y: 0});
   const start = useSharedValue({x: 0, y: 0});
@@ -37,7 +56,6 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
         {translateX: offset.value.x},
         {translateY: offset.value.y},
         {scale: scale.value},
-        // {rotateZ: `${rotation.value}rad`},
       ],
     };
   });
@@ -89,17 +107,16 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
   }
 
   // Deleting the chip
-  const uid = useSelector(selectUid);
+  const [deleteChip] = useDeleteChipMutation();
 
   function onPromptDeleteChip() {
-    console.log('delete chip');
     setDeleteModalVisible(true);
   }
 
   function onDeleteChip() {
     setDeleteModalVisible(false);
     setVisible(false);
-    deleteChip(uid, chip.id);
+    deleteChip(chip.id);
   }
 
   const insets = useSafeAreaInsets();
@@ -115,9 +132,9 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
         <Pressable onPress={dismiss}>
           <GestureDetector gesture={composed}>
             <Animated.View style={[styles.full, animatedStyles]}>
-              {downloadURL ? (
+              {chipImageUri ? (
                 <Pressable>
-                  <FastImage source={{uri: downloadURL}} style={styles.full} />
+                  <FastImage source={{uri: chipImageUri}} style={styles.full} />
                 </Pressable>
               ) : (
                 <></>
@@ -133,16 +150,16 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
               alignItems: 'center',
               paddingBottom: 10,
             }}>
-            <Text variant="titleMedium" style={{color: 'white'}}>
-              {chip.timeSubmitted.toDate().toLocaleDateString([], {
+            <Text variant="titleMedium" style={localStyles.whiteText}>
+              {new Date(chip.created_at).toLocaleDateString([], {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               })}
             </Text>
-            <Text variant="titleMedium" style={{color: 'white'}}>
-              {chip.timeSubmitted.toDate().toLocaleTimeString()}
+            <Text variant="titleMedium" style={localStyles.whiteText}>
+              {new Date(chip.created_at).toLocaleTimeString()}
             </Text>
             <IconButton
               onPress={dismiss}
@@ -162,11 +179,12 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
               justifyContent: 'center',
               paddingTop: 20,
             }}>
-            <Text variant="titleMedium" style={{color: 'white'}}>
-              {goal.name} - {chip.amount} {pluralize(goal.units, chip.amount)}
+            <Text variant="titleMedium" style={localStyles.whiteText}>
+              {goal.name} - {chip.amount}{' '}
+              {pluralize(goal.iteration_units, chip.amount)}
             </Text>
             {chip.description && (
-              <Text variant="titleSmall" style={{color: 'white'}}>
+              <Text variant="titleSmall" style={localStyles.whiteText}>
                 Notes: {chip.description}
               </Text>
             )}
@@ -202,12 +220,15 @@ function ChipModal({visible, setVisible, downloadURL, chip, goal}) {
   );
 }
 
-export default function ChipDisplayMini({chip, goal}) {
-  const uid = useSelector(selectUid);
-  const path = `user/${uid}/chip-photo/${chip.photo}`;
-  const [downloadURL, setDownloadURL] = useState('');
-  const [selected, setSelected] = useState(false);
+type ChipDisplayMiniProps = {
+  chip: SupabaseChip;
+  goal: SupabaseGoal;
+};
 
+export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
+  const uid = useAppSelector(selectUid);
+
+  // Animations
   const viewScale = useSharedValue(1);
   const viewAnimatedStyles = useAnimatedStyle(() => {
     return {
@@ -216,6 +237,8 @@ export default function ChipDisplayMini({chip, goal}) {
     };
   });
 
+  // Selection
+  const [selected, setSelected] = useState(false);
   const onLongPress = () => {
     ReactNativeHapticFeedback.trigger('impactMedium');
     viewScale.value = withSpring(4, {
@@ -226,20 +249,41 @@ export default function ChipDisplayMini({chip, goal}) {
     setSelected(true);
   };
 
+  // Update the photo
+  const [chipImageUri, setChipImageUri] = useState<string | null>(null);
   useEffect(() => {
-    async function grabURL() {
-      const newURL = await storage().ref(path).getDownloadURL();
-      setDownloadURL(newURL);
-    }
-    grabURL();
-  }, [path]);
+    const updateChipPhoto = async () => {
+      try {
+        const downloadPath = `${uid}/${chip.photo_path}`;
+        const {data, error} = await supabase.storage
+          .from('chips')
+          .download(downloadPath);
+
+        if (error) {
+          throw error;
+        }
+
+        const fr = new FileReader();
+        fr.readAsDataURL(data);
+        fr.onload = () => {
+          setChipImageUri(fr.result as string);
+        };
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error('Error downloading image: ', error.message);
+        }
+      }
+    };
+
+    updateChipPhoto();
+  }, [chip.photo_path, uid]);
 
   return (
     <>
       <Portal>
         <ChipModal
           visible={selected}
-          downloadURL={downloadURL}
+          chipImageUri={chipImageUri}
           setVisible={setSelected}
           chip={chip}
           goal={goal}
@@ -265,32 +309,27 @@ export default function ChipDisplayMini({chip, goal}) {
           }}
           onLongPress={onLongPress}>
           <View style={styles.full}>
-            {downloadURL ? (
+            {chipImageUri ? (
               <FastImage
-                source={{uri: downloadURL}}
-                style={{
-                  position: 'absolute',
-                  height: '100%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  borderRadius: 16,
-                }}
+                source={{uri: chipImageUri}}
+                style={localStyles.imageDisplay}
               />
             ) : (
               <></>
             )}
             <View style={styles.absoluteFullCentered}>
-              <Text variant="headlineSmall" style={{color: 'white'}}>
-                {chip.timeSubmitted.toDate().toLocaleDateString([], {
+              <Text variant="headlineSmall" style={localStyles.whiteText}>
+                {new Date(chip.created_at).toLocaleDateString([], {
                   day: '2-digit',
                   month: '2-digit',
                   year: '2-digit',
                 })}
               </Text>
-              <Text variant="headlineSmall" style={{color: 'white'}}>
-                {chip.timeSubmitted
-                  .toDate()
-                  .toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+              <Text variant="headlineSmall" style={localStyles.whiteText}>
+                {new Date(chip.created_at).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </Text>
             </View>
           </View>
@@ -299,3 +338,14 @@ export default function ChipDisplayMini({chip, goal}) {
     </>
   );
 }
+
+const localStyles = StyleSheet.create({
+  whiteText: {color: 'white'},
+  imageDisplay: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 16,
+  },
+});

@@ -1,5 +1,3 @@
-$RNFirebaseAsStaticFramework = true
-
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
@@ -41,8 +39,15 @@ target 'Chip' do
 
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
+        config.build_settings['HEADER_SEARCH_PATHS'] ||= '$(inherited) '
+        config.build_settings['HEADER_SEARCH_PATHS'] << '"${PODS_ROOT}/../../node_modules/react-native/ReactCommon" '
         config.build_settings['ENABLE_BITCODE'] = 'NO'
       end
     end
   end
+end
+
+target 'OneSignalNotificationServiceExtension' do
+  use_frameworks! :linkage => :static
+  pod 'OneSignalXCFramework', '>= 3.0', '< 4.0'
 end

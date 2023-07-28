@@ -17,7 +17,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-import {ChipObject} from '../../types';
+import {SupabaseChip} from '../../types/chips';
 
 import LatoRegular from '../../../assets/fonts/Lato-Regular.ttf';
 import {styles} from '../../styles';
@@ -49,16 +49,16 @@ const isToday = (someDate, offset) => {
   );
 };
 
-const getDailyAmount = (chips: ChipObject[], day: number) =>
+const getDailyAmount = (chips: SupabaseChip[], day: number) =>
   chips
-    .filter((chip: ChipObject) => isToday(chip.timeSubmitted.toDate(), 6 - day))
+    .filter((chip: SupabaseChip) => isToday(new Date(chip.created_at), 6 - day))
     .reduce(
-      (accumulator: number, chip: ChipObject) =>
+      (accumulator: number, chip: SupabaseChip) =>
         accumulator + (chip?.amount ? chip.amount : 0),
       0,
     );
 
-const getMaxDailyAmount = (chips: ChipObject[]) =>
+const getMaxDailyAmount = (chips: SupabaseChip[]) =>
   Math.max(...[...Array(7).keys()].map(i => getDailyAmount(chips, i)));
 
 const getNearestCleanNumber = (x: number) => {
@@ -117,7 +117,12 @@ const AnimatedRoundedRect = ({x, y, width, height, roundness, fill}) => {
   }
 };
 
-export default function BarChart({chips, chartHeightProp}) {
+type BarChartProps = {
+  chips: SupabaseChip[];
+  chartHeightProp: number;
+};
+
+export default function BarChart({chips, chartHeightProp}: BarChartProps) {
   // Calculate chip-related data
   const maxDailyAmount = getMaxDailyAmount(chips);
   const dailyAmounts = [...Array(7).keys()].map(i => getDailyAmount(chips, i));

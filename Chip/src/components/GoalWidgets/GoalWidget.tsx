@@ -1,61 +1,77 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import {useAppSelector} from '../../redux/hooks';
 
 import {Pressable, View, StyleSheet} from 'react-native';
 import {Divider, Text} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {styles} from '../../styles';
 
+// Components
+import Icon from 'react-native-vector-icons/Ionicons';
+import BlurSurface from '../BlurSurface';
+import AvatarDisplay from '../AvatarDisplay';
+
+// Animation
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import BlurSurface from '../BlurSurface';
-import {styles} from '../../styles';
-import {getSuperstreaksByGoal} from '../../firebase/superstreaks';
-import {useSelector} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
-import ProfileImageDisplay from '../ProfileImageDisplay';
 
-function GoalBadges({goal}) {
-  const [superstreaks, setSuperstreaks] = useState([]);
-  useEffect(() => {
-    getSuperstreaksByGoal(goal.id).then(dataArray =>
-      setSuperstreaks(dataArray),
-    );
-  }, [goal]);
+// Data
+import {SupabaseGoal} from '../../types/goals';
+import {selectUid} from '../../redux/slices/authSlice';
+import {useGetGoalCostreaksQuery} from '../../redux/supabaseApi';
+import {SupabaseCostreakWithUsers} from '../../types/costreaks';
 
-  const currentUser = useSelector(selectUid);
+function GoalBadges({goal}: {goal: SupabaseGoal}) {
+  const currentUid = useAppSelector(selectUid);
+  const {data: costreaks} = useGetGoalCostreaksQuery(goal.id);
 
   return (
     <View style={styles.row}>
       <View style={goalBadgeStyles.badge}>
         <Text variant="bodyLarge">
-          {goal.streak}
+          {goal.streak_count}
           <Icon name="flame-outline" size={18} />
         </Text>
       </View>
       <Divider style={styles.dividerHTiny} />
-      {superstreaks.map(superstreak => (
-        <View
-          key={superstreak.users.filter(user => user !== currentUser)[0]}
-          style={goalBadgeStyles.badge}>
-          <ProfileImageDisplay
-            height={20}
-            width={20}
-            uid={superstreak.users.filter(user => user !== currentUser)[0]}
-          />
-          <Divider style={styles.dividerHTiny} />
-          <Text variant="bodyLarge">
-            {superstreak.streak}
-            <Icon name="bonfire-outline" size={18} />
-          </Text>
-        </View>
-      ))}
+      {costreaks &&
+        costreaks.map((costreak: SupabaseCostreakWithUsers) => (
+          <View
+            key={
+              costreak.sender_id === currentUid
+                ? costreak.recipient_id
+                : costreak.sender_id
+            }
+            style={goalBadgeStyles.badge}>
+            <AvatarDisplay
+              height={20}
+              width={20}
+              url={
+                costreak.sender_id === currentUid
+                  ? costreak.recipient.avatar_url
+                  : costreak.sender.avatar_url
+              }
+            />
+            <Divider style={styles.dividerHTiny} />
+            <Text variant="bodyLarge">
+              {costreak.streak_count}
+              <Icon name="bonfire-outline" size={18} />
+            </Text>
+          </View>
+        ))}
     </View>
   );
 }
 
-export default function GoalWidget({goal, navigation}) {
+export default function GoalWidget({
+  goal,
+  navigation,
+}: {
+  goal: SupabaseGoal;
+  navigation: any;
+}) {
   const [pressed, setPressed] = useState(false);
   const surfaceScale = useSharedValue(1);
   const surfaceAnimatedStyles = useAnimatedStyle(() => {

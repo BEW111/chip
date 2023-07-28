@@ -12,7 +12,7 @@ import {DatePickerModal, TimePickerModal} from 'react-native-paper-dates';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
 
 import {useSelector} from 'react-redux';
-import {selectUid} from '../../redux/authSlice';
+import {selectUid} from '../../redux/slices/authSlice';
 
 import {
   requestNotificationsPermission,
@@ -20,11 +20,10 @@ import {
   //   onDisplayNotification,
   //   onCreateTriggerNotification,
   //   requestNotificationsPermission,
-} from '../../reminders/reminders';
+} from '../../notifications/reminders';
 
 import {styles, modalStyles} from '../../styles';
 import {datePlainFormat, timePlainFormat} from '../../utils/utils';
-import {addReminderFirebase} from '../../firebase/reminders';
 
 function AddReminderScreen({hideModal, goalName, goalId}) {
   const uid = useSelector(selectUid);
@@ -83,7 +82,7 @@ function AddReminderScreen({hideModal, goalName, goalId}) {
       `Reminder: ${goalName}`,
       reminderIntent,
     );
-    await addReminderFirebase(uid, goalId, reminderIntent, reminderDatetime);
+    // await addReminderFirebase(uid, goalId, reminderIntent, reminderDatetime);
 
     hideModal();
   };

@@ -21,6 +21,11 @@ export const styles = StyleSheet.create({
     height: '100%',
     paddingHorizontal: 20,
   },
+  fullDark: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#0E1011',
+  },
   absoluteFull: {
     position: 'absolute',
     width: '100%',
@@ -87,6 +92,10 @@ export const styles = StyleSheet.create({
     marginVertical: 12,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
+  dividerLarge: {
+    marginVertical: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+  },
   dividerHTiny: {
     marginHorizontal: 2,
     backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -113,6 +122,9 @@ export const styles = StyleSheet.create({
     paddingTop: 4,
     color: 'gray',
     textTransform: 'uppercase',
+  },
+  noMargin: {
+    margin: 0,
   },
 });
 
