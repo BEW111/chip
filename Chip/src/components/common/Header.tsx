@@ -1,24 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {View, Image} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
 
-import {
-  IconButton,
-  Portal,
-  Button,
-  Text,
-  Menu,
-  Modal,
-  TextInput,
-  Divider,
-} from 'react-native-paper';
+import {Divider} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-import {useSelector, useDispatch} from 'react-redux';
-import {selectUid} from '../../redux/slices/authSlice';
-import {updateSelectedGoal} from '../../redux/slices/analyticsSlice';
-
-export default function Header(props, {navigation}) {
+export default function Header(props) {
   const insets = useSafeAreaInsets();
 
   return (

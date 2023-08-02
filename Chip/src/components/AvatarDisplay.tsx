@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import DefaultProfileImage from '../../assets/profile-default.png';
 
-import {useGetCurrentProfileQuery} from '../redux/supabaseApi';
+import {useGetCurrentProfileQuery} from '../redux/slices/profilesSlice';
 
 interface ProfileImageProps {
   height: number;

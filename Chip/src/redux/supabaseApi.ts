@@ -2,7 +2,6 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 import {supabase} from '../supabase/supabase';
 
 import {PostgrestError} from '@supabase/supabase-js';
-import {SupabaseProfile} from '../types/profiles';
 import {
   SupabaseGoal,
   SupabaseGoalUpload,
@@ -31,29 +30,6 @@ export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ['Profile', 'Goal', 'Chip', 'Friendship', 'Story', 'Costreak'],
   endpoints: builder => ({
-    getCurrentProfile: builder.query<SupabaseProfile | null, void>({
-      providesTags: ['Profile'],
-      queryFn: async () => {
-        const userDetails = await supabase.auth.getUser();
-        if (userDetails.error) {
-          return {error: userDetails.error};
-        }
-        const uid = userDetails.data.user.id;
-
-        const {data, error} = await supabase
-          .from('profiles')
-          .select('id, updated_at, username, full_name, avatar_url')
-          .eq('id', uid)
-          .limit(1);
-
-        if (data && data.length > 0) {
-          const profile: Profile = data[0];
-          return {data: profile};
-        } else {
-          return {error: error};
-        }
-      },
-    }),
     getGoals: builder.query<SupabaseGoal[] | null, void>({
       providesTags: ['Goal'],
       queryFn: async () => {
@@ -197,7 +173,7 @@ export const supabaseApi = createApi({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -225,7 +201,7 @@ export const supabaseApi = createApi({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -267,7 +243,7 @@ export const supabaseApi = createApi({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -395,7 +371,6 @@ export const supabaseApi = createApi({
 });
 
 export const {
-  useGetCurrentProfileQuery,
   useGetGoalsQuery,
   useAddGoalMutation,
   useEditGoalMutation,

@@ -12,7 +12,8 @@ import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import {styles} from '../styles';
 
 // Api
-import supabaseApi, {useGetCurrentProfileQuery} from '../redux/supabaseApi';
+import supabaseApi from '../redux/supabaseApi';
+import {useGetCurrentProfileQuery} from '../redux/slices/profilesSlice';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
 import {signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profiles';

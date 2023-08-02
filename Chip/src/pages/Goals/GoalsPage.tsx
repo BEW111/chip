@@ -8,7 +8,7 @@ import GoalWidget from '../../components/GoalWidgets/GoalWidget';
 import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 
-import Header from '../../components/Analytics/Header';
+import Header from '../../components/common/Header';
 import GoalPage from './GoalDetailPage';
 import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
@@ -39,7 +39,7 @@ function MainPage({navigation}) {
       <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       <BackgroundWrapper>
         <View style={styles.full}>
-          <Header navigation={navigation}>
+          <Header>
             <Text style={localStyles.headerText}>Goals</Text>
           </Header>
           <ScrollView

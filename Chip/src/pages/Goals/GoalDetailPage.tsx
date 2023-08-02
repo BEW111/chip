@@ -18,7 +18,7 @@ import {
   FAB,
   Divider,
 } from 'react-native-paper';
-import Header from '../../components/Analytics/Header';
+import Header from '../../components/common/Header';
 import ImageCarouselWidget from '../../components/GoalWidgets/ImageCarouselWidget';
 import TextWidget from '../../components/GoalWidgets/TextWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
@@ -208,7 +208,7 @@ export default function GoalPage({navigation, route}) {
       </Portal>
       <BackgroundWrapper>
         <View style={styles.full}>
-          <Header navigation={navigation}>
+          <Header>
             <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goalName}</Text>
             <View style={localStyles.backButtonWrapper}>
               <IconButton

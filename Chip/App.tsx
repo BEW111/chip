@@ -12,7 +12,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Providers
-import {Provider as PaperProvider, Text} from 'react-native-paper';
+import {Provider as PaperProvider, Text, useTheme} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
   SafeAreaProvider,
@@ -25,7 +25,7 @@ import {supabase} from './src/supabase/supabase';
 import {Session} from '@supabase/supabase-js';
 import supabaseApi from './src/redux/supabaseApi';
 
-import {useAppDispatch} from './src/redux/hooks';
+import {useAppDispatch, useAppSelector} from './src/redux/hooks';
 
 import {store} from './src/redux/store';
 import {updateUid} from './src/redux/slices/authSlice';
@@ -52,6 +52,7 @@ import Settings from './src/pages/Settings';
 // Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
+import {selectTutorialStage} from './src/redux/slices/tutorialSlice';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -66,16 +67,27 @@ type VariableIconProps = {
   focused: boolean;
   iconName: string;
   color?: number | ColorValue | undefined;
+  disabled: boolean;
 };
-const VariableIcon = ({focused, iconName, color}: VariableIconProps) => (
-  <View style={localStyles({color}).tabIcon}>
-    <Icon
-      name={focused ? iconName : `${iconName}-outline`}
-      color={color}
-      size={28}
-    />
-  </View>
-);
+const VariableIcon = ({
+  focused,
+  iconName,
+  color,
+  disabled,
+}: VariableIconProps) => {
+  console.log(disabled);
+
+  return (
+    <View style={localStyles({color}).tabIcon}>
+      <Icon
+        disabled
+        name={focused ? iconName : `${iconName}-outline`}
+        color={disabled ? theme.colors.surfaceDisabled : color}
+        size={28}
+      />
+    </View>
+  );
+};
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
@@ -85,6 +97,9 @@ function MainTabs() {
   useEffect(() => {
     requestNotificationsPermission();
   }, []);
+
+  // Tutorial state for disabling tabs
+  const tutorialStage = useAppSelector(selectTutorialStage);
 
   return (
     <View style={styles.expand}>
@@ -122,8 +137,20 @@ function MainTabs() {
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
-                <VariableIcon iconName="home" focused={focused} color={color} />
+                <VariableIcon
+                  iconName="home"
+                  focused={focused}
+                  color={color}
+                  disabled={false}
+                />
               ),
+            }}
+            listeners={{
+              tabPress: e => {
+                // Prevent default action
+                console.log(e);
+                e.preventDefault();
+              },
             }}
           />
           <Tab.Screen
@@ -140,6 +167,7 @@ function MainTabs() {
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
                 <VariableIcon
+                  disabled={true}
                   iconName="people-circle"
                   focused={focused}
                   color={color}

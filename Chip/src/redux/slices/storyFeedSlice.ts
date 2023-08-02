@@ -1,4 +1,4 @@
-// Slice for stories
+// Slice for the story feed
 // Note that each user will have a group of stories, so we keep track
 // of which user we're viewing stories for, and which stories we're actually viewing
 

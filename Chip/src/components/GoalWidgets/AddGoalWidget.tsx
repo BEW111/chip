@@ -19,10 +19,12 @@ import {
   Surface,
   useTheme,
   IconButton,
+  HelperText,
 } from 'react-native-paper';
 import EmojiPicker from 'rn-emoji-keyboard';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {BlurView} from '@react-native-community/blur';
+import Tooltip from '../common/Tooltip';
 import pluralize from 'pluralize';
 
 // Animations
@@ -35,7 +37,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-import {useAppSelector} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {selectNewlyCreated, selectUid} from '../../redux/slices/authSlice';
 
 // Database interactions
@@ -56,9 +58,58 @@ import {
 
 // Updating local state
 import {useGetGoalsQuery, useAddGoalMutation} from '../../redux/supabaseApi';
+import {
+  selectTutorialStage,
+  updateTutorialStage,
+} from '../../redux/slices/tutorialSlice';
 
 export default function AddGoalWidget() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+
+  // Tutorial stage state
+  const tutorialStage = useAppSelector(selectTutorialStage);
+
+  // Input state changes
+  const onGoalNameEndEditing = () => {
+    if (tutorialStage === 'goals-entering-name' && goalNameInput !== '') {
+      dispatch(updateTutorialStage('goals-entering-privacy'));
+    }
+  };
+  const onGoalVisibilityChange = (value: GoalVisibility) => {
+    if (tutorialStage === 'goals-entering-privacy') {
+      dispatch(updateTutorialStage('goals-entering-units'));
+    }
+    setGoalVisibility(value);
+  };
+  const onUnitsStartEditing = () => {
+    if (tutorialStage === 'goals-entering-privacy') {
+      dispatch(updateTutorialStage('goals-entering-units'));
+    }
+  };
+  const onUnitsEndEditing = () => {
+    if (tutorialStage === 'goals-entering-units') {
+      dispatch(updateTutorialStage('goals-entering-schedule'));
+    }
+  };
+  const onTargetEndEditing = () => {
+    if (tutorialStage === 'goals-entering-schedule') {
+      dispatch(updateTutorialStage('goals-entering-done'));
+    }
+  };
+  const onFreqChange = (value: GoalIterationPeriod) => {
+    if (tutorialStage === 'goals-entering-schedule') {
+      dispatch(updateTutorialStage('goals-entering-done'));
+    }
+    setGoalFreqInput(value);
+  };
+  const toggleOnDay = (day: Dow) => {
+    if (tutorialStage === 'goals-entering-schedule') {
+      dispatch(updateTutorialStage('goals-entering-done'));
+    }
+
+    setGoalOnDaysInput({...goalOnDaysInput, [day]: !goalOnDaysInput[day]});
+  };
 
   // Animations
   const [pressed, setPressed] = useState(false);
@@ -69,21 +120,30 @@ export default function AddGoalWidget() {
     };
   });
 
-  // Current state
+  // Current state modal state
   const [modalVisible, setModalVisible] = useState(false);
-  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
-  const showModal = () => setModalVisible(true);
+  const showModal = () => {
+    if (tutorialStage === 'goals-wait-start-create') {
+      dispatch(updateTutorialStage('goals-entering-name'));
+    }
+    setModalVisible(true);
+  };
   const hideModal = () => {
     setGoalFreqInput('daily');
     setGoalOnDaysInput(defaultGoalDays);
     setModalVisible(false);
   };
 
+  // Error message
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // Inputs
   const [goalNameInput, setGoalNameInput] = useState('');
   const [goalEmojiInput, setGoalEmojiInput] = useState({
     emoji: '💪',
   });
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
   const [goalTypeInput, setGoalTypeInput] = useState<GoalType>('build');
   const [goalFreqInput, setGoalFreqInput] =
     useState<GoalIterationPeriod>('daily');
@@ -105,14 +165,8 @@ export default function AddGoalWidget() {
   const [goalOnDaysInput, setGoalOnDaysInput] =
     useState<DowObject>(defaultGoalDays);
 
-  // Editing the goal "on days"
-  const toggleOnDay = (day: Dow) => {
-    setGoalOnDaysInput({...goalOnDaysInput, [day]: !goalOnDaysInput[day]});
-  };
-
   // Get current user
   const uid = useAppSelector(selectUid);
-  const isNewUser = useAppSelector(selectNewlyCreated);
 
   // Will need this to update the goals locally
   const [addGoal] = useAddGoalMutation();
@@ -120,7 +174,7 @@ export default function AddGoalWidget() {
 
   // Animation for tutorial
   useEffect(() => {
-    if (isNewUser) {
+    if (tutorialStage === 'goals-wait-start-create') {
       surfaceScale.value = withRepeat(
         withTiming(1.05, {
           duration: 1000,
@@ -130,21 +184,26 @@ export default function AddGoalWidget() {
         true,
       );
     }
-  }, []);
+    // It wants us to add surfaceScale here, but doing so breaks it
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tutorialStage]);
 
   // Called when we try to create the goal
   const onCreateGoal = async () => {
     // TODO: need error messages
     if (goalNameInput === '') {
+      setErrorMessage('You must enter a valid goal name.');
       return;
     }
 
+    // Validating weekdays
     let dowBitField = 0;
     if (goalFreqInput === 'weekly') {
       dowBitField = allDays;
     } else {
       dowBitField = weekdaysObjectToBitField(goalOnDaysInput);
       if (dowBitField === 0) {
+        setErrorMessage('You must select at least one weekday.');
         return;
       }
     }
@@ -168,13 +227,31 @@ export default function AddGoalWidget() {
       await addGoal(goal);
 
       // We'll also need to update the local cache
+      // We should move "addGoal" to the api slice
       refetchGoals();
-    }
 
-    hideModal();
-    setGoalNameInput('');
-    setGoalTargetInput(0);
-    setGoalFreqInput('daily');
+      // Hide and reset
+      hideModal();
+
+      // Reset all modal state
+      setGoalNameInput('');
+      setGoalEmojiInput({
+        emoji: '💪',
+      });
+      setGoalVisibility('private');
+      setGoalTypeInput('build');
+      setGoalUnits('minute');
+      setGoalTargetInput(1);
+      setGoalFreqInput('daily');
+      setGoalOnDaysInput(defaultGoalDays);
+
+      // Update tutorial if necessary
+      if (tutorialStage?.startsWith('goals-entering')) {
+        dispatch(updateTutorialStage('chip-wait-take-photo'));
+      }
+    } else {
+      setErrorMessage('Sorry, something went wrong.');
+    }
   };
 
   return (
@@ -188,14 +265,19 @@ export default function AddGoalWidget() {
                   <Text style={modalStyles.header}>Create a new goal</Text>
                   <View style={styles.row}>
                     <View style={styles.expand}>
-                      <TextInput
-                        style={modalStyles.textInput}
-                        mode="outlined"
-                        label="Goal name"
-                        value={goalNameInput}
-                        onChangeText={setGoalNameInput}
-                        autoCorrect={false}
-                      />
+                      <Tooltip
+                        visible={tutorialStage === 'goals-entering-name'}
+                        text="Create a name for your goal.">
+                        <TextInput
+                          style={modalStyles.textInput}
+                          mode="outlined"
+                          label="Goal name"
+                          value={goalNameInput}
+                          onChangeText={setGoalNameInput}
+                          onEndEditing={onGoalNameEndEditing}
+                          autoCorrect={false}
+                        />
+                      </Tooltip>
                     </View>
                     <Divider style={styles.dividerHSmall} />
                     <Pressable
@@ -216,22 +298,26 @@ export default function AddGoalWidget() {
                     </Pressable>
                   </View>
                   <Divider style={styles.dividerSmall} />
-                  <SegmentedButtons
-                    value={goalVisibility}
-                    onValueChange={setGoalVisibility}
-                    buttons={[
-                      {
-                        value: 'public',
-                        label: 'Shareable',
-                        icon: 'earth-outline',
-                      },
-                      {
-                        value: 'private',
-                        label: 'Private',
-                        icon: 'lock-closed-outline',
-                      },
-                    ]}
-                  />
+                  <Tooltip
+                    visible={tutorialStage === 'goals-entering-privacy'}
+                    text={'Do you want friends to see posts for this goal?'}>
+                    <SegmentedButtons
+                      value={goalVisibility}
+                      onValueChange={onGoalVisibilityChange}
+                      buttons={[
+                        {
+                          value: 'public',
+                          label: 'Shareable',
+                          icon: 'earth-outline',
+                        },
+                        {
+                          value: 'private',
+                          label: 'Private',
+                          icon: 'lock-closed-outline',
+                        },
+                      ]}
+                    />
+                  </Tooltip>
                   {/* <Divider style={styles.dividerSmall} />
                   <Text variant="titleMedium">
                     Will you build up a goal or break a habit?
@@ -255,16 +341,22 @@ export default function AddGoalWidget() {
                   <Text variant="titleMedium">
                     How will you measure your progress?
                   </Text>
-                  <TextInput
-                    dense
-                    style={modalStyles.textInput}
-                    mode="outlined"
-                    label="Units, e.g. minutes, reps, ..."
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    value={goalUnits}
-                    onChangeText={text => setGoalUnits(text)}
-                  />
+                  <Tooltip
+                    visible={tutorialStage === 'goals-entering-units'}
+                    text={'Pick a metric, such as minutes, reps, or tasks.'}>
+                    <TextInput
+                      dense
+                      style={modalStyles.textInput}
+                      mode="outlined"
+                      label="Units, e.g. minutes, reps, ..."
+                      keyboardType="default"
+                      autoCapitalize="none"
+                      value={goalUnits}
+                      onChangeText={text => setGoalUnits(text)}
+                      onEndEditing={onUnitsEndEditing}
+                      onPressIn={onUnitsStartEditing}
+                    />
+                  </Tooltip>
                   <Divider style={styles.dividerSmall} />
                   <Text variant="titleMedium">
                     Set a target to complete regularly:
@@ -291,13 +383,14 @@ export default function AddGoalWidget() {
                             }
                           />
                         }
+                        onEndEditing={onTargetEndEditing}
                       />
                     </View>
                   </View>
                   <Divider style={styles.dividerSmall} />
                   <SegmentedButtons
                     value={goalFreqInput}
-                    onValueChange={setGoalFreqInput}
+                    onValueChange={onFreqChange}
                     buttons={[
                       {
                         value: 'daily',
@@ -310,23 +403,36 @@ export default function AddGoalWidget() {
                     ]}
                   />
                   <Divider style={styles.dividerSmall} />
-                  <View style={styles.rowCenteredSpaceBetween}>
-                    {dows.map((day: Dow) => (
-                      <IconButton
-                        key={day}
-                        mode="contained-tonal"
-                        disabled={goalFreqInput === 'weekly'}
-                        icon={({color: color}) => (
-                          <Text style={{color: color}}>{day.slice(0, 3)}</Text>
-                        )}
-                        selected={goalOnDaysInput[day]}
-                        onPress={() => toggleOnDay(day)}
-                        style={goalModalStyles(theme, false).dayIcon}
-                      />
-                    ))}
-                  </View>
+                  <Tooltip
+                    visible={tutorialStage === 'goals-entering-schedule'}
+                    text={'Pick a realistic target to complete regularly.'}>
+                    <View style={styles.rowCenteredSpaceBetween}>
+                      {dows.map((day: Dow) => (
+                        <IconButton
+                          key={day}
+                          mode="contained-tonal"
+                          disabled={goalFreqInput === 'weekly'}
+                          icon={({color: color}) => (
+                            <Text style={{color: color}}>
+                              {day.slice(0, 3)}
+                            </Text>
+                          )}
+                          selected={goalOnDaysInput[day]}
+                          onPress={() => toggleOnDay(day)}
+                          style={goalModalStyles(theme, false).dayIcon}
+                        />
+                      ))}
+                    </View>
+                  </Tooltip>
                   <Divider style={styles.dividerLarge} />
-                  <Button mode="contained" onPress={onCreateGoal}>
+                  {/* "Make it happen" create goal button */}
+                  <HelperText type="error" visible={errorMessage !== null}>
+                    {errorMessage}
+                  </HelperText>
+                  <Button
+                    mode="contained"
+                    onPress={onCreateGoal}
+                    disabled={goalNameInput === ''}>
                     Make it happen
                   </Button>
                 </Surface>
@@ -340,6 +446,7 @@ export default function AddGoalWidget() {
           onClose={() => setEmojiPickerOpen(false)}
         />
       </Portal>
+      {/* Actual widget button */}
       <Animated.View style={surfaceAnimatedStyles}>
         <Pressable
           onPressIn={() => {

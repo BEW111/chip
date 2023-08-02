@@ -5,8 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import authReducer from './slices/authSlice';
 import cameraReducer from './slices/cameraSlice';
 import chipSubmitterReducer from './slices/chipSubmitterSlice';
-import onboardingReducer from './slices/onboardingSlice';
-import analyticsReducer from './slices/analyticsSlice';
+import tutorialReducer from './slices/tutorialSlice';
 import storyFeedReducer from './slices/storyFeedSlice';
 import {supabaseApi} from './supabaseApi';
 import rootSaga from './sagas';
@@ -18,8 +17,7 @@ export const store = configureStore({
     auth: authReducer,
     camera: cameraReducer,
     chipSubmitter: chipSubmitterReducer,
-    onboarding: onboardingReducer,
-    analytics: analyticsReducer,
+    tutorial: tutorialReducer,
     storyFeed: storyFeedReducer,
     [supabaseApi.reducerPath]: supabaseApi.reducer,
   },
