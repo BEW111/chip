@@ -27,6 +27,9 @@ import {BlurView} from '@react-native-community/blur';
 import Tooltip from '../common/Tooltip';
 import pluralize from 'pluralize';
 
+// Navigation
+import {useNavigation} from '@react-navigation/native';
+
 // Animations
 import Animated, {
   useSharedValue,
@@ -66,6 +69,7 @@ import {
 export default function AddGoalWidget() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   // Tutorial stage state
   const tutorialStage = useAppSelector(selectTutorialStage);
@@ -190,7 +194,6 @@ export default function AddGoalWidget() {
 
   // Called when we try to create the goal
   const onCreateGoal = async () => {
-    // TODO: need error messages
     if (goalNameInput === '') {
       setErrorMessage('You must enter a valid goal name.');
       return;
@@ -247,7 +250,8 @@ export default function AddGoalWidget() {
 
       // Update tutorial if necessary
       if (tutorialStage?.startsWith('goals-entering')) {
-        dispatch(updateTutorialStage('chip-wait-take-photo'));
+        dispatch(updateTutorialStage('track-wait-take-photo'));
+        navigation.navigate('Track');
       }
     } else {
       setErrorMessage('Sorry, something went wrong.');

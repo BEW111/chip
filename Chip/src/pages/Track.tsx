@@ -48,10 +48,20 @@ import {
 
 // Loading goals data
 import {useGetGoalsQuery, usePrefetch} from '../redux/supabaseApi';
+import Tooltip from '../components/common/Tooltip';
+
+// Tutorial state
+import {
+  selectTutorialStage,
+  updateTutorialStage,
+} from '../redux/slices/tutorialSlice';
 
 export default function Track() {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+
+  // Tutorial stage state
+  const tutorialStage = useAppSelector(selectTutorialStage);
 
   // Camera
   const camera = useRef<Camera>(null);
@@ -121,6 +131,11 @@ export default function Track() {
 
         dispatch(takePhotoSuccess(photoPath));
         dispatch(viewingPhotoStart());
+
+        // Update tutorial state
+        if (tutorialStage === 'track-wait-take-photo') {
+          dispatch(updateTutorialStage('track-entering-chip-info'));
+        }
       } catch (e: unknown) {
         if (typeof e === 'string') {
           dispatch(takePhotoFailure(e));
@@ -225,6 +240,7 @@ export default function Track() {
           />
         </View>
       )}
+      {/* Outside of the photo button */}
       <View
         pointerEvents={'box-none'}
         style={{
@@ -237,18 +253,24 @@ export default function Track() {
           height: 100,
           justifyContent: 'center',
         }}>
-        <Animated.View
-          style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
-          <FastImage
-            source={takingVideo ? videoButtonOutside : pictureButtonOutside}
-            style={{
-              width: '100%',
-              height: '100%',
-              opacity: !viewingPhoto,
-            }}
-          />
-        </Animated.View>
+        <Tooltip
+          text="Now that you've made a goal, submit your first chip!"
+          visible={tutorialStage === 'track-wait-take-photo'}>
+          <Animated.View
+            style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
+            <FastImage
+              source={takingVideo ? videoButtonOutside : pictureButtonOutside}
+              style={{
+                width: '100%',
+                height: '100%',
+                opacity: !viewingPhoto,
+              }}
+            />
+          </Animated.View>
+        </Tooltip>
       </View>
+
+      {/* Inside of the photo button */}
       <View
         pointerEvents={'box-none'}
         style={{

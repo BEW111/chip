@@ -1,18 +1,24 @@
 import React, {useState} from 'react';
 import {KeyboardAvoidingView, ScrollView, View, Platform} from 'react-native';
-import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAppDispatch} from '../../redux/hooks';
-
-import {updateNewlyCreated} from '../../redux/slices/authSlice';
-
-import {signUpWithEmail} from '../../supabase/auth';
-
-import BlurSurface from '../../components/BlurSurface';
-import BackgroundWrapper from '../../components/BackgroundWrapper';
 import {styles} from '../../styles';
 
-export default function OnboardingRegister({navigation}) {
+// Components
+import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import BlurSurface from '../../components/BlurSurface';
+import BackgroundWrapper from '../../components/BackgroundWrapper';
+
+// Tutorial state
+import {startTutorial} from '../../redux/slices/tutorialSlice';
+
+// Auth
+import {signUpWithEmail} from '../../supabase/auth';
+
+// Navigation
+import {useNavigation} from '@react-navigation/native';
+
+export default function OnboardingRegister() {
   const [usernameText, setUsernameText] = useState('');
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
@@ -20,6 +26,7 @@ export default function OnboardingRegister({navigation}) {
   const [displayError, setDisplayError] = useState('');
 
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const onSignUpPressed = async () => {
     // Check for more obvious errors
@@ -31,13 +38,14 @@ export default function OnboardingRegister({navigation}) {
       setDisplayError('Password cannot be empty');
     } else {
       const result = await signUpWithEmail(emailText, usernameText, passText);
-      console.log(result);
-
-      dispatch(updateNewlyCreated(true));
 
       if (!result.ok) {
         setDisplayError(result?.message || 'Failed to sign up');
+        return;
       }
+
+      // Start tutorial
+      dispatch(startTutorial());
     }
   };
 

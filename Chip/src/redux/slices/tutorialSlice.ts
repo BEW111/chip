@@ -1,7 +1,8 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {RootState} from '../store';
 
-type TutorialStage =
+// These will be traversed in order
+export type TutorialStage =
   | null
   | 'goals-wait-start-create'
   | 'goals-entering-name'
@@ -22,20 +23,29 @@ type TutorialState = {
 
 const initialState: TutorialState = {
   inTutorial: true,
-  stage: 'goals-wait-start-create',
+  stage: 'track-wait-take-photo',
 };
 
 export const tutorialSlice = createSlice({
   name: 'tutorial',
   initialState: initialState,
   reducers: {
+    startTutorial: state => {
+      state.stage = 'goals-wait-start-create';
+      state.inTutorial = true;
+    },
+    finishTutorial: state => {
+      state.stage = null;
+      state.inTutorial = false;
+    },
     updateTutorialStage: (state, newStage: PayloadAction<TutorialStage>) => {
       state.stage = newStage.payload;
     },
   },
 });
 
-export const {updateTutorialStage} = tutorialSlice.actions;
+export const {updateTutorialStage, startTutorial, finishTutorial} =
+  tutorialSlice.actions;
 export const selectTutorialStage = (state: RootState) => state.tutorial.stage;
 
 export default tutorialSlice.reducer;

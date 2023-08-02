@@ -26,6 +26,9 @@ import {useGetGoalsQuery} from '../../redux/supabaseApi';
 import {ChipSubmission} from '../../types/chips';
 import {SupabaseGoal} from '../../types/goals';
 
+// Tutorial
+import {selectTutorialStage} from '../../redux/slices/tutorialSlice';
+
 type HabitPopupProps = {
   chipDesc: string;
   setChipDesc: React.Dispatch<React.SetStateAction<string>>;
@@ -45,12 +48,16 @@ function HabitPopup({
 }: HabitPopupProps) {
   // Function to get all the goal data by a certain goal id
   const {data: userGoals, isLoading} = useGetGoalsQuery();
-  const getGoalFromId = (id: number, goals: SupabaseGoal[]) =>
+  const getGoalFromId = (id: string, goals: SupabaseGoal[]) =>
     goals.filter(g => g.id === id)[0];
 
   // Id of current goal selected
   const startingId = userGoals && userGoals.length > 0 ? userGoals[0].id : -1;
-  const [currentId, setCurrentId] = useState(startingId || -1);
+  const [currentId, setCurrentId] = useState(startingId || null);
+
+  // Tutorial stage state
+  const tutorialStage = useAppSelector(selectTutorialStage);
+  const dispatch = useAppDispatch();
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()}>
@@ -103,7 +110,7 @@ function HabitPopup({
           right={
             <TextInput.Affix
               text={
-                userGoals && userGoals.length > 0 && currentId >= 0
+                userGoals && userGoals.length > 0 && currentId
                   ? pluralize(
                       getGoalFromId(currentId, userGoals).iteration_units ||
                         'units',

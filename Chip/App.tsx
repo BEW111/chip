@@ -12,7 +12,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Providers
-import {Provider as PaperProvider, Text, useTheme} from 'react-native-paper';
+import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
   SafeAreaProvider,
@@ -46,13 +46,16 @@ import SignIn from './src/pages/SignedOut/SignIn';
 import Home from './src/pages/Home';
 import Friends from './src/pages/Friends';
 import Track from './src/pages/Track';
-import Analytics from './src/pages/Goals/GoalsPage';
+import Goals from './src/pages/Goals/GoalsPage';
 import Settings from './src/pages/Settings';
 
 // Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
-import {selectTutorialStage} from './src/redux/slices/tutorialSlice';
+import {
+  TutorialStage,
+  selectTutorialStage,
+} from './src/redux/slices/tutorialSlice';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -75,10 +78,8 @@ const VariableIcon = ({
   color,
   disabled,
 }: VariableIconProps) => {
-  console.log(disabled);
-
   return (
-    <View style={localStyles({color}).tabIcon}>
+    <View style={localStyles({color, disabled}).tabIcon}>
       <Icon
         disabled
         name={focused ? iconName : `${iconName}-outline`}
@@ -100,7 +101,50 @@ function MainTabs() {
 
   // Tutorial state for disabling tabs
   const tutorialStage = useAppSelector(selectTutorialStage);
+  const disabledTabsMap =
+    tutorialStage === null
+      ? {
+          home: false,
+          friends: false,
+          track: false,
+          goals: false,
+          you: false,
+        }
+      : tutorialStage.startsWith('goals')
+      ? {
+          home: true,
+          friends: true,
+          track: true,
+          goals: false,
+          you: true,
+        }
+      : tutorialStage.startsWith('track')
+      ? {
+          home: true,
+          friends: true,
+          track: false,
+          goals: true,
+          you: true,
+        }
+      : tutorialStage.startsWith('friends')
+      ? {
+          home: true,
+          friends: false,
+          track: false,
+          goals: false,
+          you: true,
+        }
+      : {
+          home: false,
+          friends: false,
+          track: false,
+          goals: false,
+          you: false,
+        };
 
+  // Would really like to figure out how to make this code cleaner,
+  // and somehow make each Tab.Screen shorter (I couldn't figure out how to make
+  // a custom component)
   return (
     <View style={styles.expand}>
       <FastImage source={backgroundImage} style={styles.absoluteFull} />
@@ -110,7 +154,9 @@ function MainTabs() {
           initialLayout={{
             width: Dimensions.get('window').width,
           }}
-          initialRouteName={'Track'}
+          initialRouteName={
+            tutorialStage?.startsWith('goals') ? 'Goals' : 'Track'
+          }
           style={{
             paddingBottom: insets.bottom,
           }}
@@ -131,7 +177,10 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={localStyles({color}).tabLabel}>
+                  style={
+                    localStyles({color, disabled: disabledTabsMap.home})
+                      .tabLabel
+                  }>
                   Home
                 </Text>
               ),
@@ -141,15 +190,15 @@ function MainTabs() {
                   iconName="home"
                   focused={focused}
                   color={color}
-                  disabled={false}
+                  disabled={disabledTabsMap.home}
                 />
               ),
             }}
             listeners={{
               tabPress: e => {
-                // Prevent default action
-                console.log(e);
-                e.preventDefault();
+                if (disabledTabsMap.home) {
+                  e.preventDefault();
+                }
               },
             }}
           />
@@ -160,19 +209,29 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={localStyles({color}).tabLabel}>
+                  style={
+                    localStyles({color, disabled: disabledTabsMap.friends})
+                      .tabLabel
+                  }>
                   Friends
                 </Text>
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
                 <VariableIcon
-                  disabled={true}
                   iconName="people-circle"
                   focused={focused}
                   color={color}
+                  disabled={disabledTabsMap.friends}
                 />
               ),
+            }}
+            listeners={{
+              tabPress: e => {
+                if (disabledTabsMap.friends) {
+                  e.preventDefault();
+                }
+              },
             }}
           />
           <Tab.Screen
@@ -182,7 +241,10 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={localStyles({color}).tabLabel}>
+                  style={
+                    localStyles({color, disabled: disabledTabsMap.track})
+                      .tabLabel
+                  }>
                   Track goal
                 </Text>
               ),
@@ -192,18 +254,29 @@ function MainTabs() {
                   iconName="camera"
                   focused={focused}
                   color={color}
+                  disabled={disabledTabsMap.track}
                 />
               ),
             }}
+            listeners={{
+              tabPress: e => {
+                if (disabledTabsMap.track) {
+                  e.preventDefault();
+                }
+              },
+            }}
           />
           <Tab.Screen
-            name="Analytics"
-            component={Analytics}
+            name="Goals"
+            component={Goals}
             options={{
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={localStyles({color}).tabLabel}>
+                  style={
+                    localStyles({color, disabled: disabledTabsMap.goals})
+                      .tabLabel
+                  }>
                   Goals
                 </Text>
               ),
@@ -214,8 +287,16 @@ function MainTabs() {
                   iconName="stats-chart"
                   focused={focused}
                   color={color}
+                  disabled={disabledTabsMap.goals}
                 />
               ),
+            }}
+            listeners={{
+              tabPress: e => {
+                if (disabledTabsMap.goals) {
+                  e.preventDefault();
+                }
+              },
             }}
           />
           <Tab.Screen
@@ -225,7 +306,9 @@ function MainTabs() {
               tabBarLabel: ({color}) => (
                 <Text
                   variant="labelSmall"
-                  style={localStyles({color}).tabLabel}>
+                  style={
+                    localStyles({color, disabled: disabledTabsMap.you}).tabLabel
+                  }>
                   You
                 </Text>
               ),
@@ -236,8 +319,16 @@ function MainTabs() {
                   iconName="person"
                   focused={focused}
                   color={color}
+                  disabled={disabledTabsMap.you}
                 />
               ),
+            }}
+            listeners={{
+              tabPress: e => {
+                if (disabledTabsMap.you) {
+                  e.preventDefault();
+                }
+              },
             }}
           />
         </Tab.Navigator>
@@ -333,11 +424,12 @@ export default function App() {
 // Local styles
 type LocalStylesGeneratorType = {
   color: ColorValue | number | string | undefined;
+  disabled: boolean;
 };
 const localStyles = (props: LocalStylesGeneratorType) =>
   StyleSheet.create({
     tabLabel: {
-      color: props.color,
+      color: props.disabled ? 'gray' : props.color,
       textTransform: 'none',
       marginBottom: -10,
     },
