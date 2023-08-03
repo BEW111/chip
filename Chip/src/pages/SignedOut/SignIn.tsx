@@ -30,27 +30,6 @@ export default function SignIn({navigation}) {
     }
   };
 
-  // function onRegisterPressed() {
-  //   auth()
-  //     .signInWithEmailAndPassword(emailText, passText)
-  //     .then(() => {
-  //       console.log('Existing user account signed in!');
-  //     })
-  //     .catch(error => {
-  //       console.log(error.code);
-  //       if (error.code === 'auth/wrong-password') {
-  //         setErrorMessage('Incorrect password');
-  //       } else if (error.code === 'auth/user-not-found') {
-  //         setErrorMessage('Email not found');
-  //       } else {
-  //         setErrorMessage(
-  //           error.code + ' (this code needs a proper message, tell brian pls)',
-  //         );
-  //       }
-  //       console.error(error);
-  //     });
-  // }
-
   return (
     <BackgroundWrapper>
       <SafeAreaView>

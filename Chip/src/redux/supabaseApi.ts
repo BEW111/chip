@@ -33,9 +33,12 @@ export const supabaseApi = createApi({
     getGoals: builder.query<SupabaseGoal[] | null, void>({
       providesTags: ['Goal'],
       queryFn: async () => {
+        console.log('[getGoals] fetching...');
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          console.log('[getGoals] error');
+          console.log('[getGoals]', userDetails);
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -44,7 +47,7 @@ export const supabaseApi = createApi({
           .select()
           .eq('uid', uid);
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     getFriendGoals: builder.query<SupabaseGoal[] | null, string>({
@@ -55,7 +58,7 @@ export const supabaseApi = createApi({
           .select()
           .eq('uid', friend_uid);
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     addGoal: builder.mutation<SupabaseGoal, SupabaseGoalUpload>({
@@ -67,10 +70,10 @@ export const supabaseApi = createApi({
           .select();
 
         if (error) {
-          console.error(error);
+          console.error('[addGoal]', error);
         }
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     editGoal: builder.mutation<SupabaseGoal, SupabaseGoalModification>({
@@ -83,30 +86,35 @@ export const supabaseApi = createApi({
           .eq('id', id);
 
         if (error) {
-          console.error(error);
+          console.error('[editGoal]', error);
         }
 
-        return {error: error};
+        return {error: error?.message};
       },
     }),
     deleteGoal: builder.mutation<void, string>({
       invalidatesTags: ['Goal'],
       queryFn: async (goalId: string) => {
-        const {error} = await supabase.from('goals').delete().eq('id', goalId);
+        const {data, error} = await supabase
+          .from('goals')
+          .delete()
+          .eq('id', goalId);
 
         if (error) {
-          console.error(error);
+          console.error('[deleteGoal]', error);
         }
 
-        return {error: error};
+        return {data: 'Success', error: error?.message};
       },
     }),
     getChips: builder.query<SupabaseChip[] | null, void>({
       providesTags: ['Chip'],
       queryFn: async () => {
+        console.log('[getChips] fetching...');
         const {data, error} = await supabase.from('chips').select();
+        console.log('[getChips] error:', error);
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     getChipsByGoalId: builder.query<SupabaseChip[] | null, number>({
@@ -117,7 +125,7 @@ export const supabaseApi = createApi({
           .select()
           .eq('goal_id', id);
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     deleteChip: builder.mutation<void, string>({
@@ -126,10 +134,10 @@ export const supabaseApi = createApi({
         const {error} = await supabase.from('chips').delete().eq('id', chipId);
 
         if (error) {
-          console.error(error);
+          console.error('[deleteChip]', error);
         }
 
-        return {error: error};
+        return {error: error?.message};
       },
     }),
     getReceivedFriendRequests: builder.query<
@@ -140,7 +148,7 @@ export const supabaseApi = createApi({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -162,7 +170,7 @@ export const supabaseApi = createApi({
           status: 'received',
         }));
 
-        return {data: users, error: error};
+        return {data: users, error: error?.message};
       },
     }),
     getSentFriendRequests: builder.query<
@@ -193,7 +201,7 @@ export const supabaseApi = createApi({
           status: 'sent',
         }));
 
-        return {data: users, error: error};
+        return {data: users, error: error?.message};
       },
     }),
     getFriends: builder.query<SupabaseProfileWithFriendship[] | null, void>({
@@ -234,7 +242,7 @@ export const supabaseApi = createApi({
               },
         );
 
-        return {data: friends, error: error};
+        return {data: friends, error: error?.message};
       },
     }),
     // Retrieves all stories, but grouped by users
@@ -262,8 +270,8 @@ export const supabaseApi = createApi({
           .order('created_at', {ascending: false});
 
         if (error) {
-          console.log(error);
-          return {data: [], error: error};
+          console.error('[getStoryGroups]', error);
+          return {data: [], error: error?.message};
         }
 
         // First, we want to group the stories by their creators
@@ -316,10 +324,10 @@ export const supabaseApi = createApi({
             recipient_goal_name: costreak.recipient_goal_name.name,
           }));
 
-          return {data: costreaksFormatted, error: error};
+          return {data: costreaksFormatted};
         }
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     getGoalCostreaks: builder.query<SupabaseCostreakWithUsers[] | null, string>(
@@ -333,7 +341,7 @@ export const supabaseApi = createApi({
               `sender_goal_id.eq.${goal_id}, recipient_goal_id.eq.${goal_id}`,
             );
 
-          return {data: data, error: error};
+          return {data: data, error: error?.message};
         },
       },
     ),
@@ -346,10 +354,10 @@ export const supabaseApi = createApi({
           .select();
 
         if (error) {
-          console.error(error);
+          console.error('[addCostreak]', error);
         }
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
     acceptCostreak: builder.mutation<SupabaseCostreak, string>({
@@ -361,10 +369,10 @@ export const supabaseApi = createApi({
           .eq('id', id);
 
         if (error) {
-          console.error(error);
+          console.error('[acceptCostreak]', error);
         }
 
-        return {data: data, error: error};
+        return {data: data, error: error?.message};
       },
     }),
   }),

@@ -11,6 +11,7 @@ export type TutorialStage =
   | 'goals-entering-units'
   | 'goals-entering-schedule'
   | 'goals-entering-done'
+  | 'track-wait-take-photo-transition'
   | 'track-wait-take-photo'
   | 'track-entering-chip-info'
   | 'track-entering-chip-done'
@@ -39,6 +40,7 @@ export const tutorialSlice = createSlice({
       state.inTutorial = false;
     },
     updateTutorialStage: (state, newStage: PayloadAction<TutorialStage>) => {
+      console.log('[updateTutorialStage]', newStage.payload);
       state.stage = newStage.payload;
     },
   },

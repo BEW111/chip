@@ -34,7 +34,7 @@ export default function Settings(props) {
   // Actions
   const onLogoutPressed = async () => {
     if (profile?.id) {
-      console.log('Signing out...');
+      console.log('[onLogoutPressed] Signing out...');
       dispatch(
         supabaseApi.util.invalidateTags([
           'Chip',

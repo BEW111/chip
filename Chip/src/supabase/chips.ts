@@ -6,7 +6,7 @@ export async function insertChipInDatabase(chip: SupabaseChipUpload) {
   const {error} = await supabase.from('chips').insert(chip);
 
   if (error) {
-    console.error(error);
+    console.error('[insertChipInDatabase]', error);
   }
 }
 

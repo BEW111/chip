@@ -39,7 +39,7 @@ type HabitPopupProps = {
   chipDesc: string;
   setChipDesc: React.Dispatch<React.SetStateAction<string>>;
   closePopup: () => void;
-  setSelectedGoalId: React.Dispatch<React.SetStateAction<number>>;
+  setSelectedGoalId: React.Dispatch<React.SetStateAction<string | null>>;
   chipAmount: string;
   setChipAmount: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -53,12 +53,12 @@ function HabitPopup({
   setChipAmount,
 }: HabitPopupProps) {
   // Function to get all the goal data by a certain goal id
-  const {data: userGoals, isLoading} = useGetGoalsQuery();
+  const {data: userGoals, isFetching} = useGetGoalsQuery();
   const getGoalFromId = (id: string, goals: SupabaseGoal[]) =>
     goals.filter(g => g.id === id)[0];
 
   // Id of current goal selected
-  const startingId = userGoals && userGoals.length > 0 ? userGoals[0].id : -1;
+  const startingId = userGoals && userGoals.length > 0 ? userGoals[0].id : null;
   const [currentId, setCurrentId] = useState(startingId || null);
 
   // Tutorial state
@@ -77,7 +77,7 @@ function HabitPopup({
           <Text variant="titleLarge">Edit chip info</Text>
         </View>
         <Divider style={styles.dividerMedium} />
-        {isLoading ? (
+        {isFetching ? (
           <View style={popupStyles.tempView} />
         ) : (
           <View pointerEvents={'box-none'} style={popupStyles.wrapper}>
@@ -91,7 +91,7 @@ function HabitPopup({
                   value: g.id,
                   label: g.emoji + ' ' + g.name,
                 }))}
-                onValueChange={(id: number) => {
+                onValueChange={(id: string) => {
                   setSelectedGoalId(id);
                   setCurrentId(id);
                 }}
@@ -125,7 +125,7 @@ function HabitPopup({
             right={
               <TextInput.Affix
                 text={
-                  userGoals && userGoals.length > 0 && currentId
+                  !isFetching && userGoals && userGoals.length > 0 && currentId
                     ? pluralize(
                         getGoalFromId(currentId, userGoals).iteration_units ||
                           'units',

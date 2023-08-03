@@ -35,7 +35,7 @@ export const cameraSlice = createSlice({
     takePhotoFailure: (state, action: PayloadAction<string>) => {
       state.takingPhoto = false;
       state.takingPhotoError = action.payload;
-      console.error(action.payload);
+      console.error('[takePhotoFailure]', action.payload);
     },
     viewingPhotoStart: state => {
       state.viewingPhoto = true;

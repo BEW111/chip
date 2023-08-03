@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {useState, useCallback, useEffect, useRef, useMemo} from 'react';
-import {StyleSheet, View, Linking, Pressable} from 'react-native';
+import {useState, useCallback, useEffect, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  Linking,
+  Pressable,
+  InteractionManager,
+} from 'react-native';
 
 // Components
 import FastImage from 'react-native-fast-image';
@@ -16,7 +22,7 @@ import {
   PhotoFile,
   TakePhotoOptions,
 } from 'react-native-vision-camera';
-import {useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {CameraPositionMode, CameraFlashMode} from '../types/camera';
 
 // Camera button components
@@ -63,6 +69,19 @@ export default function Track() {
   // Tutorial stage state
   const tutorialStage = useAppSelector(selectTutorialStage);
 
+  // TODO: this is a workaround bc we need to wait for the transition to finish
+  useFocusEffect(
+    useCallback(() => {
+      console.log('[Track] useFocusEffect waiting');
+      if (tutorialStage === 'track-wait-take-photo-transition') {
+        setTimeout(
+          () => dispatch(updateTutorialStage('track-wait-take-photo')),
+          1000,
+        );
+      }
+    }, [dispatch, tutorialStage]),
+  );
+
   // Camera
   const camera = useRef<Camera>(null);
   // const [isCameraInitialized, setIsCameraInitialized] = useState(false);
@@ -103,7 +122,7 @@ export default function Track() {
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices[cameraPosition];
 
-  // Prefetch goals
+  // Prefetch goals (TODO: ? idk why I am doing this, check later)
   const prefetchGoals = usePrefetch('getGoals');
   useEffect(() => {
     prefetchGoals([]);
@@ -254,7 +273,7 @@ export default function Track() {
           justifyContent: 'center',
         }}>
         <Tooltip
-          text="Now you can track progress by submitting your first chip!"
+          text="Now track your progress by submitting your first chip!"
           visible={tutorialStage === 'track-wait-take-photo'}>
           <Animated.View
             style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>

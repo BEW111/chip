@@ -8,9 +8,12 @@ export async function requestNotificationsPermission() {
   const settings = await notifee.requestPermission();
 
   if (settings.authorizationStatus >= AuthorizationStatus.AUTHORIZED) {
-    console.log('Permission settings:', settings);
+    console.log(
+      '[requestNotificationsPermission] Permission settings:',
+      settings,
+    );
   } else {
-    console.log('User declined permissions');
+    console.log('[requestNotificationsPermission] User declined permissions');
   }
 }
 
@@ -20,7 +23,7 @@ export async function scheduleNotification(
   title: string,
   intent: string,
 ) {
-  console.log('scheduling notification');
+  console.log('[scheduleNotification] scheduling notification');
 
   // Create a time-based trigger
   const trigger: TimestampTrigger = {
@@ -76,7 +79,7 @@ export async function onCreateTriggerNotification(date) {
     trigger,
   );
 
-  console.log(scheduleResult);
+  console.log('[onCreateTriggerNotification]', scheduleResult);
 }
 
 export async function onDisplayNotification() {

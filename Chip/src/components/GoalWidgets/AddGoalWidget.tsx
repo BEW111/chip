@@ -250,7 +250,7 @@ export default function AddGoalWidget() {
 
       // Update tutorial if necessary
       if (tutorialStage?.startsWith('goals-entering')) {
-        dispatch(updateTutorialStage('track-wait-take-photo'));
+        dispatch(updateTutorialStage('track-wait-take-photo-transition'));
         navigation.navigate('Track');
       }
     } else {
@@ -271,7 +271,7 @@ export default function AddGoalWidget() {
                     <View style={styles.expand}>
                       <Tooltip
                         visible={tutorialStage === 'goals-entering-name'}
-                        text="Create a name for your goal.">
+                        text="Let's create your first goal.">
                         <TextInput
                           style={modalStyles.textInput}
                           mode="outlined"

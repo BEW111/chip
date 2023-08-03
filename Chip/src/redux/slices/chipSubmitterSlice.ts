@@ -37,7 +37,7 @@ export const chipSubmitterSlice = createSlice({
     chipSubmissionFailure: (state, action: PayloadAction<string>) => {
       state.chipSubmissionUploading = false;
       state.chipSubmissionError = action.payload;
-      console.error(action.payload);
+      console.error('[chipSubmissionFailure]', action.payload);
     },
   },
 });

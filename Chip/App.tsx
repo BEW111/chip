@@ -23,7 +23,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // Auth
 import {supabase} from './src/supabase/supabase';
 import {Session} from '@supabase/supabase-js';
-import supabaseApi from './src/redux/supabaseApi';
+import supabaseApi, {useGetChipsQuery} from './src/redux/supabaseApi';
 
 import {useAppDispatch, useAppSelector} from './src/redux/hooks';
 
@@ -52,10 +52,7 @@ import Settings from './src/pages/Settings';
 // Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
-import {
-  TutorialStage,
-  selectTutorialStage,
-} from './src/redux/slices/tutorialSlice';
+import {selectTutorialStage} from './src/redux/slices/tutorialSlice';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -342,6 +339,9 @@ function Main() {
   const dispatch = useAppDispatch();
   const [session, setSession] = useState<Session | null>(null);
 
+  const {data: chips} = useGetChipsQuery();
+  console.log('[Main] chips:', chips);
+
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {
       setSession(newSession);
@@ -352,7 +352,7 @@ function Main() {
     } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       dispatch(updateUid(newSession?.user.id));
-      console.log(`Updated UID to ${newSession?.user.id}`);
+      console.log(`[Main] Updated UID to ${newSession?.user.id}`);
       dispatch(
         supabaseApi.util.invalidateTags([
           'Chip',

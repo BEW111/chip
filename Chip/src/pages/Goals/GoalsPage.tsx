@@ -14,13 +14,20 @@ import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
 import {styles} from '../../styles';
-import {useGetChipsQuery, useGetGoalsQuery} from '../../redux/supabaseApi';
+import supabaseApi, {
+  useGetChipsQuery,
+  useGetGoalsQuery,
+} from '../../redux/supabaseApi';
 
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
+  console.log('[MainPage] Main page');
+
   const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
-  const {data: chips} = useGetChipsQuery();
+  const {data: chips, refetch: refreshChips} = useGetChipsQuery();
+
+  console.log('[MainPage] chips:', chips);
 
   const theme = useTheme();
 
@@ -28,11 +35,13 @@ function MainPage({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
+    supabaseApi.util.invalidateTags(['Chip', 'Goal']);
     await refetchGoals();
+    await refreshChips();
     setTimeout(() => {
       setRefreshing(false);
     }, 300);
-  }, [refetchGoals]);
+  }, [refetchGoals, refreshChips]);
 
   return (
     <>

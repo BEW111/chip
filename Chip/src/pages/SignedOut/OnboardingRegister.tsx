@@ -10,7 +10,7 @@ import BlurSurface from '../../components/BlurSurface';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
 // Tutorial state
-import {startTutorial} from '../../redux/slices/tutorialSlice';
+import {finishTutorial, startTutorial} from '../../redux/slices/tutorialSlice';
 
 // Auth
 import {signUpWithEmail} from '../../supabase/auth';
@@ -37,15 +37,16 @@ export default function OnboardingRegister() {
     } else if (passText === '') {
       setDisplayError('Password cannot be empty');
     } else {
+      // Start tutorial
+      dispatch(startTutorial());
+
       const result = await signUpWithEmail(emailText, usernameText, passText);
 
       if (!result.ok) {
         setDisplayError(result?.message || 'Failed to sign up');
+        dispatch(finishTutorial());
         return;
       }
-
-      // Start tutorial
-      dispatch(startTutorial());
     }
   };
 
