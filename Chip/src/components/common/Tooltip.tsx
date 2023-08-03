@@ -58,6 +58,7 @@ const Tooltip = ({visible, children, text}: TooltipProps) => {
               },
             ]}
             testID="tooltip-container">
+            <Triangle style={[{borderBottomColor: theme.colors.tertiary}]} />
             <Text
               accessibilityLiveRegion="polite"
               numberOfLines={2}
@@ -77,6 +78,10 @@ const Tooltip = ({visible, children, text}: TooltipProps) => {
   );
 };
 
+const Triangle = props => {
+  return <View style={[styles.triangle, props.style]} />;
+};
+
 const styles = StyleSheet.create({
   tooltip: {
     alignSelf: 'flex-start',
@@ -94,6 +99,21 @@ const styles = StyleSheet.create({
   pressContainer: {
     ...(Platform.OS === 'web' && {cursor: 'default'}),
   } as ViewStyle,
+  triangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderBottomWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: 30,
+  },
 });
 
 export default Tooltip;

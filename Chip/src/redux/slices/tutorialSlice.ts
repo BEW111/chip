@@ -23,7 +23,7 @@ type TutorialState = {
 
 const initialState: TutorialState = {
   inTutorial: true,
-  stage: 'track-wait-take-photo',
+  stage: 'goals-wait-start-create',
 };
 
 export const tutorialSlice = createSlice({

@@ -27,7 +27,13 @@ import {ChipSubmission} from '../../types/chips';
 import {SupabaseGoal} from '../../types/goals';
 
 // Tutorial
-import {selectTutorialStage} from '../../redux/slices/tutorialSlice';
+import {
+  finishTutorial,
+  selectTutorialStage,
+  updateTutorialStage,
+} from '../../redux/slices/tutorialSlice';
+import Tooltip from '../common/Tooltip';
+import {useSelector} from 'react-redux';
 
 type HabitPopupProps = {
   chipDesc: string;
@@ -55,9 +61,14 @@ function HabitPopup({
   const startingId = userGoals && userGoals.length > 0 ? userGoals[0].id : -1;
   const [currentId, setCurrentId] = useState(startingId || null);
 
-  // Tutorial stage state
-  const tutorialStage = useAppSelector(selectTutorialStage);
+  // Tutorial state
   const dispatch = useAppDispatch();
+  const tutorialStage = useSelector(selectTutorialStage);
+  const onEndEditingAmount = () => {
+    if (tutorialStage === 'track-entering-chip-info' && chipAmount !== '') {
+      dispatch(updateTutorialStage('track-entering-chip-done'));
+    }
+  };
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()}>
@@ -95,32 +106,38 @@ function HabitPopup({
           </View>
         )}
         <Divider style={styles.dividerSmall} />
-        <TextInput
-          style={popupStyles.textInput}
-          contentStyle={popupStyles.textInputContent}
-          outlineStyle={popupStyles.textInputOutline}
-          mode="outlined"
-          label="Amount"
-          keyboardType="decimal-pad"
-          value={chipAmount.toString()}
-          onChangeText={text => {
-            setChipAmount(text);
-          }}
-          disabled={!userGoals || userGoals.length === 0}
-          right={
-            <TextInput.Affix
-              text={
-                userGoals && userGoals.length > 0 && currentId
-                  ? pluralize(
-                      getGoalFromId(currentId, userGoals).iteration_units ||
-                        'units',
-                      parseFloat(chipAmount),
-                    )
-                  : ''
-              }
-            />
-          }
-        />
+        <Tooltip
+          text="Enter the amount of this goal you completed here."
+          visible={tutorialStage === 'track-entering-chip-info'}>
+          <TextInput
+            style={popupStyles.textInput}
+            contentStyle={popupStyles.textInputContent}
+            outlineStyle={popupStyles.textInputOutline}
+            mode="outlined"
+            label="Amount"
+            keyboardType="decimal-pad"
+            value={chipAmount.toString()}
+            onChangeText={text => {
+              setChipAmount(text);
+            }}
+            onEndEditing={onEndEditingAmount}
+            disabled={!userGoals || userGoals.length === 0}
+            right={
+              <TextInput.Affix
+                text={
+                  userGoals && userGoals.length > 0 && currentId
+                    ? pluralize(
+                        getGoalFromId(currentId, userGoals).iteration_units ||
+                          'units',
+                        parseFloat(chipAmount),
+                      )
+                    : ''
+                }
+              />
+            }
+          />
+        </Tooltip>
+
         <Divider style={styles.dividerSmall} />
         <TextInput
           style={popupStyles.textInput}
@@ -149,7 +166,7 @@ function PhotoViewer() {
 
   // Current popup state
   const [popupShowing, setPopupShowing] = useState(true);
-  const [selectedGoalId, setSelectedGoalId] = useState(-1);
+  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
   const [chipDescription, setChipDescription] = useState('');
   const [chipAmount, setChipAmount] = useState<string>('');
 
@@ -162,7 +179,7 @@ function PhotoViewer() {
     let goalId = selectedGoalId;
 
     // TODO: I'd like to find a cleaner solution, but sometimes
-    if (selectedGoalId === -1) {
+    if (selectedGoalId === null) {
       if (userGoals && userGoals.length > 0 && userGoals[0].id) {
         goalId = userGoals[0].id;
       } else {
@@ -171,7 +188,7 @@ function PhotoViewer() {
       }
     }
 
-    if (uid && photoPath) {
+    if (uid && photoPath && goalId) {
       const chipSubmission: ChipSubmission = {
         goalId: goalId,
         photoUri: photoPath,
@@ -180,7 +197,13 @@ function PhotoViewer() {
         uid,
       };
 
+      // Actually upload chip
       dispatch(chipSubmissionStart(chipSubmission));
+
+      // Update tutorial state
+      if (tutorialStage?.startsWith('track')) {
+        dispatch(finishTutorial());
+      }
     }
   };
 
@@ -188,6 +211,9 @@ function PhotoViewer() {
   const onDeleteChip = () => {
     dispatch(viewingPhotoStop());
   };
+
+  // Tutorial stage state
+  const tutorialStage = useAppSelector(selectTutorialStage);
 
   return (
     <View style={styles.absoluteFullCentered}>
@@ -227,15 +253,20 @@ function PhotoViewer() {
           Chip details
         </Button>
       )}
-      <Button
-        icon="send-outline"
-        mode="contained"
-        disabled={!userGoals || userGoals.length === 0}
-        onPress={onSubmitChip}
-        contentStyle={localStyles().buttonContent}
-        style={localStyles(insets.top).saveButton}>
-        Save
-      </Button>
+      <View style={localStyles(insets.top).saveButton}>
+        <Tooltip
+          text="Now save your chip!"
+          visible={tutorialStage === 'track-entering-chip-done'}>
+          <Button
+            icon="send-outline"
+            mode="contained"
+            disabled={!userGoals || userGoals.length === 0 || chipAmount === ''}
+            onPress={onSubmitChip}
+            contentStyle={localStyles().buttonContent}>
+            Save
+          </Button>
+        </Tooltip>
+      </View>
     </View>
   );
 }

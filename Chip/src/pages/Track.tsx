@@ -254,7 +254,7 @@ export default function Track() {
           justifyContent: 'center',
         }}>
         <Tooltip
-          text="Now that you've made a goal, submit your first chip!"
+          text="Now you can track progress by submitting your first chip!"
           visible={tutorialStage === 'track-wait-take-photo'}>
           <Animated.View
             style={[videoButtonAnimatedStyles, {width: 84, height: 84}]}>
