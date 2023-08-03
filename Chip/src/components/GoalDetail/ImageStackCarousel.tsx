@@ -31,7 +31,7 @@ function ImageStackCarousel({goal, chips}) {
   return (
     <View style={{flex: 1}}>
       <Carousel
-        loop
+        loop={false}
         width={WIDTH}
         height={WIDTH}
         autoPlay={false}
