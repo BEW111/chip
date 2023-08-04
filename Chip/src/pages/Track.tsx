@@ -1,13 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {useState, useCallback, useEffect, useRef} from 'react';
-import {
-  StyleSheet,
-  View,
-  Linking,
-  Pressable,
-  InteractionManager,
-} from 'react-native';
+import {StyleSheet, View, Linking, Pressable} from 'react-native';
 
 // Components
 import FastImage from 'react-native-fast-image';
@@ -53,7 +47,7 @@ import {
 } from '../redux/slices/cameraSlice';
 
 // Loading goals data
-import {useGetGoalsQuery, usePrefetch} from '../redux/supabaseApi';
+import {usePrefetch} from '../redux/supabaseApi';
 import Tooltip from '../components/common/Tooltip';
 
 // Tutorial state

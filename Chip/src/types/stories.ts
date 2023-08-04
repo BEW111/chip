@@ -1,3 +1,4 @@
+import {SupabaseGoal} from './goals';
 import {SupabaseProfile} from './profiles';
 
 // The data for an ordinary story posted by a user
@@ -30,6 +31,7 @@ export type SupabaseStoryView = {
   story_id: string;
   poster_id: string;
   viewer_id: string;
+  goal_id: string;
 };
 
 // These are the actual objects we want to be dealing with, containing a creator
@@ -41,6 +43,7 @@ export type Story = {
   photo_path: string;
   message: string;
   viewed: boolean;
+  goal: SupabaseGoal;
 };
 
 export type StoryGroup = {
@@ -57,6 +60,7 @@ export type SupabaseStoryWithViewAndCreatorResponse = {
   photo_path: string;
   message: string;
   viewed: boolean[];
+  goal: SupabaseGoal;
 };
 
 export type SupabaseStoryInfo = {
@@ -67,6 +71,7 @@ export type SupabaseStoryInfo = {
   photo_path: string;
   message: string;
   viewed: boolean;
+  goal: SupabaseGoal;
 };
 
 export type StoryGroupsObject = {

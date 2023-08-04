@@ -2,10 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {View, Pressable, StyleSheet} from 'react-native';
 import {styles} from '../../styles';
 import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 // Components
-import {ActivityIndicator, Text} from 'react-native-paper';
+import {ActivityIndicator, Divider, IconButton, Text} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // Story navigation control
 import {
@@ -22,10 +26,13 @@ import {findNextUnviewedStory} from '../../utils/stories';
 import {insertStoryView} from '../../supabase/stories';
 import {SupabaseStoryViewUpload} from '../../types/stories';
 import {selectUid} from '../../redux/slices/authSlice';
+import {BlurView} from '@react-native-community/blur';
+import AvatarDisplay from '../AvatarDisplay';
 
 // Component to show when the user is viewing stories currently
 const StoryView = () => {
   const uid = useAppSelector(selectUid);
+  const insets = useSafeAreaInsets();
 
   // Stories
   const {data: storyGroups, refetch: refetchStoryGroups} =
@@ -125,30 +132,75 @@ const StoryView = () => {
   }
 
   const currentStory = storyGroups[currentUserIdx].stories[currentStoryIdx];
+  const currentUser = storyGroups[currentUserIdx].creator;
 
   return (
-    <View style={styles.fullDark}>
+    <View style={[styles.absoluteFull]}>
+      {/* Main image */}
       {storyImageUri && !isLoading ? (
         <FastImage source={{uri: storyImageUri}} style={styles.absoluteFull} />
       ) : (
         <View style={styles.absoluteFullCentered}>
-          <ActivityIndicator />
+          <ShimmerPlaceHolder
+            LinearGradient={LinearGradient}
+            style={styles.absoluteFull}
+            shimmerColors={['#050505', '#1A1A1B', '#070707']}
+          />
         </View>
       )}
-      <View style={styles.centeredExpand}>
-        {currentStory !== null && !isLoading && (
-          <View style={storyViewStyles.storyTextWrapper}>
-            <Text variant="bodyLarge" style={storyViewStyles.storyText}>
-              {/* {currentStory.message} */}
-              test test
+      {/* Close out of story */}
+      <View style={storyViewStyles.mainWrapper}>
+        <Pressable style={{width: '50%'}} onPress={close} />
+        <Pressable style={{width: '50%'}} onPress={nextStory} />
+      </View>
+      {/* Top blur */}
+      <BlurView
+        blurAmount={8}
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          paddingTop: insets.top + 10,
+          paddingLeft: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingBottom: 20,
+        }}>
+        <AvatarDisplay width={64} height={64} url={currentUser.avatar_url} />
+        <Divider style={styles.dividerHSmall} />
+        <Text variant="bodyLarge" style={storyViewStyles.usernameText}>
+          @{currentUser.username}
+        </Text>
+        <IconButton
+          icon="close-outline"
+          iconColor="white"
+          size={36}
+          style={{marginLeft: 'auto', marginRight: 10}}
+          onPress={close}
+        />
+      </BlurView>
+      {/* Goal info */}
+      {currentStory.goal !== null && (
+        <BlurView style={storyViewStyles.goalInfoWrapper}>
+          <Text variant="displayMedium">{currentStory.goal.emoji}</Text>
+          <Divider style={styles.dividerHSmall} />
+          <View>
+            <Text variant="bodyLarge" style={storyViewStyles.goalNameText}>
+              {currentStory.goal.name}
+            </Text>
+            <Text variant="bodyMedium" style={storyViewStyles.storyText}>
+              "{currentStory.message}"
             </Text>
           </View>
-        )}
-      </View>
-      <View style={storyViewStyles.mainWrapper}>
-        <Pressable style={{width: '30%'}} onPress={close} />
-        <Pressable style={{width: '30%'}} onPress={nextStory} />
-      </View>
+          <View style={storyViewStyles.streakContainer}>
+            <Icon name="flame-outline" size={32} color="white" />
+            <Divider style={styles.dividerHTiny} />
+            <Text variant="displaySmall" style={storyViewStyles.streakText}>
+              {currentStory.goal.streak_count}
+            </Text>
+          </View>
+        </BlurView>
+      )}
     </View>
   );
 };
@@ -169,5 +221,30 @@ const storyViewStyles = StyleSheet.create({
     padding: 8,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  storyText: {textAlign: 'center', color: 'white'},
+  storyText: {color: 'white'},
+  usernameText: {color: 'white'},
+  streakContainer: {
+    marginLeft: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  streakText: {color: 'white'},
+  goalInfoWrapper: {
+    position: 'absolute',
+    borderRadius: 16,
+    margin: 12,
+    padding: 12,
+    paddingTop: 16,
+    flexDirection: 'row',
+    display: 'flex',
+    alignItems: 'center',
+    bottom: 10,
+    left: 0,
+    right: 0,
+  },
+  goalNameText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });

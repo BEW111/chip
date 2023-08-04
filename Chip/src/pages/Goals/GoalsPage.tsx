@@ -34,12 +34,12 @@ import {selectTutorialStage} from '../../redux/slices/tutorialSlice';
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
-  console.log('[GoalsPage MainPage] Main page');
+  // console.log('[GoalsPage MainPage] Main page');
 
   const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
   const {data: chips, refetch: refreshChips} = useGetChipsQuery();
 
-  console.log('[GoalsPage MainPage] chips:', chips);
+  // console.log('[GoalsPage MainPage] chips:', chips);
 
   const theme = useTheme();
 

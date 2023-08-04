@@ -340,7 +340,7 @@ function Main() {
   const [session, setSession] = useState<Session | null>(null);
 
   const {data: chips} = useGetChipsQuery();
-  console.log('[Main] chips:', chips);
+  // console.log('[Main] chips:', chips);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {

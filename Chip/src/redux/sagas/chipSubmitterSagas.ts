@@ -43,6 +43,7 @@ function* submitChipSaga(action: PayloadAction<ChipSubmissionStartPayload>) {
     creator_id: chipSubmissionInfo.uid,
     photo_path: `${chipSubmissionInfo.uid}/${chipSubmissionInfo.goalId}/${fileName}`,
     message: chipSubmissionInfo.description, // <-- TODO: change this later to a custom message
+    goal_id: chipSubmissionInfo.goalId,
   };
 
   // TODO: better error handling here--if one fails, we should undo the other

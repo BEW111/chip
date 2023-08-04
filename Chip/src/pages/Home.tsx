@@ -49,9 +49,11 @@ const StoryAvatar = ({user, userIdx, viewed}: StoryAvatarProps) => {
       if (nextStoryIdx !== -1) {
         const viewRecord: SupabaseStoryViewUpload = {
           story_id: storyGroups[userIdx].stories[nextStoryIdx].id,
-          poster_id: storyGroups[nextStoryIdx].creator.id,
+          poster_id: storyGroups[userIdx].creator.id,
           viewer_id: uid,
         };
+
+        // Mark story as viewed
         insertStoryView(viewRecord);
       }
     }
@@ -74,7 +76,6 @@ export default function Home() {
   return (
     <View style={[styles.fullDark, styles.expand]}>
       <FocusAwareStatusBar animated={true} barStyle="light-content" />
-      {currentUserViewingIdx !== null && <StoryView />}
       <SafeAreaView style={styles.expand}>
         <ScrollView
           horizontal={true}
@@ -115,6 +116,7 @@ export default function Home() {
           </View>
         )}
       </SafeAreaView>
+      {currentUserViewingIdx !== null && <StoryView />}
     </View>
   );
 }

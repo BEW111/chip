@@ -265,8 +265,10 @@ export const supabaseApi = createApi({
           error: PostgrestError | null;
         } = await supabase
           .from('stories')
-          .select('*, viewed:story_views!left(viewed), creator:creator_id(*)')
-          .neq('creator_id', uid)
+          .select(
+            '*, viewed:story_views!left(viewed), creator:creator_id(*), goal:goal_id(*)',
+          )
+          // .neq('creator_id', uid)
           .order('created_at', {ascending: false});
 
         if (error) {
