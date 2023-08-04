@@ -39,7 +39,6 @@ export default function OnboardingRegister() {
     } else {
       // Start tutorial
       dispatch(startTutorial());
-
       const result = await signUpWithEmail(emailText, usernameText, passText);
 
       if (!result.ok) {

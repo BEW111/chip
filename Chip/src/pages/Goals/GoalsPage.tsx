@@ -1,33 +1,44 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet, RefreshControl} from 'react-native';
-import {Divider, Text, useTheme} from 'react-native-paper';
+import {styles} from '../../styles';
 
+// Common components
+import {Divider, Portal, Text, useTheme} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
+// Widgets
 import GoalWidget from '../../components/GoalWidgets/GoalWidget';
 import AddGoalWidget from '../../components/GoalWidgets/AddGoalWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
 
+// Misc components
+import OnboardingCarouselModal from '../../components/Onboarding/OnboardingCarouselModal';
 import Header from '../../components/common/Header';
-import GoalPage from './GoalDetailPage';
 import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
-import {styles} from '../../styles';
+// Specific goal page
+import GoalPage from './GoalDetailPage';
+
+// Api
 import supabaseApi, {
   useGetChipsQuery,
   useGetGoalsQuery,
 } from '../../redux/supabaseApi';
+import {useAppSelector} from '../../redux/hooks';
+
+// Tutorial info
+import {selectTutorialStage} from '../../redux/slices/tutorialSlice';
 
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
-  console.log('[MainPage] Main page');
+  console.log('[GoalsPage MainPage] Main page');
 
   const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
   const {data: chips, refetch: refreshChips} = useGetChipsQuery();
 
-  console.log('[MainPage] chips:', chips);
+  console.log('[GoalsPage MainPage] chips:', chips);
 
   const theme = useTheme();
 
@@ -43,8 +54,16 @@ function MainPage({navigation}) {
     }, 300);
   }, [refetchGoals, refreshChips]);
 
+  // Tutorial
+  const tutorialStage = useAppSelector(selectTutorialStage);
+
   return (
     <>
+      <Portal>
+        <OnboardingCarouselModal
+          visible={tutorialStage === 'goals-onboarding-carousel'}
+        />
+      </Portal>
       <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       <BackgroundWrapper>
         <View style={styles.full}>

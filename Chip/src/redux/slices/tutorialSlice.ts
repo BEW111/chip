@@ -4,6 +4,7 @@ import {RootState} from '../store';
 // These will be traversed in order
 export type TutorialStage =
   | null
+  | 'goals-onboarding-carousel'
   | 'goals-wait-start-create'
   | 'goals-entering-name'
   | 'goals-entering-emoji'
@@ -32,7 +33,7 @@ export const tutorialSlice = createSlice({
   initialState: initialState,
   reducers: {
     startTutorial: state => {
-      state.stage = 'goals-wait-start-create';
+      state.stage = 'goals-onboarding-carousel';
       state.inTutorial = true;
     },
     finishTutorial: state => {
