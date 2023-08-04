@@ -8,6 +8,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import StoryView from '../components/Stories/StoryView';
 import AvatarDisplay from '../components/AvatarDisplay';
+import {Text} from 'react-native-paper';
+import FastImage from 'react-native-fast-image';
+import HomeFeedImage from '../../assets/home_feed_missing_image.png';
 
 // Current state for story viewing
 import {
@@ -69,13 +72,15 @@ export default function Home() {
   const {data: storyGroups} = useGetStoryGroupsQuery();
 
   return (
-    <View style={styles.fullDark}>
+    <View style={[styles.fullDark, styles.expand]}>
       <FocusAwareStatusBar animated={true} barStyle="light-content" />
       {currentUserViewingIdx !== null && <StoryView />}
-      <SafeAreaView>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {storyGroups &&
-            storyGroups.length > 0 &&
+      <SafeAreaView style={styles.expand}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={localStyles(false).storiesView}>
+          {storyGroups && storyGroups.length > 0 ? (
             storyGroups.map((storyGroup, userIdx: number) => (
               <StoryAvatar
                 key={`${storyGroup.creator.id}-${userIdx}`}
@@ -85,8 +90,30 @@ export default function Home() {
                   storyGroup.stories.filter(story => !story.viewed).length === 0
                 }
               />
-            ))}
+            ))
+          ) : (
+            <View style={localStyles(false).tempStoriesViewWrapper}>
+              <Text
+                style={localStyles(false).tempStoriesViewText}
+                variant="titleMedium">
+                Add some friends to see their stories here
+              </Text>
+            </View>
+          )}
         </ScrollView>
+        {currentUserViewingIdx === null && (
+          <View style={localStyles(false).homeWrapper}>
+            <FastImage
+              source={HomeFeedImage}
+              style={localStyles(false).homeFeedImage}
+            />
+            <Text
+              style={localStyles(false).tempStoriesViewText}
+              variant="titleSmall">
+              A proper home feed is arriving in the next update!
+            </Text>
+          </View>
+        )}
       </SafeAreaView>
     </View>
   );
@@ -104,5 +131,26 @@ const localStyles = (viewed: boolean) =>
       justifyContent: 'center',
       alignItems: 'center',
       margin: 8,
+    },
+    storiesView: {
+      width: '100%',
+      borderBottomColor: 'white',
+      borderBottomWidth: 0.5,
+    },
+    tempStoriesViewWrapper: {
+      alignContent: 'center',
+      justifyContent: 'center',
+    },
+    tempStoriesViewText: {
+      color: 'white',
+    },
+    homeWrapper: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      flex: 100,
+    },
+    homeFeedImage: {
+      width: 256,
+      height: 256,
     },
   });

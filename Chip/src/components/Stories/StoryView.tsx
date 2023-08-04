@@ -136,10 +136,13 @@ const StoryView = () => {
         </View>
       )}
       <View style={styles.centeredExpand}>
-        {currentStory !== null ? (
-          <Text style={{color: 'green'}}>{currentStory.message}</Text>
-        ) : (
-          <Text style={{color: 'red'}}>An error occurred fetching data</Text>
+        {currentStory !== null && !isLoading && (
+          <View style={storyViewStyles.storyTextWrapper}>
+            <Text variant="bodyLarge" style={storyViewStyles.storyText}>
+              {/* {currentStory.message} */}
+              test test
+            </Text>
+          </View>
         )}
       </View>
       <View style={storyViewStyles.mainWrapper}>
@@ -161,4 +164,10 @@ const storyViewStyles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  storyTextWrapper: {
+    width: '100%',
+    padding: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  storyText: {textAlign: 'center', color: 'white'},
 });

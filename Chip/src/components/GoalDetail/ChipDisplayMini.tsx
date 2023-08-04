@@ -9,6 +9,9 @@ import {Portal, Modal, Text, IconButton, Button} from 'react-native-paper';
 import FastImage from 'react-native-fast-image';
 import pluralize from 'pluralize';
 
+import LinearGradient from 'react-native-linear-gradient';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+
 // Animations and gestures
 import Animated, {
   useAnimatedStyle,
@@ -315,7 +318,10 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
                 style={localStyles.imageDisplay}
               />
             ) : (
-              <></>
+              <ShimmerPlaceHolder
+                style={localStyles.imageTempDisplay}
+                LinearGradient={LinearGradient}
+              />
             )}
             <View style={styles.absoluteFullCentered}>
               <Text variant="headlineSmall" style={localStyles.whiteText}>
@@ -342,6 +348,13 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
 const localStyles = StyleSheet.create({
   whiteText: {color: 'white'},
   imageDisplay: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: 16,
+  },
+  imageTempDisplay: {
     position: 'absolute',
     height: '100%',
     width: '100%',

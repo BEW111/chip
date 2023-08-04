@@ -6,7 +6,15 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import {Button, TextInput, HelperText, Text, Divider} from 'react-native-paper';
+import {
+  Button,
+  TextInput,
+  HelperText,
+  Text,
+  Divider,
+  ActivityIndicator,
+  useTheme,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {styles} from '../../styles';
@@ -21,12 +29,27 @@ export default function SignIn({navigation}) {
   const [passText, setPassText] = useState('');
 
   const [displayError, setDisplayError] = useState('');
+  const [signingIn, setSigningIn] = useState(false);
 
   const onSignInPressed = async () => {
+    if (emailText === '') {
+      setDisplayError('Please enter a valid email.');
+      return;
+    } else if (passText === '') {
+      setDisplayError('Please enter a valid password.');
+      return;
+    }
+
+    setSigningIn(true);
     const result = await signInWithEmail(emailText, passText);
+    setSigningIn(false);
 
     if (!result.ok) {
-      setDisplayError(result?.message || 'Failed to sign in');
+      if (result.message === 'Invalid login credentials') {
+        setDisplayError('Incorrect email or password.');
+      } else {
+        setDisplayError(result?.message || 'Failed to sign in');
+      }
     }
   };
 
@@ -78,9 +101,13 @@ export default function SignIn({navigation}) {
               <Divider style={styles.dividerSmall} />
               <HelperText type="error">{displayError}</HelperText>
               <Divider style={styles.dividerSmall} />
-              <Button mode="contained" onPress={onSignInPressed}>
-                Sign in
-              </Button>
+              {signingIn ? (
+                <ActivityIndicator animating={true} />
+              ) : (
+                <Button mode="contained" onPress={onSignInPressed}>
+                  Sign in
+                </Button>
+              )}
             </BlurSurface>
           </ScrollView>
         </KeyboardAvoidingView>

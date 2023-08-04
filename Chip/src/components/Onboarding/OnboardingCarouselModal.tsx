@@ -6,9 +6,9 @@ import Carousel from 'react-native-reanimated-carousel';
 import {styles} from '../../styles';
 
 import ChipIcon from '../../../assets/chips-icon.png';
-import CameraIcon from '../../../assets/camera_icon_watercolor_art.png';
-import FriendsIcon from '../../../assets/friends_icon_watercolor_art.png';
-import FireIcon from '../../../assets/fire_icon_watercolor_art.png';
+import SelfieImage from '../../../assets/onboarding_photo_watercolor_art.png';
+import FriendsImage from '../../../assets/onboarding_friends_watercolor_art.png';
+import StreaksImage from '../../../assets/onboarding_streaks_watercolor_art.png';
 import FastImage from 'react-native-fast-image';
 import {useAppDispatch} from '../../redux/hooks';
 import {updateTutorialStage} from '../../redux/slices/tutorialSlice';
@@ -24,13 +24,7 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
   const carouselHeight = carouselWidth * 1.3;
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const imgs = [ChipIcon, CameraIcon, FriendsIcon, FireIcon];
-  const imgStyles = [
-    {width: 300, height: 300},
-    {width: 300, height: 300},
-    {width: 300, height: 300},
-    {width: 300, height: 300},
-  ];
+  const imgs = [ChipIcon, SelfieImage, FriendsImage, StreaksImage];
 
   const dispatch = useAppDispatch();
   const onModalDismiss = () => {
@@ -39,7 +33,7 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
 
   const slides = [
     {
-      headline: 'What is Chip?',
+      headline: '',
       caption: 'Chip is a social media platform for habits and goals',
     },
     {
@@ -89,7 +83,10 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
                 {item.headline}
               </Text>
               <Divider style={styles.dividerSmall} />
-              <FastImage source={imgs[index]} style={imgStyles[index]} />
+              <FastImage
+                source={imgs[index]}
+                style={{width: 300, height: 300, borderRadius: 50}}
+              />
               <Divider style={styles.dividerSmall} />
               <Text
                 style={localStyles(carouselWidth, carouselHeight).captionText}
@@ -106,6 +103,19 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
                       chips
                     </Text>{' '}
                     to friends
+                  </Text>
+                ) : index === 3 ? (
+                  <Text variant="bodyMedium" style={{textAlign: 'center'}}>
+                    Create shared{' '}
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        color: theme.colors.primary,
+                      }}
+                      variant="bodyMedium">
+                      superstreaks
+                    </Text>{' '}
+                    which end if either either you or a friend break a streak
                   </Text>
                 ) : (
                   item.caption

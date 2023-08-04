@@ -368,10 +368,7 @@ export default function AddGoalWidget() {
                     How will you measure your progress?
                   </TextDisabled>
                   <Tooltip
-                    visible={
-                      tutorialStage === 'goals-entering-name' ||
-                      tutorialStage === 'goals-entering-privacy'
-                    }
+                    visible={tutorialStage === 'goals-entering-units'}
                     text={
                       'Now let\'s decide how you\'ll track your progress. Pick a metric, like minutes, reps, or tasks. For example, you could write "minutes" to mean "minutes spent reading".'
                     }>

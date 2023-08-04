@@ -4,7 +4,14 @@ import {useAppDispatch} from '../../redux/hooks';
 import {styles} from '../../styles';
 
 // Components
-import {Button, TextInput, Divider, HelperText, Text} from 'react-native-paper';
+import {
+  Button,
+  TextInput,
+  Divider,
+  HelperText,
+  Text,
+  ActivityIndicator,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BlurSurface from '../../components/BlurSurface';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
@@ -25,6 +32,8 @@ export default function OnboardingRegister() {
   const [secureTextEntry, setSecuryTextEntry] = useState(true);
   const [displayError, setDisplayError] = useState('');
 
+  const [signingUp, setSigningUp] = useState(false);
+
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
@@ -36,10 +45,14 @@ export default function OnboardingRegister() {
       setDisplayError('Email cannot be empty');
     } else if (passText === '') {
       setDisplayError('Password cannot be empty');
+    } else if (usernameText.length < 3) {
+      setDisplayError('Your username is too short');
     } else {
       // Start tutorial
+      setSigningUp(true);
       dispatch(startTutorial());
       const result = await signUpWithEmail(emailText, usernameText, passText);
+      setSigningUp(false);
 
       if (!result.ok) {
         setDisplayError(result?.message || 'Failed to sign up');
@@ -118,21 +131,25 @@ export default function OnboardingRegister() {
                 {displayError}
               </HelperText>
               <Divider style={styles.dividerSmall} />
-              <View style={styles.row}>
-                <View style={{flex: 1, marginRight: 12}}>
-                  <Button
-                    contentStyle={{alignSelf: 'stretch'}}
-                    mode="text"
-                    onPress={() => navigation.navigate('Onboarding')}>
-                    Back
-                  </Button>
+              {signingUp ? (
+                <ActivityIndicator />
+              ) : (
+                <View style={styles.row}>
+                  <View style={{flex: 1, marginRight: 12}}>
+                    <Button
+                      contentStyle={{alignSelf: 'stretch'}}
+                      mode="text"
+                      onPress={() => navigation.navigate('Onboarding')}>
+                      Back
+                    </Button>
+                  </View>
+                  <View style={styles.expand}>
+                    <Button mode="contained" onPress={onSignUpPressed}>
+                      Register
+                    </Button>
+                  </View>
                 </View>
-                <View style={styles.expand}>
-                  <Button mode="contained" onPress={onSignUpPressed}>
-                    Register
-                  </Button>
-                </View>
-              </View>
+              )}
             </BlurSurface>
           </ScrollView>
         </KeyboardAvoidingView>
