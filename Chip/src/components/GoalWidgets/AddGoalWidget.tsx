@@ -249,7 +249,7 @@ export default function AddGoalWidget() {
       setGoalOnDaysInput(defaultGoalDays);
 
       // Update tutorial if necessary
-      if (tutorialStage?.startsWith('goals-entering')) {
+      if (tutorialStage?.startsWith('goals')) {
         dispatch(updateTutorialStage('track-wait-take-photo-transition'));
         navigation.navigate('Track');
       }

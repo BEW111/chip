@@ -3,20 +3,30 @@ import {Pressable, View} from 'react-native';
 import {useAppDispatch} from '../redux/hooks';
 
 // Components
-import {Button, Divider, IconButton, Text, TextInput} from 'react-native-paper';
-import {DrawerContentScrollView} from '@react-navigation/drawer';
+import {
+  Button,
+  Divider,
+  IconButton,
+  Portal,
+  Surface,
+  Text,
+  TextInput,
+  Modal,
+} from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AvatarDisplay from '../components/AvatarDisplay';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 
 import {styles} from '../styles';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 // Api
 import supabaseApi from '../redux/supabaseApi';
 import {useGetCurrentProfileQuery} from '../redux/slices/profilesSlice';
 import {getUserAvatarUrl, uploadAvatar} from '../supabase/avatars';
-import {signOut} from '../supabase/auth';
+import {deleteUser, signOut} from '../supabase/auth';
 import {updateUsername} from '../supabase/profiles';
+import {StyleSheet} from 'react-native';
 
 export default function Settings(props) {
   const {data: profile} = useGetCurrentProfileQuery();
@@ -31,22 +41,22 @@ export default function Settings(props) {
   const [visibleUsername, setVisibleUsername] = useState<string | null>(null);
   const [visibleAvatarUrl, setVisibleAvatarUrl] = useState<string | null>(null);
 
+  const insets = useSafeAreaInsets();
+
   // Actions
   const onLogoutPressed = async () => {
-    if (profile?.id) {
-      console.log('[onLogoutPressed] Signing out...');
-      dispatch(
-        supabaseApi.util.invalidateTags([
-          'Chip',
-          'Friendship',
-          'Goal',
-          'Profile',
-          'Story',
-          'Costreak',
-        ]),
-      );
-      signOut();
-    }
+    console.log('[onLogoutPressed] Signing out...');
+    dispatch(
+      supabaseApi.util.invalidateTags([
+        'Chip',
+        'Friendship',
+        'Goal',
+        'Profile',
+        'Story',
+        'Costreak',
+      ]),
+    );
+    signOut();
   };
 
   const onOpenUsernameEditor = () => {
@@ -94,66 +104,151 @@ export default function Settings(props) {
     }
   };
 
+  // Launches delete modal
+  const [manageModalShowing, setManageModalShowing] = useState(false);
+  const [areYouSureDelete, setAreYouSureDelete] = useState(false);
+  const onManageAccountPressed = () => {
+    setManageModalShowing(true);
+  };
+  const onDismissManageModal = () => {
+    setManageModalShowing(false);
+    setAreYouSureDelete(false);
+  };
+  const onDeleteButtonPressed = async () => {
+    if (!areYouSureDelete) {
+      setAreYouSureDelete(true);
+    }
+
+    if (areYouSureDelete && profile) {
+      console.log(profile.id);
+      deleteUser(profile.id);
+    }
+  };
+
   return (
-    <Pressable onPress={onCloseUsernameEditor} style={styles.expand}>
-      <FocusAwareStatusBar animated={true} barStyle="dark-content" />
-      <DrawerContentScrollView {...props} style={styles.expand}>
-        <View style={styles.fullPaddedHorizontal}>
-          <View style={styles.row}>
-            <AvatarDisplay url={visibleAvatarUrl} self width={64} height={64} />
-            <Divider style={styles.dividerHSmall} />
-            <View>
-              <View style={styles.row}>
-                {usernameEditorOpen ? (
-                  <TextInput
-                    dense
-                    autoCorrect={false}
-                    autoCapitalize="none"
-                    value={usernameFieldText}
-                    onChangeText={text => setUsernameFieldText(text)}
-                    contentStyle={{
-                      marginBottom: -8,
-                      marginHorizontal: -4,
-                      width: 150,
-                    }}
-                  />
-                ) : (
-                  <Text variant="titleMedium">
-                    @{visibleUsername || profile?.username}
-                  </Text>
-                )}
-                {usernameEditorOpen ? (
-                  <IconButton
-                    icon={'checkmark-outline'}
-                    size={20}
-                    style={{margin: -2}}
-                    onPress={onUpdateUsernamePressed}
-                  />
-                ) : (
-                  <IconButton
-                    icon={'create-outline'}
-                    size={20}
-                    style={{margin: -2}}
-                    onPress={onOpenUsernameEditor}
-                  />
-                )}
+    <>
+      <Portal>
+        <Modal
+          visible={manageModalShowing}
+          onDismiss={onDismissManageModal}
+          style={localStyles(insets.top).modalWrapperStyle}>
+          <Surface style={localStyles(insets.top).modalSurfaceStyle}>
+            <Text
+              variant="titleLarge"
+              style={localStyles(insets.top).modalTitle}>
+              Manage account
+            </Text>
+            <Divider style={styles.dividerLarge} />
+            <Divider style={styles.dividerLarge} />
+            <Text
+              variant="bodyMedium"
+              style={localStyles(insets.top).dangerText}>
+              Warning: this will delete your account permanently
+            </Text>
+            <Divider style={styles.dividerMedium} />
+            <Button
+              mode={areYouSureDelete ? 'contained' : 'outlined'}
+              onPress={onDeleteButtonPressed}>
+              {areYouSureDelete ? 'Are you sure? ' : 'Delete account'}
+            </Button>
+          </Surface>
+        </Modal>
+      </Portal>
+      <Pressable onPress={onCloseUsernameEditor} style={styles.expand}>
+        <FocusAwareStatusBar animated={true} barStyle="dark-content" />
+        <View {...props} style={localStyles(insets.top).wrapper}>
+          <View style={[styles.fullPaddedHorizontal, {height: '100%'}]}>
+            <Divider style={styles.dividerSmall} />
+            <View style={styles.row}>
+              <AvatarDisplay
+                url={visibleAvatarUrl}
+                self
+                width={64}
+                height={64}
+              />
+              <Divider style={styles.dividerHSmall} />
+              <View>
+                <View style={styles.row}>
+                  {usernameEditorOpen ? (
+                    <TextInput
+                      dense
+                      autoCorrect={false}
+                      autoCapitalize="none"
+                      value={usernameFieldText}
+                      onChangeText={text => setUsernameFieldText(text)}
+                      contentStyle={{
+                        marginBottom: -8,
+                        marginHorizontal: -4,
+                        width: 150,
+                      }}
+                    />
+                  ) : (
+                    <Text variant="titleMedium">
+                      @{visibleUsername || profile?.username}
+                    </Text>
+                  )}
+                  {usernameEditorOpen ? (
+                    <IconButton
+                      icon={'checkmark-outline'}
+                      size={20}
+                      style={{margin: -2}}
+                      onPress={onUpdateUsernamePressed}
+                    />
+                  ) : (
+                    <IconButton
+                      icon={'create-outline'}
+                      size={20}
+                      style={{margin: -2}}
+                      onPress={onOpenUsernameEditor}
+                    />
+                  )}
+                </View>
+                {/* <Text variant="titleSmall">{user.email}</Text> */}
               </View>
-              {/* <Text variant="titleSmall">{user.email}</Text> */}
             </View>
+            <Divider style={styles.dividerSmall} />
+            <Button mode="outlined" onPress={onEditProfilePicturePressed}>
+              Edit profile picture
+            </Button>
+            <Divider style={styles.dividerSmall} />
+            <Button mode="contained-tonal" onPress={onManageAccountPressed}>
+              Manage account
+            </Button>
+            <Divider style={styles.dividerSmall} />
+            <Button
+              icon="log-out-outline"
+              mode="contained"
+              onPress={onLogoutPressed}
+              style={localStyles(insets.top).signOutButton}>
+              Sign out
+            </Button>
           </View>
-          <Divider style={styles.dividerTiny} />
-          <Button mode="text" onPress={onEditProfilePicturePressed}>
-            Edit profile picture
-          </Button>
-          <Divider style={styles.dividerSmall} />
-          <Button
-            icon="log-out-outline"
-            mode="outlined"
-            onPress={onLogoutPressed}>
-            Sign out
-          </Button>
         </View>
-      </DrawerContentScrollView>
-    </Pressable>
+      </Pressable>
+    </>
   );
 }
+
+const localStyles = (insetsTop: number) =>
+  StyleSheet.create({
+    wrapper: {
+      paddingTop: insetsTop,
+    },
+    signOutButton: {
+      marginTop: 'auto',
+      marginBottom: 60,
+    },
+    modalWrapperStyle: {
+      margin: 12,
+    },
+    modalSurfaceStyle: {
+      padding: 16,
+      borderRadius: 12,
+    },
+    modalTitle: {
+      textAlign: 'center',
+    },
+    dangerText: {
+      fontWeight: '900',
+    },
+  });

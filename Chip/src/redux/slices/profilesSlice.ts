@@ -10,7 +10,7 @@ export const extendedApiSlice = supabaseApi.injectEndpoints({
       queryFn: async () => {
         const userDetails = await supabase.auth.getUser();
         if (userDetails.error) {
-          return {error: userDetails.error};
+          return {error: userDetails.error.message};
         }
         const uid = userDetails.data.user.id;
 
@@ -24,7 +24,7 @@ export const extendedApiSlice = supabaseApi.injectEndpoints({
           const profile: SupabaseProfile = data[0];
           return {data: profile};
         } else {
-          return {error: error};
+          return {error: error?.message};
         }
       },
     }),

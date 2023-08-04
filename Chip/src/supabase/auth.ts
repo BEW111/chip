@@ -57,6 +57,7 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signOut() {
+  console.log('sign out');
   supabase.auth.signOut();
 }
 
@@ -69,37 +70,48 @@ export async function getCurrentUid() {
 export async function deleteUser(uid: string) {
   // Delete relevant storage
   // Get all files to delete
-  const {data: avatarFiles, error: avatarFilesError} = await supabase.storage
-    .from('avatars')
-    .list(uid);
-  const {data: chipFiles, error: chipFilesError} = await supabase.storage
-    .from('chips')
-    .list(uid);
+  const {data: avatarFiles} = await supabase.storage.from('avatars').list(uid);
+  const {data: chipTopFiles} = await supabase.storage.from('chips').list(uid);
 
-  if (avatarFilesError) {
-    console.error(avatarFilesError);
-  }
-  if (chipFilesError) {
-    console.error(chipFilesError);
-  }
-
-  // Delete the files
+  // Delete avatar files (there could be multiple, since the user can update multiple times)
   if (avatarFiles) {
     const avatarFilesToRemove: string[] = avatarFiles.map(
-      x => `${uid}/avatars/${x.name}`,
+      x => `${uid}/${x.name}`,
     );
-    console.log('[deleteUser]', avatarFilesToRemove);
+    console.log('[deleteUser] avatar files', avatarFilesToRemove);
 
     await supabase.storage.from('avatars').remove(avatarFilesToRemove);
   }
 
-  if (chipFiles) {
-    const chipFilesToRemove: string[] = chipFiles.map(
-      x => `${uid}/avatars/${x.name}`,
-    );
-    console.log('[deleteUser]', chipFilesToRemove);
+  // Chip files are more complicated
+  // For each chip file, we need to get all of the inner files
+  let chipFilesToRemove: string[] = [];
 
-    await supabase.storage.from('avatars').remove(chipFilesToRemove);
+  if (chipTopFiles) {
+    const allChipSubFilesData = await Promise.all(
+      chipTopFiles.map(folder =>
+        supabase.storage.from('chips').list(`${uid}/${folder.name}`),
+      ),
+    );
+
+    allChipSubFilesData.map(
+      ({data: chipSubFiles, error: chipSubFilesError}, index: number) => {
+        if (chipSubFiles) {
+          console.log('chip sub files', chipSubFiles);
+          chipSubFiles.forEach(x => {
+            chipFilesToRemove.push(
+              `${uid}/${chipTopFiles[index].name}/${x.name}`,
+            );
+          });
+        }
+      },
+    );
+  }
+
+  if (chipFilesToRemove) {
+    console.log('[deleteUser] chip files', chipFilesToRemove);
+
+    await supabase.storage.from('chips').remove(chipFilesToRemove);
   }
 
   // Actually delete user
@@ -107,8 +119,8 @@ export async function deleteUser(uid: string) {
     'delete_user',
   );
 
-  if (error) {
-    console.error(error);
+  if (deleteUserError) {
+    console.error(deleteUserError);
   }
 
   console.log('[deleteUser] user deleted');
