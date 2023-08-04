@@ -246,6 +246,7 @@ export const supabaseApi = createApi({
       },
     }),
     // Retrieves all stories, but grouped by users
+    // And filters by only those posted less than 24 hrs ago
     getStoryGroups: builder.query<StoryGroup[] | null, void>({
       providesTags: ['Story'],
       queryFn: async () => {
@@ -253,7 +254,10 @@ export const supabaseApi = createApi({
         if (userDetails.error) {
           return {error: userDetails.error.message};
         }
-        const uid = userDetails.data.user.id;
+
+        // Get current date
+        let date = new Date();
+        date.setDate(date.getDate() - 1);
 
         // Query the database
         // Order by latest entry
@@ -269,6 +273,7 @@ export const supabaseApi = createApi({
             '*, viewed:story_views!left(viewed), creator:creator_id(*), goal:goal_id(*)',
           )
           // .neq('creator_id', uid)
+          .gt('created_at', date.toISOString())
           .order('created_at', {ascending: false});
 
         if (error) {
