@@ -16,6 +16,7 @@ import OnboardingCarouselModal from '../../components/Onboarding/OnboardingCarou
 import Header from '../../components/common/Header';
 import FocusAwareStatusBar from '../../components/FocusAwareStatusBar';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
+import Tooltip from '../../components/common/Tooltip';
 
 // Specific goal page
 import GoalPage from './GoalDetailPage';
@@ -97,7 +98,11 @@ function MainPage({navigation}) {
                   <Divider style={styles.dividerSmall} />
                 </View>
               ))}
-            <AddGoalWidget />
+            <Tooltip
+              visible={tutorialStage === 'goals-wait-start-create'}
+              text="Start by creating a your first goal">
+              <AddGoalWidget />
+            </Tooltip>
           </ScrollView>
         </View>
       </BackgroundWrapper>

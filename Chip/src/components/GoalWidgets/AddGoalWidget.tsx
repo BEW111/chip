@@ -66,6 +66,19 @@ import {
   updateTutorialStage,
 } from '../../redux/slices/tutorialSlice';
 
+function TextDisabled({children, disabled, variant}) {
+  return (
+    <Text
+      variant={variant}
+      // eslint-disable-next-line react-native/no-inline-styles
+      style={{
+        color: disabled ? 'gray' : 'black',
+      }}>
+      {children}
+    </Text>
+  );
+}
+
 export default function AddGoalWidget() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
@@ -271,7 +284,7 @@ export default function AddGoalWidget() {
                     <View style={styles.expand}>
                       <Tooltip
                         visible={tutorialStage === 'goals-entering-name'}
-                        text="Let's create your first goal.">
+                        text="Pick an easy goal you can do right now.">
                         <TextInput
                           style={modalStyles.textInput}
                           mode="outlined"
@@ -304,7 +317,9 @@ export default function AddGoalWidget() {
                   <Divider style={styles.dividerSmall} />
                   <Tooltip
                     visible={tutorialStage === 'goals-entering-privacy'}
-                    text={'Do you want friends to see posts for this goal?'}>
+                    text={
+                      'Do you want friends to see your goal? If you choose "shareable", your chips (photos) will automatically be posted to your story when you record them.'
+                    }>
                     <SegmentedButtons
                       value={goalVisibility}
                       onValueChange={onGoalVisibilityChange}
@@ -313,11 +328,13 @@ export default function AddGoalWidget() {
                           value: 'public',
                           label: 'Shareable',
                           icon: 'earth-outline',
+                          disabled: tutorialStage === 'goals-entering-name',
                         },
                         {
                           value: 'private',
                           label: 'Private',
                           icon: 'lock-closed-outline',
+                          disabled: tutorialStage === 'goals-entering-name',
                         },
                       ]}
                     />
@@ -342,12 +359,22 @@ export default function AddGoalWidget() {
                     ]}
                   /> */}
                   <Divider style={styles.dividerSmall} />
-                  <Text variant="titleMedium">
+                  <TextDisabled
+                    variant="titleMedium"
+                    disabled={
+                      tutorialStage === 'goals-entering-name' ||
+                      tutorialStage === 'goals-entering-privacy'
+                    }>
                     How will you measure your progress?
-                  </Text>
+                  </TextDisabled>
                   <Tooltip
-                    visible={tutorialStage === 'goals-entering-units'}
-                    text={'Pick a metric, such as minutes, reps, or tasks.'}>
+                    visible={
+                      tutorialStage === 'goals-entering-name' ||
+                      tutorialStage === 'goals-entering-privacy'
+                    }
+                    text={
+                      'Now let\'s decide how you\'ll track your progress. Pick a metric, like minutes, reps, or tasks. For example, you could write "minutes" to mean "minutes spent reading".'
+                    }>
                     <TextInput
                       dense
                       style={modalStyles.textInput}
@@ -359,12 +386,22 @@ export default function AddGoalWidget() {
                       onChangeText={text => setGoalUnits(text)}
                       onEndEditing={onUnitsEndEditing}
                       onPressIn={onUnitsStartEditing}
+                      disabled={
+                        tutorialStage === 'goals-entering-name' ||
+                        tutorialStage === 'goals-entering-privacy'
+                      }
                     />
                   </Tooltip>
                   <Divider style={styles.dividerSmall} />
-                  <Text variant="titleMedium">
+                  <TextDisabled
+                    variant="titleMedium"
+                    disabled={
+                      tutorialStage === 'goals-entering-name' ||
+                      tutorialStage === 'goals-entering-privacy' ||
+                      tutorialStage === 'goals-entering-units'
+                    }>
                     Set a target to complete regularly:
-                  </Text>
+                  </TextDisabled>
                   <View style={styles.row}>
                     <View style={{flex: 3}}>
                       <TextInput
@@ -388,6 +425,11 @@ export default function AddGoalWidget() {
                           />
                         }
                         onEndEditing={onTargetEndEditing}
+                        disabled={
+                          tutorialStage === 'goals-entering-name' ||
+                          tutorialStage === 'goals-entering-privacy' ||
+                          tutorialStage === 'goals-entering-units'
+                        }
                       />
                     </View>
                   </View>
@@ -399,10 +441,18 @@ export default function AddGoalWidget() {
                       {
                         value: 'daily',
                         label: 'Daily',
+                        disabled:
+                          tutorialStage === 'goals-entering-name' ||
+                          tutorialStage === 'goals-entering-privacy' ||
+                          tutorialStage === 'goals-entering-units',
                       },
                       {
                         value: 'weekly',
                         label: 'Weekly',
+                        disabled:
+                          tutorialStage === 'goals-entering-name' ||
+                          tutorialStage === 'goals-entering-privacy' ||
+                          tutorialStage === 'goals-entering-units',
                       },
                     ]}
                   />
@@ -415,7 +465,12 @@ export default function AddGoalWidget() {
                         <IconButton
                           key={day}
                           mode="contained-tonal"
-                          disabled={goalFreqInput === 'weekly'}
+                          disabled={
+                            goalFreqInput === 'weekly' ||
+                            tutorialStage === 'goals-entering-name' ||
+                            tutorialStage === 'goals-entering-privacy' ||
+                            tutorialStage === 'goals-entering-units'
+                          }
                           icon={({color: color}) => (
                             <Text style={{color: color}}>
                               {day.slice(0, 3)}

@@ -42,32 +42,69 @@ const Tooltip = ({visible, children, text}: TooltipProps) => {
     );
   };
 
+  const tooltipPosition = getTooltipPosition(
+    measurement as Measurement,
+    children,
+  );
+
   return (
     <>
       {visible && (
         <Portal>
+          <View
+            // onLayout={handleOnLayout}
+            style={[
+              styles.triangleWrapper,
+              {
+                top: tooltipPosition.top,
+                left: measurement.children.pageX,
+                width: measurement.children.width,
+                borderRadius: theme.roundness,
+                ...(measurement.measured ? styles.visible : styles.hidden),
+              },
+            ]}
+            testID="tooltip-container">
+            <Triangle
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{
+                borderBottomColor: theme.colors.tertiary,
+              }}
+            />
+          </View>
           <View
             onLayout={handleOnLayout}
             style={[
               styles.tooltip,
               {
                 backgroundColor: theme.colors.tertiary,
-                ...getTooltipPosition(measurement as Measurement, children),
+                ...tooltipPosition,
                 borderRadius: theme.roundness,
                 ...(measurement.measured ? styles.visible : styles.hidden),
               },
             ]}
             testID="tooltip-container">
-            <Triangle style={[{borderBottomColor: theme.colors.tertiary}]} />
             <Text
               accessibilityLiveRegion="polite"
-              numberOfLines={2}
               selectable={false}
               variant="labelLarge"
               style={{color: theme.colors.onTertiary}}>
               {text}
             </Text>
           </View>
+          {/* <View
+            style={[
+              // eslint-disable-next-line react-native/no-inline-styles
+              {
+                ...tooltipPosition,
+                position: 'absolute',
+                backgroundColor: 'purple',
+                height: 10,
+                alignSelf: 'flex-start',
+                justifyContent: 'center',
+              },
+            ]}>
+
+          </View> */}
         </Portal>
       )}
       {/* Need the xxPressProps in both places */}
@@ -83,12 +120,19 @@ const Triangle = props => {
 };
 
 const styles = StyleSheet.create({
+  triangleWrapper: {
+    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    height: 10,
+  },
   tooltip: {
     alignSelf: 'flex-start',
     justifyContent: 'center',
     paddingHorizontal: 16,
-    height: 32,
-    maxHeight: 32,
+    paddingVertical: 8,
+    // height: 32,
+    // maxHeight: 32,
   },
   visible: {
     opacity: 1,
@@ -100,9 +144,11 @@ const styles = StyleSheet.create({
     ...(Platform.OS === 'web' && {cursor: 'default'}),
   } as ViewStyle,
   triangle: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+
     width: 0,
     height: 0,
-    backgroundColor: 'transparent',
     borderStyle: 'solid',
     borderLeftWidth: 5,
     borderRightWidth: 5,
@@ -111,8 +157,6 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
 
     position: 'absolute',
-    alignSelf: 'center',
-    bottom: 30,
   },
 });
 
