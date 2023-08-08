@@ -20,6 +20,10 @@ export async function inviteUser(senderId: string, recipientId: string) {
     });
 
     if (error) {
+      // This error is expected when this is a dupe friend req
+      if (error.message === 'Friend request already exists') {
+        console.log(error.message);
+      }
       throw Error(error.message);
     }
   } catch (error) {

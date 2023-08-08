@@ -255,7 +255,7 @@ export const supabaseApi = createApi({
           return {error: userDetails.error.message};
         }
 
-        // Get current date
+        // Get current date 24 hrs ago
         let date = new Date();
         date.setDate(date.getDate() - 1);
 
