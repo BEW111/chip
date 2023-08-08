@@ -23,6 +23,12 @@ export type SupabaseProfileWithFriendship = SupabaseProfile & {
   status: RelativeFriendshipStatus;
 };
 
+// This type is used for the payload of a friendship invite
+export type FriendshipInvite = {
+  sender_id: string;
+  recipient_id: string;
+};
+
 // These types are just used for the initial results of queries,
 // we should try to convert these as soon as possible
 

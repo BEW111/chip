@@ -23,7 +23,8 @@ import AvatarDisplay from '../AvatarDisplay';
 import {selectUid} from '../../redux/slices/authSlice';
 
 // Friends
-import {inviteUser, acceptInvite} from '../../supabase/friends';
+import {acceptInvite} from '../../supabase/friends';
+import {useInviteUserMutation} from '../../redux/slices/friendsSlice';
 import {SupabaseProfileWithFriendship} from '../../types/friends';
 import {
   useAcceptCostreakMutation,
@@ -293,10 +294,14 @@ function UserContainer({user}: UserContainerType) {
   const {refetch: receivedRefetch} = useGetReceivedFriendRequestsQuery();
   const {refetch: sentRefetch} = useGetSentFriendRequestsQuery();
   const {refetch: friendsRefetch} = useGetFriendsQuery();
+  const [inviteUser] = useInviteUserMutation();
 
   async function onSendInvite() {
     if (currentUid) {
-      await inviteUser(currentUid, user.id);
+      await inviteUser({
+        sender_id: currentUid,
+        recipient_id: user.id,
+      });
       sentRefetch();
     }
   }

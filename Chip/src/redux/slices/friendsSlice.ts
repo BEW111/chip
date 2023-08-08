@@ -8,6 +8,8 @@ import {
   SupabaseProfileWithFriendship,
   SupabaseReceivedInviteResult,
   SupabaseSentInviteResult,
+  FriendshipInvite,
+  FriendshipStatus,
 } from '../../types/friends';
 
 const friendsSlice = supabaseApi.injectEndpoints({
@@ -117,6 +119,27 @@ const friendsSlice = supabaseApi.injectEndpoints({
         return {data: friends, error: error?.message};
       },
     }),
+    inviteUser: builder.mutation<void, FriendshipInvite>({
+      invalidatesTags: ['Chip'],
+      queryFn: async (friendInvite: FriendshipInvite) => {
+        const newStatus: FriendshipStatus = 'pending';
+        const {data, error} = await supabase.from('friends').insert({
+          sender_id: friendInvite.sender_id,
+          recipient_id: friendInvite.recipient_id,
+          status: newStatus,
+        });
+
+        if (error) {
+          // This error is expected when this is a dupe friend req
+          if (error.message === 'Friend request already exists') {
+            console.log('[inviteUser]', 'Friend request already exists');
+            return {data: null, error: 'Friend request already exists'};
+          }
+          return {error: error?.message};
+        }
+        return {data: data};
+      },
+    }),
   }),
 });
 
@@ -124,4 +147,5 @@ export const {
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
   useGetFriendsQuery,
+  useInviteUserMutation,
 } = friendsSlice;
