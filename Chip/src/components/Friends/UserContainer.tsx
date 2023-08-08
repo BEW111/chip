@@ -29,12 +29,16 @@ import {
   useAcceptCostreakMutation,
   useAddCostreakMutation,
   useGetFriendCostreaksQuery,
+} from '../../redux/slices/costreaksSlice';
+import {
   useGetFriendGoalsQuery,
-  useGetFriendsQuery,
   useGetGoalsQuery,
+} from '../../redux/slices/goalsSlice';
+import {
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
-} from '../../redux/supabaseApi';
+  useGetFriendsQuery,
+} from '../../redux/slices/friendsSlice';
 
 // Costreaks
 import {

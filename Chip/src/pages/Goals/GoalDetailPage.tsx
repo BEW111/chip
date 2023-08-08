@@ -29,12 +29,12 @@ import BackgroundWrapper from '../../components/BackgroundWrapper';
 import {
   useEditGoalMutation,
   useDeleteGoalMutation,
-} from '../../redux/supabaseApi';
+} from '../../redux/slices/goalsSlice';
 
 // Data
 import {selectUid} from '../../redux/slices/authSlice';
 import {SupabaseGoal, SupabaseGoalModification} from '../../types/goals';
-import {useGetChipsByGoalIdQuery} from '../../redux/supabaseApi';
+import {useGetChipsByGoalIdQuery} from '../../redux/slices/chipsSlice';
 
 function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
   const [editGoal] = useEditGoalMutation();

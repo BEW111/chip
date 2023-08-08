@@ -22,7 +22,7 @@ import {
 // State and supabase
 import {selectUid} from '../../redux/slices/authSlice';
 import {chipSubmissionStart} from '../../redux/slices/chipSubmitterSlice';
-import {useGetGoalsQuery} from '../../redux/supabaseApi';
+import {useGetGoalsQuery} from '../../redux/slices/goalsSlice';
 import {ChipSubmission} from '../../types/chips';
 import {SupabaseGoal} from '../../types/goals';
 

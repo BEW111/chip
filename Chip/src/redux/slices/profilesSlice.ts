@@ -3,7 +3,7 @@ import {supabaseApi} from '../supabaseApi';
 import {supabase} from '../../supabase/supabase';
 import {SupabaseProfile} from '../../types/profiles';
 
-export const extendedApiSlice = supabaseApi.injectEndpoints({
+const profilesSlice = supabaseApi.injectEndpoints({
   endpoints: builder => ({
     getCurrentProfile: builder.query<SupabaseProfile | null, void>({
       providesTags: ['Profile'],
@@ -31,4 +31,4 @@ export const extendedApiSlice = supabaseApi.injectEndpoints({
   }),
 });
 
-export const {useGetCurrentProfileQuery} = extendedApiSlice;
+export const {useGetCurrentProfileQuery} = profilesSlice;

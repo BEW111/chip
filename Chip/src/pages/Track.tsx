@@ -47,7 +47,7 @@ import {
 } from '../redux/slices/cameraSlice';
 
 // Loading goals data
-import {usePrefetch} from '../redux/supabaseApi';
+import {usePrefetch} from '../redux/slices/goalsSlice';
 import Tooltip from '../components/common/Tooltip';
 
 // Tutorial state

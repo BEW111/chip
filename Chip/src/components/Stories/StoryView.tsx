@@ -18,7 +18,7 @@ import {
   viewNextStory,
   stopViewingStory,
 } from '../../redux/slices/storyFeedSlice';
-import {useGetStoryGroupsQuery} from '../../redux/supabaseApi';
+import {useGetStoryGroupsQuery} from '../../redux/slices/storiesSlice';
 import {supabase} from '../../supabase/supabase';
 
 // Marking stories as viewed

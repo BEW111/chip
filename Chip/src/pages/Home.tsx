@@ -17,7 +17,7 @@ import {
   viewStoryByUserIdx,
   selectCurrentUserViewingIdx,
 } from '../redux/slices/storyFeedSlice';
-import {useGetStoryGroupsQuery} from '../redux/supabaseApi';
+import {useGetStoryGroupsQuery} from '../redux/slices/storiesSlice';
 import {insertStoryView} from '../supabase/stories';
 import {SupabaseProfile} from '../types/profiles';
 import {SupabaseStoryViewUpload} from '../types/stories';

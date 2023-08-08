@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from 'react-native';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 
 // Components
 import {
@@ -40,9 +41,6 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 
-import {useAppDispatch, useAppSelector} from '../../redux/hooks';
-import {selectNewlyCreated, selectUid} from '../../redux/slices/authSlice';
-
 // Database interactions
 import {modalStyles, styles} from '../../styles';
 import {
@@ -60,7 +58,11 @@ import {
 } from '../../utils/dow';
 
 // Updating local state
-import {useGetGoalsQuery, useAddGoalMutation} from '../../redux/supabaseApi';
+import {selectUid} from '../../redux/slices/authSlice';
+import {
+  useGetGoalsQuery,
+  useAddGoalMutation,
+} from '../../redux/slices/goalsSlice';
 import {
   selectTutorialStage,
   updateTutorialStage,
@@ -242,8 +244,7 @@ export default function AddGoalWidget() {
 
       await addGoal(goal);
 
-      // We'll also need to update the local cache
-      // We should move "addGoal" to the api slice
+      // May be able to remove this now that addGoal is in our api slice
       refetchGoals();
 
       // Hide and reset

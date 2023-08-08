@@ -23,7 +23,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // Auth
 import {supabase} from './src/supabase/supabase';
 import {Session} from '@supabase/supabase-js';
-import supabaseApi, {useGetChipsQuery} from './src/redux/supabaseApi';
+import supabaseApi from './src/redux/supabaseApi';
 
 import {useAppDispatch, useAppSelector} from './src/redux/hooks';
 
@@ -338,9 +338,6 @@ function MainTabs() {
 function Main() {
   const dispatch = useAppDispatch();
   const [session, setSession] = useState<Session | null>(null);
-
-  const {data: chips} = useGetChipsQuery();
-  // console.log('[Main] chips:', chips);
 
   useEffect(() => {
     supabase.auth.getSession().then(({data: {session: newSession}}) => {

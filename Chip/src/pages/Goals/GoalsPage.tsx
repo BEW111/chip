@@ -22,10 +22,9 @@ import Tooltip from '../../components/common/Tooltip';
 import GoalPage from './GoalDetailPage';
 
 // Api
-import supabaseApi, {
-  useGetChipsQuery,
-  useGetGoalsQuery,
-} from '../../redux/supabaseApi';
+import supabaseApi from '../../redux/supabaseApi';
+import {useGetChipsQuery} from '../../redux/slices/chipsSlice';
+import {useGetGoalsQuery} from '../../redux/slices/goalsSlice';
 import {useAppSelector} from '../../redux/hooks';
 
 // Tutorial info

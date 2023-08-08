@@ -20,7 +20,7 @@ import Animated, {
 // Data
 import {SupabaseGoal} from '../../types/goals';
 import {selectUid} from '../../redux/slices/authSlice';
-import {useGetGoalCostreaksQuery} from '../../redux/supabaseApi';
+import {useGetGoalCostreaksQuery} from '../../redux/slices/costreaksSlice';
 import {SupabaseCostreakWithUsers} from '../../types/costreaks';
 
 function GoalBadges({goal}: {goal: SupabaseGoal}) {

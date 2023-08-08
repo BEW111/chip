@@ -21,7 +21,7 @@ import {
   useGetFriendsQuery,
   useGetSentFriendRequestsQuery,
   useGetReceivedFriendRequestsQuery,
-} from '../redux/supabaseApi';
+} from '../redux/slices/friendsSlice';
 import {getProfilesBySearchQuery} from '../supabase/friends';
 import {SupabaseProfileWithFriendship} from '../types/friends';
 
