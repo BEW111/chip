@@ -285,8 +285,13 @@ function UserContainer({user}: UserContainerType) {
   };
 
   // Pressing the whole container
-  const onPressContainer = () => {
+  const onPressInContainer = () => {
     setPressed(true);
+  };
+  const onPressOutContainer = () => {
+    setPressed(false);
+  };
+  const onPressContainer = () => {
     if (user.status === 'accepted') {
       setSuperstreakModalVisible(true);
     }
@@ -325,8 +330,9 @@ function UserContainer({user}: UserContainerType) {
         />
       </Portal>
       <Pressable
-        onPressIn={onPressContainer}
-        onPressOut={() => setPressed(false)}
+        onPressIn={onPressInContainer}
+        onPressOut={onPressOutContainer}
+        onPress={onPressContainer}
         style={buttonStyles(pressed).button}>
         <View style={styles.rowSpaceBetween}>
           <View style={styles.row}>

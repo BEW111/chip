@@ -182,14 +182,23 @@ const StoryView = () => {
       {/* Goal info */}
       {currentStory.goal !== null && (
         <BlurView style={storyViewStyles.goalInfoWrapper}>
-          <Text variant="displayMedium">{currentStory.goal.emoji}</Text>
-          <Divider style={styles.dividerHSmall} />
-          <View>
-            <Text variant="bodyLarge" style={storyViewStyles.goalNameText}>
+          <View style={storyViewStyles.emojiWrapper}>
+            <Text variant="displayMedium">{currentStory.goal.emoji}</Text>
+          </View>
+          <View style={storyViewStyles.storyTextWrapper}>
+            <Text
+              variant="bodyLarge"
+              style={storyViewStyles.goalNameText}
+              numberOfLines={1}>
               {currentStory.goal.name}
             </Text>
-            <Text variant="bodyMedium" style={storyViewStyles.storyText}>
-              "{currentStory.message}"
+            <Text
+              variant="bodyMedium"
+              style={storyViewStyles.storyText}
+              numberOfLines={1}>
+              {currentStory.message === ''
+                ? 'No notes provided'
+                : `"${currentStory.message}"`}
             </Text>
           </View>
           <View style={storyViewStyles.streakContainer}>
@@ -216,33 +225,35 @@ const storyViewStyles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  storyTextWrapper: {
-    width: '100%',
-    padding: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  },
-  storyText: {color: 'white'},
-  usernameText: {color: 'white'},
-  streakContainer: {
-    marginLeft: 'auto',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  streakText: {color: 'white'},
   goalInfoWrapper: {
     position: 'absolute',
-    borderRadius: 16,
-    margin: 12,
-    padding: 12,
-    paddingTop: 16,
-    flexDirection: 'row',
-    display: 'flex',
-    alignItems: 'center',
     bottom: 10,
     left: 0,
     right: 0,
+
+    borderRadius: 16,
+    margin: 12,
+
+    padding: 12,
+    paddingTop: 16,
+
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    display: 'flex',
+    alignItems: 'center',
   },
+  emojiWrapper: {
+    paddingRight: 12,
+  },
+  storyTextWrapper: {flexShrink: 0, flex: 4},
+  storyText: {color: 'white'},
+  usernameText: {color: 'white'},
+  streakContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 4,
+  },
+  streakText: {color: 'white'},
   goalNameText: {
     color: 'white',
     fontWeight: 'bold',

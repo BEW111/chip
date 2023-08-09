@@ -63,7 +63,9 @@ const AvatarDisplay = (props: ProfileImageProps) => {
           </Modal>
         </Portal>
       )}
-      <Pressable onPress={onOpenPreview}>
+      <Pressable
+        onPress={onOpenPreview}
+        disabled={props.previewable === null || !props.previewable}>
         <FastImage
           source={image}
           style={styles(props.height, props.width).profileImage}
@@ -83,8 +85,8 @@ const styles = (height: number, width: number) =>
       borderRadius: 100,
     },
     profileImagePreview: {
-      height: 128,
-      width: 128,
+      height: 196,
+      width: 196,
       borderRadius: 100,
     },
     previewWrapper: {
