@@ -28,7 +28,10 @@ import {useGetGoalsQuery} from '../../redux/slices/goalsSlice';
 import {useAppSelector} from '../../redux/hooks';
 
 // Tutorial info
-import {selectTutorialStage} from '../../redux/slices/tutorialSlice';
+import {
+  selectInTutorial,
+  selectTutorialStage,
+} from '../../redux/slices/tutorialSlice';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +59,7 @@ function MainPage({navigation}) {
 
   // Tutorial
   const tutorialStage = useAppSelector(selectTutorialStage);
+  const inTutorial = useAppSelector(selectInTutorial);
 
   return (
     <>
@@ -73,6 +77,7 @@ function MainPage({navigation}) {
           <ScrollView
             contentContainerStyle={localStyles.scrollViewPadded}
             style={styles.expand}
+            scrollEnabled={!inTutorial}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}

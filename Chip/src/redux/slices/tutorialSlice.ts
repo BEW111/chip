@@ -24,8 +24,8 @@ type TutorialState = {
 };
 
 const initialState: TutorialState = {
-  inTutorial: false,
-  stage: null,
+  inTutorial: true,
+  stage: 'goals-onboarding-carousel',
 };
 
 export const tutorialSlice = createSlice({
@@ -49,6 +49,7 @@ export const tutorialSlice = createSlice({
 
 export const {updateTutorialStage, startTutorial, finishTutorial} =
   tutorialSlice.actions;
+export const selectInTutorial = (state: RootState) => state.tutorial.inTutorial;
 export const selectTutorialStage = (state: RootState) => state.tutorial.stage;
 
 export default tutorialSlice.reducer;

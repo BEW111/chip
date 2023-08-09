@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+// TODO: get rid of inline styling
+
+import React, {forwardRef, useRef, useState} from 'react';
+import {View, StyleSheet, Dimensions, Pressable} from 'react-native';
 import {Text, Divider, Modal, IconButton, useTheme} from 'react-native-paper';
 import Carousel from 'react-native-reanimated-carousel';
 
@@ -18,19 +20,40 @@ type OnboardingCarouselModalProps = {
 };
 
 function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
-  const carouselPlayInterval = 10000;
+  const dispatch = useAppDispatch();
 
+  // Carousel info
   const carouselWidth = Dimensions.get('window').width * 0.95;
   const carouselHeight = carouselWidth * 1.3;
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   const imgs = [ChipIcon, SelfieImage, FriendsImage, StreaksImage];
 
-  const dispatch = useAppDispatch();
+  // Carousel state
+  const [swipedOnce, setSwipedOnce] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Modal state
   const onModalDismiss = () => {
     dispatch(updateTutorialStage('goals-wait-start-create'));
   };
 
+  // Carousel control
+  // const carouselRef = React.useRef<ICarouselInstance>(null);
+  // const onPressModal = () => {
+  //   console.log('test');
+  //   console.log(carouselRef);
+  //   if (carouselRef && carouselRef.current) {
+  //     console.log('test2');
+  //     carouselRef.current.prev({count: 1, animated: true});
+  //   }
+  // };
+  const onCarouselSnapToItem = (index: number) => {
+    setCurrentIndex(index);
+    if (index > 0) {
+      setSwipedOnce(true);
+    }
+  };
+
+  // Slide text (unused if we are styling it)
   const slides = [
     {
       headline: '',
@@ -57,25 +80,25 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
     <Modal
       visible={visible}
       onDismiss={onModalDismiss}
+      dismissable={swipedOnce}
       contentContainerStyle={
         localStyles(carouselWidth, carouselHeight).containerStyle
       }>
       <IconButton
         icon={'close-outline'}
         onPress={onModalDismiss}
+        size={32}
         style={localStyles(carouselWidth, carouselHeight).closeIcon}
       />
       <Divider style={styles.dividerLarge} />
       <View style={localStyles(carouselWidth, carouselHeight).carouselWrapper}>
         <Carousel
-          //   autoPlay
-          //   autoPlayInterval={carouselPlayInterval}
           width={carouselWidth}
           height={carouselHeight}
           data={slides}
           scrollAnimationDuration={400}
-          loop={false}
-          onSnapToItem={index => setCurrentIndex(index)}
+          loop={true}
+          onSnapToItem={onCarouselSnapToItem}
           renderItem={({item, index}) => (
             <View
               style={localStyles(carouselWidth, carouselHeight).carouselView}>
@@ -85,7 +108,7 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
               <Divider style={styles.dividerSmall} />
               <FastImage
                 source={imgs[index]}
-                style={{width: 300, height: 300, borderRadius: 50}}
+                style={localStyles(carouselWidth, carouselHeight).slideImage}
               />
               <Divider style={styles.dividerSmall} />
               <Text
@@ -188,6 +211,7 @@ const localStyles = (carouselWidth: number, carouselHeight: number) =>
       flex: 1,
       alignItems: 'center',
     },
+    slideImage: {width: 300, height: 300, borderRadius: 50},
   });
 
 export default OnboardingCarouselModal;

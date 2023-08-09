@@ -28,7 +28,7 @@ import {SupabaseGoal} from '../../types/goals';
 // Supabase and state
 import {selectUid} from '../../redux/slices/authSlice';
 import {supabase} from '../../supabase/supabase';
-import {useDeleteChipMutation} from '../../redux/supabaseApi';
+import {useDeleteChipMutation} from '../../redux/slices/chipsSlice';
 
 type ChipModalProps = {
   visible: boolean;
@@ -242,6 +242,14 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
 
   // Selection
   const [selected, setSelected] = useState(false);
+  const onPressOut = () => {
+    viewScale.value = withSpring(1, {
+      damping: 10,
+      mass: 0.1,
+      stiffness: 100,
+    });
+    setSelected(true);
+  };
   const onLongPress = () => {
     ReactNativeHapticFeedback.trigger('impactMedium');
     viewScale.value = withSpring(4, {
@@ -295,7 +303,6 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
       <Animated.View style={viewAnimatedStyles}>
         <Pressable
           onPressIn={() => {
-            // ReactNativeHapticFeedback.trigger('impactLight');
             viewScale.value = withSpring(1.05, {
               damping: 10,
               mass: 0.1,
@@ -303,13 +310,7 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
               overshootClamping: true,
             });
           }}
-          onPressOut={() => {
-            viewScale.value = withSpring(1, {
-              damping: 10,
-              mass: 0.1,
-              stiffness: 100,
-            });
-          }}
+          onPressOut={onPressOut}
           onLongPress={onLongPress}>
           <View style={styles.full}>
             {chipImageUri ? (

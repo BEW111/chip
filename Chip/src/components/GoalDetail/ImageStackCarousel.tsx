@@ -1,9 +1,12 @@
-import React, {useCallback} from 'react';
-import {Dimensions, Text, View} from 'react-native';
+import React, {useCallback, forwardRef} from 'react';
+import {Dimensions, View} from 'react-native';
 import {interpolate} from 'react-native-reanimated';
-import Carousel from 'react-native-reanimated-carousel';
+import C, {ICarouselInstance} from 'react-native-reanimated-carousel';
 import ChipDisplayMini from './ChipDisplayMini';
 
+const Carousel = forwardRef(C);
+
+// TODO: fix later
 const WIDTH = 150;
 
 function ImageStackCarousel({goal, chips}) {
