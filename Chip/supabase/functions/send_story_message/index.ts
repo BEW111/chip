@@ -80,7 +80,7 @@ serve(async req => {
   // 3. Build and sendOneSignal notification object to all friends
   const notification = new OneSignal.Notification();
   notification.app_id = _OnesignalAppId_;
-  notification.include_external_user_ids = friend_ids.concat([creator_id]);
+  notification.include_external_user_ids = friend_ids;
   notification.contents = {
     en: `${username} posted a new chip: ${story_message}`,
   };
