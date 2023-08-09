@@ -56,9 +56,48 @@ export async function signInWithEmail(email: string, password: string) {
   return result;
 }
 
+export async function verifyOtp(email: string, token: string) {
+  const {error} = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: 'signup',
+  });
+
+  let result: AuthResult;
+
+  if (error) {
+    result = {
+      ok: false,
+      message: error.message,
+    };
+  } else {
+    result = {
+      ok: true,
+      message: null,
+    };
+  }
+
+  return result;
+}
+
 export async function signOut() {
-  console.log('sign out');
-  supabase.auth.signOut();
+  const {error} = await supabase.auth.signOut();
+
+  let result: AuthResult;
+
+  if (error) {
+    result = {
+      ok: false,
+      message: error.message,
+    };
+  } else {
+    result = {
+      ok: true,
+      message: null,
+    };
+  }
+
+  return result;
 }
 
 export async function getCurrentUid() {

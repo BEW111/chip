@@ -12,6 +12,8 @@ import {
   Text,
   TextInput,
   Modal,
+  ActivityIndicator,
+  useTheme,
 } from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AvatarDisplay from '../components/AvatarDisplay';
@@ -31,6 +33,7 @@ import {StyleSheet} from 'react-native';
 export default function Settings(props) {
   const {data: profile} = useGetCurrentProfileQuery();
   const dispatch = useAppDispatch();
+  const theme = useTheme();
 
   // Username editor
   const [usernameEditorOpen, setUsernameEditorOpen] = useState(false);
@@ -105,6 +108,7 @@ export default function Settings(props) {
   };
 
   // Launches delete modal
+  const [isDeleting, setIsDeleting] = useState(false);
   const [manageModalShowing, setManageModalShowing] = useState(false);
   const [areYouSureDelete, setAreYouSureDelete] = useState(false);
   const onManageAccountPressed = () => {
@@ -120,8 +124,10 @@ export default function Settings(props) {
     }
 
     if (areYouSureDelete && profile) {
+      setIsDeleting(true);
       console.log(profile.id);
       deleteUser(profile.id);
+      setIsDeleting(false);
     }
   };
 
@@ -149,7 +155,13 @@ export default function Settings(props) {
             <Button
               mode={areYouSureDelete ? 'contained' : 'outlined'}
               onPress={onDeleteButtonPressed}>
-              {areYouSureDelete ? 'Are you sure? ' : 'Delete account'}
+              {isDeleting ? (
+                <ActivityIndicator color={theme.colors.onPrimary} />
+              ) : areYouSureDelete ? (
+                'Are you sure? '
+              ) : (
+                'Delete account'
+              )}
             </Button>
           </Surface>
         </Modal>

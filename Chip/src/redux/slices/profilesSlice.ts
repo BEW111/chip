@@ -24,7 +24,7 @@ const profilesSlice = supabaseApi.injectEndpoints({
           const profile: SupabaseProfile = data[0];
           return {data: profile};
         } else {
-          return {error: error?.message};
+          return {error: error?.message || null};
         }
       },
     }),

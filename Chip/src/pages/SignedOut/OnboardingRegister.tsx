@@ -20,7 +20,7 @@ import BackgroundWrapper from '../../components/BackgroundWrapper';
 import {finishTutorial, startTutorial} from '../../redux/slices/tutorialSlice';
 
 // Auth
-import {signUpWithEmail} from '../../supabase/auth';
+import {signUpWithEmail, verifyOtp} from '../../supabase/auth';
 
 // Navigation
 import {useNavigation} from '@react-navigation/native';
@@ -33,6 +33,10 @@ export default function OnboardingRegister() {
   const [displayError, setDisplayError] = useState('');
 
   const [signingUp, setSigningUp] = useState(false);
+
+  const [otpText, setOtpText] = useState('');
+  const [waitingForVerify, setWaitingForVerify] = useState(false);
+  const [verifying, setVerifying] = useState(false);
 
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
@@ -48,18 +52,38 @@ export default function OnboardingRegister() {
     } else if (usernameText.length < 3) {
       setDisplayError('Your username is too short');
     } else {
-      // Start tutorial
       setSigningUp(true);
-      dispatch(startTutorial());
+
       const result = await signUpWithEmail(emailText, usernameText, passText);
       setSigningUp(false);
 
       if (!result.ok) {
+        console.log(result);
         setDisplayError(result?.message || 'Failed to sign up');
-        dispatch(finishTutorial());
         return;
       }
+
+      setWaitingForVerify(true);
     }
+  };
+
+  const onVerifyPressed = async () => {
+    // To do: fix this later
+    if (otpText.length !== 6) {
+      await signUpWithEmail(emailText, usernameText, passText);
+      return;
+    }
+
+    setVerifying(true);
+    dispatch(startTutorial());
+
+    const result = await verifyOtp(emailText, otpText);
+
+    if (!result.ok) {
+      dispatch(finishTutorial());
+    }
+
+    setVerifying(false);
   };
 
   async function onToggleSecureTextEntry() {
@@ -87,68 +111,109 @@ export default function OnboardingRegister() {
                 </Text>
               </View>
               <Divider style={styles.dividerSmall} />
-              <TextInput
-                mode="outlined"
-                placeholder="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={newText => setEmailText(newText)}
-                defaultValue={emailText}
-                underlineColor="gray"
-                activeUnderlineColor="white"
-              />
-              <Divider style={styles.dividerSmall} />
-              <TextInput
-                mode="outlined"
-                placeholder="Username"
-                autoCapitalize="none"
-                autoCorrect={false}
-                onChangeText={newText => setUsernameText(newText)}
-                defaultValue={usernameText}
-                underlineColor="gray"
-                activeUnderlineColor="white"
-              />
-              <Divider style={styles.dividerSmall} />
-              <TextInput
-                secureTextEntry={secureTextEntry}
-                autoCapitalize="none"
-                autoCorrect={false}
-                mode="outlined"
-                placeholder="Password"
-                onChangeText={newText => setPassText(newText)}
-                defaultValue={passText}
-                underlineColor="#FFEEF8"
-                activeUnderlineColor="white"
-                right={
-                  <TextInput.Icon
-                    icon={secureTextEntry ? 'eye-off' : 'eye'}
-                    onPress={onToggleSecureTextEntry}
+              {waitingForVerify ? (
+                <>
+                  <HelperText>
+                    Please enter the verification code sent to {emailText}
+                  </HelperText>
+                  <TextInput
+                    mode="outlined"
+                    placeholder="Verification code"
+                    keyboardType="number-pad"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={newText => setOtpText(newText)}
+                    defaultValue={otpText}
+                    underlineColor="gray"
+                    activeUnderlineColor="white"
                   />
-                }
-              />
-              <HelperText type="error" visible={displayError !== ''}>
-                {displayError}
-              </HelperText>
-              <Divider style={styles.dividerSmall} />
-              {signingUp ? (
-                <ActivityIndicator />
+                  <Divider style={styles.dividerMedium} />
+                  {signingUp ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <View style={styles.row}>
+                      <View style={{flex: 1, marginRight: 12}}>
+                        <Button
+                          contentStyle={{alignSelf: 'stretch'}}
+                          mode="text"
+                          onPress={() => setWaitingForVerify(false)}>
+                          Back
+                        </Button>
+                      </View>
+                      <View style={styles.expand}>
+                        <Button mode="contained" onPress={onVerifyPressed}>
+                          {otpText.length !== 6 ? 'Resend' : 'Register'}
+                        </Button>
+                      </View>
+                    </View>
+                  )}
+                </>
               ) : (
-                <View style={styles.row}>
-                  <View style={{flex: 1, marginRight: 12}}>
-                    <Button
-                      contentStyle={{alignSelf: 'stretch'}}
-                      mode="text"
-                      onPress={() => navigation.navigate('Onboarding')}>
-                      Back
-                    </Button>
-                  </View>
-                  <View style={styles.expand}>
-                    <Button mode="contained" onPress={onSignUpPressed}>
-                      Register
-                    </Button>
-                  </View>
-                </View>
+                <>
+                  <TextInput
+                    mode="outlined"
+                    placeholder="Email"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={newText => setEmailText(newText)}
+                    defaultValue={emailText}
+                    underlineColor="gray"
+                    activeUnderlineColor="white"
+                  />
+                  <Divider style={styles.dividerSmall} />
+                  <TextInput
+                    mode="outlined"
+                    placeholder="Username"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    onChangeText={newText => setUsernameText(newText)}
+                    defaultValue={usernameText}
+                    underlineColor="gray"
+                    activeUnderlineColor="white"
+                  />
+                  <Divider style={styles.dividerSmall} />
+                  <TextInput
+                    secureTextEntry={secureTextEntry}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    mode="outlined"
+                    placeholder="Password"
+                    onChangeText={newText => setPassText(newText)}
+                    defaultValue={passText}
+                    underlineColor="#FFEEF8"
+                    activeUnderlineColor="white"
+                    right={
+                      <TextInput.Icon
+                        icon={secureTextEntry ? 'eye-off' : 'eye'}
+                        onPress={onToggleSecureTextEntry}
+                      />
+                    }
+                  />
+                  <HelperText type="error" visible={displayError !== ''}>
+                    {displayError}
+                  </HelperText>
+                  <Divider style={styles.dividerSmall} />
+                  {signingUp ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <View style={styles.row}>
+                      <View style={{flex: 1, marginRight: 12}}>
+                        <Button
+                          contentStyle={{alignSelf: 'stretch'}}
+                          mode="text"
+                          onPress={() => navigation.navigate('Onboarding')}>
+                          Back
+                        </Button>
+                      </View>
+                      <View style={styles.expand}>
+                        <Button mode="contained" onPress={onSignUpPressed}>
+                          {waitingForVerify ? 'Resend' : 'Register'}
+                        </Button>
+                      </View>
+                    </View>
+                  )}
+                </>
               )}
             </BlurSurface>
           </ScrollView>
