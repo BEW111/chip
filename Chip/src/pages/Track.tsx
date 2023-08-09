@@ -5,7 +5,7 @@ import {StyleSheet, View, Linking, Pressable} from 'react-native';
 
 // Components
 import FastImage from 'react-native-fast-image';
-import {IconButton, Text} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BlurView} from '@react-native-community/blur';
 
@@ -29,6 +29,8 @@ import videoButtonOutside from '../../assets/video-button-outside.png';
 // Animation
 import Animated, {
   Easing,
+  FadeIn,
+  FadeOut,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
@@ -210,23 +212,25 @@ export default function Track() {
   const viewingPhoto = useAppSelector(selectViewingPhoto);
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center'}}>
+    <View style={{flex: 1, backgroundColor: 'black', justifyContent: 'center'}}>
       <FocusAwareStatusBar animated={true} barStyle="dark-content" />
-      {device != null ? (
-        <Camera
-          zoom={device.neutralZoom}
-          ref={camera}
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={isFocused && !viewingPhoto}
-          photo={true}
-          enableZoomGesture
-        />
-      ) : (
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text>No camera found (likely running on simulator)</Text>
-        </View>
-      )}
+      <Animated.View
+        style={{flex: 1, backgroundColor: 'black'}}
+        key={'uniqueKey'}
+        entering={FadeIn.duration(100)}
+        exiting={FadeOut.duration(100)}>
+        {device != null && (
+          <Camera
+            zoom={device.neutralZoom}
+            ref={camera}
+            style={StyleSheet.absoluteFill}
+            device={device}
+            isActive={isFocused && !viewingPhoto}
+            photo={true}
+            enableZoomGesture
+          />
+        )}
+      </Animated.View>
       {viewingPhoto ? (
         <PhotoViewer />
       ) : (
