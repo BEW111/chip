@@ -248,13 +248,23 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
 
   // Selection
   const [selected, setSelected] = useState(false);
+  const onPress = () => {
+    setSelected(true);
+  };
+  const onPressIn = () => {
+    viewScale.value = withSpring(1.05, {
+      damping: 10,
+      mass: 0.1,
+      stiffness: 100,
+      overshootClamping: true,
+    });
+  };
   const onPressOut = () => {
     viewScale.value = withSpring(1, {
       damping: 10,
       mass: 0.1,
       stiffness: 100,
     });
-    setSelected(true);
   };
   const onLongPress = () => {
     ReactNativeHapticFeedback.trigger('impactMedium');
@@ -308,15 +318,9 @@ export default function ChipDisplayMini({chip, goal}: ChipDisplayMiniProps) {
       </Portal>
       <Animated.View style={viewAnimatedStyles}>
         <Pressable
-          onPressIn={() => {
-            viewScale.value = withSpring(1.05, {
-              damping: 10,
-              mass: 0.1,
-              stiffness: 100,
-              overshootClamping: true,
-            });
-          }}
+          onPressIn={onPressIn}
           onPressOut={onPressOut}
+          onPress={onPress}
           onLongPress={onLongPress}>
           <View style={styles.full}>
             {chipImageUri ? (

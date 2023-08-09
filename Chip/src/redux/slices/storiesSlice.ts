@@ -74,7 +74,7 @@ const storiesSlice = supabaseApi.injectEndpoints({
         const storyGroups: StoryGroup[] = Object.entries(storyGroupsObject).map(
           ([_, stories]) => ({
             creator: stories[0].creator,
-            stories: stories,
+            stories: stories.sort().reverse(),
           }),
         );
 
