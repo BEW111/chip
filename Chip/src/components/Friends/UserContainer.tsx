@@ -14,10 +14,12 @@ import {
   SegmentedButtons,
   Surface,
   HelperText,
+  useTheme,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InputFieldMenu from '../InputFieldMenu';
 import AvatarDisplay from '../AvatarDisplay';
+import Tooltip from '../common/Tooltip';
 
 // stuff to delete
 import {selectUid} from '../../redux/slices/authSlice';
@@ -98,6 +100,7 @@ function CostreakDisplay({costreak}: CostreakDisplayType) {
 
 function FriendModal({visible, hideModal, friend}: FriendModalType) {
   const uid = useAppSelector(selectUid);
+  const theme = useTheme();
 
   // Get goals
   const {data: myGoals} = useGetGoalsQuery();
@@ -171,104 +174,134 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
     hideModal();
   };
 
+  // Costreak tooltip
+  const [costreakTooltipVisible, setCostreakTooltipVisible] = useState(false);
+
   return (
     <Modal
       visible={visible}
       onDismiss={onDismiss}
       contentContainerStyle={modalStyles.container}>
-      <View style={styles.row}>
-        <AvatarDisplay height={48} width={48} url={friend.avatar_url} />
-        <Divider style={styles.dividerHSmall} />
-        <View>
-          <Text variant="titleLarge">@{friend.username}</Text>
-          <Text variant="titleSmall">{friend.full_name}</Text>
+      <Pressable onPress={() => setCostreakTooltipVisible(false)}>
+        <View style={styles.row}>
+          <AvatarDisplay height={48} width={48} url={friend.avatar_url} />
+          <Divider style={styles.dividerHSmall} />
+          <View>
+            <Text variant="titleLarge">@{friend.username}</Text>
+            <Text variant="titleSmall">{friend.full_name}</Text>
+          </View>
         </View>
-      </View>
-      <Divider style={styles.dividerSmall} />
-      <View style={styles.row}>
-        <Icon name="bonfire-outline" size={22} />
-        <Divider style={styles.dividerHTiny} />
-        <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-          Costreaks
-        </Text>
-      </View>
-      <Divider style={styles.dividerSmall} />
-      <SegmentedButtons
-        value={tab}
-        onValueChange={setTab}
-        buttons={[
-          {
-            value: 'create',
-            label: 'Create',
-          },
-          {
-            value: 'manage',
-            label: 'Manage',
-          },
-        ]}
-      />
-      <Divider style={styles.dividerTiny} />
-      {tab === 'create' ? (
-        <>
-          {myGoalMenuItems && (
-            <InputFieldMenu
-              label={'Your goal'}
-              items={myGoalMenuItems}
-              textInputStyle={modalStyles.textInput}
-              onSelectedChange={(item: MenuItem) => setMyGoalSelected(item)}
-            />
-          )}
-          <Divider style={styles.dividerSmall} />
-          {friendGoalMenuItems && (
-            <InputFieldMenu
-              label={'@' + friend.username + "'s goal"}
-              items={friendGoalMenuItems}
-              textInputStyle={modalStyles.textInput}
-              onSelectedChange={(item: MenuItem) => setFriendGoalSelected(item)}
-            />
-          )}
-          <HelperText type="error" visible={displayError !== ''}>
-            {displayError}
-          </HelperText>
-          <Divider style={styles.dividerSmall} />
-          <Button mode="contained" onPress={onCreateCostreak}>
-            Create
-          </Button>
-        </>
-      ) : (
-        costreaks && (
+        <Divider style={styles.dividerSmall} />
+        <View style={styles.row}>
+          <Icon name="bonfire-outline" size={22} />
+          <Divider style={styles.dividerHTiny} />
+          <Tooltip
+            visible={costreakTooltipVisible}
+            text={
+              <Text
+                variant="labelLarge"
+                style={{color: theme.colors.onTertiary}}>
+                <Text
+                  variant="labelLarge"
+                  style={{
+                    color: theme.colors.secondaryContainer,
+                    fontWeight: 'bold',
+                  }}>
+                  Superstreaks
+                </Text>{' '}
+                {
+                  'are special streaks you can\nshare with a friend. To start a superstreak,\npropose a personal goal that each of you\nwill work on. If either of you breaks your\npersonal streak, then the whole superstreak\nwill reset!'
+                }
+              </Text>
+            }>
+            <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+              Superstreaks
+            </Text>
+          </Tooltip>
+          <Pressable onPress={() => setCostreakTooltipVisible(true)}>
+            <Icon name="help-circle-outline" size={22} />
+          </Pressable>
+        </View>
+        <Divider style={styles.dividerSmall} />
+        <SegmentedButtons
+          value={tab}
+          onValueChange={setTab}
+          buttons={[
+            {
+              value: 'create',
+              label: 'Create',
+            },
+            {
+              value: 'manage',
+              label: 'Manage',
+            },
+          ]}
+        />
+        <Divider style={styles.dividerTiny} />
+        {tab === 'create' ? (
           <>
-            <Text variant="titleMedium">Active</Text>
+            {myGoalMenuItems && (
+              <InputFieldMenu
+                label={'Your goal'}
+                items={myGoalMenuItems}
+                textInputStyle={modalStyles.textInput}
+                onSelectedChange={(item: MenuItem) => setMyGoalSelected(item)}
+              />
+            )}
             <Divider style={styles.dividerSmall} />
-            {costreaks
-              .filter(costreak => costreak.status === 'accepted')
-              .map(costreak => (
-                <CostreakDisplay key={costreak.id} costreak={costreak} />
-              ))}
-            <Text variant="titleMedium">Received requests</Text>
+            {friendGoalMenuItems && (
+              <InputFieldMenu
+                label={'@' + friend.username + "'s goal"}
+                items={friendGoalMenuItems}
+                textInputStyle={modalStyles.textInput}
+                onSelectedChange={(item: MenuItem) =>
+                  setFriendGoalSelected(item)
+                }
+              />
+            )}
+            <HelperText type="error" visible={displayError !== ''}>
+              {displayError}
+            </HelperText>
             <Divider style={styles.dividerSmall} />
-            {costreaks
-              .filter(
-                costreak =>
-                  costreak.status === 'pending' &&
-                  costreak.recipient_id === uid,
-              )
-              .map(costreak => (
-                <CostreakDisplay key={costreak.id} costreak={costreak} />
-              ))}
-            <Text variant="titleMedium">Sent requests</Text>
-            <Divider style={styles.dividerSmall} />
-            {costreaks
-              .filter(
-                costreak =>
-                  costreak.status === 'pending' && costreak.sender_id === uid,
-              )
-              .map(costreak => (
-                <CostreakDisplay key={costreak.id} costreak={costreak} />
-              ))}
+            <Button mode="contained" onPress={onCreateCostreak}>
+              Create
+            </Button>
           </>
-        )
-      )}
+        ) : (
+          costreaks && (
+            <>
+              <Text variant="titleMedium">Active</Text>
+              <Divider style={styles.dividerSmall} />
+              {costreaks
+                .filter(costreak => costreak.status === 'accepted')
+                .map(costreak => (
+                  <CostreakDisplay key={costreak.id} costreak={costreak} />
+                ))}
+              <Text variant="titleMedium">Received requests</Text>
+              <Divider style={styles.dividerSmall} />
+              {costreaks
+                .filter(
+                  costreak =>
+                    costreak.status === 'pending' &&
+                    costreak.recipient_id === uid,
+                )
+                .map(costreak => (
+                  <CostreakDisplay key={costreak.id} costreak={costreak} />
+                ))}
+              <Text variant="titleMedium">Sent requests</Text>
+              <Divider style={styles.dividerSmall} />
+              {costreaks
+                .filter(
+                  costreak =>
+                    costreak.status === 'pending' && costreak.sender_id === uid,
+                )
+                .map(costreak => (
+                  <CostreakDisplay key={costreak.id} costreak={costreak} />
+                ))}
+            </>
+          )
+        )}
+      </Pressable>
     </Modal>
   );
 }
