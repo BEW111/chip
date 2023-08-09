@@ -200,11 +200,11 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
             text={
               <Text
                 variant="labelLarge"
-                style={{color: theme.colors.onTertiary}}>
+                style={{color: theme && theme.colors.onTertiary}}>
                 <Text
                   variant="labelLarge"
                   style={{
-                    color: theme.colors.secondaryContainer,
+                    color: theme && theme.colors.secondaryContainer,
                     fontWeight: 'bold',
                   }}>
                   Superstreaks

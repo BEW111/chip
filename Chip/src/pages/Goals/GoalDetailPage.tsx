@@ -135,13 +135,13 @@ function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
         icon={fabOpen ? 'close' : 'menu'}
         fabStyle={{backgroundColor: colors.primary}}
         actions={[
-          {
-            icon: 'alarm',
-            label: 'Reminders',
-            onPress: () => {
-              showRemindersModal();
-            },
-          },
+          // {
+          //   icon: 'alarm',
+          //   label: 'Reminders',
+          //   onPress: () => {
+          //     showRemindersModal();
+          //   },
+          // },
           {
             icon: 'trash',
             label: 'Delete',

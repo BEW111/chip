@@ -75,7 +75,9 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
       received:friends!friends_sender_id_fkey!left(status, id), 
       sent:friends!friends_recipient_id_fkey!left(status, id)`,
       )
-      .textSearch('username', searchQuery);
+      .like('username', `${searchQuery}%`)
+      .order('username')
+      .limit(20);
 
   // Here's we're converting from the form of the result data to
   // a much nicer form. The result data may contain either a "received" or "sent"
