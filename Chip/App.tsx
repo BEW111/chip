@@ -57,6 +57,9 @@ import {
   selectTutorialStage,
 } from './src/redux/slices/tutorialSlice';
 
+// Animation
+import Animated, {FadeIn, FadeInDown, Easing} from 'react-native-reanimated';
+
 // TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
@@ -79,14 +82,37 @@ const VariableIcon = ({
   disabled,
 }: VariableIconProps) => {
   return (
-    <View style={localStyles({color, disabled}).tabIcon}>
+    <Animated.View
+      style={localStyles({color, disabled}).tabIcon}
+      key={`${iconName}-icon-view`}
+      entering={FadeIn.duration(700).easing(Easing.poly(5))}>
       <Icon
         disabled
         name={focused ? iconName : `${iconName}-outline`}
         color={disabled ? theme.colors.surfaceDisabled : color}
         size={28}
       />
-    </View>
+    </Animated.View>
+  );
+};
+
+type VariableTextProps = {
+  text: string;
+  color?: number | ColorValue | undefined;
+  disabled: boolean;
+};
+const VariableText = ({text, color, disabled}: VariableTextProps) => {
+  return (
+    <Animated.View
+      style={localStyles({color, disabled}).tabIcon}
+      key={`${text}-text-view`}
+      entering={FadeIn.duration(700).easing(Easing.poly(5))}>
+      <Text
+        variant="labelSmall"
+        style={localStyles({color, disabled}).tabLabel}>
+        {text}
+      </Text>
+    </Animated.View>
   );
 };
 
@@ -177,14 +203,11 @@ function MainTabs() {
             component={Home}
             options={{
               tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={
-                    localStyles({color, disabled: disabledTabsMap.home})
-                      .tabLabel
-                  }>
-                  Home
-                </Text>
+                <VariableText
+                  text="Home"
+                  color={color}
+                  disabled={disabledTabsMap.home}
+                />
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
@@ -209,14 +232,11 @@ function MainTabs() {
             component={Friends}
             options={{
               tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={
-                    localStyles({color, disabled: disabledTabsMap.friends})
-                      .tabLabel
-                  }>
-                  Friends
-                </Text>
+                <VariableText
+                  text="Friends"
+                  color={color}
+                  disabled={disabledTabsMap.friends}
+                />
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
@@ -241,14 +261,11 @@ function MainTabs() {
             component={Track}
             options={{
               tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={
-                    localStyles({color, disabled: disabledTabsMap.track})
-                      .tabLabel
-                  }>
-                  Track goal
-                </Text>
+                <VariableText
+                  text="Track goal"
+                  color={color}
+                  disabled={disabledTabsMap.track}
+                />
               ),
               tabBarShowLabel: true,
               tabBarIcon: ({focused, color}) => (
@@ -273,14 +290,11 @@ function MainTabs() {
             component={Goals}
             options={{
               tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={
-                    localStyles({color, disabled: disabledTabsMap.goals})
-                      .tabLabel
-                  }>
-                  Goals
-                </Text>
+                <VariableText
+                  text="Goals"
+                  color={color}
+                  disabled={disabledTabsMap.goals}
+                />
               ),
               tabBarLabelStyle: {fontSize: 12},
               tabBarShowLabel: true,
@@ -306,13 +320,11 @@ function MainTabs() {
             component={Settings}
             options={{
               tabBarLabel: ({color}) => (
-                <Text
-                  variant="labelSmall"
-                  style={
-                    localStyles({color, disabled: disabledTabsMap.you}).tabLabel
-                  }>
-                  You
-                </Text>
+                <VariableText
+                  text="You"
+                  color={color}
+                  disabled={disabledTabsMap.you}
+                />
               ),
               tabBarLabelStyle: {fontSize: 12},
               tabBarShowLabel: true,

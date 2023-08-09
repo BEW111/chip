@@ -216,7 +216,7 @@ export default function Track() {
       <FocusAwareStatusBar animated={true} barStyle="dark-content" />
       <Animated.View
         style={{flex: 1, backgroundColor: 'black'}}
-        key={'uniqueKey'}
+        key={'camera-animated-view'}
         entering={FadeIn.duration(100)}
         exiting={FadeOut.duration(100)}>
         {device != null && (
