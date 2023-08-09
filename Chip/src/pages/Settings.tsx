@@ -165,6 +165,7 @@ export default function Settings(props) {
                 self
                 width={64}
                 height={64}
+                previewable
               />
               <Divider style={styles.dividerHSmall} />
               <View>

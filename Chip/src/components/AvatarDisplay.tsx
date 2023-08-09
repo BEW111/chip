@@ -1,6 +1,9 @@
-import React from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {Pressable, StyleSheet, View} from 'react-native';
+
 import FastImage from 'react-native-fast-image';
+import {Portal, Modal} from 'react-native-paper';
+
 import DefaultProfileImage from '../../assets/profile-default.png';
 
 import {useGetCurrentProfileQuery} from '../redux/slices/profilesSlice';
@@ -11,6 +14,7 @@ interface ProfileImageProps {
   uid?: string;
   self?: boolean;
   url?: string | null;
+  previewable?: boolean;
 }
 
 const AvatarDisplay = (props: ProfileImageProps) => {
@@ -34,11 +38,38 @@ const AvatarDisplay = (props: ProfileImageProps) => {
     image = DefaultProfileImage;
   }
 
+  // Image preview
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const onOpenPreview = () => {
+    setPreviewVisible(true);
+  };
+  const onClosePreview = () => {
+    setPreviewVisible(false);
+  };
+
   return (
-    <FastImage
-      source={image}
-      style={styles(props.height, props.width).profileImage}
-    />
+    <>
+      {props.previewable !== null && props.previewable && (
+        <Portal>
+          <Modal visible={previewVisible} onDismiss={onClosePreview}>
+            <Pressable onPress={onClosePreview}>
+              <View style={styles(props.height, props.width).previewWrapper}>
+                <FastImage
+                  source={image}
+                  style={styles(props.height, props.width).profileImagePreview}
+                />
+              </View>
+            </Pressable>
+          </Modal>
+        </Portal>
+      )}
+      <Pressable onPress={onOpenPreview}>
+        <FastImage
+          source={image}
+          style={styles(props.height, props.width).profileImage}
+        />
+      </Pressable>
+    </>
   );
 };
 
@@ -50,5 +81,14 @@ const styles = (height: number, width: number) =>
       height: height,
       width: width,
       borderRadius: 100,
+    },
+    profileImagePreview: {
+      height: 128,
+      width: 128,
+      borderRadius: 100,
+    },
+    previewWrapper: {
+      width: '100%',
+      alignItems: 'center',
     },
   });
