@@ -22,11 +22,13 @@ const AvatarDisplay = (props: ProfileImageProps) => {
 
   // Specifying a specific url takes precedence over specifying that
   // you want this to be for the user's own profile
-  if (props.url) {
+  if (props.url != null) {
     image.uri = props.url;
   } else if (props.self) {
     if (profile?.avatar_url) {
       image.uri = profile?.avatar_url;
+    } else {
+      image = DefaultProfileImage;
     }
   } else {
     image = DefaultProfileImage;

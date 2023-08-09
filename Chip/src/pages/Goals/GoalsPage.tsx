@@ -104,7 +104,7 @@ function MainPage({navigation}) {
               ))}
             <Tooltip
               visible={tutorialStage === 'goals-wait-start-create'}
-              text="Start by creating a your first goal">
+              text="Start by creating your first goal">
               <AddGoalWidget />
             </Tooltip>
           </ScrollView>

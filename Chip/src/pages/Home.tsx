@@ -97,7 +97,7 @@ export default function Home() {
               <Text
                 style={localStyles(false).tempStoriesViewText}
                 variant="titleMedium">
-                Add some friends to see their stories here
+                No friends have posted recently, be the first!
               </Text>
             </View>
           )}
@@ -111,7 +111,7 @@ export default function Home() {
             <Text
               style={localStyles(false).tempStoriesViewText}
               variant="titleSmall">
-              A proper home feed is arriving in the next update!
+              A full home feed is arriving in the next update!
             </Text>
           </View>
         )}
@@ -140,11 +140,13 @@ const localStyles = (viewed: boolean) =>
       borderBottomWidth: 0.5,
     },
     tempStoriesViewWrapper: {
-      alignContent: 'center',
       justifyContent: 'center',
+      width: '100%',
     },
     tempStoriesViewText: {
       color: 'white',
+      paddingVertical: 36,
+      textAlign: 'center',
     },
     homeWrapper: {
       alignItems: 'center',
