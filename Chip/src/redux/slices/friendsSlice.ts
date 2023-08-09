@@ -119,6 +119,10 @@ const friendsSlice = supabaseApi.injectEndpoints({
         return {data: friends, error: error?.message};
       },
     }),
+    /*
+     * Sends a friend request to a particular user
+     * TODO: auto-accept if there is already an invite pending
+     */
     inviteUser: builder.mutation<void, FriendshipInvite>({
       invalidatesTags: ['Chip'],
       queryFn: async (friendInvite: FriendshipInvite) => {
@@ -133,7 +137,7 @@ const friendsSlice = supabaseApi.injectEndpoints({
           // This error is expected when this is a dupe friend req
           if (error.message === 'Friend request already exists') {
             console.log('[inviteUser]', 'Friend request already exists');
-            return {data: null, error: 'Friend request already exists'};
+            return {data: null, error: null};
           }
           return {error: error?.message};
         }

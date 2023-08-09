@@ -6,31 +6,6 @@ import {
 } from '../types/friends';
 import {PostgrestError} from '@supabase/supabase-js';
 
-/*
- * Sends a friend request to a particular user
- * TODO: auto-accept if there is already an invite pending
- */
-export async function inviteUser(senderId: string, recipientId: string) {
-  try {
-    const newStatus: FriendshipStatus = 'pending';
-    const {error} = await supabase.from('friends').insert({
-      sender_id: senderId,
-      recipient_id: recipientId,
-      status: newStatus,
-    });
-
-    if (error) {
-      // This error is expected when this is a dupe friend req
-      if (error.message === 'Friend request already exists') {
-        console.log(error.message);
-      }
-      throw Error(error.message);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 /**
  * Accepts an invite
  */

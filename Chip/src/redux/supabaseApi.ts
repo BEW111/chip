@@ -1,4 +1,4 @@
-// Individual slices are in the slices folder
+// Individual slices are injected in the slices folder
 
 import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 

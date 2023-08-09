@@ -287,7 +287,9 @@ function UserContainer({user}: UserContainerType) {
   // Pressing the whole container
   const onPressContainer = () => {
     setPressed(true);
-    setSuperstreakModalVisible(true);
+    if (user.status === 'accepted') {
+      setSuperstreakModalVisible(true);
+    }
   };
 
   // Invites
@@ -355,10 +357,7 @@ function UserContainer({user}: UserContainerType) {
                 Add back
               </Button>
             ) : user.status === 'sent' ? (
-              <Button
-                mode="contained"
-                disabled
-                labelStyle={localStyles.userButtonLabel}>
+              <Button mode="text" labelStyle={localStyles.userButtonLabel}>
                 Invite pending
               </Button>
             ) : (
