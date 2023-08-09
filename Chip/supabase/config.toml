@@ -1,2 +1,5 @@
 [functions.send_story_message]
 verify_jwt = false
+
+[functions.send_invite_message]
+verify_jwt = false

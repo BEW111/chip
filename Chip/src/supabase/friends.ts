@@ -70,7 +70,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
     await supabase
       .from('profiles')
       /*
-       *
+       * received: the profile we have found MATCHES with received, so this is a friend request WE sent
+       * sent: the profile we have found MATCHES with sent, so this is a friend request WE received
        */
       .select(
         `

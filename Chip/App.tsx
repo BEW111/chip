@@ -63,6 +63,7 @@ import Animated, {FadeIn, FadeInDown, Easing} from 'react-native-reanimated';
 // TODO: temp fix
 LogBox.ignoreLogs([
   'Sending `onAnimatedValueUpdate` with no listeners registered.',
+  'Warning: Overriding previous layout animation with new one before the first began',
   '@supabase/gotrue-js: Stack guards not supported in this environment. Generally not an issue but may point to a very conservative transpilation environment (use ES2017 or above) that implements async/await with generators, or this is a JavaScript engine that does not support async/await stack traces.',
 ]);
 

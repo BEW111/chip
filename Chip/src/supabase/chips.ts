@@ -12,7 +12,7 @@ export async function insertChipInDatabase(chip: SupabaseChipUpload) {
 
 // Uploads image of chip
 export async function uploadChipImageToStorage(
-  goalId: number,
+  goalId: string,
   uri: string,
   uid: string,
   fileName: string,

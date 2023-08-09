@@ -1,4 +1,4 @@
-// Used for messaging other users about stories
+// Used for messages related to sending/accepting requests between users
 
 import {serve} from 'https://deno.land/std@0.168.0/http/server.ts';
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.29';
@@ -32,12 +32,12 @@ const onesignalClient = new OneSignal.DefaultApi(configuration);
 serve(async req => {
   const {record} = await req.json();
 
-  // 1. Get creator id and story details
-  const creator_id = record.creator_id;
-  const story_message = record.message;
+  // 1. Get sender, recipient, and message type details
+  const sender_id = record.sender_id;
+  const recipient_id = record.recipient_id;
+  const message_type = record.type;
 
-  let username;
-  let friend_ids = [];
+  let sender_username;
 
   // 2. Query database for creator username and friends
   try {
@@ -47,28 +47,13 @@ serve(async req => {
     );
 
     // Now we can get the session or user object
-    const {data: creators, error: creatorError} = await supabaseClient
+    const {data: senderArray, error: senderProfileError} = await supabaseClient
       .from('profiles')
       .select()
-      .eq('id', creator_id);
-    username = creators[0].username;
-    if (creatorError) {
-      throw creatorError;
-    }
-
-    // And now we can get all friends
-    const {data: friendships, error: friendshipsError} = await supabaseClient
-      .from('friends')
-      .select('sender_id, recipient_id')
-      .eq('status', 'accepted')
-      .or(`sender_id.eq.${creator_id}, recipient_id.eq.${creator_id}`);
-    friend_ids = friendships.map(friendship =>
-      friendship.sender_id === creator_id
-        ? friendship.recipient_id
-        : friendship.sender_id,
-    );
-    if (friendshipsError) {
-      throw friendshipsError;
+      .eq('id', sender_id);
+    sender_username = senderArray[0].username;
+    if (senderProfileError) {
+      throw senderProfileError;
     }
   } catch (error) {
     return new Response(JSON.stringify({error: error.message}), {
@@ -77,12 +62,23 @@ serve(async req => {
     });
   }
 
-  // 3. Build and sendOneSignal notification object to all friends
+  // 3. Create notification message
+  const notification_message =
+    message_type === 'friend_request_sent'
+      ? `${sender_username} sent you a friend request`
+      : message_type === 'friend_request_accepted'
+      ? `${sender_username} accepted your friend request`
+      : message_type === 'costreak_request_sent'
+      ? `${sender_username} wants to start a superstreak with you`
+      : message_type === 'costreak_request_accepted' &&
+        `${sender_username} accepted your superstreak request`;
+
+  // 4. Build and sendOneSignal notification object to all friends
   const notification = new OneSignal.Notification();
   notification.app_id = _OnesignalAppId_;
-  notification.include_external_user_ids = friend_ids.concat([creator_id]);
+  notification.include_external_user_ids = [recipient_id];
   notification.contents = {
-    en: `${username} posted a new chip: ${story_message}`,
+    en: notification_message,
   };
   const onesignalApiRes = await onesignalClient.createNotification(
     notification,

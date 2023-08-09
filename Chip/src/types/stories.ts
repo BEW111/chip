@@ -6,6 +6,7 @@ export type SupabaseStoryUpload = {
   creator_id: string;
   photo_path: string;
   message: string;
+  goal_id: string;
 };
 
 export type SupabaseStory = {
