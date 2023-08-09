@@ -69,15 +69,20 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
   }: {data: SupabaseProfilesSearchResult[]; error: PostgrestError | null} =
     await supabase
       .from('profiles')
+      /*
+       *
+       */
       .select(
         `
       *, 
-      received:friends!friends_sender_id_fkey!left(status, id), 
+      received:friends!friends_sender_id_fkey!left(status, id),
       sent:friends!friends_recipient_id_fkey!left(status, id)`,
       )
       .like('username', `${searchQuery}%`)
       .order('username')
       .limit(20);
+
+  console.log(data);
 
   // Here's we're converting from the form of the result data to
   // a much nicer form. The result data may contain either a "received" or "sent"
@@ -93,11 +98,11 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
         status:
           searchResult.sent.length > 0
             ? searchResult.sent[0].status === 'pending'
-              ? 'received'
+              ? 'sent'
               : searchResult.sent[0].status
             : searchResult.received.length > 0
             ? searchResult.received[0].status === 'pending'
-              ? 'sent'
+              ? 'received'
               : searchResult.received[0].status
             : 'none',
         friendship_id:
