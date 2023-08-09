@@ -181,14 +181,20 @@ function ChipModal({
               alignItems: 'center',
               justifyContent: 'center',
               paddingTop: 20,
+              paddingHorizontal: 80,
             }}>
             <Text variant="titleMedium" style={localStyles.whiteText}>
               {goal.name} - {chip.amount}{' '}
               {pluralize(goal.iteration_units, chip.amount)}
             </Text>
             {chip.description && (
-              <Text variant="titleSmall" style={localStyles.whiteText}>
-                Notes: {chip.description}
+              <Text
+                variant="titleSmall"
+                style={localStyles.whiteText}
+                numberOfLines={1}>
+                {chip.description === ''
+                  ? 'No notes provided'
+                  : `Notes: ${chip.description}`}
               </Text>
             )}
             <View
