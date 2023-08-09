@@ -52,7 +52,10 @@ import Settings from './src/pages/Settings';
 // Styling
 import theme from './src/theme';
 import {styles} from './src/styles';
-import {selectTutorialStage} from './src/redux/slices/tutorialSlice';
+import {
+  selectInTutorial,
+  selectTutorialStage,
+} from './src/redux/slices/tutorialSlice';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -97,6 +100,7 @@ function MainTabs() {
   }, []);
 
   // Tutorial state for disabling tabs
+  const inTutorial = useAppSelector(selectInTutorial);
   const tutorialStage = useAppSelector(selectTutorialStage);
   const disabledTabsMap =
     tutorialStage === null
@@ -166,6 +170,7 @@ function MainTabs() {
             tabBarIndicatorStyle: {
               backgroundColor: 'rgba(255, 255, 255, 0.0)',
             },
+            swipeEnabled: !inTutorial,
           }}>
           <Tab.Screen
             name="Home"
