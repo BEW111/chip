@@ -168,9 +168,14 @@ const StoryView = () => {
         }}>
         <AvatarDisplay width={64} height={64} url={currentUser.avatar_url} />
         <Divider style={styles.dividerHSmall} />
-        <Text variant="bodyLarge" style={storyViewStyles.usernameText}>
-          @{currentUser.username}
-        </Text>
+        <View>
+          <Text variant="bodyLarge" style={storyViewStyles.usernameText}>
+            @{currentUser.username}
+          </Text>
+          <Text variant="bodyMedium" style={storyViewStyles.usernameText}>
+            {new Date(currentStory.created_at).toLocaleString()}
+          </Text>
+        </View>
         <IconButton
           icon="close-outline"
           iconColor="white"

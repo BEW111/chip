@@ -125,7 +125,6 @@ export default function Settings(props) {
 
     if (areYouSureDelete && profile) {
       setIsDeleting(true);
-      console.log(profile.id);
       deleteUser(profile.id);
       setIsDeleting(false);
     }
