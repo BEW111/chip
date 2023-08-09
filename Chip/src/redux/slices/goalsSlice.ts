@@ -25,7 +25,8 @@ const goalsSlice = supabaseApi.injectEndpoints({
         const {data, error} = await supabase
           .from('goals')
           .select()
-          .eq('uid', uid);
+          .eq('uid', uid)
+          .order('created_at', {ascending: false});
 
         return {data: data, error: error?.message};
       },

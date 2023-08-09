@@ -1,10 +1,8 @@
-import React, {useCallback, forwardRef} from 'react';
+import React, {useCallback} from 'react';
 import {Dimensions, View} from 'react-native';
 import {interpolate} from 'react-native-reanimated';
-import C, {ICarouselInstance} from 'react-native-reanimated-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import ChipDisplayMini from './ChipDisplayMini';
-
-const Carousel = forwardRef(C);
 
 // TODO: fix later
 const WIDTH = 150;
