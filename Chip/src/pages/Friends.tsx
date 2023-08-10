@@ -8,7 +8,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import {styles} from '../styles';
-import {useAppSelector} from '../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 
 // Components
 import {TextInput, Divider, Text, useTheme} from 'react-native-paper';
@@ -27,6 +27,7 @@ import {SupabaseProfileWithFriendship} from '../types/friends';
 
 // Profiles
 import {selectUid} from '../redux/slices/authSlice';
+import supabaseApi from '../redux/supabaseApi';
 
 export default function Friends() {
   const theme = useTheme();
@@ -59,16 +60,18 @@ export default function Friends() {
   };
 
   // Refresh controls
+  const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
+    dispatch(supabaseApi.util.invalidateTags(['Goal', 'Costreak']));
     await refetchReceived();
     await refetchSent();
     await refetchFriends();
     setTimeout(() => {
       setRefreshing(false);
     }, 300);
-  }, [refetchReceived, refetchSent, refetchFriends]);
+  }, [dispatch, refetchReceived, refetchSent, refetchFriends]);
 
   return (
     <Pressable style={styles.expand} onPress={() => Keyboard.dismiss()}>

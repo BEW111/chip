@@ -32,7 +32,7 @@ const goalsSlice = supabaseApi.injectEndpoints({
       },
     }),
     getFriendGoals: builder.query<SupabaseGoal[] | null, string>({
-      providesTags: ['Goal', 'Friendship'],
+      providesTags: ['Goal'],
       queryFn: async (friend_uid: string) => {
         const {data, error} = await supabase
           .from('goals')

@@ -35,7 +35,7 @@ const costreaksSlice = supabaseApi.injectEndpoints({
           return {data: costreaksFormatted};
         }
 
-        return {data: data, error: error?.message};
+        return {data: data, error: error};
       },
     }),
     getGoalCostreaks: builder.query<SupabaseCostreakWithUsers[] | null, string>(
@@ -49,7 +49,7 @@ const costreaksSlice = supabaseApi.injectEndpoints({
               `sender_goal_id.eq.${goal_id}, recipient_goal_id.eq.${goal_id}`,
             );
 
-          return {data: data, error: error?.message};
+          return {data: data, error: error};
         },
       },
     ),
@@ -61,11 +61,7 @@ const costreaksSlice = supabaseApi.injectEndpoints({
           .insert(costreakInvite)
           .select();
 
-        if (error) {
-          console.error('[addCostreak]', error);
-        }
-
-        return {data: data, error: error?.message};
+        return {data: data, error: error};
       },
     }),
     acceptCostreak: builder.mutation<SupabaseCostreak, string>({
@@ -80,7 +76,7 @@ const costreaksSlice = supabaseApi.injectEndpoints({
           console.error('[acceptCostreak]', error);
         }
 
-        return {data: data, error: error?.message};
+        return {data: data, error: error};
       },
     }),
   }),

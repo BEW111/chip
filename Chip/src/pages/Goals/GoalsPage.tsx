@@ -25,7 +25,7 @@ import GoalPage from './GoalDetailPage';
 import supabaseApi from '../../redux/supabaseApi';
 import {useGetChipsQuery} from '../../redux/slices/chipsSlice';
 import {useGetGoalsQuery} from '../../redux/slices/goalsSlice';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 
 // Tutorial info
 import {
@@ -46,16 +46,17 @@ function MainPage({navigation}) {
   const theme = useTheme();
 
   // Refresh controls
+  const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    supabaseApi.util.invalidateTags(['Chip', 'Goal']);
+    dispatch(supabaseApi.util.invalidateTags(['Chip', 'Goal']));
     await refetchGoals();
     await refreshChips();
     setTimeout(() => {
       setRefreshing(false);
     }, 300);
-  }, [refetchGoals, refreshChips]);
+  }, [dispatch, refetchGoals, refreshChips]);
 
   // Tutorial
   const tutorialStage = useAppSelector(selectTutorialStage);

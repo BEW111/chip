@@ -15,6 +15,7 @@ import {
   Surface,
   HelperText,
   useTheme,
+  TextInput,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InputFieldMenu from '../InputFieldMenu';
@@ -166,7 +167,11 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
         sender_goal_id: myGoalSelected.value,
         recipient_goal_id: friendGoalSelected.value,
       };
-      await addCostreak(costreak);
+      const {error} = await addCostreak(costreak);
+      if (error.message === 'Costreak pairing already exists') {
+        setDisplayError('You already have a superstreak with these goals');
+        return;
+      }
     } else {
       setDisplayError('Please select a goal for both you and your friend.');
     }
@@ -240,16 +245,23 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
         <Divider style={styles.dividerTiny} />
         {tab === 'create' ? (
           <>
-            {myGoalMenuItems && (
+            {myGoalMenuItems && myGoalMenuItems.length > 0 ? (
               <InputFieldMenu
                 label={'Your goal'}
                 items={myGoalMenuItems}
                 textInputStyle={modalStyles.textInput}
                 onSelectedChange={(item: MenuItem) => setMyGoalSelected(item)}
               />
+            ) : (
+              <TextInput
+                mode="outlined"
+                style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
+                label={'Create a public goal first'}
+                disabled={true}
+              />
             )}
             <Divider style={styles.dividerSmall} />
-            {friendGoalMenuItems && (
+            {friendGoalMenuItems && friendGoalMenuItems.length > 0 ? (
               <InputFieldMenu
                 label={'@' + friend.username + "'s goal"}
                 items={friendGoalMenuItems}
@@ -258,12 +270,27 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
                   setFriendGoalSelected(item)
                 }
               />
+            ) : (
+              <TextInput
+                mode="outlined"
+                style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
+                label={'@' + friend.username + " doesn't have any public goals"}
+                disabled={true}
+              />
             )}
             <HelperText type="error" visible={displayError !== ''}>
               {displayError}
             </HelperText>
             <Divider style={styles.dividerSmall} />
-            <Button mode="contained" onPress={onCreateCostreak}>
+            <Button
+              mode="contained"
+              onPress={onCreateCostreak}
+              disabled={
+                !myGoalMenuItems ||
+                myGoalMenuItems.length === 0 ||
+                !friendGoalMenuItems ||
+                friendGoalMenuItems.length === 0
+              }>
               Create
             </Button>
           </>
