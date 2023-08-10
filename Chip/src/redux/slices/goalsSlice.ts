@@ -32,7 +32,7 @@ const goalsSlice = supabaseApi.injectEndpoints({
       },
     }),
     getFriendGoals: builder.query<SupabaseGoal[] | null, string>({
-      providesTags: ['Goal'],
+      providesTags: ['Goal', 'Friendship'],
       queryFn: async (friend_uid: string) => {
         const {data, error} = await supabase
           .from('goals')
@@ -61,7 +61,7 @@ const goalsSlice = supabaseApi.injectEndpoints({
       invalidatesTags: ['Goal'],
       queryFn: async (goalModification: SupabaseGoalModification) => {
         const {id, ...modification} = goalModification;
-        const {error} = await supabase
+        const {data, error} = await supabase
           .from('goals')
           .update(modification)
           .eq('id', id);
@@ -70,7 +70,7 @@ const goalsSlice = supabaseApi.injectEndpoints({
           console.error('[editGoal]', error);
         }
 
-        return {error: error?.message};
+        return {data, error: error?.message};
       },
     }),
     deleteGoal: builder.mutation<void, string>({

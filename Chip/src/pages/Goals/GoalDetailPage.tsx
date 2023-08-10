@@ -42,7 +42,7 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
   // Input fields
   const [goalNameInput, setGoalNameInput] = useState(goal.name);
   const [goalIsPublicInput, setGoalIsPublicInput] = useState<boolean>(
-    goal.isPublic,
+    goal.is_public,
   );
   const toggleGoalVisibility = () => {
     setGoalIsPublicInput(!goalIsPublicInput);

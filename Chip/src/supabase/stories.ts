@@ -6,7 +6,11 @@ export async function insertStoryInDatabase(story: SupabaseStoryUpload) {
   const {error} = await supabase.from('stories').insert(story);
 
   if (error) {
-    console.error(error);
+    if (error.code === '42501') {
+      console.log('[insertStoryInDatabase] Goal is private, not posting story');
+    } else {
+      console.error(error);
+    }
   }
 }
 
