@@ -121,7 +121,6 @@ const friendsSlice = supabaseApi.injectEndpoints({
     }),
     /*
      * Sends a friend request to a particular user
-     * TODO: auto-accept if there is already an invite pending
      */
     inviteUser: builder.mutation<void, FriendshipInvite>({
       invalidatesTags: ['Chip'],
@@ -140,6 +139,24 @@ const friendsSlice = supabaseApi.injectEndpoints({
             return {data: null, error: null};
           }
           return {error: error?.message};
+        }
+        return {data: data};
+      },
+    }),
+    deleteFriendship: builder.mutation<void, string>({
+      invalidatesTags: ['Friendship'],
+      queryFn: async (friendshipId: string) => {
+        const {data, error} = await supabase
+          .from('friends')
+          .delete()
+          .eq('id', friendshipId);
+
+        if (error) {
+          // This error is expected when this is a dupe friend req
+          if (error) {
+            return {error: error};
+          }
+          return {error: 'An error occurred while deleting this friendship'};
         }
         return {data: data};
       },

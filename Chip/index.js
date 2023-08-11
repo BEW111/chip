@@ -28,4 +28,8 @@ registerTranslation('ar', ar);
 registerTranslation('ko', ko);
 registerTranslation('en', enGB);
 
+if (!__DEV__) {
+  console.log = () => {};
+}
+
 AppRegistry.registerComponent(appName, () => App);

@@ -46,17 +46,15 @@ function MainPage({navigation}) {
   const theme = useTheme();
 
   // Refresh controls
-  const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
-    dispatch(supabaseApi.util.invalidateTags(['Chip', 'Goal']));
     await refetchGoals();
     await refreshChips();
     setTimeout(() => {
       setRefreshing(false);
     }, 300);
-  }, [dispatch, refetchGoals, refreshChips]);
+  }, [refetchGoals, refreshChips]);
 
   // Tutorial
   const tutorialStage = useAppSelector(selectTutorialStage);

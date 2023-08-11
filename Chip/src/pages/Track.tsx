@@ -18,6 +18,8 @@ import {
 } from 'react-native-vision-camera';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {CameraPositionMode, CameraFlashMode} from '../types/camera';
+import DemoSelfie from '../../assets/demo_selfie.png';
+import DemoBowlPicture from '../../assets/demo_bowl_picture.png';
 
 // Camera button components
 import PhotoViewer from '../components/Track/PhotoViewer';
