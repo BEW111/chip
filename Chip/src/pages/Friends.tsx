@@ -113,8 +113,9 @@ export default function Friends() {
                   tintColor={theme.colors.onPrimary}
                   colors={[theme.colors.onPrimary]}
                 />
-              }>
-              <Pressable disabled={searchBarEditing}>
+              }
+              contentContainerStyle={styles.expand}>
+              <Pressable disabled={searchBarEditing} style={styles.expand}>
                 <Divider style={styles.dividerSmall} />
                 {searchResultProfiles.map(profile => (
                   <View key={profile.id}>
