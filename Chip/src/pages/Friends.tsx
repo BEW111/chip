@@ -34,11 +34,13 @@ export default function Friends() {
 
   // Search bar
   const [currentSearchQuery, setCurrentSearchQuery] = useState('');
+  const [searchBarEditing, setSearchBarFocused] = useState(false);
   const [searchResultProfiles, setSearchResultProfiles] = useState<
     SupabaseProfileWithFriendship[]
   >([]);
   const onClearTextSearch = () => {
     setCurrentSearchQuery('');
+    setSearchResultProfiles([]);
   };
 
   const uid = useAppSelector(selectUid);
@@ -83,12 +85,14 @@ export default function Friends() {
           <View style={styles.fullPaddedDark}>
             <FocusAwareStatusBar animated={true} barStyle="light-content" />
             <TextInput
-              autoCapitalize="none"
-              mode="outlined"
-              autoCorrect={false}
               label="Search for users"
               value={currentSearchQuery}
               onChangeText={text => onSearch(text)}
+              onFocus={() => setSearchBarFocused(true)}
+              onEndEditing={() => setSearchBarFocused(false)}
+              autoCapitalize="none"
+              autoCorrect={false}
+              mode="outlined"
               style={localStyles.textInput}
               contentStyle={localStyles.whiteText}
               left={<TextInput.Icon icon="search-outline" />}
@@ -100,8 +104,8 @@ export default function Friends() {
               }
             />
             <ScrollView
-              alwaysBounceVertical={false}
-              keyboardShouldPersistTaps="handled"
+              alwaysBounceVertical={true}
+              keyboardShouldPersistTaps="always"
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -110,44 +114,46 @@ export default function Friends() {
                   colors={[theme.colors.onPrimary]}
                 />
               }>
-              <Divider style={styles.dividerSmall} />
-              {searchResultProfiles.map(profile => (
-                <View key={profile.id}>
-                  <UserContainer user={profile} />
-                  <Divider style={styles.dividerSmall} />
-                </View>
-              ))}
-              <Divider style={styles.dividerSmall} />
-              <Text variant="labelLarge" style={localStyles.whiteText}>
-                Friend requests
-              </Text>
-              <Divider style={styles.dividerTiny} />
-              {received &&
-                received.map(user => (
-                  <View key={user.id}>
-                    <UserContainer user={user} />
+              <Pressable disabled={searchBarEditing}>
+                <Divider style={styles.dividerSmall} />
+                {searchResultProfiles.map(profile => (
+                  <View key={profile.id}>
+                    <UserContainer user={profile} />
                     <Divider style={styles.dividerSmall} />
                   </View>
                 ))}
-              {sent &&
-                sent.map(user => (
-                  <View key={user.id}>
-                    <UserContainer user={user} />
-                    <Divider style={styles.dividerSmall} />
-                  </View>
-                ))}
-              <Divider style={styles.dividerSmall} />
-              <Text variant="labelLarge" style={localStyles.whiteText}>
-                Friends
-              </Text>
-              <Divider style={styles.dividerTiny} />
-              {friends &&
-                friends.map(user => (
-                  <View key={user.id}>
-                    <UserContainer user={user} />
-                    <Divider style={styles.dividerSmall} />
-                  </View>
-                ))}
+                <Divider style={styles.dividerSmall} />
+                <Text variant="labelLarge" style={localStyles.whiteText}>
+                  Friend requests
+                </Text>
+                <Divider style={styles.dividerTiny} />
+                {received &&
+                  received.map(user => (
+                    <View key={user.id}>
+                      <UserContainer user={user} />
+                      <Divider style={styles.dividerSmall} />
+                    </View>
+                  ))}
+                {sent &&
+                  sent.map(user => (
+                    <View key={user.id}>
+                      <UserContainer user={user} />
+                      <Divider style={styles.dividerSmall} />
+                    </View>
+                  ))}
+                <Divider style={styles.dividerSmall} />
+                <Text variant="labelLarge" style={localStyles.whiteText}>
+                  Friends
+                </Text>
+                <Divider style={styles.dividerTiny} />
+                {friends &&
+                  friends.map(user => (
+                    <View key={user.id}>
+                      <UserContainer user={user} />
+                      <Divider style={styles.dividerSmall} />
+                    </View>
+                  ))}
+              </Pressable>
             </ScrollView>
           </View>
         </SafeAreaView>
