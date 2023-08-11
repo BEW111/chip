@@ -32,6 +32,7 @@ import {SupabaseProfileWithFriendship} from '../../types/friends';
 import {
   useAcceptCostreakMutation,
   useAddCostreakMutation,
+  useDeleteCostreakMutation,
   useGetFriendCostreaksQuery,
 } from '../../redux/slices/costreaksSlice';
 import {
@@ -70,9 +71,21 @@ type CostreakDisplayType = {
 function CostreakDisplay({costreak}: CostreakDisplayType) {
   const uid = useAppSelector(selectUid);
 
+  // Accepting a costreak
   const [acceptCostreak] = useAcceptCostreakMutation();
   const onAcceptCostreak = () => {
     acceptCostreak(costreak.id);
+  };
+
+  // Deleting a costreak
+  const [warnDeletingCostreak, setWarnDeletingCostreak] = useState(false);
+  const [deleteCostreak] = useDeleteCostreakMutation();
+  const onDeleteCostreak = async () => {
+    if (warnDeletingCostreak) {
+      await deleteCostreak(costreak.id);
+    } else {
+      setWarnDeletingCostreak(true);
+    }
   };
 
   if (!uid) {
@@ -90,13 +103,23 @@ function CostreakDisplay({costreak}: CostreakDisplayType) {
         You: {myGoal} {'\n'}
         Them: {theirGoal}
       </Text>
-      {costreak.status === 'pending' && costreak.recipient_id === uid && (
+      {costreak.status === 'accepted' ? (
         <Button
-          mode="contained"
+          mode={warnDeletingCostreak ? 'contained' : 'outlined'}
           labelStyle={localStyles.userButtonLabel}
-          onPress={onAcceptCostreak}>
-          Accept
+          onPress={onDeleteCostreak}>
+          {warnDeletingCostreak ? 'Are you sure?' : 'Delete'}
         </Button>
+      ) : (
+        costreak.status === 'pending' &&
+        costreak.recipient_id === uid && (
+          <Button
+            mode="contained"
+            labelStyle={localStyles.userButtonLabel}
+            onPress={onAcceptCostreak}>
+            Accept
+          </Button>
+        )
       )}
     </Surface>
   );

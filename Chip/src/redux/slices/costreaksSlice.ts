@@ -79,6 +79,24 @@ const costreaksSlice = supabaseApi.injectEndpoints({
         return {data: data, error: error};
       },
     }),
+    deleteCostreak: builder.mutation<void, string>({
+      invalidatesTags: ['Costreak'],
+      queryFn: async (costreakId: string) => {
+        const {data, error} = await supabase
+          .from('costreaks')
+          .delete()
+          .eq('id', costreakId);
+
+        if (error) {
+          // This error is expected when this is a dupe friend req
+          if (error) {
+            return {error: error};
+          }
+          return {error: 'An error occurred while deleting this costreak'};
+        }
+        return {data: data};
+      },
+    }),
   }),
 });
 
@@ -87,4 +105,5 @@ export const {
   useGetGoalCostreaksQuery,
   useAddCostreakMutation,
   useAcceptCostreakMutation,
+  useDeleteCostreakMutation,
 } = costreaksSlice;
