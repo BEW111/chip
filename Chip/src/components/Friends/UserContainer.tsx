@@ -42,6 +42,7 @@ import {
   useGetReceivedFriendRequestsQuery,
   useGetSentFriendRequestsQuery,
   useGetFriendsQuery,
+  useDeleteFriendshipMutation,
 } from '../../redux/slices/friendsSlice';
 
 // Costreaks
@@ -58,12 +59,14 @@ type FriendModalType = {
   visible: boolean;
   hideModal: () => void;
   friend: SupabaseProfileWithFriendship;
+  mainTab: 'default' | 'costreak';
 };
 
 type CostreakDisplayType = {
   costreak: SupabaseCostreakDetailed;
 };
 
+// Mini costreak display
 function CostreakDisplay({costreak}: CostreakDisplayType) {
   const uid = useAppSelector(selectUid);
 
@@ -99,7 +102,7 @@ function CostreakDisplay({costreak}: CostreakDisplayType) {
   );
 }
 
-function FriendModal({visible, hideModal, friend}: FriendModalType) {
+function FriendModal({visible, hideModal, friend, mainTab}: FriendModalType) {
   const uid = useAppSelector(selectUid);
   const theme = useTheme();
 
@@ -132,7 +135,7 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
     );
 
   // Current state
-  const [tab, setTab] = useState('create');
+  const [costreakTab, setCostreakTab] = useState('manage');
   const [myGoalSelected, setMyGoalSelected] = useState<MenuItem | null>(
     myGoalMenuItems ? myGoalMenuItems[0] : null,
   );
@@ -141,11 +144,25 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
   );
   const [displayError, setDisplayError] = useState('');
 
+  // Modal dismissing
   const onDismiss = () => {
+    setWarnRemovingFriend(false);
     setMyGoalSelected(null);
     setFriendGoalSelected(null);
     setDisplayError('');
     hideModal();
+  };
+
+  // Friend removal
+  const [removeFriend] = useDeleteFriendshipMutation();
+  const [warnRemovingFriend, setWarnRemovingFriend] = useState(false);
+  const onPressRemoveFriend = async () => {
+    if (warnRemovingFriend && friend.friendship_id) {
+      await removeFriend(friend.friendship_id);
+      onDismiss();
+    } else {
+      setWarnRemovingFriend(true);
+    }
   };
 
   // Costreaks
@@ -193,140 +210,165 @@ function FriendModal({visible, hideModal, friend}: FriendModalType) {
           <Divider style={styles.dividerHSmall} />
           <View>
             <Text variant="titleLarge">@{friend.username}</Text>
-            <Text variant="titleSmall">{friend.full_name}</Text>
+            {friend.full_name && (
+              <Text variant="titleSmall">{friend.full_name}</Text>
+            )}
           </View>
         </View>
         <Divider style={styles.dividerSmall} />
-        <View style={styles.row}>
-          <Icon name="bonfire-outline" size={22} />
-          <Divider style={styles.dividerHTiny} />
-          <Tooltip
-            visible={costreakTooltipVisible}
-            text={
-              <Text
-                variant="labelLarge"
-                style={{color: theme && theme.colors.onTertiary}}>
-                <Text
-                  variant="labelLarge"
-                  style={{
-                    color: theme && theme.colors.secondaryContainer,
-                    fontWeight: 'bold',
-                  }}>
-                  Superstreaks
-                </Text>{' '}
-                {
-                  'are special streaks you can\nshare with a friend. To start a superstreak,\npropose a personal goal that each of you\nwill work on. If either of you breaks your\npersonal streak, then the whole superstreak\nwill reset!'
-                }
-              </Text>
-            }>
-            <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
-              Superstreaks
-            </Text>
-          </Tooltip>
-          <Pressable onPress={() => setCostreakTooltipVisible(true)}>
-            <Icon name="help-circle-outline" size={22} />
-          </Pressable>
-        </View>
-        <Divider style={styles.dividerSmall} />
-        <SegmentedButtons
-          value={tab}
-          onValueChange={setTab}
-          buttons={[
-            {
-              value: 'create',
-              label: 'Create',
-            },
-            {
-              value: 'manage',
-              label: 'Manage',
-            },
-          ]}
-        />
-        <Divider style={styles.dividerTiny} />
-        {tab === 'create' ? (
+        {mainTab === 'default' ? (
           <>
-            {myGoalMenuItems && myGoalMenuItems.length > 0 ? (
-              <InputFieldMenu
-                label={'Your goal'}
-                items={myGoalMenuItems}
-                textInputStyle={modalStyles.textInput}
-                onSelectedChange={(item: MenuItem) => setMyGoalSelected(item)}
-              />
-            ) : (
-              <TextInput
-                mode="outlined"
-                style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
-                label={'Create a public goal first'}
-                disabled={true}
-              />
-            )}
-            <Divider style={styles.dividerSmall} />
-            {friendGoalMenuItems && friendGoalMenuItems.length > 0 ? (
-              <InputFieldMenu
-                label={'@' + friend.username + "'s goal"}
-                items={friendGoalMenuItems}
-                textInputStyle={modalStyles.textInput}
-                onSelectedChange={(item: MenuItem) =>
-                  setFriendGoalSelected(item)
-                }
-              />
-            ) : (
-              <TextInput
-                mode="outlined"
-                style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
-                label={'@' + friend.username + " doesn't have any public goals"}
-                disabled={true}
-              />
-            )}
-            <HelperText type="error" visible={displayError !== ''}>
-              {displayError}
-            </HelperText>
+            <View style={styles.row}>
+              <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                Manage friendship
+              </Text>
+            </View>
             <Divider style={styles.dividerSmall} />
             <Button
-              mode="contained"
-              onPress={onCreateCostreak}
-              disabled={
-                !myGoalMenuItems ||
-                myGoalMenuItems.length === 0 ||
-                !friendGoalMenuItems ||
-                friendGoalMenuItems.length === 0
-              }>
-              Create
+              mode={warnRemovingFriend ? 'contained' : 'outlined'}
+              onPress={onPressRemoveFriend}>
+              {warnRemovingFriend ? 'Are you sure?' : 'Remove friend'}
             </Button>
           </>
         ) : (
-          costreaks && (
-            <>
-              <Text variant="titleMedium">Active</Text>
-              <Divider style={styles.dividerSmall} />
-              {costreaks
-                .filter(costreak => costreak.status === 'accepted')
-                .map(costreak => (
-                  <CostreakDisplay key={costreak.id} costreak={costreak} />
-                ))}
-              <Text variant="titleMedium">Received requests</Text>
-              <Divider style={styles.dividerSmall} />
-              {costreaks
-                .filter(
-                  costreak =>
-                    costreak.status === 'pending' &&
-                    costreak.recipient_id === uid,
-                )
-                .map(costreak => (
-                  <CostreakDisplay key={costreak.id} costreak={costreak} />
-                ))}
-              <Text variant="titleMedium">Sent requests</Text>
-              <Divider style={styles.dividerSmall} />
-              {costreaks
-                .filter(
-                  costreak =>
-                    costreak.status === 'pending' && costreak.sender_id === uid,
-                )
-                .map(costreak => (
-                  <CostreakDisplay key={costreak.id} costreak={costreak} />
-                ))}
-            </>
-          )
+          <>
+            <View style={styles.row}>
+              <Icon name="bonfire-outline" size={22} />
+              <Divider style={styles.dividerHTiny} />
+              <Tooltip
+                visible={costreakTooltipVisible}
+                text={
+                  <Text
+                    variant="labelLarge"
+                    style={{color: theme && theme.colors.onTertiary}}>
+                    <Text
+                      variant="labelLarge"
+                      style={{
+                        color: theme && theme.colors.secondaryContainer,
+                        fontWeight: 'bold',
+                      }}>
+                      Superstreaks
+                    </Text>{' '}
+                    {
+                      'are special streaks you can\nshare with a friend. To start a superstreak,\npropose a personal goal that each of you\nwill work on. If either of you breaks your\npersonal streak, then the whole superstreak\nwill reset!'
+                    }
+                  </Text>
+                }>
+                <Text variant="titleLarge" style={{fontWeight: 'bold'}}>
+                  Superstreaks
+                </Text>
+              </Tooltip>
+              <Pressable onPress={() => setCostreakTooltipVisible(true)}>
+                <Icon name="help-circle-outline" size={22} />
+              </Pressable>
+            </View>
+            <Divider style={styles.dividerSmall} />
+            <SegmentedButtons
+              value={costreakTab}
+              onValueChange={setCostreakTab}
+              buttons={[
+                {
+                  value: 'manage',
+                  label: 'Manage',
+                },
+                {
+                  value: 'create',
+                  label: 'Create',
+                },
+              ]}
+            />
+            <Divider style={styles.dividerTiny} />
+            {costreakTab === 'create' ? (
+              <>
+                {myGoalMenuItems && myGoalMenuItems.length > 0 ? (
+                  <InputFieldMenu
+                    label={'Your goal'}
+                    items={myGoalMenuItems}
+                    textInputStyle={modalStyles.textInput}
+                    onSelectedChange={(item: MenuItem) =>
+                      setMyGoalSelected(item)
+                    }
+                  />
+                ) : (
+                  <TextInput
+                    mode="outlined"
+                    style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
+                    label={'Create a public goal first'}
+                    disabled={true}
+                  />
+                )}
+                <Divider style={styles.dividerSmall} />
+                {friendGoalMenuItems && friendGoalMenuItems.length > 0 ? (
+                  <InputFieldMenu
+                    label={'@' + friend.username + "'s goal"}
+                    items={friendGoalMenuItems}
+                    textInputStyle={modalStyles.textInput}
+                    onSelectedChange={(item: MenuItem) =>
+                      setFriendGoalSelected(item)
+                    }
+                  />
+                ) : (
+                  <TextInput
+                    mode="outlined"
+                    style={{backgroundColor: 'rgba(0, 0, 0, 0)'}}
+                    label={
+                      '@' + friend.username + " doesn't have any public goals"
+                    }
+                    disabled={true}
+                  />
+                )}
+                <HelperText type="error" visible={displayError !== ''}>
+                  {displayError}
+                </HelperText>
+                <Divider style={styles.dividerSmall} />
+                <Button
+                  mode="contained"
+                  onPress={onCreateCostreak}
+                  disabled={
+                    !myGoalMenuItems ||
+                    myGoalMenuItems.length === 0 ||
+                    !friendGoalMenuItems ||
+                    friendGoalMenuItems.length === 0
+                  }>
+                  Create
+                </Button>
+              </>
+            ) : (
+              costreaks && (
+                <>
+                  <Text variant="titleMedium">Active</Text>
+                  <Divider style={styles.dividerSmall} />
+                  {costreaks
+                    .filter(costreak => costreak.status === 'accepted')
+                    .map(costreak => (
+                      <CostreakDisplay key={costreak.id} costreak={costreak} />
+                    ))}
+                  <Text variant="titleMedium">Received requests</Text>
+                  <Divider style={styles.dividerSmall} />
+                  {costreaks
+                    .filter(
+                      costreak =>
+                        costreak.status === 'pending' &&
+                        costreak.recipient_id === uid,
+                    )
+                    .map(costreak => (
+                      <CostreakDisplay key={costreak.id} costreak={costreak} />
+                    ))}
+                  <Text variant="titleMedium">Sent requests</Text>
+                  <Divider style={styles.dividerSmall} />
+                  {costreaks
+                    .filter(
+                      costreak =>
+                        costreak.status === 'pending' &&
+                        costreak.sender_id === uid,
+                    )
+                    .map(costreak => (
+                      <CostreakDisplay key={costreak.id} costreak={costreak} />
+                    ))}
+                </>
+              )
+            )}
+          </>
         )}
       </Pressable>
     </Modal>
@@ -339,21 +381,18 @@ function UserContainer({user}: UserContainerType) {
 
   // Popup modal
   const [pressed, setPressed] = useState(false);
-  const [superstreakModalVisible, setSuperstreakModalVisible] = useState(false);
-  const onChallenge = () => {
-    setSuperstreakModalVisible(true);
-  };
-
-  // Pressing the whole container
-  const onPressInContainer = () => {
-    setPressed(true);
-  };
-  const onPressOutContainer = () => {
-    setPressed(false);
-  };
-  const onPressContainer = () => {
+  const [friendModalVisible, setFriendModalVisible] = useState(false);
+  const [mainTab, setMainTab] = useState<'default' | 'costreak'>('default');
+  const onOpenMainModal = () => {
     if (user.status === 'accepted') {
-      setSuperstreakModalVisible(true);
+      setMainTab('default');
+      setFriendModalVisible(true);
+    }
+  };
+  const onOpenCostreakModal = () => {
+    if (user.status === 'accepted') {
+      setMainTab('costreak');
+      setFriendModalVisible(true);
     }
   };
 
@@ -384,19 +423,22 @@ function UserContainer({user}: UserContainerType) {
     <>
       <Portal>
         <FriendModal
-          visible={superstreakModalVisible}
-          hideModal={() => setSuperstreakModalVisible(false)}
+          visible={friendModalVisible}
+          hideModal={() => setFriendModalVisible(false)}
           friend={user}
+          mainTab={mainTab}
         />
       </Portal>
-      <Pressable
-        onPressIn={onPressInContainer}
-        onPressOut={onPressOutContainer}
-        onPress={onPressContainer}
+      <View
+        // onPressIn={onPressInContainer}
+        // onPressOut={onPressOutContainer}
+        // onPress={onPressContainer}
         style={buttonStyles(pressed).button}>
         <View style={styles.rowSpaceBetween}>
           <View style={styles.row}>
-            <AvatarDisplay height={48} width={48} url={user.avatar_url} />
+            <Pressable onPress={onOpenMainModal}>
+              <AvatarDisplay height={48} width={48} url={user.avatar_url} />
+            </Pressable>
             <Divider style={styles.dividerHSmall} />
             <View>
               <Text variant="titleMedium" style={localStyles.whiteText}>
@@ -409,12 +451,20 @@ function UserContainer({user}: UserContainerType) {
           </View>
           {!isSelf &&
             (user.status === 'accepted' ? (
-              <IconButton
-                onPress={onChallenge}
-                iconColor="white"
-                icon="ellipsis-horizontal-outline"
-                size={24}
-              />
+              <View style={{flexDirection: 'row'}}>
+                <IconButton
+                  onPress={onOpenCostreakModal}
+                  iconColor="white"
+                  icon="bonfire-outline"
+                  size={24}
+                />
+                <IconButton
+                  onPress={onOpenMainModal}
+                  iconColor="white"
+                  icon="ellipsis-horizontal-outline"
+                  size={24}
+                />
+              </View>
             ) : user.status === 'received' ? (
               <Button
                 mode="contained"
@@ -435,7 +485,7 @@ function UserContainer({user}: UserContainerType) {
               </Button>
             ))}
         </View>
-      </Pressable>
+      </View>
     </>
   );
 }

@@ -169,4 +169,5 @@ export const {
   useGetSentFriendRequestsQuery,
   useGetFriendsQuery,
   useInviteUserMutation,
+  useDeleteFriendshipMutation,
 } = friendsSlice;
