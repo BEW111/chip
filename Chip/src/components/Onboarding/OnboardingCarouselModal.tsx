@@ -97,7 +97,7 @@ function OnboardingCarouselModal({visible}: OnboardingCarouselModalProps) {
           height={carouselHeight}
           data={slides}
           scrollAnimationDuration={400}
-          loop={true}
+          loop={false}
           onSnapToItem={onCarouselSnapToItem}
           renderItem={({item, index}) => (
             <View
