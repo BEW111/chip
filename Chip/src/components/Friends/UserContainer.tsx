@@ -146,6 +146,7 @@ function FriendModal({visible, hideModal, friend, mainTab}: FriendModalType) {
 
   // Modal dismissing
   const onDismiss = () => {
+    setCostreakTooltipVisible(false);
     setWarnRemovingFriend(false);
     setMyGoalSelected(null);
     setFriendGoalSelected(null);

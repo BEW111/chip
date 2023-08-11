@@ -37,6 +37,9 @@ export default function Friends() {
   const [searchResultProfiles, setSearchResultProfiles] = useState<
     SupabaseProfileWithFriendship[]
   >([]);
+  const onClearTextSearch = () => {
+    setCurrentSearchQuery('');
+  };
 
   const uid = useAppSelector(selectUid);
 
@@ -81,6 +84,7 @@ export default function Friends() {
             <FocusAwareStatusBar animated={true} barStyle="light-content" />
             <TextInput
               autoCapitalize="none"
+              mode="outlined"
               autoCorrect={false}
               label="Search for users"
               value={currentSearchQuery}
@@ -91,7 +95,7 @@ export default function Friends() {
               right={
                 <TextInput.Icon
                   icon="close-outline"
-                  onPress={() => setCurrentSearchQuery('')}
+                  onPress={onClearTextSearch}
                 />
               }
             />
