@@ -93,7 +93,7 @@ export default function Friends() {
               autoCapitalize="none"
               autoCorrect={false}
               mode="outlined"
-              style={{backgroundColor: theme.colors.backdrop}}
+              style={{backgroundColor: theme.colors.backgroundDark}}
               contentStyle={localStyles.whiteText}
               left={<TextInput.Icon icon="search-outline" />}
               right={

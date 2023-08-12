@@ -108,11 +108,6 @@ export default function Home() {
               source={HomeFeedImage}
               style={localStyles(false).homeFeedImage}
             />
-            <Text
-              style={localStyles(false).tempStoriesViewText}
-              variant="titleSmall">
-              A full home feed is arriving in the next update!
-            </Text>
           </View>
         )}
       </SafeAreaView>

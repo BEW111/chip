@@ -1,4 +1,8 @@
-// Adapted from Paper's actual Tooltip component, for more control over behavior
+/* Adapted from Paper's actual Tooltip component
+ * - Changed color
+ * - Added multiline tooltips
+ * - Added animations
+ */
 
 import React from 'react';
 import {
@@ -13,6 +17,9 @@ import {
 import {Text, Portal} from 'react-native-paper';
 import {useTheme} from 'react-native-paper';
 import {getTooltipPosition, Measurement} from './tooltipUtils';
+
+// Animations
+import Animated, {ZoomInDown} from 'react-native-reanimated';
 
 type TooltipProps = {
   visible: boolean;
@@ -51,60 +58,47 @@ const Tooltip = ({visible, children, text}: TooltipProps) => {
     <>
       {visible && (
         <Portal>
-          <View
-            // onLayout={handleOnLayout}
-            style={[
-              styles.triangleWrapper,
-              {
-                top: tooltipPosition.top,
-                left: measurement.children.pageX,
-                width: measurement.children.width,
-                borderRadius: theme.roundness,
-                ...(measurement.measured ? styles.visible : styles.hidden),
-              },
-            ]}
-            testID="tooltip-container">
-            <Triangle
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{
-                borderBottomColor: theme.colors.tertiary,
-              }}
-            />
-          </View>
-          <View
-            onLayout={handleOnLayout}
-            style={[
-              styles.tooltip,
-              {
-                backgroundColor: theme.colors.tertiary,
-                ...tooltipPosition,
-                borderRadius: theme.roundness,
-                ...(measurement.measured ? styles.visible : styles.hidden),
-              },
-            ]}
-            testID="tooltip-container">
-            <Text
-              accessibilityLiveRegion="polite"
-              selectable={false}
-              variant="labelLarge"
-              style={{color: theme.colors.onTertiary}}>
-              {text}
-            </Text>
-          </View>
-          {/* <View
-            style={[
-              // eslint-disable-next-line react-native/no-inline-styles
-              {
-                ...tooltipPosition,
-                position: 'absolute',
-                backgroundColor: 'purple',
-                height: 10,
-                alignSelf: 'flex-start',
-                justifyContent: 'center',
-              },
-            ]}>
-
-          </View> */}
+          <Animated.View entering={ZoomInDown.duration(200)}>
+            <View
+              style={[
+                styles.triangleWrapper,
+                {
+                  top: tooltipPosition.top,
+                  left: measurement.children.pageX,
+                  width: measurement.children.width,
+                  borderRadius: theme.roundness,
+                  ...(measurement.measured ? styles.visible : styles.hidden),
+                },
+              ]}
+              testID="tooltip-container">
+              <Triangle
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{
+                  borderBottomColor: theme.colors.tertiary,
+                }}
+              />
+            </View>
+            <View
+              onLayout={handleOnLayout}
+              style={[
+                styles.tooltip,
+                {
+                  backgroundColor: theme.colors.tertiary,
+                  ...tooltipPosition,
+                  borderRadius: theme.roundness,
+                  ...(measurement.measured ? styles.visible : styles.hidden),
+                },
+              ]}
+              testID="tooltip-container">
+              <Text
+                accessibilityLiveRegion="polite"
+                selectable={false}
+                variant="labelLarge"
+                style={{color: theme.colors.onTertiary}}>
+                {text}
+              </Text>
+            </View>
+          </Animated.View>
         </Portal>
       )}
       {/* Need the xxPressProps in both places */}

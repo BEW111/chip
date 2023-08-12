@@ -210,8 +210,6 @@ function PhotoViewer() {
       if (tutorialStage?.startsWith('track')) {
         dispatch(finishTutorial());
       }
-
-      // navigation.navigate('Goals');
     }
   };
 
