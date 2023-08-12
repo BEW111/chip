@@ -1,6 +1,7 @@
 ## Overview
 
 - Chip is a social platform for building habits and goals
+- Join the beta here: https://testflight.apple.com/join/MxBp9iWh
 
 ## Notes
 
