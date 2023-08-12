@@ -39,6 +39,7 @@ import {
   SupabaseGoalModification,
 } from '../../types/goals';
 import {useGetChipsByGoalIdQuery} from '../../redux/slices/chipsSlice';
+import {bitFieldToCleanWeekdaysString} from '../../utils/dow';
 
 // Animations
 import Animated, {
@@ -46,6 +47,7 @@ import Animated, {
   BounceInLeft,
   FadeInLeft,
 } from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 type EditGoalModalProps = {
   visible: boolean;
@@ -206,6 +208,22 @@ export default function GoalPage({navigation, route}) {
   const showDeleteGoalModal = () => setDeleteGoalModalVisible(true);
   const hideDeleteGoalModal = () => setDeleteGoalModalVisible(false);
 
+  // Overview text to display about goal
+  const goalOverviewText = goal
+    ? `For your goal "${goal.name}", your target is ${
+        goal.iteration_target
+      } ${pluralize(goal.iteration_units, goal.iteration_target)} ${
+        goal.iteration_period
+      }${
+        goal.iteration_period === 'daily'
+          ? ', ' + bitFieldToCleanWeekdaysString(goal.iteration_dows)
+          : ''
+      }.`
+    : '';
+
+  // Bottom inset
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       {goal && (
@@ -246,10 +264,26 @@ export default function GoalPage({navigation, route}) {
               />
             </View>
           </Header>
-          <ScrollView style={{flex: 1, padding: 20}}>
-            <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
-              <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
+          <ScrollView style={{flex: 1, padding: 18}}>
+            <Animated.View entering={FadeInLeft.duration(300)}>
+              <TextWidget
+                icon="bulb-outline"
+                text={
+                  "Focus on always completing your habits on schedule, even if it's something small each time"
+                }
+                title="tip"
+              />
             </Animated.View>
+            <Divider style={styles.dividerSmall} />
+            {goal && (
+              <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
+                <TextWidget
+                  icon="information-circle-outline"
+                  text={goalOverviewText}
+                  title="overview"
+                />
+              </Animated.View>
+            )}
             <Divider style={styles.dividerSmall} />
             {goal && chips && (
               <Animated.View entering={FadeInLeft.duration(300).delay(100)}>
@@ -270,6 +304,9 @@ export default function GoalPage({navigation, route}) {
                 />
               </Animated.View>
             )}
+            <Divider style={styles.dividerSmall} />
+            <Divider style={styles.dividerSmall} />
+            <Divider style={styles.dividerSmall} />
           </ScrollView>
         </View>
       </BackgroundWrapper>

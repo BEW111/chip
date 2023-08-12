@@ -122,6 +122,7 @@ export const styles = StyleSheet.create({
     paddingTop: 4,
     color: 'gray',
     textTransform: 'uppercase',
+    flexDirection: 'row',
   },
   noMargin: {
     margin: 0,
