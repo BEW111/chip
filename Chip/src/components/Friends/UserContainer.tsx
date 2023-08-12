@@ -138,13 +138,15 @@ function FriendModal({visible, hideModal, friend, mainTab}: FriendModalType) {
   };
   const myGoalMenuItems =
     myGoals &&
-    myGoals.map(
-      g =>
-        ({
-          title: g.name,
-          value: g.id,
-        } as MenuItem),
-    );
+    myGoals
+      .filter(g => g.is_public)
+      .map(
+        g =>
+          ({
+            title: g.name,
+            value: g.id,
+          } as MenuItem),
+      );
   const friendGoalMenuItems =
     friendGoals &&
     friendGoals.map(
