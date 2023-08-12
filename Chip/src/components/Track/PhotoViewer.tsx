@@ -36,6 +36,7 @@ import Tooltip from '../common/Tooltip';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import supabaseApi from '../../redux/supabaseApi';
+import {badgeChangeFromPostChip} from '../../redux/slices/badgesSlice';
 
 type HabitPopupProps = {
   chipDesc: string;
@@ -179,8 +180,6 @@ function PhotoViewer() {
 
   // When this is called, we'll actually submit the chip
   const onSubmitChip = () => {
-    dispatch(viewingPhotoStop());
-
     let goalId = selectedGoalId;
 
     // TODO: I'd like to find a cleaner solution, but sometimes
@@ -203,6 +202,7 @@ function PhotoViewer() {
       };
 
       // Actually upload chip
+      dispatch(badgeChangeFromPostChip());
       dispatch(chipSubmissionStart(chipSubmission));
       dispatch(supabaseApi.util.invalidateTags(['Chip']));
 
@@ -211,10 +211,12 @@ function PhotoViewer() {
         dispatch(finishTutorial());
       }
     }
+
+    dispatch(viewingPhotoStop());
   };
 
   // When this is called, we'll discard the current photo
-  const onDeleteChip = () => {
+  const onDiscardChip = () => {
     dispatch(viewingPhotoStop());
   };
 
@@ -236,7 +238,7 @@ function PhotoViewer() {
         />
       )}
       <Pressable
-        onPress={onDeleteChip}
+        onPress={onDiscardChip}
         style={localStyles(insets.top).trashButtonContainer}>
         <Icon
           name="trash"

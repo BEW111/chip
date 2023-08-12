@@ -33,9 +33,10 @@ const chipsSlice = supabaseApi.injectEndpoints({
 
         if (error) {
           console.error('[deleteChip]', error);
+          return {error: error};
         }
 
-        return {error: error?.message};
+        return {data: null};
       },
     }),
   }),

@@ -12,7 +12,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Providers
-import {Provider as PaperProvider, Text} from 'react-native-paper';
+import {Badge, Provider as PaperProvider, Text} from 'react-native-paper';
 import {Provider as StoreProvider} from 'react-redux';
 import {
   SafeAreaProvider,
@@ -58,7 +58,16 @@ import {
 } from './src/redux/slices/tutorialSlice';
 
 // Animation
-import Animated, {FadeIn, FadeInDown, Easing} from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  Easing,
+  ZoomIn,
+} from 'react-native-reanimated';
+import {
+  badgeChangeFromViewGoals,
+  selectGoalBadgeEnabled,
+} from './src/redux/slices/badgesSlice';
 
 // TODO: temp fix
 LogBox.ignoreLogs([
@@ -75,12 +84,14 @@ type VariableIconProps = {
   iconName: string;
   color?: number | ColorValue | undefined;
   disabled: boolean;
+  badgeEnabled?: boolean;
 };
 const VariableIcon = ({
   focused,
   iconName,
   color,
   disabled,
+  badgeEnabled,
 }: VariableIconProps) => {
   return (
     <Animated.View
@@ -93,6 +104,18 @@ const VariableIcon = ({
         color={disabled ? theme.colors.surfaceDisabled : color}
         size={28}
       />
+      {badgeEnabled && (
+        <Animated.View
+          entering={ZoomIn.duration(300)}
+          style={{position: 'absolute', right: -8, alignContent: 'center'}}>
+          <Badge
+            style={{
+              backgroundColor: theme.colors.primary,
+            }}
+            size={8}
+          />
+        </Animated.View>
+      )}
     </Animated.View>
   );
 };
@@ -119,12 +142,15 @@ const VariableText = ({text, color, disabled}: VariableTextProps) => {
 
 function MainTabs() {
   const insets = useSafeAreaInsets();
-  // const isNewUser = useSelector(selectNewlyCreated);
 
   // Only want to get the message token and check for permissions when we're logged in
   useEffect(() => {
     requestNotificationsPermission();
   }, []);
+
+  // Badges for tabs
+  const dispatch = useAppDispatch();
+  const goalBadgeEnabled = useAppSelector(selectGoalBadgeEnabled);
 
   // Tutorial state for disabling tabs
   const inTutorial = useAppSelector(selectInTutorial);
@@ -305,6 +331,7 @@ function MainTabs() {
                   focused={focused}
                   color={color}
                   disabled={disabledTabsMap.goals}
+                  badgeEnabled={goalBadgeEnabled}
                 />
               ),
             }}
@@ -313,6 +340,7 @@ function MainTabs() {
                 if (disabledTabsMap.goals) {
                   e.preventDefault();
                 }
+                dispatch(badgeChangeFromViewGoals());
               },
             }}
           />
