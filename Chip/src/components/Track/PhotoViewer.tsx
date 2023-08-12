@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Keyboard, View, Pressable, Dimensions, StyleSheet} from 'react-native';
-import {Button, Divider, Text, TextInput} from 'react-native-paper';
+import {Button, Divider, Text, TextInput, useTheme} from 'react-native-paper';
 import {useAppSelector, useAppDispatch} from '../../redux/hooks';
 import {styles} from '../../styles';
 
@@ -116,8 +116,8 @@ function HabitPopup({
             contentStyle={popupStyles.textInputContent}
             outlineStyle={popupStyles.textInputOutline}
             mode="outlined"
-            label="Amount"
-            keyboardType="decimal-pad"
+            label="Amount (required)"
+            keyboardType="numeric"
             value={chipAmount.toString()}
             onChangeText={text => {
               setChipAmount(text);
@@ -164,6 +164,8 @@ function PhotoViewer() {
 
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const theme = useTheme();
+
   const uid = useAppSelector(selectUid);
   const photoPath = useAppSelector(selectPhotoPath);
 
@@ -209,7 +211,7 @@ function PhotoViewer() {
         dispatch(finishTutorial());
       }
 
-      navigation.navigate('Goals');
+      // navigation.navigate('Goals');
     }
   };
 
@@ -222,7 +224,9 @@ function PhotoViewer() {
   const tutorialStage = useAppSelector(selectTutorialStage);
 
   return (
-    <View style={styles.absoluteFullCentered}>
+    <Pressable
+      style={styles.absoluteFullCentered}
+      onPress={() => Keyboard.dismiss()}>
       {popupShowing && (
         <HabitPopup
           chipDesc={chipDescription}
@@ -266,14 +270,18 @@ function PhotoViewer() {
           <Button
             icon="send-outline"
             mode="contained"
+            style={{
+              backgroundColor:
+                chipAmount === '' ? 'gray' : theme.colors.primary,
+            }}
             disabled={!userGoals || userGoals.length === 0 || chipAmount === ''}
             onPress={onSubmitChip}
             contentStyle={localStyles().buttonContent}>
-            Save
+            {'Save'}
           </Button>
         </Tooltip>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

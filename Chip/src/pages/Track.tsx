@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {useState, useCallback, useEffect, useRef} from 'react';
-import {StyleSheet, View, Linking, Pressable} from 'react-native';
+import {StyleSheet, View, Linking, Pressable, Keyboard} from 'react-native';
 
 // Components
 import FastImage from 'react-native-fast-image';
@@ -234,7 +234,9 @@ export default function Track() {
         )}
       </Animated.View>
       {viewingPhoto ? (
-        <PhotoViewer />
+        <>
+          <PhotoViewer />
+        </>
       ) : (
         <View
           style={{
