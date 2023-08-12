@@ -34,6 +34,8 @@ import {
 } from '../../redux/slices/tutorialSlice';
 import Tooltip from '../common/Tooltip';
 import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import supabaseApi from '../../redux/supabaseApi';
 
 type HabitPopupProps = {
   chipDesc: string;
@@ -161,6 +163,7 @@ function PhotoViewer() {
   const insets = useSafeAreaInsets();
 
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
   const uid = useAppSelector(selectUid);
   const photoPath = useAppSelector(selectPhotoPath);
 
@@ -199,11 +202,14 @@ function PhotoViewer() {
 
       // Actually upload chip
       dispatch(chipSubmissionStart(chipSubmission));
+      dispatch(supabaseApi.util.invalidateTags(['Chip']));
 
       // Update tutorial state
       if (tutorialStage?.startsWith('track')) {
         dispatch(finishTutorial());
       }
+
+      navigation.navigate('Goals');
     }
   };
 
