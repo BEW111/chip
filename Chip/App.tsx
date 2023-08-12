@@ -58,12 +58,7 @@ import {
 } from './src/redux/slices/tutorialSlice';
 
 // Animation
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  Easing,
-  ZoomIn,
-} from 'react-native-reanimated';
+import Animated, {FadeIn, ZoomIn} from 'react-native-reanimated';
 import {
   badgeChangeFromViewGoals,
   selectGoalBadgeEnabled,

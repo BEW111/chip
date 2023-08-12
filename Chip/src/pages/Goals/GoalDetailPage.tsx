@@ -99,6 +99,7 @@ function EditGoalModal({visible, hideModal, goal}: EditGoalModalProps) {
         value={goalNameInput}
         onChangeText={text => setGoalNameInput(text)}
       />
+      <Divider style={styles.dividerMedium} />
       <SegmentedButtons
         value={goalVisibilityInput}
         onValueChange={onGoalVisibilityChange}
@@ -115,7 +116,7 @@ function EditGoalModal({visible, hideModal, goal}: EditGoalModalProps) {
           },
         ]}
       />
-      <Divider style={styles.dividerSmall} />
+      <Divider style={styles.dividerLarge} />
       <Button mode="contained" onPress={onSubmitChanges}>
         Save changes
       </Button>
