@@ -86,7 +86,7 @@ const VariableIcon = ({
     <Animated.View
       style={localStyles({color, disabled}).tabIcon}
       key={`${iconName}-icon-view`}
-      entering={FadeIn.duration(700).easing(Easing.poly(5))}>
+      entering={FadeIn.duration(300).delay(200)}>
       <Icon
         disabled
         name={focused ? iconName : `${iconName}-outline`}
@@ -107,7 +107,7 @@ const VariableText = ({text, color, disabled}: VariableTextProps) => {
     <Animated.View
       style={localStyles({color, disabled}).tabIcon}
       key={`${text}-text-view`}
-      entering={FadeIn.duration(700).easing(Easing.poly(5))}>
+      entering={FadeIn.duration(300).delay(200)}>
       <Text
         variant="labelSmall"
         style={localStyles({color, disabled}).tabLabel}>

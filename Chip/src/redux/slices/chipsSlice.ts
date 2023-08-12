@@ -15,9 +15,9 @@ const chipsSlice = supabaseApi.injectEndpoints({
         return {data: data, error: error?.message};
       },
     }),
-    getChipsByGoalId: builder.query<SupabaseChip[] | null, number>({
+    getChipsByGoalId: builder.query<SupabaseChip[] | null, string>({
       providesTags: ['Chip'],
-      queryFn: async (id: number) => {
+      queryFn: async (id: string) => {
         const {data, error} = await supabase
           .from('chips')
           .select()

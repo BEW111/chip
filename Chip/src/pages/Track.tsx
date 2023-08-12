@@ -219,8 +219,8 @@ export default function Track() {
       <Animated.View
         style={{flex: 1, backgroundColor: 'black'}}
         key={'camera-animated-view'}
-        entering={FadeIn.duration(100)}
-        exiting={FadeOut.duration(100)}>
+        entering={FadeIn.duration(200).delay(50)}
+        exiting={FadeOut.duration(200).delay(50)}>
         {device != null && (
           <Camera
             zoom={device.neutralZoom}

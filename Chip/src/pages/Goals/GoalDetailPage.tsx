@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
 import {styles, modalStyles} from '../../styles';
-import {useAppSelector} from '../../redux/hooks';
 
 // Misc
 import pluralize from 'pluralize';
@@ -17,53 +16,72 @@ import {
   useTheme,
   FAB,
   Divider,
+  SegmentedButtons,
 } from 'react-native-paper';
 import Header from '../../components/common/Header';
 import ImageCarouselWidget from '../../components/GoalWidgets/ImageCarouselWidget';
 import TextWidget from '../../components/GoalWidgets/TextWidget';
 import ChartWidget from '../../components/GoalWidgets/ChartWidget';
-import RemindersModal from '../../components/GoalDetail/ReminderModal';
+// import RemindersModal from '../../components/GoalDetail/ReminderModal';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
 
 // Supabase
 import {
   useEditGoalMutation,
   useDeleteGoalMutation,
+  useGetGoalByIdQuery,
 } from '../../redux/slices/goalsSlice';
 
 // Data
-import {selectUid} from '../../redux/slices/authSlice';
-import {SupabaseGoal, SupabaseGoalModification} from '../../types/goals';
+import {
+  GoalVisibility,
+  SupabaseGoal,
+  SupabaseGoalModification,
+} from '../../types/goals';
 import {useGetChipsByGoalIdQuery} from '../../redux/slices/chipsSlice';
 
-function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
+// Animations
+import Animated, {
+  BounceIn,
+  BounceInLeft,
+  FadeInLeft,
+} from 'react-native-reanimated';
+
+type EditGoalModalProps = {
+  visible: boolean;
+  hideModal: any;
+  goal: SupabaseGoal;
+};
+
+function EditGoalModal({visible, hideModal, goal}: EditGoalModalProps) {
   const [editGoal] = useEditGoalMutation();
 
   // Input fields
   const [goalNameInput, setGoalNameInput] = useState(goal.name);
-  const [goalIsPublicInput, setGoalIsPublicInput] = useState<boolean>(
-    goal.is_public,
-  );
-  const toggleGoalVisibility = () => {
-    setGoalIsPublicInput(!goalIsPublicInput);
+  const [goalVisibilityInput, setGoalVisibilityInput] =
+    useState<GoalVisibility>(goal.is_public ? 'public' : 'private');
+  const onGoalVisibilityChange = (visibility: GoalVisibility) => {
+    setGoalVisibilityInput(visibility);
   };
 
   // Submitting changes
   const onSubmitChanges = async () => {
     // Editing the goal
-    if (goal.name !== goalNameInput || goal.isPublic !== goalIsPublicInput) {
+    if (
+      goal.name !== goalNameInput ||
+      (goal.is_public ? 'public' : 'private') !== goalVisibilityInput
+    ) {
       const goalChanges: SupabaseGoalModification = {
         id: goal.id,
       };
       if (goal.name !== goalNameInput) {
         goalChanges.name = goalNameInput;
       }
-      if (goal.visibility !== goalIsPublicInput) {
-        goalChanges.is_public = goalIsPublicInput;
+      if ((goal.is_public ? 'public' : 'private') !== goalVisibilityInput) {
+        goalChanges.is_public = goalVisibilityInput === 'public';
       }
 
       await editGoal(goalChanges);
-      setGoalName(goalNameInput);
     }
 
     hideModal();
@@ -75,21 +93,28 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
       onDismiss={hideModal}
       contentContainerStyle={modalStyles.container}>
       <Text style={modalStyles.header}>Edit goal</Text>
-      <View style={styles.row}>
-        <View style={styles.expand}>
-          <TextInput
-            style={modalStyles.textInput}
-            label="Goal name"
-            value={goalNameInput}
-            onChangeText={text => setGoalNameInput(text)}
-          />
-        </View>
-        <IconButton
-          icon={goalIsPublicInput ? 'earth-outline' : 'lock-closed-outline'}
-          size={28}
-          onPress={toggleGoalVisibility}
-        />
-      </View>
+      <TextInput
+        style={modalStyles.textInput}
+        label="New goal name"
+        value={goalNameInput}
+        onChangeText={text => setGoalNameInput(text)}
+      />
+      <SegmentedButtons
+        value={goalVisibilityInput}
+        onValueChange={onGoalVisibilityChange}
+        buttons={[
+          {
+            value: 'public',
+            label: 'Shareable',
+            icon: 'earth-outline',
+          },
+          {
+            value: 'private',
+            label: 'Private',
+            icon: 'lock-closed-outline',
+          },
+        ]}
+      />
       <Divider style={styles.dividerSmall} />
       <Button mode="contained" onPress={onSubmitChanges}>
         Save changes
@@ -98,7 +123,7 @@ function EditGoalModal({visible, setGoalName, hideModal, uid, goal}) {
   );
 }
 
-function DeleteGoalModal({visible, hideModal, uid, goalId, navigation}) {
+function DeleteGoalModal({visible, hideModal, goalId, navigation}) {
   const [deleteGoal] = useDeleteGoalMutation();
 
   const onDeleteGoal = async () => {
@@ -161,22 +186,20 @@ function ReminderFAB({showEditGoalModal, showDeleteGoalModal}) {
 
 export default function GoalPage({navigation, route}) {
   // Managing goals and user data
-  const {goal}: {goal: SupabaseGoal} = route.params;
-  const [goalName, setGoalName] = useState(goal.name);
-
-  const uid = useAppSelector(selectUid);
+  const {goal: routeGoal}: {goal: SupabaseGoal} = route.params;
+  const {data: goal} = useGetGoalByIdQuery(routeGoal.id);
 
   // Get all chips
-  const {data: chips} = useGetChipsByGoalIdQuery(goal.id);
+  const {data: chips} = useGetChipsByGoalIdQuery(goal ? goal.id : '');
 
   // Modals
   const [editGoalModalVisible, setEditGoalModalVisible] = useState(false);
   const showEditGoalModal = () => setEditGoalModalVisible(true);
   const hideEditGoalModal = () => setEditGoalModalVisible(false);
 
-  const [remindersModalVisible, setRemindersModalVisible] = useState(false);
-  const showRemindersModal = () => setRemindersModalVisible(true);
-  const hideRemindersModal = () => setRemindersModalVisible(false);
+  // const [remindersModalVisible, setRemindersModalVisible] = useState(false);
+  // const showRemindersModal = () => setRemindersModalVisible(true);
+  // const hideRemindersModal = () => setRemindersModalVisible(false);
 
   const [deleteGoalModalVisible, setDeleteGoalModalVisible] = useState(false);
   const showDeleteGoalModal = () => setDeleteGoalModalVisible(true);
@@ -184,32 +207,34 @@ export default function GoalPage({navigation, route}) {
 
   return (
     <>
-      <Portal>
-        <EditGoalModal
-          visible={editGoalModalVisible}
-          setGoalName={setGoalName}
-          hideModal={hideEditGoalModal}
-          uid={uid}
-          goal={goal}
-        />
-        <RemindersModal
-          visible={remindersModalVisible}
-          hideModal={hideRemindersModal}
-          goalName={goalName}
-          goalId={goal.id}
-        />
-        <DeleteGoalModal
-          visible={deleteGoalModalVisible}
-          hideModal={hideDeleteGoalModal}
-          navigation={navigation}
-          uid={uid}
-          goalId={goal.id}
-        />
-      </Portal>
+      {goal && (
+        <Portal>
+          <EditGoalModal
+            visible={editGoalModalVisible}
+            hideModal={hideEditGoalModal}
+            goal={goal}
+          />
+          {/* <RemindersModal
+            visible={remindersModalVisible}
+            hideModal={hideRemindersModal}
+            goalId={goal.id}
+          /> */}
+          <DeleteGoalModal
+            visible={deleteGoalModalVisible}
+            hideModal={hideDeleteGoalModal}
+            navigation={navigation}
+            goalId={goal.id}
+          />
+        </Portal>
+      )}
       <BackgroundWrapper>
         <View style={styles.full}>
           <Header>
-            <Text style={{fontSize: 24, fontWeight: 'bold'}}>{goalName}</Text>
+            {goal && (
+              <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+                {goal.name}
+              </Text>
+            )}
             <View style={localStyles.backButtonWrapper}>
               <IconButton
                 icon="chevron-back-outline"
@@ -219,33 +244,30 @@ export default function GoalPage({navigation, route}) {
                 }}
               />
             </View>
-            <View style={localStyles.editButtonWrapper}>
-              <IconButton
-                icon="pencil"
-                size={32}
-                onPress={() => {
-                  showEditGoalModal();
-                }}
-              />
-            </View>
           </Header>
           <ScrollView style={{flex: 1, padding: 20}}>
-            <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
+            <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
+              <TextWidget subtitle={'Flavor text here'} subtitleType="hint" />
+            </Animated.View>
             <Divider style={styles.dividerSmall} />
-            {chips && (
-              <ChartWidget
-                chips={chips}
-                chartType="bar"
-                title={pluralize(goal.iteration_units, 2) + ' by day'}
-              />
+            {goal && chips && (
+              <Animated.View entering={FadeInLeft.duration(300).delay(100)}>
+                <ChartWidget
+                  chips={chips}
+                  chartType="bar"
+                  title={pluralize(goal.iteration_units, 2) + ' by day'}
+                />
+              </Animated.View>
             )}
             <Divider style={styles.dividerSmall} />
-            {chips && (
-              <ImageCarouselWidget
-                goal={goal}
-                chips={chips}
-                navigation={navigation}
-              />
+            {goal && chips && (
+              <Animated.View entering={FadeInLeft.duration(300).delay(150)}>
+                <ImageCarouselWidget
+                  goal={goal}
+                  chips={chips}
+                  navigation={navigation}
+                />
+              </Animated.View>
             )}
           </ScrollView>
         </View>

@@ -31,6 +31,17 @@ const goalsSlice = supabaseApi.injectEndpoints({
         return {data: data, error: error?.message};
       },
     }),
+    getGoalById: builder.query<SupabaseGoal | null, string>({
+      providesTags: ['Goal'],
+      queryFn: async (id: string) => {
+        const {data, error} = await supabase
+          .from('goals')
+          .select()
+          .eq('id', id);
+
+        return {data: data && data[0], error: error};
+      },
+    }),
     getFriendGoals: builder.query<SupabaseGoal[] | null, string>({
       providesTags: ['Goal'],
       queryFn: async (friend_uid: string) => {
@@ -93,6 +104,7 @@ const goalsSlice = supabaseApi.injectEndpoints({
 
 export const {
   useGetGoalsQuery,
+  useGetGoalByIdQuery,
   useAddGoalMutation,
   useEditGoalMutation,
   useDeleteGoalMutation,
