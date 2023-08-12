@@ -54,7 +54,7 @@ export const theme: ThemeProp = {
     },
     surfaceDisabled: 'rgba(32, 26, 27, 0.12)',
     onSurfaceDisabled: 'rgba(32, 26, 27, 0.38)',
-    backdrop: 'rgba(58, 45, 47, 0.4)',
+    backdrop: '#0E1011',
     // ...MD3LightTheme.colors,
     // backdrop: '#2236', // modal overlay
     // elevation: '#FF0',

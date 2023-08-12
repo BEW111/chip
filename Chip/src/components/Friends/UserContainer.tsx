@@ -22,10 +22,8 @@ import InputFieldMenu from '../InputFieldMenu';
 import AvatarDisplay from '../AvatarDisplay';
 import Tooltip from '../common/Tooltip';
 
-// stuff to delete
-import {selectUid} from '../../redux/slices/authSlice';
-
 // Friends
+import {selectUid} from '../../redux/slices/authSlice';
 import {acceptInvite} from '../../supabase/friends';
 import {useInviteUserMutation} from '../../redux/slices/friendsSlice';
 import {SupabaseProfileWithFriendship} from '../../types/friends';
@@ -169,6 +167,7 @@ function FriendModal({visible, hideModal, friend, mainTab}: FriendModalType) {
 
   // Modal dismissing
   const onDismiss = () => {
+    setCostreakTab('manage');
     setCostreakTooltipVisible(false);
     setWarnRemovingFriend(false);
     setMyGoalSelected(null);
@@ -209,15 +208,14 @@ function FriendModal({visible, hideModal, friend, mainTab}: FriendModalType) {
         recipient_goal_id: friendGoalSelected.value,
       };
       const {error} = await addCostreak(costreak);
-      if (error.message === 'Costreak pairing already exists') {
+      if (error && error.message === 'Costreak pairing already exists') {
         setDisplayError('You already have a superstreak with these goals');
         return;
       }
+      setCostreakTab('manage');
     } else {
       setDisplayError('Please select a goal for both you and your friend.');
     }
-
-    hideModal();
   };
 
   // Costreak tooltip

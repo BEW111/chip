@@ -93,7 +93,7 @@ export default function Friends() {
               autoCapitalize="none"
               autoCorrect={false}
               mode="outlined"
-              style={localStyles.textInput}
+              style={{backgroundColor: theme.colors.backdrop}}
               contentStyle={localStyles.whiteText}
               left={<TextInput.Icon icon="search-outline" />}
               right={
@@ -165,5 +165,4 @@ export default function Friends() {
 
 const localStyles = StyleSheet.create({
   whiteText: {color: 'white'},
-  textInput: {backgroundColor: '#222'},
 });

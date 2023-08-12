@@ -121,9 +121,9 @@ function DeleteGoalModal({visible, hideModal, uid, goalId, navigation}) {
   );
 }
 
-function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
+function ReminderFAB({showEditGoalModal, showDeleteGoalModal}) {
   const [fabOpen, setFabOpen] = useState(false);
-  const onFabStateChange = ({open}) => setFabOpen(open);
+  const onFabStateChange = ({open}: {open: boolean}) => setFabOpen(open);
 
   const {colors} = useTheme();
 
@@ -135,13 +135,13 @@ function ReminderFAB({showRemindersModal, showDeleteGoalModal}) {
         icon={fabOpen ? 'close' : 'menu'}
         fabStyle={{backgroundColor: colors.primary}}
         actions={[
-          // {
-          //   icon: 'alarm',
-          //   label: 'Reminders',
-          //   onPress: () => {
-          //     showRemindersModal();
-          //   },
-          // },
+          {
+            icon: 'pencil-outline',
+            label: 'Edit',
+            onPress: () => {
+              showEditGoalModal();
+            },
+          },
           {
             icon: 'trash',
             label: 'Delete',
@@ -251,10 +251,7 @@ export default function GoalPage({navigation, route}) {
         </View>
       </BackgroundWrapper>
       <ReminderFAB
-        uid={uid}
-        goalId={goal.id}
-        navigation={navigation}
-        showRemindersModal={showRemindersModal}
+        showEditGoalModal={showEditGoalModal}
         showDeleteGoalModal={showDeleteGoalModal}
       />
     </>

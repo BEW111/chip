@@ -37,30 +37,35 @@ function GoalBadges({goal}: {goal: SupabaseGoal}) {
       </View>
       <Divider style={styles.dividerHTiny} />
       {costreaks &&
-        costreaks.map((costreak: SupabaseCostreakWithUsers) => (
-          <View
-            key={
-              costreak.sender_id === currentUid
-                ? costreak.recipient_id
-                : costreak.sender_id
-            }
-            style={goalBadgeStyles.badge}>
-            <AvatarDisplay
-              height={20}
-              width={20}
-              url={
+        costreaks
+          .filter(
+            (costreak: SupabaseCostreakWithUsers) =>
+              costreak.status === 'accepted',
+          )
+          .map((costreak: SupabaseCostreakWithUsers) => (
+            <View
+              key={
                 costreak.sender_id === currentUid
-                  ? costreak.recipient.avatar_url
-                  : costreak.sender.avatar_url
+                  ? costreak.recipient_id
+                  : costreak.sender_id
               }
-            />
-            <Divider style={styles.dividerHTiny} />
-            <Text variant="bodyLarge">
-              {costreak.streak_count}
-              <Icon name="bonfire-outline" size={18} />
-            </Text>
-          </View>
-        ))}
+              style={goalBadgeStyles.badge}>
+              <AvatarDisplay
+                height={20}
+                width={20}
+                url={
+                  costreak.sender_id === currentUid
+                    ? costreak.recipient.avatar_url
+                    : costreak.sender.avatar_url
+                }
+              />
+              <Divider style={styles.dividerHTiny} />
+              <Text variant="bodyLarge">
+                {costreak.streak_count}
+                <Icon name="bonfire-outline" size={18} />
+              </Text>
+            </View>
+          ))}
     </View>
   );
 }

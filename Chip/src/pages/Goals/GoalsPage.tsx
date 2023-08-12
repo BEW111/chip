@@ -36,25 +36,23 @@ import {
 const Stack = createNativeStackNavigator();
 
 function MainPage({navigation}) {
-  // console.log('[GoalsPage MainPage] Main page');
-
   const {data: goals, refetch: refetchGoals} = useGetGoalsQuery();
-  const {data: chips, refetch: refreshChips} = useGetChipsQuery();
-
-  // console.log('[GoalsPage MainPage] chips:', chips);
+  const {data: chips, refetch: refetchChips} = useGetChipsQuery();
 
   const theme = useTheme();
+  const dispatch = useAppDispatch();
 
   // Refresh controls
   const [refreshing, setRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetchGoals();
-    await refreshChips();
+    await refetchChips();
+    dispatch(supabaseApi.util.invalidateTags(['Costreak']));
     setTimeout(() => {
       setRefreshing(false);
     }, 300);
-  }, [refetchGoals, refreshChips]);
+  }, [refetchGoals, refetchChips, dispatch]);
 
   // Tutorial
   const tutorialStage = useAppSelector(selectTutorialStage);
