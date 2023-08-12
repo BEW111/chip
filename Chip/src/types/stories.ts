@@ -32,7 +32,6 @@ export type SupabaseStoryView = {
   story_id: string;
   poster_id: string;
   viewer_id: string;
-  goal_id: string;
 };
 
 // These are the actual objects we want to be dealing with, containing a creator

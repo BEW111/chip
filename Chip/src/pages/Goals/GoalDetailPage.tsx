@@ -221,9 +221,6 @@ export default function GoalPage({navigation, route}) {
       }.`
     : '';
 
-  // Bottom inset
-  const insets = useSafeAreaInsets();
-
   return (
     <>
       {goal && (
@@ -265,18 +262,18 @@ export default function GoalPage({navigation, route}) {
             </View>
           </Header>
           <ScrollView style={{flex: 1, padding: 18}}>
-            <Animated.View entering={FadeInLeft.duration(300)}>
+            <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
               <TextWidget
                 icon="bulb-outline"
                 text={
-                  "Focus on always completing your habits on schedule, even if it's something small each time"
+                  "Focus on always completing your habits on schedule, even if it's something small each time."
                 }
                 title="tip"
               />
             </Animated.View>
             <Divider style={styles.dividerSmall} />
             {goal && (
-              <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
+              <Animated.View entering={FadeInLeft.duration(300).delay(100)}>
                 <TextWidget
                   icon="information-circle-outline"
                   text={goalOverviewText}
@@ -286,7 +283,7 @@ export default function GoalPage({navigation, route}) {
             )}
             <Divider style={styles.dividerSmall} />
             {goal && chips && (
-              <Animated.View entering={FadeInLeft.duration(300).delay(100)}>
+              <Animated.View entering={FadeInLeft.duration(300).delay(120)}>
                 <ChartWidget
                   chips={chips}
                   chartType="bar"
@@ -296,7 +293,7 @@ export default function GoalPage({navigation, route}) {
             )}
             <Divider style={styles.dividerSmall} />
             {goal && chips && (
-              <Animated.View entering={FadeInLeft.duration(300).delay(150)}>
+              <Animated.View entering={FadeInLeft.duration(300).delay(160)}>
                 <ImageCarouselWidget
                   goal={goal}
                   chips={chips}

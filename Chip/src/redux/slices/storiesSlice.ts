@@ -11,6 +11,7 @@ import {
   StoryGroupsObject,
   SupabaseStoryInfo,
   StoryGroup,
+  SupabaseStoryView,
 } from '../../types/stories';
 
 const storiesSlice = supabaseApi.injectEndpoints({
@@ -81,7 +82,17 @@ const storiesSlice = supabaseApi.injectEndpoints({
         return {data: storyGroups};
       },
     }),
+    getStoryViewCount: builder.query<number | null, string>({
+      queryFn: async (storyId: string) => {
+        const {count, error} = await supabase
+          .from('story_views')
+          .select('*', {count: 'exact', head: true})
+          .eq('story_id', storyId);
+
+        return {data: count, error};
+      },
+    }),
   }),
 });
 
-export const {useGetStoryGroupsQuery} = storiesSlice;
+export const {useGetStoryGroupsQuery, useGetStoryViewCountQuery} = storiesSlice;

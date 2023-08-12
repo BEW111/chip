@@ -18,7 +18,10 @@ import {
   viewNextStory,
   stopViewingStory,
 } from '../../redux/slices/storyFeedSlice';
-import {useGetStoryGroupsQuery} from '../../redux/slices/storiesSlice';
+import {
+  useGetStoryGroupsQuery,
+  useGetStoryViewCountQuery,
+} from '../../redux/slices/storiesSlice';
 import {supabase} from '../../supabase/supabase';
 
 // Marking stories as viewed
@@ -28,6 +31,25 @@ import {SupabaseStoryViewUpload} from '../../types/stories';
 import {selectUid} from '../../redux/slices/authSlice';
 import {BlurView} from '@react-native-community/blur';
 import AvatarDisplay from '../AvatarDisplay';
+
+const ViewCountWidget = ({storyId}: {storyId: string}) => {
+  // Story views
+  const {data: storyViewCount} = useGetStoryViewCountQuery(storyId);
+
+  return (
+    storyViewCount && (
+      <BlurView style={storyViewStyles.goalViewsWrapper}>
+        <View style={storyViewStyles.viewsContainer}>
+          <Icon name="eye-outline" size={24} color="white" />
+          <Divider style={styles.dividerHSmall} />
+          <Text variant="titleLarge" style={storyViewStyles.streakText}>
+            {storyViewCount}
+          </Text>
+        </View>
+      </BlurView>
+    )
+  );
+};
 
 // Component to show when the user is viewing stories currently
 const StoryView = () => {
@@ -184,37 +206,43 @@ const StoryView = () => {
           onPress={close}
         />
       </BlurView>
-      {/* Goal info */}
-      {currentStory.goal !== null && (
-        <BlurView style={storyViewStyles.goalInfoWrapper}>
-          <View style={storyViewStyles.emojiWrapper}>
-            <Text variant="displayMedium">{currentStory.goal.emoji}</Text>
-          </View>
-          <View style={storyViewStyles.storyTextWrapper}>
-            <Text
-              variant="bodyLarge"
-              style={storyViewStyles.goalNameText}
-              numberOfLines={1}>
-              {currentStory.goal.name}
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={storyViewStyles.storyText}
-              numberOfLines={1}>
-              {currentStory.message === ''
-                ? 'No notes provided'
-                : `"${currentStory.message}"`}
-            </Text>
-          </View>
-          <View style={storyViewStyles.streakContainer}>
-            <Icon name="flame-outline" size={32} color="white" />
-            <Divider style={styles.dividerHTiny} />
-            <Text variant="displaySmall" style={storyViewStyles.streakText}>
-              {currentStory.goal.streak_count}
-            </Text>
-          </View>
-        </BlurView>
-      )}
+      <View style={storyViewStyles.bottomWrapper}>
+        {/* Story view count */}
+        {currentUser.id === uid && currentStory && currentStory !== null && (
+          <ViewCountWidget storyId={currentStory.id} />
+        )}
+        {/* Goal info */}
+        {currentStory.goal !== null && (
+          <BlurView style={storyViewStyles.goalInfoWrapper}>
+            <View style={storyViewStyles.emojiWrapper}>
+              <Text variant="displayMedium">{currentStory.goal.emoji}</Text>
+            </View>
+            <View style={storyViewStyles.storyTextWrapper}>
+              <Text
+                variant="bodyLarge"
+                style={storyViewStyles.goalNameText}
+                numberOfLines={1}>
+                {currentStory.goal.name}
+              </Text>
+              <Text
+                variant="bodyMedium"
+                style={storyViewStyles.storyText}
+                numberOfLines={1}>
+                {currentStory.message === ''
+                  ? 'No notes provided'
+                  : `"${currentStory.message}"`}
+              </Text>
+            </View>
+            <View style={storyViewStyles.streakContainer}>
+              <Icon name="flame-outline" size={32} color="white" />
+              <Divider style={styles.dividerHTiny} />
+              <Text variant="displaySmall" style={storyViewStyles.streakText}>
+                {currentStory.goal.streak_count}
+              </Text>
+            </View>
+          </BlurView>
+        )}
+      </View>
     </View>
   );
 };
@@ -230,17 +258,23 @@ const storyViewStyles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  goalInfoWrapper: {
+  bottomWrapper: {
     position: 'absolute',
-    bottom: 10,
     left: 0,
     right: 0,
+    bottom: 0,
 
+    display: 'flex',
+    gap: 8,
+    padding: 16,
+  },
+  goalViewsWrapper: {
     borderRadius: 16,
-    margin: 12,
-
     padding: 12,
-    paddingTop: 16,
+  },
+  goalInfoWrapper: {
+    borderRadius: 16,
+    padding: 12,
 
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -253,6 +287,11 @@ const storyViewStyles = StyleSheet.create({
   storyTextWrapper: {flexShrink: 0, flex: 4},
   storyText: {color: 'white'},
   usernameText: {color: 'white'},
+  viewsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 4,
+  },
   streakContainer: {
     flexDirection: 'row',
     alignItems: 'center',
