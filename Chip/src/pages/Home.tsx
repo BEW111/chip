@@ -1,9 +1,10 @@
 import React from 'react';
-import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
+import {View, Pressable, StyleSheet} from 'react-native';
 import {styles} from '../styles';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 
 // Components
+import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
 import StoryView from '../components/Stories/StoryView';
@@ -129,11 +130,6 @@ const localStyles = (viewed: boolean) =>
       alignItems: 'center',
       margin: 8,
     },
-    storiesView: {
-      width: '100%',
-      borderBottomColor: 'white',
-      borderBottomWidth: 0.5,
-    },
     tempStoriesViewWrapper: {
       justifyContent: 'center',
       width: '100%',
@@ -147,6 +143,8 @@ const localStyles = (viewed: boolean) =>
       alignItems: 'center',
       justifyContent: 'center',
       flex: 100,
+      borderTopWidth: 0.5,
+      borderColor: 'white',
     },
     homeFeedImage: {
       width: 256,
