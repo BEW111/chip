@@ -135,7 +135,6 @@ const localStyles = (viewed: boolean) =>
       width: '100%',
     },
     tempStoriesViewText: {
-      color: 'white',
       paddingVertical: 36,
       textAlign: 'center',
     },

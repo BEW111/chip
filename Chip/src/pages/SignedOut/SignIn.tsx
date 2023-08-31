@@ -27,6 +27,11 @@ import BackgroundWrapper from '../../components/BackgroundWrapper';
 export default function SignIn({navigation}) {
   const [emailText, setEmailText] = useState('');
   const [passText, setPassText] = useState('');
+  const [secureTextEntry, setSecuryTextEntry] = useState(true);
+
+  async function onToggleSecureTextEntry() {
+    setSecuryTextEntry(!secureTextEntry);
+  }
 
   const [displayError, setDisplayError] = useState('');
   const [signingIn, setSigningIn] = useState(false);
@@ -88,7 +93,7 @@ export default function SignIn({navigation}) {
               />
               <Divider style={styles.dividerSmall} />
               <TextInput
-                secureTextEntry={true}
+                secureTextEntry={secureTextEntry}
                 mode="outlined"
                 placeholder="Password"
                 autoCapitalize="none"
@@ -97,6 +102,12 @@ export default function SignIn({navigation}) {
                 defaultValue={passText}
                 underlineColor="gray"
                 activeUnderlineColor="white"
+                right={
+                  <TextInput.Icon
+                    icon={secureTextEntry ? 'eye-off' : 'eye'}
+                    onPress={onToggleSecureTextEntry}
+                  />
+                }
               />
               <Divider style={styles.dividerSmall} />
               <HelperText type="error">{displayError}</HelperText>
