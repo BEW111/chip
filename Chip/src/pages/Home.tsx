@@ -130,6 +130,9 @@ const localStyles = (viewed: boolean) =>
       alignItems: 'center',
       margin: 8,
     },
+    storiesView: {
+      width: '100%',
+    },
     tempStoriesViewWrapper: {
       justifyContent: 'center',
       width: '100%',
@@ -137,6 +140,7 @@ const localStyles = (viewed: boolean) =>
     tempStoriesViewText: {
       paddingVertical: 36,
       textAlign: 'center',
+      color: 'white',
     },
     homeWrapper: {
       alignItems: 'center',
