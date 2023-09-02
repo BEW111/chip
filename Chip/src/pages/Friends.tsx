@@ -79,7 +79,7 @@ export default function Friends() {
   }, [dispatch, refetchReceived, refetchSent, refetchFriends]);
 
   return (
-    <Pressable style={styles.expand} onPress={() => Keyboard.dismiss()}>
+    <Pressable style={styles.full} onPress={() => Keyboard.dismiss()}>
       <View style={styles.fullDark}>
         <SafeAreaView>
           <View style={styles.fullPaddedDark}>
@@ -114,8 +114,10 @@ export default function Friends() {
                   colors={[theme.colors.onPrimary]}
                 />
               }
-              contentContainerStyle={styles.expand}>
-              <Pressable disabled={searchBarEditing} style={styles.expand}>
+              contentContainerStyle={localStyles.profileContainer}>
+              <Pressable
+                disabled={searchBarEditing}
+                style={localStyles.profileContainer}>
                 <Divider style={styles.dividerSmall} />
                 {searchResultProfiles.map(profile => (
                   <View key={profile.id}>
@@ -164,5 +166,6 @@ export default function Friends() {
 }
 
 const localStyles = StyleSheet.create({
+  profileContainer: {flexGrow: 1},
   whiteText: {color: 'white'},
 });
