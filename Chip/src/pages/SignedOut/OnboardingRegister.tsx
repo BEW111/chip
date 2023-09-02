@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, ScrollView, View, Platform} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  View,
+  Platform,
+  Pressable,
+} from 'react-native';
 import {useAppDispatch} from '../../redux/hooks';
 import {styles} from '../../styles';
 
@@ -11,10 +17,13 @@ import {
   HelperText,
   Text,
   ActivityIndicator,
+  useTheme,
+  Portal,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import BlurSurface from '../../components/BlurSurface';
 import BackgroundWrapper from '../../components/BackgroundWrapper';
+import {BlurView} from '@react-native-community/blur';
 
 // Tutorial state
 import {finishTutorial, startTutorial} from '../../redux/slices/tutorialSlice';
@@ -24,6 +33,7 @@ import {signUpWithEmail, verifyOtp} from '../../supabase/auth';
 
 // Navigation
 import {useNavigation} from '@react-navigation/native';
+import EulaReader from '../../components/Onboarding/EulaReader';
 
 export default function OnboardingRegister() {
   const [usernameText, setUsernameText] = useState('');
@@ -40,6 +50,7 @@ export default function OnboardingRegister() {
 
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const onSignUpPressed = async () => {
     // Check for more obvious errors
@@ -90,7 +101,33 @@ export default function OnboardingRegister() {
     setSecuryTextEntry(!secureTextEntry);
   }
 
-  return (
+  // EULA
+  const [eulaReaderVisible, setEulaReaderVisible] = useState(false);
+  const onViewEulaPressed = () => {
+    setEulaReaderVisible(true);
+  };
+  const onCloseEulaPressed = () => {
+    setEulaReaderVisible(false);
+  };
+  const insets = useSafeAreaInsets();
+
+  return eulaReaderVisible ? (
+    <BackgroundWrapper>
+      <View style={styles.absoluteFullDark}>
+        <EulaReader onCloseReader={onCloseEulaPressed} />
+        <BlurView
+          blurType="light"
+          blurAmount={8}
+          style={{
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            height: insets.top,
+          }}
+        />
+      </View>
+    </BackgroundWrapper>
+  ) : (
     <BackgroundWrapper>
       <SafeAreaView>
         <KeyboardAvoidingView
@@ -113,7 +150,7 @@ export default function OnboardingRegister() {
               <Divider style={styles.dividerSmall} />
               {waitingForVerify ? (
                 <>
-                  <HelperText>
+                  <HelperText type="info">
                     Please enter the verification code sent to {emailText}
                   </HelperText>
                   <TextInput
@@ -192,6 +229,20 @@ export default function OnboardingRegister() {
                   />
                   <HelperText type="error" visible={displayError !== ''}>
                     {displayError}
+                  </HelperText>
+                  <Divider style={styles.dividerTiny} />
+                  <HelperText type="info">
+                    By pressing "register", you agree to the terms listed in our{' '}
+                    <HelperText
+                      type="info"
+                      style={{
+                        color: theme.colors.tertiary,
+                        fontWeight: 'bold',
+                      }}
+                      onPress={onViewEulaPressed}>
+                      End-User License Agreement
+                    </HelperText>
+                    .
                   </HelperText>
                   <Divider style={styles.dividerSmall} />
                   {signingUp ? (

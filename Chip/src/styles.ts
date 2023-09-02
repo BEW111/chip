@@ -31,6 +31,12 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  absoluteFullDark: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(100, 100, 100, 0.5)',
+  },
   absoluteFullCentered: {
     position: 'absolute',
     width: '100%',

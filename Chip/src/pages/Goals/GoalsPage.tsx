@@ -1,9 +1,15 @@
 import React from 'react';
-import {View, ScrollView, StyleSheet, RefreshControl} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  RefreshControl,
+  Dimensions,
+} from 'react-native';
 import {styles} from '../../styles';
 
 // Common components
-import {Divider, Portal, Text, useTheme} from 'react-native-paper';
+import {Divider, Modal, Portal, Text, useTheme} from 'react-native-paper';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 // Widgets
@@ -131,4 +137,18 @@ export default function AnalyticsPage() {
 const localStyles = StyleSheet.create({
   scrollViewPadded: {padding: 16},
   headerText: {fontSize: 24, fontWeight: 'bold'},
+  pdfContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 25,
+    backgroundColor: 'red',
+    width: '100%',
+    height: '100%',
+  },
+  pdf: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
 });
