@@ -83,8 +83,6 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
       .order('username')
       .limit(20);
 
-  console.log(data);
-
   // Here's we're converting from the form of the result data to
   // a much nicer form. The result data may contain either a "received" or "sent"
   // array with an object containing a "status" item. The terms "received" or "sent"

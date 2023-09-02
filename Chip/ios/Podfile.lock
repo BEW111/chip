@@ -290,6 +290,8 @@ PODS:
   - React-jsinspector (0.71.6)
   - React-logger (0.71.6):
     - glog
+  - react-native-blob-util (0.19.1):
+    - React-Core
   - react-native-blur (4.3.2):
     - React-Core
   - react-native-get-random-values (1.9.0):
@@ -300,6 +302,8 @@ PODS:
     - OneSignalXCFramework (= 3.12.4)
     - React (< 1.0.0, >= 0.13.0)
   - react-native-pager-view (5.4.25):
+    - React-Core
+  - react-native-pdf (6.7.1):
     - React-Core
   - react-native-safe-area-context (4.7.1):
     - React-Core
@@ -479,11 +483,13 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-blob-util (from `../node_modules/react-native-blob-util`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-onesignal (from `../node_modules/react-native-onesignal`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
+  - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -564,6 +570,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-blob-util:
+    :path: "../node_modules/react-native-blob-util"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-get-random-values:
@@ -574,6 +582,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-onesignal"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
+  react-native-pdf:
+    :path: "../node_modules/react-native-pdf"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-perflogger:
@@ -655,11 +665,13 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7894956638ff3e00819dd3f9f6f4a84da38f2409
   React-jsinspector: d5ce2ef3eb8fd30c28389d0bc577918c70821bd6
   React-logger: 9332c3e7b4ef007a0211c0a9868253aac3e1da82
+  react-native-blob-util: af2dc91365bfde33f61389cbd0c692af9a4a97cb
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
   react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-onesignal: 7bd44dbd031d8d57110c0203836ffc37ddead526
   react-native-pager-view: da490aa1f902c9a5aeecf0909cc975ad0e92e53e
+  react-native-pdf: 7c0e91ada997bac8bac3bb5bea5b6b81f5a3caae
   react-native-safe-area-context: 9697629f7b2cda43cf52169bb7e0767d330648c2
   React-perflogger: 43392072a5b867a504e2b4857606f8fc5a403d7f
   React-RCTActionSheet: c7b67c125bebeda9fb19fc7b200d85cb9d6899c4
