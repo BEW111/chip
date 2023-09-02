@@ -13,7 +13,10 @@ import {SupabaseProfileWithFriendship} from '../../types/friends';
 // User info/actions
 import {selectUid} from '../../redux/slices/authSlice';
 import {useDeleteFriendshipMutation} from '../../redux/slices/friendsSlice';
-import {useBlockUserMutation} from '../../redux/slices/blocksSlice';
+import {
+  useBlockUserMutation,
+  useUnblockUserMutation,
+} from '../../redux/slices/blocksSlice';
 
 type UserModalType = {
   visible: boolean;
@@ -58,6 +61,18 @@ function UserModal({visible, hideModal, user}: UserModalType) {
       onDismiss();
     } else {
       setWarnBlockingUser(true);
+    }
+  };
+
+  // Unblocking a user
+  const [unblockUser] = useUnblockUserMutation();
+  const [warnUnblockingUser, setWarnUnblockingUser] = useState(false);
+  const onPressUnblockUser = async () => {
+    if (warnUnblockingUser && currentUid) {
+      await unblockUser(user.id);
+      onDismiss();
+    } else {
+      setWarnUnblockingUser(true);
     }
   };
 
@@ -110,28 +125,43 @@ function UserModal({visible, hideModal, user}: UserModalType) {
         </>
       )}
       <Divider style={styles.dividerMedium} />
-      <Button
-        mode={warnBlockingUser ? 'contained' : 'outlined'}
-        onPress={onPressBlockUser}>
-        {warnBlockingUser
-          ? 'Confirm you want to block this user?'
-          : 'Block user'}
-      </Button>
-      <Divider style={styles.dividerTiny} />
-      <HelperText type="info">
-        By blocking this user, you will no longer be able to see their posts,
-        stories, goals, or friendship requests. They will not know you have
-        blocked them.
-        {user.status === 'accepted' &&
-          ' This will also automatically remove the user as a friend.'}
-      </HelperText>
+      {user.status === 'blocked' ? (
+        <>
+          <Button
+            mode={warnUnblockingUser ? 'contained' : 'outlined'}
+            onPress={onPressUnblockUser}>
+            {warnUnblockingUser
+              ? 'Confirm you want to unblock this user?'
+              : 'Unblock user'}
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            mode={warnBlockingUser ? 'contained' : 'outlined'}
+            onPress={onPressBlockUser}>
+            {warnBlockingUser
+              ? 'Confirm you want to block this user?'
+              : 'Block user'}
+          </Button>
+          <Divider style={styles.dividerTiny} />
+          <HelperText type="info">
+            By blocking this user, you and this user will no longer be able to
+            see each other's posts, stories, goals, or friendship requests. They
+            will not know you have blocked them, but will no longer be able to
+            search for your profile.
+            {user.status === 'accepted' &&
+              ' This will also automatically remove the user as a friend.'}
+          </HelperText>
+        </>
+      )}
       <Divider style={styles.dividerMedium} />
       <Button
         mode={warnReportingUser ? 'contained' : 'outlined'}
         onPress={onPressReportUser}>
         {warnReportingUser
-          ? 'Confirm you want to block and report this user?'
-          : 'Block and report user'}
+          ? 'Confirm you want to report this user?'
+          : 'Report user'}
       </Button>
       <Divider style={styles.dividerTiny} />
       <HelperText type="info">

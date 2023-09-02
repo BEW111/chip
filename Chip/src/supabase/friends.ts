@@ -77,7 +77,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
         `
       *, 
       received:friends!friends_sender_id_fkey!left(status, id),
-      sent:friends!friends_recipient_id_fkey!left(status, id)`,
+      sent:friends!friends_recipient_id_fkey!left(status, id),
+      blocked:blocks!blocks_recipient_id_fkey!left(created_at)`,
       )
       .like('username', `${searchQuery}%`)
       .order('username')
@@ -90,6 +91,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
   // has a "recieved" entry, we are the sender, so we want to flip these terms so they're more intuitive.
   // We want to just have one resulting field, which describes the status of the friendship
   // relative to us, so either "accepted", "rejected", "received", "sent", or "none".
+
+  // We've also modified this to mark the user as "blocked" if relevant
   const queryResult = data.map(
     searchResult =>
       ({
@@ -103,6 +106,8 @@ export async function getProfilesBySearchQuery(searchQuery: string) {
             ? searchResult.received[0].status === 'pending'
               ? 'received'
               : searchResult.received[0].status
+            : searchResult.blocked.length > 0
+            ? 'blocked'
             : 'none',
         friendship_id:
           searchResult.sent.length > 0

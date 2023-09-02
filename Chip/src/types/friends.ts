@@ -6,13 +6,20 @@ export type RelativeFriendshipStatus =
   | 'sent'
   | 'received'
   | 'accepted'
-  | 'rejected';
+  | 'rejected'
+  | 'blocked';
 
 export type SupabaseFriendship = {
   id: string;
   sender_id: string;
   recipient_id: string;
   status: string;
+};
+
+export type SupabaseBlock = {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
 };
 
 // The status is relative to the current user. So if we have another
@@ -39,6 +46,7 @@ export type FriendshipInvite = {
 export type SupabaseProfilesSearchResult = SupabaseProfile & {
   sent: {status: FriendshipStatus; id: string}[];
   received: {status: FriendshipStatus; id: string}[];
+  blocked: {created_at: string}[];
 };
 
 export type SupabaseReceivedInviteResult = {

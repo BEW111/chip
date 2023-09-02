@@ -467,6 +467,10 @@ function UserContainer({user}: UserContainerType) {
                 <Button mode="text" labelStyle={localStyles.userButtonLabel}>
                   Invite pending
                 </Button>
+              ) : user.status === 'blocked' ? (
+                <Button mode="text" labelStyle={localStyles.userButtonLabel}>
+                  Blocked
+                </Button>
               ) : (
                 <Button
                   mode="contained"

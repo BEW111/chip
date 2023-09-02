@@ -4,7 +4,15 @@ import {createApi, fakeBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const supabaseApi = createApi({
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Profile', 'Goal', 'Chip', 'Friendship', 'Story', 'Costreak'],
+  tagTypes: [
+    'Profile',
+    'Goal',
+    'Chip',
+    'Friendship',
+    'Story',
+    'Costreak',
+    'Block',
+  ],
   endpoints: builder => ({}),
 });
 
