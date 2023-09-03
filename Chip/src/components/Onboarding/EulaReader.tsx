@@ -10,7 +10,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 const EulaReader = ({onCloseReader}) => {
   // PDF
   const pdfSource = {
-    uri: 'https://qsqweweesjdcztnhowwj.supabase.co/storage/v1/object/public/eula/Chip%20EULA.pdf',
+    uri: 'https://qsqweweesjdcztnhowwj.supabase.co/storage/v1/object/public/eula/eula.pdf',
     cache: true,
   };
 
@@ -20,23 +20,7 @@ const EulaReader = ({onCloseReader}) => {
     <>
       <View style={styles.absoluteFull}>
         <View style={localStyles.pdfContainer}>
-          <Pdf
-            source={pdfSource}
-            fitPolicy={0}
-            // onLoadComplete={(numberOfPages: number, filePath: string) => {
-            //   console.log(`Number of pages: ${numberOfPages}`);
-            // }}
-            // onPageChanged={(page: number, numberOfPages: number) => {
-            //   console.log(`Current page: ${page}`);
-            // }}
-            // onError={error => {
-            //   console.log(error);
-            // }}
-            // onPressLink={uri => {
-            //   console.log(`Link pressed: ${uri}`);
-            // }}
-            style={localStyles.pdf}
-          />
+          <Pdf source={pdfSource} fitPolicy={0} style={localStyles.pdf} />
         </View>
       </View>
       <View style={styles.absoluteFull} pointerEvents="box-none">
