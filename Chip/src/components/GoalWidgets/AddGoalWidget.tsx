@@ -304,6 +304,7 @@ export default function AddGoalWidget() {
                           onChangeText={setGoalNameInput}
                           onEndEditing={onGoalNameEndEditing}
                           autoCorrect={false}
+                          maxLength={50}
                         />
                       </Tooltip>
                     </View>
@@ -418,6 +419,7 @@ export default function AddGoalWidget() {
                         tutorialStage === 'goals-entering-name' ||
                         tutorialStage === 'goals-entering-privacy'
                       }
+                      maxLength={50}
                     />
                   ) : (
                     <HelperText type="info">
@@ -464,6 +466,7 @@ export default function AddGoalWidget() {
                           tutorialStage === 'goals-entering-privacy' ||
                           tutorialStage === 'goals-entering-units'
                         }
+                        maxLength={10}
                       />
                     </View>
                   </View>

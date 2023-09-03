@@ -127,7 +127,9 @@ export default function GoalWidget({
           <View style={styles.rowSpaceBetween}>
             <View style={goalSurfaceStyles(pressed).primaryContentsWrapper}>
               <GoalBadges goal={goal} />
-              <Text style={goalSurfaceStyles(pressed).goalName}>
+              <Text
+                style={goalSurfaceStyles(pressed).goalName}
+                numberOfLines={1}>
                 {goal.name}
               </Text>
             </View>
@@ -153,6 +155,7 @@ const goalSurfaceStyles = (pressed: boolean) =>
     },
     primaryContentsWrapper: {
       paddingLeft: 2,
+      width: '90%',
     },
     arrow: {justifyContent: 'center'},
     emojiView: {
