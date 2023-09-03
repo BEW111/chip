@@ -226,6 +226,8 @@ export default function Settings(props) {
             <Button mode="contained-tonal" onPress={onManageAccountPressed}>
               Manage account
             </Button>
+            <Divider style={styles.dividerLarge} />
+            <Text>For more support, please content support@chipgoals.app</Text>
             <Divider style={styles.dividerSmall} />
             <Button
               icon="log-out-outline"
