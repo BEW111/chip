@@ -116,7 +116,7 @@ export default function OnboardingRegister() {
       <View style={styles.absoluteFullDark}>
         <EulaReader onCloseReader={onCloseEulaPressed} />
         <BlurView
-          blurType="light"
+          blurType="dark"
           blurAmount={8}
           style={{
             position: 'absolute',

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {useAppSelector} from '../../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
 import {styles, modalStyles} from '../../styles';
 
 // Components
@@ -17,6 +17,8 @@ import {
   useBlockUserMutation,
   useUnblockUserMutation,
 } from '../../redux/slices/blocksSlice';
+import {stopViewingStory} from '../../redux/slices/storyFeedSlice';
+import {useReportUserMutation} from '../../redux/slices/reportsSlice';
 
 type UserModalType = {
   visible: boolean;
@@ -26,6 +28,8 @@ type UserModalType = {
 
 // Modal that is available for all users (manage friendship, block, report)
 function UserModal({visible, hideModal, user}: UserModalType) {
+  const dispatch = useAppDispatch();
+
   // Modal dismissing
   const onDismiss = () => {
     setWarnRemovingFriend(false);
@@ -51,6 +55,7 @@ function UserModal({visible, hideModal, user}: UserModalType) {
   const [warnBlockingUser, setWarnBlockingUser] = useState(false);
   const onPressBlockUser = async () => {
     if (warnBlockingUser && currentUid) {
+      dispatch(stopViewingStory());
       await blockUser({
         sender_id: currentUid,
         recipient_id: user.id,
@@ -78,16 +83,16 @@ function UserModal({visible, hideModal, user}: UserModalType) {
 
   // Reporting a user
   const [warnReportingUser, setWarnReportingUser] = useState(false);
+  const [reportUser] = useReportUserMutation();
+  const [reportSuccess, setReportSuccess] = useState(false);
   const onPressReportUser = async () => {
     if (warnReportingUser && currentUid) {
-      await blockUser({
-        sender_id: currentUid,
-        recipient_id: user.id,
+      reportUser({
+        reporter_id: currentUid,
+        reported_id: user.id,
       });
-      if (user.friendship_id) {
-        await removeFriend(user.friendship_id);
-      }
-      onDismiss();
+      setReportSuccess(true);
+      setWarnReportingUser(false);
     } else {
       setWarnReportingUser(true);
     }
@@ -158,16 +163,26 @@ function UserModal({visible, hideModal, user}: UserModalType) {
       <Divider style={styles.dividerMedium} />
       <Button
         mode={warnReportingUser ? 'contained' : 'outlined'}
-        onPress={onPressReportUser}>
+        onPress={onPressReportUser}
+        disabled={reportSuccess}>
         {warnReportingUser
           ? 'Confirm you want to report this user?'
-          : 'Report user'}
+          : 'Report inappropriate behavior'}
       </Button>
       <Divider style={styles.dividerTiny} />
-      <HelperText type="info">
-        This will block the user and report them for harassment or inappropriate
-        behavior.
-      </HelperText>
+      {reportSuccess ? (
+        <HelperText type="info">
+          You have reported this user for harassment or inappropriate behavior.
+          Their actions will be reviewed within the next 24 hours, and if
+          necessary, the user and their content will be removed from Chip.
+        </HelperText>
+      ) : (
+        <HelperText type="info">
+          This will report the user for harassment or inappropriate behavior.
+          Their actions will be reviewed within the next 24 hours, and if
+          necessary, the user and their content will be removed from Chip.
+        </HelperText>
+      )}
     </Modal>
   );
 }

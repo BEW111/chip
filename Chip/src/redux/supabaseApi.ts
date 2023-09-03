@@ -12,6 +12,7 @@ export const supabaseApi = createApi({
     'Story',
     'Costreak',
     'Block',
+    'Reports',
   ],
   endpoints: builder => ({}),
 });

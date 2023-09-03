@@ -23,18 +23,18 @@ const EulaReader = ({onCloseReader}) => {
           <Pdf
             source={pdfSource}
             fitPolicy={0}
-            onLoadComplete={(numberOfPages: number, filePath: string) => {
-              console.log(`Number of pages: ${numberOfPages}`);
-            }}
-            onPageChanged={(page: number, numberOfPages: number) => {
-              console.log(`Current page: ${page}`);
-            }}
-            onError={error => {
-              console.log(error);
-            }}
-            onPressLink={uri => {
-              console.log(`Link pressed: ${uri}`);
-            }}
+            // onLoadComplete={(numberOfPages: number, filePath: string) => {
+            //   console.log(`Number of pages: ${numberOfPages}`);
+            // }}
+            // onPageChanged={(page: number, numberOfPages: number) => {
+            //   console.log(`Current page: ${page}`);
+            // }}
+            // onError={error => {
+            //   console.log(error);
+            // }}
+            // onPressLink={uri => {
+            //   console.log(`Link pressed: ${uri}`);
+            // }}
             style={localStyles.pdf}
           />
         </View>
@@ -58,7 +58,6 @@ const localStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    padding: 10,
   },
   container: {
     height: '100%',
@@ -70,7 +69,7 @@ const localStyles = StyleSheet.create({
   },
   pdf: {
     flex: 1,
-    width: Dimensions.get('window').width - 40,
+    width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
