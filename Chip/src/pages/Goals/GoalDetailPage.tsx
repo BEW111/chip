@@ -247,7 +247,7 @@ export default function GoalPage({navigation, route}) {
         <View style={styles.full}>
           <Header>
             {goal && (
-              <Text style={{fontSize: 24, fontWeight: 'bold'}}>
+              <Text style={localStyles.headerText} numberOfLines={1}>
                 {goal.name}
               </Text>
             )}
@@ -261,7 +261,7 @@ export default function GoalPage({navigation, route}) {
               />
             </View>
           </Header>
-          <ScrollView style={{flex: 1, padding: 18}}>
+          <ScrollView style={localStyles.mainScrollView}>
             <Animated.View entering={FadeInLeft.duration(300).delay(50)}>
               <TextWidget
                 icon="bulb-outline"
@@ -316,6 +316,8 @@ export default function GoalPage({navigation, route}) {
 }
 
 const localStyles = StyleSheet.create({
+  headerText: {fontSize: 24, fontWeight: 'bold', marginHorizontal: 60},
   backButtonWrapper: {position: 'absolute', display: 'flex', left: 4},
   editButtonWrapper: {position: 'absolute', display: 'flex', right: 4},
+  mainScrollView: {flex: 1, padding: 18},
 });
