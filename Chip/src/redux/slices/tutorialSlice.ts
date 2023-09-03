@@ -24,8 +24,8 @@ type TutorialState = {
 };
 
 const initialState: TutorialState = {
-  inTutorial: false,
-  stage: null,
+  inTutorial: true,
+  stage: 'goals-onboarding-carousel',
 };
 
 export const tutorialSlice = createSlice({

@@ -21,6 +21,7 @@ import {
   useTheme,
   IconButton,
   HelperText,
+  Checkbox,
 } from 'react-native-paper';
 import EmojiPicker from 'rn-emoji-keyboard';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -67,6 +68,7 @@ import {
   selectTutorialStage,
   updateTutorialStage,
 } from '../../redux/slices/tutorialSlice';
+import CheckboxAndroid from 'react-native-paper/lib/typescript/src/components/Checkbox/CheckboxAndroid';
 
 function TextDisabled({children, disabled, variant}) {
   return (
@@ -101,15 +103,11 @@ export default function AddGoalWidget() {
     }
     setGoalVisibility(value);
   };
-  const onUnitsStartEditing = () => {
-    if (tutorialStage === 'goals-entering-privacy') {
-      dispatch(updateTutorialStage('goals-entering-units'));
-    }
-  };
-  const onUnitsEndEditing = () => {
+  const onToggleCustomUnits = () => {
     if (tutorialStage === 'goals-entering-units') {
       dispatch(updateTutorialStage('goals-entering-schedule'));
     }
+    setGoalCustomUnitsEnabled(!goalCustomUnitsEnabled);
   };
   const onTargetEndEditing = () => {
     if (tutorialStage === 'goals-entering-schedule') {
@@ -167,7 +165,8 @@ export default function AddGoalWidget() {
   const [goalFreqInput, setGoalFreqInput] =
     useState<GoalIterationPeriod>('daily');
   const [goalTargetInput, setGoalTargetInput] = useState(1);
-  const [goalUnits, setGoalUnits] = useState('minute');
+  const [goalUnits, setGoalUnits] = useState('minutes');
+  const [goalCustomUnitsEnabled, setGoalCustomUnitsEnabled] = useState(false);
   const [goalVisibility, setGoalVisibility] =
     useState<GoalVisibility>('private');
 
@@ -238,7 +237,7 @@ export default function AddGoalWidget() {
 
         iteration_period: goalFreqInput,
         iteration_target: goalTargetInput,
-        iteration_units: goalUnits,
+        iteration_units: goalCustomUnitsEnabled ? goalUnits : 'completion',
         iteration_dows: dowBitField,
       };
 
@@ -258,6 +257,7 @@ export default function AddGoalWidget() {
       setGoalVisibility('private');
       setGoalTypeInput('build');
       setGoalUnits('minute');
+      setGoalCustomUnitsEnabled(false);
       setGoalTargetInput(1);
       setGoalFreqInput('daily');
       setGoalOnDaysInput(defaultGoalDays);
@@ -272,13 +272,23 @@ export default function AddGoalWidget() {
     }
   };
 
+  // Called when we tap on the background of the surface
+  const onMainSurfacePressed = () => {
+    Keyboard.dismiss();
+    if (tutorialStage === 'goals-entering-privacy') {
+      dispatch(updateTutorialStage('goals-entering-units'));
+    } else if (tutorialStage === 'goals-entering-units') {
+      dispatch(updateTutorialStage('goals-entering-schedule'));
+    }
+  };
+
   return (
     <>
       <Portal>
         <Modal visible={modalVisible} onDismiss={hideModal}>
           <Pressable pointerEvents="auto" onPress={hideModal}>
             <KeyboardAvoidingView>
-              <Pressable onPress={Keyboard.dismiss}>
+              <Pressable onPress={onMainSurfacePressed}>
                 <Surface style={modalStyles.container}>
                   <Text style={modalStyles.header}>Create a new goal</Text>
                   <View style={styles.row}>
@@ -371,25 +381,51 @@ export default function AddGoalWidget() {
                   <Tooltip
                     visible={tutorialStage === 'goals-entering-units'}
                     text={
-                      'Now let\'s decide how you\'ll track your progress. Pick a metric, like minutes, reps, or tasks. For example, you could write "minutes" to mean "minutes spent reading".'
+                      'By default, you\'ll simply track how many times you completed the goal itself. But if you like, you can track something else like minutes, reps, or tasks. For example, you could write "minutes" to mean "minutes spent reading".'
                     }>
+                    <View style={styles.row}>
+                      <Checkbox.Android
+                        disabled={
+                          tutorialStage === 'goals-entering-name' ||
+                          tutorialStage === 'goals-entering-privacy'
+                        }
+                        status={
+                          goalCustomUnitsEnabled ? 'checked' : 'unchecked'
+                        }
+                        onPress={onToggleCustomUnits}
+                      />
+                      <Text
+                        disabled={
+                          tutorialStage === 'goals-entering-name' ||
+                          tutorialStage === 'goals-entering-privacy'
+                        }
+                        variant="labelMedium">
+                        Track progress with custom units
+                      </Text>
+                    </View>
+                  </Tooltip>
+                  {goalCustomUnitsEnabled ? (
                     <TextInput
                       dense
                       style={modalStyles.textInput}
                       mode="outlined"
-                      label="Units, e.g. minutes, reps, ..."
+                      label="Custom units, e.g. minutes, reps, ..."
                       keyboardType="default"
                       autoCapitalize="none"
                       value={goalUnits}
                       onChangeText={text => setGoalUnits(text)}
-                      onEndEditing={onUnitsEndEditing}
-                      onPressIn={onUnitsStartEditing}
                       disabled={
                         tutorialStage === 'goals-entering-name' ||
                         tutorialStage === 'goals-entering-privacy'
                       }
                     />
-                  </Tooltip>
+                  ) : (
+                    <HelperText type="info">
+                      You'll track your progress simply by how many times you've
+                      completed this goal.
+                    </HelperText>
+                  )}
+
                   <Divider style={styles.dividerSmall} />
                   <TextDisabled
                     variant="titleMedium"
@@ -413,12 +449,12 @@ export default function AddGoalWidget() {
                         right={
                           <TextInput.Affix
                             text={
-                              pluralize(
-                                goalUnits,
-                                parseFloat(goalTargetInput),
-                              ) +
-                              ' ' +
-                              goalFreqInput
+                              (goalCustomUnitsEnabled
+                                ? pluralize(
+                                    goalUnits,
+                                    parseFloat(goalTargetInput),
+                                  ) + ' '
+                                : '') + goalFreqInput
                             }
                           />
                         }
@@ -481,7 +517,7 @@ export default function AddGoalWidget() {
                       ))}
                     </View>
                   </Tooltip>
-                  <Divider style={styles.dividerLarge} />
+                  <Divider style={styles.dividerMedium} />
                   {/* "Make it happen" create goal button */}
                   <HelperText type="error" visible={errorMessage !== null}>
                     {errorMessage}
